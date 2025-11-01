@@ -6,8 +6,14 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 
 const supabase = supabaseBrowser()
 
+interface Props {
+  month: number
+  year: number
+  occupiedDates: any
+}
+
 // Helper function para generar el calendario
-const generateCalendar = (month, year, occupiedDates) => {
+const generateCalendar = ({ month, year, occupiedDates }: Props) => {
   const daysInMonth = new Date(year, month, 0).getDate()
   const days = []
 
@@ -46,7 +52,11 @@ export default function CTA() {
   const currentYear = currentDate.getFullYear()
 
   useEffect(() => {
-    const days = generateCalendar(currentMonth, currentYear, occupiedDates)
+    const days = generateCalendar({
+      month: currentMonth,
+      year: currentYear,
+      occupiedDates,
+    })
     setCalendarDays(days)
   }, [isModalOpen])
 
