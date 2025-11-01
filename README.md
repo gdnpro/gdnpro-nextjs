@@ -18,12 +18,12 @@ Sigue estos pasos para configurar y ejecutar el proyecto GDN Pro en tu entorno l
 
 1. **Clona el repositorio**
    ```bash
-   git clone https://github.com/gdnpro/gdnpro.git
+   git clone https://github.com/gdnpro/gdnpro-nextjs.git
    ```
 
 2. **Entra en la carpeta del proyecto**
    ```bash
-   cd gdnpro
+   cd gdnpro-nextjs
    ```
 
 3. **Instala las dependencias usando pnpm**
