@@ -213,31 +213,6 @@ export default function NotificationBell() {
         onClose={() => setIsOpen(false)}
         onNotificationClick={handleNotificationClick}
       />
-
-      {/* Estilos para animaciones */}
-      <style jsx="true">{`
-        @keyframes slide-in-right {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-
-        .animate-slide-in-right {
-          animation: slide-in-right 0.3s ease-out;
-        }
-
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      `}</style>
     </>
   )
 }
