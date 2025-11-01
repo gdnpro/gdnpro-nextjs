@@ -5,6 +5,15 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+   rules: {
+    'react-hooks/exhaustive-deps': 'off',
+    'semi': ['error', 'never'],
+    'prettier/prettier': 'error',
+    'import/no-named-as-default-member': 'off',
+  }, 
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
