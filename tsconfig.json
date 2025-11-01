@@ -20,17 +20,17 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@utils/*": ["src/utils/*"],
-      "@pages/*": ["src/pages/*"],
-      "@assets/*": ["src/assets/*"],
-      "@constants/*": ["src/constants/*"],
-      "@services/*": ["src/services/*"],
-      "@libs/*": ["src/libs/*"],
-      "@interfaces/*": ["src/interfaces/*"],
-      "@layouts/*": ["src/layouts/*"]
+      "@/*": ["*"],
+      "@components/*": ["/components/*"],
+      "@hooks/*": ["/hooks/*"],
+      "@utils/*": ["/utils/*"],
+      "@pages/*": ["/pages/*"],
+      "@assets/*": ["/assets/*"],
+      "@constants/*": ["/constants/*"],
+      "@services/*": ["/services/*"],
+      "@libs/*": ["/libs/*"],
+      "@interfaces/*": ["/interfaces/*"],
+      "@layouts/*": ["/layouts/*"]
     }
   },
   "include": [
