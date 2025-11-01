@@ -1,12 +1,15 @@
 "use client"
 
+import { supabaseBrowser } from "@/utils/supabase/client"
+import { useParams, useSearchParams } from "next/navigation"
+import { useRouter } from "next/router"
 import { useState, useEffect } from "react"
-import { useParams, useNavigate, useSearchParams } from "react-router-dom"
-import { supabase } from "@/db/supabase"
+
+const supabase = supabaseBrowser()
 
 export default function Checkout() {
   const { freelancerId } = useParams()
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const navigate = useRouter()
 
   const [freelancer, setFreelancer] = useState<any>(null)
@@ -157,7 +160,7 @@ export default function Checkout() {
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Error</h2>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
-            onClick={() => navigate("/freelancers")}
+            onClick={() => navigate.push("/freelancers")}
             className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-cyan-700 transition-colors cursor-pointer whitespace-nowrap"
           >
             Ver Freelancers

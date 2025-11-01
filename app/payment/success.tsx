@@ -1,11 +1,14 @@
 "use client"
 
+import { supabaseBrowser } from "@/utils/supabase/client"
+import { useSearchParams } from "next/navigation"
+import { useRouter } from "next/router"
 import { useState, useEffect } from "react"
-import { useSearchParams, useNavigate } from "react-router-dom"
-import { supabase } from "@/db/supabase"
+
+const supabase = supabaseBrowser()
 
 export default function SuccessPayment() {
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const navigate = useRouter()
   const sessionId = searchParams.get("session_id")
 
@@ -24,8 +27,6 @@ export default function SuccessPayment() {
 
   const verifyPayment = async () => {
     try {
-      console.log("🔍 Verificando pago con sesión:", sessionId)
-
       const {
         data: { session },
       } = await supabase.auth.getSession()
@@ -65,12 +66,12 @@ export default function SuccessPayment() {
   }
 
   const goToDashboard = () => {
-    navigate("/dashboard/client")
+    navigate.push("/dashboard")
   }
 
   const goToChat = () => {
     // Navegar al chat con el freelancer
-    navigate("/dashboard/client?tab=messages")
+    navigate.push("/dashboard?tab=messages")
   }
 
   if (loading) {
