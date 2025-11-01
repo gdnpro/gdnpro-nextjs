@@ -1,7 +1,9 @@
 "use client"
 
-import { supabase } from "@/db/supabase"
+import { supabaseBrowser } from "@/db/supabase/client"
 import { useState, useEffect } from "react"
+
+const supabase = supabaseBrowser()
 
 interface Badge {
   id: string

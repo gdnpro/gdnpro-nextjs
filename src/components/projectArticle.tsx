@@ -1,5 +1,7 @@
-import { supabase } from "@/db/supabase"
+import { supabaseBrowser } from "@/db/supabase/client"
 import type { Project } from "@/interfaces/Project"
+
+const supabase = supabaseBrowser()
 
 interface Props {
   project: Project
@@ -127,7 +129,7 @@ export const ProjectArticle = ({
           {project.status === "pending_approval" && (
             <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
               <div className="flex items-start">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <i className="ri-notification-line text-orange-600 text-xl mr-3"></i>
                 </div>
                 <div className="flex-1">

@@ -1,7 +1,9 @@
 "use client"
 
-import { supabase } from "@/db/supabase"
+import { supabaseBrowser } from "@/db/supabase/client"
 import { useState, useEffect } from "react"
+
+const supabase = supabaseBrowser()
 
 interface AnalyticsData {
   totalEarnings: number
@@ -491,7 +493,7 @@ export default function AnalyticsDashboard({
 
       {/* Métricas principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-blue-500 to-primary rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-linear-to-br from-blue-500 to-primary rounded-xl shadow-lg p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-blue-100 text-sm font-medium">
@@ -515,7 +517,7 @@ export default function AnalyticsDashboard({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-linear-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-emerald-100 text-sm font-medium">Este Mes</p>
@@ -533,7 +535,7 @@ export default function AnalyticsDashboard({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-linear-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-purple-100 text-sm font-medium">
@@ -553,7 +555,7 @@ export default function AnalyticsDashboard({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-linear-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-amber-100 text-sm font-medium">
@@ -601,7 +603,7 @@ export default function AnalyticsDashboard({
                   <div className="flex-1">
                     <div className="bg-gray-200 rounded-full h-3 relative overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-primary h-full rounded-full transition-all duration-1000"
+                        className="bg-linear-to-r from-blue-500 to-primary h-full rounded-full transition-all duration-1000"
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
@@ -638,7 +640,7 @@ export default function AnalyticsDashboard({
 
               return (
                 <div key={index} className="flex items-center space-x-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-8 h-8 bg-linear-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                     {index + 1}
                   </div>
                   <div className="flex-1">
@@ -652,7 +654,7 @@ export default function AnalyticsDashboard({
                     </div>
                     <div className="bg-gray-200 rounded-full h-2 relative overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-1000"
+                        className="bg-linear-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-1000"
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
@@ -671,7 +673,7 @@ export default function AnalyticsDashboard({
 
       {/* Predicciones y recomendaciones */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl border border-indigo-200 p-6">
+        <div className="bg-linear-to-br from-indigo-50 to-blue-50 rounded-xl border border-indigo-200 p-6">
           <h3 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center">
             <i className="ri-crystal-ball-line mr-2"></i>
             Predicciones IA
@@ -711,7 +713,7 @@ export default function AnalyticsDashboard({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl border border-emerald-200 p-6">
+        <div className="bg-linear-to-br from-emerald-50 to-green-50 rounded-xl border border-emerald-200 p-6">
           <h3 className="text-lg font-semibold text-emerald-900 mb-4 flex items-center">
             <i className="ri-lightbulb-line mr-2"></i>
             Recomendaciones IA

@@ -1,17 +1,31 @@
-import { BrowserRouter } from "react-router-dom"
-import { AppRoutes } from "@/router/index"
-import { AuthProvider } from "@/components/AuthContext"
-import "./globals.css"
-import "@/libs/toast"
+"use client"
 
-function App() {
+import Hero from "@/components/Hero"
+import About from "@/components/About"
+import Services from "@/components/Services"
+import Portfolio from "@/components/Portfolio"
+import Team from "@/components/Team"
+import Testimonials from "@/components/Testimonials"
+import CTA from "@/components/CTA"
+import Contact from "@/components/Contact"
+import Layout from "@/components/Layout"
+import { useEffect } from "react"
+
+export default function Home() {
+  useEffect(() => {
+    document.title = "Inicio | GDN Pro"
+  }, [])
+
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <Layout>
+      <Hero />
+      <About />
+      <Services />
+      <Portfolio />
+      <Team />
+      <Testimonials />
+      <CTA />
+      <Contact />
+    </Layout>
   )
 }
-
-export default App

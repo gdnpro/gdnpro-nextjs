@@ -1,12 +1,14 @@
 "use client"
 
-import { supabase } from "@/db/supabase"
+import { supabaseBrowser } from "@/db/supabase/client"
 import type {
   Review,
   ReviewsDisplayProps,
   ReviewStats,
 } from "@/interfaces/Review"
 import { useState, useEffect } from "react"
+
+const supabase = supabaseBrowser()
 
 export function ReviewsDisplay({
   userId,
@@ -180,7 +182,7 @@ export function ReviewsDisplay({
     <div className="space-y-6">
       {/* Statistics */}
       {showStats && stats && stats.totalReviews > 0 && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
+        <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-900">
               Resumen de Calificaciones

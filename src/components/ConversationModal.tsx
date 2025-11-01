@@ -36,7 +36,7 @@ export const ConversationModal = ({
         {/* Header del Chat */}
         <div className="bg-primary text-white p-3 sm:p-4 rounded-t-xl sm:rounded-t-2xl flex items-center justify-between">
           <div className="flex items-center min-w-0 flex-1">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-300/50 rounded-full overflow-hidden flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-300/50 rounded-full overflow-hidden flex items-center justify-center mr-2 sm:mr-3 shrink-0">
               {selectedConversation.client?.avatar_url ? (
                 <img
                   src={selectedConversation.client.avatar_url}
@@ -65,7 +65,7 @@ export const ConversationModal = ({
               setSelectedConversation(null)
               setNewMessage("")
             }}
-            className="hover:bg-cyan-700 p-1 sm:p-2 rounded cursor-pointer flex-shrink-0"
+            className="hover:bg-cyan-700 p-1 sm:p-2 rounded cursor-pointer shrink-0"
           >
             <i className="ri-close-line text-lg sm:text-xl"></i>
           </button>
@@ -147,7 +147,7 @@ export const ConversationModal = ({
             <button
               onClick={sendMessage}
               disabled={!newMessage.trim() || chatLoading || sendingMessage}
-              className="w-10 h-10 sm:w-12 sm:h-12 bg-primary hover:bg-cyan-700 disabled:bg-gray-300 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer flex-shrink-0"
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-primary hover:bg-cyan-700 disabled:bg-gray-300 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer shrink-0"
             >
               {sendingMessage ? (
                 <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white"></div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuth } from "@/components/AuthContext"
-import { useNavigate } from "react-router-dom"
+import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 interface ProtectedRouteProps {
@@ -14,14 +14,14 @@ export default function ProtectedRoute({
   requiredRole,
 }: ProtectedRouteProps) {
   const { profile, user, loading, isAuthenticated } = useAuth()
-  const navigate = useNavigate()
+  const navigate = useRouter()
 
   useEffect(() => {
     if (loading) return
 
     // No autenticado
     if (!isAuthenticated) {
-      navigate("/", { replace: true })
+      navigate.push("/")
       return
     }
 
@@ -30,7 +30,7 @@ export default function ProtectedRoute({
       const getDashboardUrl = () => {
         switch (user?.role) {
           case "admin":
-            return "/admin/contacts"
+            return "/admin"
           case "freelancer":
             return "/dashboard/freelancer"
           default:
@@ -38,7 +38,7 @@ export default function ProtectedRoute({
         }
       }
 
-      navigate(getDashboardUrl(), { replace: true })
+      navigate.push(getDashboardUrl())
     }
   }, [loading, isAuthenticated, requiredRole, profile?.role, navigate])
 

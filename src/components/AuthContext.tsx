@@ -1,7 +1,10 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState } from "react"
-import { supabase } from "@/db/supabase"
+import React, { createContext, useContext, useEffect, useState } from "react"
+import type { User } from "@supabase/supabase-js"
+import { supabaseBrowser } from "@/db/supabase/client"
+
+const supabase = supabaseBrowser()
 
 interface AuthContextType {
   profile: any
@@ -20,72 +23,70 @@ const AuthContext = createContext<AuthContextType>({
 })
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [profile, setProfile] = useState<any>(null)
-  const [user, setUser] = useState<any>(null)
+  const [profile, setProfile] = useState<User | null>(null)
+  const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState<boolean>(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    if (typeof window === "undefined") return
     let mounted = true
 
-    const initAuth = async () => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession()
+    const init = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
 
-        if (mounted) {
-          setProfile(session?.user ?? null)
+      if (!mounted) return
 
-          const { data } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("user_id", session?.user.id)
-            .single()
+      setProfile(session?.user ?? null)
+      setIsAuthenticated(!!session?.user)
 
-          setUser(data)
-          setIsAuthenticated(!!session?.user)
-          setLoading(false)
-        }
+      if (session?.user) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .single()
 
-        const {
-          data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
-          if (!mounted) return
-          if (event === "SIGNED_OUT") {
-            setUser(null)
-            setLoading(false)
-            setIsAuthenticated(false)
-          }
-
-          setProfile(session?.user ?? null)
-
-          const { data } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("user_id", session?.user.id)
-            .single()
-
-          if (data.role === "admin") setIsAdmin(true)
-
-          setUser(data)
-          setIsAuthenticated(!!session?.user)
-          setLoading(false)
-        })
-
-        return () => {
-          mounted = false
-          subscription.unsubscribe()
-        }
-      } catch (err) {
-        console.error("❌ Error en initAuth:", err)
-        if (mounted) setLoading(false)
+        setUser(data)
+        setIsAdmin(data?.user_type === "admin")
       }
+
+      setLoading(false)
     }
 
-    initAuth()
+    init()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_, session) => {
+      if (!mounted) return
+
+      setProfile(session?.user ?? null)
+      setIsAuthenticated(!!session?.user)
+
+      if (session?.user) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .single()
+
+        setUser(data)
+        setIsAdmin(data?.user_type === "admin")
+      } else {
+        setUser(null)
+        setIsAdmin(false)
+      }
+
+      setLoading(false)
+    })
+
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   return (

@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react"
 import ReviewModal from "./ReviewModal"
-import { supabase } from "@/db/supabase"
+import { supabaseBrowser } from "@/db/supabase/client"
+
+const supabase = supabaseBrowser()
 
 interface PendingProject {
   id: string

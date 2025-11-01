@@ -1,6 +1,10 @@
-import { supabase } from "@/db/supabase"
+"use client"
+
+import { supabaseBrowser } from "@/db/supabase/client"
 import type { Notification } from "@/interfaces/Notification"
 import { useState, useEffect } from "react"
+
+const supabase = supabaseBrowser()
 
 interface NotificationCenterProps {
   isOpen: boolean
@@ -192,7 +196,7 @@ export default function NotificationCenter({
 
   const handleNotificationClick = (notification: Notification) => {
     if (!notification.read) {
-      markAsRead(notification.id)
+      markAsRead(notification.id!)
     }
 
     if (onNotificationClick) {
@@ -325,7 +329,7 @@ export default function NotificationCenter({
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 hover:bg-gray-50 cursor-pointer border-l-4 ${priorityColors[notification.priority]} ${
+                  className={`p-4 hover:bg-gray-50 cursor-pointer border-l-4 ${priorityColors[notification.priority!]} ${
                     !notification.read ? "bg-cyan-50/30" : ""
                   }`}
                   onClick={() => handleNotificationClick(notification)}
@@ -333,7 +337,7 @@ export default function NotificationCenter({
                   <div className="flex items-start justify-between">
                     <div className="flex items-start flex-1 min-w-0">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${typeColors[notification.type]}`}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0 ${typeColors[notification.type]}`}
                       >
                         <i
                           className={`${typeIcons[notification.type]} text-sm`}
@@ -351,7 +355,7 @@ export default function NotificationCenter({
                             {notification.title}
                           </h4>
                           {!notification.read && (
-                            <div className="w-2 h-2 bg-cyan-500 rounded-full ml-2 flex-shrink-0"></div>
+                            <div className="w-2 h-2 bg-cyan-500 rounded-full ml-2 shrink-0"></div>
                           )}
                         </div>
                         <p className="text-sm text-gray-600 leading-relaxed">
@@ -362,7 +366,7 @@ export default function NotificationCenter({
                             {notification.type.replace("_", " ")}
                           </span>
                           <span className="mx-2">•</span>
-                          <span>{formatTime(notification.created_at)}</span>
+                          <span>{formatTime(notification.created_at!)}</span>
                           {notification.priority === "high" ||
                           notification.priority === "urgent" ? (
                             <>
@@ -388,7 +392,7 @@ export default function NotificationCenter({
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            markAsRead(notification.id)
+                            markAsRead(notification.id!)
                           }}
                           className="text-primary hover:text-cyan-700 p-1 rounded cursor-pointer"
                           title="Marcar como leída"
@@ -399,7 +403,7 @@ export default function NotificationCenter({
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          deleteNotification(notification.id)
+                          deleteNotification(notification.id!)
                         }}
                         className="text-gray-400 hover:text-red-500 p-1 rounded cursor-pointer"
                         title="Eliminar notificación"

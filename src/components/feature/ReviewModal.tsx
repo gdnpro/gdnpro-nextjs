@@ -1,5 +1,9 @@
-import { supabase } from "@/db/supabase"
+"use client"
+
+import { supabaseBrowser } from "@/db/supabase/client"
 import { useState, useEffect } from "react"
+
+const supabase = supabaseBrowser()
 
 interface ReviewModalProps {
   isOpen: boolean

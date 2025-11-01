@@ -1,8 +1,10 @@
 "use client"
 
-import { supabase } from "@/db/supabase"
+import { supabaseBrowser } from "@/db/supabase/client"
 import type { Notification } from "@/interfaces/Notification"
 import { useEffect, useState } from "react"
+
+const supabase = supabaseBrowser()
 
 export const useNotifications = () => {
   const [isEnabled, setIsEnabled] = useState(false)

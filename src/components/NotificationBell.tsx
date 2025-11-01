@@ -1,8 +1,12 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import NotificationCenter from "./NotificationCenter"
-import { supabase } from "@/db/supabase"
 import type { Notification } from "@/interfaces/Notification"
 import { useSessionStorage } from "@/hooks/useSessionStorage"
+import { supabaseBrowser } from "@/db/supabase/client"
+
+const supabase = supabaseBrowser()
 
 export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false)
@@ -173,7 +177,7 @@ export default function NotificationBell() {
             onClick={handleToastClick}
           >
             <div className="flex items-start">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3 shrink-0">
                 <i className="ri-notification-line text-primary text-sm"></i>
               </div>
               <div className="flex-1 min-w-0">

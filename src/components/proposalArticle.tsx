@@ -22,7 +22,7 @@ export const ProposalArticle = ({
     >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 space-y-3 sm:space-y-0">
         <div className="flex items-center">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 shrink-0">
             <i className="ri-user-line text-lg sm:text-xl text-primary"></i>
           </div>
           <div>
