@@ -11,7 +11,6 @@ const supabase = supabaseBrowser()
 
 export default function FreelancerProfilePage() {
   const { slug } = useParams()
-  const location = usePathname()
   const navigate = useRouter()
   const [freelancer, setFreelancer] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
@@ -56,14 +55,7 @@ export default function FreelancerProfilePage() {
     try {
       setLoading(true)
 
-      // Si tenemos datos del state, usarlos primero
-      if (location.state?.freelancerData) {
-        setFreelancer(location.state.freelancerData)
-        setLoading(false)
-        return
-      }
-
-      // Si no, buscar por slug en la base de datos
+      // Buscar por slug en la base de datos
       const { data: profiles, error } = await supabase
         .from("profiles")
         .select("*")
@@ -76,7 +68,6 @@ export default function FreelancerProfilePage() {
         const profileSlug = profile.full_name
           ?.toLowerCase()
           .replace(/\s+/g, "-")
-        console.log(profileSlug, slug)
         return removeAccents(profileSlug) === removeAccents(slug as string)
       })
 
@@ -241,7 +232,7 @@ export default function FreelancerProfilePage() {
                   </button>
 
                   {/* Menú de compartir */}
-                  <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 py-2 min-w-[160px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                  <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 py-2 min-w-40 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
                     <button
                       onClick={() => handleShare("linkedin")}
                       className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center"
