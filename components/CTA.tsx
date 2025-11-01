@@ -135,13 +135,13 @@ export default function CTA() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <button
               onClick={scrollToContact}
-              className="bg-primary hover:bg-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl"
+              className="bg-primary cursor-pointer hover:bg-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl"
             >
               Empezar Ahora
             </button>
             <button
               onClick={openModal}
-              className="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 rounded-full text-lg font-semibold transition-all"
+              className="border-2 cursor-pointer border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 rounded-full text-lg font-semibold transition-all"
             >
               Agenda una cita
             </button>

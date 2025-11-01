@@ -178,13 +178,13 @@ export default function Footer() {
             </div>
             <div className="flex flex-wrap gap-6">
               <a
-                href="/privacy-policy"
+                href="/privacy"
                 className="text-gray-400 hover:text-white transition-colors cursor-pointer"
               >
                 Política de Privacidad
               </a>
               <a
-                href="/terms-of-service"
+                href="/terms"
                 className="text-gray-400 hover:text-white transition-colors cursor-pointer"
               >
                 Términos de Servicio
