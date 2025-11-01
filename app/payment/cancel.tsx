@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useRouter } from "next/router"
 
 export default function CancelPayment() {
   const navigate = useRouter()
@@ -8,11 +8,11 @@ export default function CancelPayment() {
   }
 
   const goToFreelancers = () => {
-    navigate("/freelancers")
+    navigate.push("/freelancers")
   }
 
   const goToDashboard = () => {
-    navigate("/dashboard/client")
+    navigate.push("/dashboard")
   }
 
   return (
