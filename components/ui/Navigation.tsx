@@ -22,9 +22,7 @@ export default function Navigation() {
   }
 
   const goToDashboard = () => {
-    if (user?.role === "admin") navigate.push("/admin")
-    else if (user?.role === "freelancer") navigate.push("/dashboard/freelancer")
-    else if (user?.role === "client") navigate.push("/dashboard/client")
+    navigate.push("/dashboard")
     setIsUserMenuOpen(false)
   }
 

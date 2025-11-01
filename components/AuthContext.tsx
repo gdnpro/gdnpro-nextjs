@@ -8,7 +8,7 @@ const supabase = supabaseBrowser()
 
 interface AuthContextType {
   profile: any
-  user: User | null
+  user: any
   loading: boolean
   isAuthenticated: boolean
 }
