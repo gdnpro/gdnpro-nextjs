@@ -12,6 +12,13 @@ interface Props {
   occupiedDates: any
 }
 
+interface CalendarDay {
+  day: number
+  date: string
+  isOccupied: boolean
+  isWeekend: boolean
+}
+
 // Helper function para generar el calendario
 const generateCalendar = ({ month, year, occupiedDates }: Props) => {
   const daysInMonth = new Date(year, month, 0).getDate()
@@ -36,7 +43,7 @@ export default function CTA() {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [topic, setTopic] = useState("")
-  const [selectedDate, setSelectedDate] = useState(null)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState("")
   const [selectedPlatform, setSelectedPlatform] = useState("") // Zoom o WhatsApp
   const [clientName, setClientName] = useState("")
@@ -45,7 +52,7 @@ export default function CTA() {
     "2025-10-05",
     "2025-10-10",
   ])
-  const [calendarDays, setCalendarDays] = useState([])
+  const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([])
 
   const currentDate = new Date()
   const currentMonth = currentDate.getMonth() + 1
@@ -62,7 +69,7 @@ export default function CTA() {
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
-  const handleTimeSelect = (e) => setSelectedTime(e.target.value)
+  const handleTimeSelect = (e: any) => setSelectedTime(e.target.value)
 
   // Enviar los datos al correo (via Supabase Function)
   const handleSchedule = async () => {
