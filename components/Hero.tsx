@@ -60,7 +60,7 @@ const Hero = () => {
               <div className="flex flex-wrap gap-4 text-sm text-blue-200">
                 <div className="flex items-center gap-2">
                   <i className="ri-check-line text-green-400"></i>
-                  <span>+500 Proyectos Completados</span>
+                  <span>+30 Proyectos Completados</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <i className="ri-check-line text-green-400"></i>

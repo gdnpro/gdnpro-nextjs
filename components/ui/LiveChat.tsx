@@ -178,7 +178,7 @@ export default function LiveChat() {
         const welcomeMessage: Message = {
           id: "welcome",
           sender_id: "system",
-          message: `¡Hola ${clientName}! 👋 Soy Liah Yelianna, tu asistente virtual. Un especialista real te responderá en breve a través de WhatsApp. ¿En qué puedo ayudarte?`,
+          message: `¡Hola ${clientName}! 👋 Soy Liah, tu asistente virtual. Un especialista real te responderá en breve. ¿En qué puedo ayudarte?`,
           created_at: new Date().toISOString(),
           sender_type: "admin",
         }
@@ -204,7 +204,7 @@ export default function LiveChat() {
       const welcomeMessage: Message = {
         id: "welcome",
         sender_id: "system",
-        message: `¡Hola ${clientName}! 👋 Soy Liah Yelianna, tu asistente virtual. Un especialista real te responderá en breve a través de WhatsApp. ¿En qué puedo ayudarte?`,
+        message: `¡Hola ${clientName}! 👋 Soy Liah, tu asistente virtual. Un especialista real te responderá en breve. ¿En qué puedo ayudarte?`,
         created_at: new Date().toISOString(),
         sender_type: "admin",
       }
@@ -337,9 +337,7 @@ export default function LiveChat() {
                 <i className="ri-customer-service-2-line text-lg"></i>
               </div>
               <div>
-                <h3 className="font-semibold">
-                  Liah Yelianna - Asistente Virtual
-                </h3>
+                <h3 className="font-semibold">Liah - Asistente Virtual</h3>
                 <p className="text-blue-100 text-sm">
                   {isWaitingForResponse
                     ? "⚡ Esperando respuesta..."
@@ -364,7 +362,7 @@ export default function LiveChat() {
                   <i className="ri-user-smile-line text-2xl text-primary"></i>
                 </div>
                 <h4 className="text-lg font-semibold text-gray-800 mb-2">
-                  ¡Hola! Soy Liah Yelianna 👋
+                  ¡Hola! Soy Liah 👋
                 </h4>
                 <p className="text-gray-600 text-sm">
                   Para brindarte una mejor atención, ¿podrías decirme tu nombre?

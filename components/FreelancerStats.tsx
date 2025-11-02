@@ -1,17 +1,13 @@
 export default function FreelancerStats() {
   const stats = [
+    //{ number: "500+",label: "Freelancers Verificados", icon: "ri-user-star-line", },
     {
-      number: "500+",
-      label: "Freelancers Verificados",
-      icon: "ri-user-star-line",
-    },
-    {
-      number: "1,200+",
+      number: "30+",
       label: "Proyectos Completados",
       icon: "ri-trophy-line",
     },
     {
-      number: "98%",
+      number: "95%",
       label: "Satisfacción del Cliente",
       icon: "ri-heart-line",
     },
@@ -25,7 +21,7 @@ export default function FreelancerStats() {
   return (
     <section className="py-20 bg-blue-50">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
           {stats.map((stat, index) => (
             <div key={index} className="text-center">
               <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">

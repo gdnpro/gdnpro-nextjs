@@ -1,8 +1,8 @@
 export const gdnStats = {
-  completedProjects: 150,
-  satisfiedClients: 50,
+  completedProjects: 30,
+  satisfiedClients: 35,
   qualifications: 95,
-  experienceYears: 5,
+  experienceYears: 4,
 }
 
 export const categorizedSkills = [

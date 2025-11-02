@@ -10,7 +10,7 @@ export const services = [
       "CMS a medida para gestión de contenido",
       "Integración y desarrollo de APIs",
     ],
-    price: "Desde $5,000",
+    price: "Desde $1,500",
   },
   {
     icon: "ri-smartphone-line",
@@ -23,7 +23,7 @@ export const services = [
       "Notificaciones Push integradas",
       "Diseño adaptado a iOS y Android",
     ],
-    price: "Desde $8,000",
+    price: "Desde $5,000",
   },
   {
     icon: "ri-megaphone-line",
@@ -36,7 +36,7 @@ export const services = [
       "Automatización de Email Marketing",
       "Monitoreo y análisis de datos (Analytics)",
     ],
-    price: "Desde $2,000/mes",
+    price: "Desde $1,000/mes",
   },
   {
     icon: "ri-team-line",
