@@ -286,7 +286,7 @@ export default function Register() {
         })
 
         console.error(loginError)
-        navigate.push("/login")
+        navigate.push("/auth/login")
         return
       }
 

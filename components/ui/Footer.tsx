@@ -1,10 +1,22 @@
+"use client"
+
+import { useRouter, usePathname } from "next/navigation"
+
 export default function Footer() {
+  const router = useRouter()
+  const pathname = usePathname()
   const currentYear = new Date().getFullYear()
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
+    if (pathname !== "/") {
+      // Si NO estás en la home → redirige a home con hash
+      router.push(`/#${sectionId}`)
+    } else {
+      // Si YA estás en la home → hace scroll suave
+      const section = document.getElementById(sectionId)
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" })
+      }
     }
   }
 
@@ -27,7 +39,7 @@ export default function Footer() {
               web, apps móviles y marketing digital.
             </p>
 
-            {/* Redes sociales */}
+            {/* Redes sociales 
             <div className="flex space-x-4 pt-2">
               <a
                 href="#"
@@ -53,7 +65,7 @@ export default function Footer() {
               >
                 <i className="ri-github-line"></i>
               </a>
-            </div>
+            </div>*/}
           </div>
 
           {/* Servicios */}
@@ -138,14 +150,6 @@ export default function Footer() {
                 >
                   Testimonios
                 </button>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Careers
-                </a>
               </li>
             </ul>
           </div>
