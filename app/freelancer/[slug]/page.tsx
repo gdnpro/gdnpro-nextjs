@@ -6,6 +6,7 @@ import Layout from "@/components/Layout"
 import type { Profile } from "@/interfaces/Profile"
 import { useRouter, usePathname, useParams } from "next/navigation"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import { ReviewsDisplayPublic } from "@/components/feature/ReviewsDisplayPublic"
 
 const supabase = supabaseBrowser()
 
@@ -439,42 +440,12 @@ export default function FreelancerProfilePage() {
               )} */}
 
               {activeTab === "reviews" && (
-                <div>
+                <div className="space-y-6">
                   <h4 className="text-lg font-semibold text-gray-900 mb-6">
                     Reseñas de Clientes
                   </h4>
-                  <div className="space-y-6">
-                    {[1, 2, 3].map((review) => (
-                      <div
-                        key={review}
-                        className="border border-gray-200 rounded-lg p-6"
-                      >
-                        <div className="flex items-center mb-4">
-                          <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
-                            <i className="ri-user-line text-gray-600"></i>
-                          </div>
-                          <div className="ml-4">
-                            <h6 className="font-semibold text-gray-900">
-                              Cliente {review}
-                            </h6>
-                            <div className="flex items-center">
-                              {[...Array(5)].map((_, i) => (
-                                <i
-                                  key={i}
-                                  className="ri-star-fill text-yellow-400 text-sm"
-                                ></i>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <p className="text-gray-700">
-                          "Excelente trabajo, muy profesional y entregó el
-                          proyecto a tiempo. Definitivamente lo recomiendo y
-                          trabajaré con él nuevamente."
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+
+                  <ReviewsDisplayPublic freelancerId={freelancer.id} />
                 </div>
               )}
             </div>
