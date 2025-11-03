@@ -24,10 +24,11 @@ export default function SEO({
       <meta charSet="UTF-8" />
       <meta name="description" content={description} />
       <meta name="viewport" content="width=device-width" />
-      <meta name="theme-color" content="#020617" />
+      <meta name="theme-color" content="#0891b2" />
 
       <link rel="canonical" href={canonical} />
       <link rel="author" href="https://www.linkedin.com/in/rikirilis" />
+      <meta name="robots" content="index, follow"></meta>
 
       {preload?.map((p, i) => (
         <link
