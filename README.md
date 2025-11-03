@@ -1,8 +1,8 @@
 # → GDN Pro | Página Oficial ←
 
-<!-- <a href="https://github.com/RikiRilis/stop-trivia-react">
-  <img src="https://rikirilis.com/images/stop-trivia.webp" />
-</a> -->
+<a href="https://gdnpro.com">
+  <img src="https://gdnpro.com/images/embedded-img.webp" />
+</a>
 
 [Visit it →](https://gdnpro.com)
 

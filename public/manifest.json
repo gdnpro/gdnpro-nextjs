@@ -1,0 +1,9 @@
+{
+  "name": "GDN Pro",
+  "short_name": "GDN Pro",
+  "theme_color": "#0891b2",
+  "background_color": "#ffffff",
+  "display": "browser",
+  "scope": "/",
+  "start_url": "/"
+}

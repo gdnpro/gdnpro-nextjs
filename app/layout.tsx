@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation"
 import { AuthProvider } from "@/components/AuthContext"
 import { useEffect } from "react"
 import { butterup } from "@/libs/toast"
+import SEO from "@/components/SEO"
 
 export default function RootLayout({
   children,
@@ -26,32 +27,11 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <title>GDN Pro</title>
-        <meta
-          name="description"
-          content="GDN Pro es una plataforma de freelancers y clientes"
+        <SEO
+          title="GDN Pro"
+          description="GDN Pro es una plataforma en la desarrolladores freelancers y clientes en búsqueda de trabajadores se encuentran y llegan a acuerdos corporativos. En GDN PRO creamos soluciones digitales innovadoras. Desarrollo web, apps móviles y marketing digital de clase mundial."
+          canonical="https://gdnpro.com"
         />
-        <meta
-          name="keywords"
-          content="freelancers, clientes, trabajo, proyecto, trabajo remoto, trabajo freelance, trabajo online, trabajo remoto, trabajo freelance, trabajo online"
-        />
-        <meta name="author" content="GDN Pro" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="robots" content="index, follow" />
-        <meta name="googlebot" content="index, follow" />
-
-        <link
-          href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-          rel="stylesheet"
-        ></link>
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        ></link>
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css"
-        ></link>
       </head>
       <body>
         <AuthProvider>
