@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import ReviewModal from "./ReviewModal"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import ReviewModal from "@/components/ReviewModal"
 
 const supabase = supabaseBrowser()
 

@@ -47,3 +47,18 @@ body, html {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+#go-top-btn {
+  visibility: hidden;
+  opacity: 0;
+  animation: visibility linear both;
+  animation-timeline: scroll();
+  animation-range: 0 200px;
+}
+
+@keyframes visibility {
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
+}

@@ -3,38 +3,8 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { supabaseBrowser } from "@/utils/supabase/client"
-
-const supabase = supabaseBrowser()
-
-interface Freelancer {
-  id: string
-  full_name: string
-  bio: string
-  hourly_rate: number
-  rating: number
-  total_reviews: number
-  skills: string[]
-  location: string
-  avatar_url?: string
-  completed_projects: number
-  response_time: string
-  languages: string[]
-  availability: string
-  user_type: string
-  experience_years: number
-  email: string
-  user_id: string
-}
-
-interface ChatMessage {
-  id: string
-  message_text: string
-  sender_id: string
-  created_at: string
-  sender?: {
-    full_name: string
-  }
-}
+import { Freelancer } from "@/interfaces/Freelancer"
+import { ChatMessage } from "@/interfaces/ChatMessage"
 
 interface FreelancerGridProps {
   searchFilters?: {
@@ -47,10 +17,8 @@ interface FreelancerGridProps {
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/*                          MAIN FREELANCER GRID COMPONENT                    */
-/* -------------------------------------------------------------------------- */
 export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
+  const supabase = supabaseBrowser()
   const navigate = useRouter()
   const [freelancers, setFreelancers] = useState<Freelancer[]>([])
   const [filteredFreelancers, setFilteredFreelancers] = useState<Freelancer[]>(
@@ -71,9 +39,6 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   const [showAllFreelancers, setShowAllFreelancers] = useState(false)
   const [sortBy, setSortBy] = useState("rating")
 
-  /* ------------------------------------------------------------------------ */
-  /*                              EFFECT HOOKS                               */
-  /* ------------------------------------------------------------------------ */
   useEffect(() => {
     loadFreelancers()
     checkCurrentUser()
@@ -83,9 +48,6 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     applyFilters()
   }, [freelancers, searchFilters, sortBy])
 
-  /* ------------------------------------------------------------------------ */
-  /*                              FILTER LOGIC                                 */
-  /* ------------------------------------------------------------------------ */
   const applyFilters = () => {
     let filtered = [...freelancers]
 
@@ -177,9 +139,6 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     setFilteredFreelancers(filtered)
   }
 
-  /* ------------------------------------------------------------------------ */
-  /*                          USER / PROFILE HELPERS                           */
-  /* ------------------------------------------------------------------------ */
   const checkCurrentUser = async () => {
     try {
       const {
@@ -268,9 +227,6 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     return femaleNames.some((fn) => firstName.includes(fn)) ? "female" : "male"
   }
 
-  /* ------------------------------------------------------------------------ */
-  /*                              CHAT HANDLERS                                */
-  /* ------------------------------------------------------------------------ */
   const handleContactFreelancer = async (freelancer: Freelancer) => {
     if (!currentUser) {
       window.toast({
@@ -303,6 +259,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       } = await supabase.auth.getSession()
 
       if (!session?.access_token) {
+        window.toast({
+          title: "No hay sesión activa",
+          type: "error",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
         throw new Error("No hay sesión activa")
       }
 
@@ -358,6 +321,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       } = await supabase.auth.getSession()
 
       if (!session?.access_token) {
+        window.toast({
+          title: "No hay sesión activa",
+          type: "error",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
         throw new Error("No hay sesión activa")
       }
 
@@ -466,9 +436,6 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     }
   }
 
-  /* ------------------------------------------------------------------------ */
-  /*                              NAVIGATION HELPERS                           */
-  /* ------------------------------------------------------------------------ */
   const handleHireFreelancer = (freelancer: Freelancer) => {
     if (!currentUser) {
       window.toast({
@@ -514,9 +481,6 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     ? filteredFreelancers
     : filteredFreelancers.slice(0, 6)
 
-  /* ------------------------------------------------------------------------ */
-  /*                              RENDER LOGIC                                   */
-  /* ------------------------------------------------------------------------ */
   if (loading) {
     return (
       <section className="py-20 bg-gray-50">
@@ -602,12 +566,12 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 {/* Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto overflow-hidden">
+                    <div className="size-16 bg-primary/10 rounded-full mb-4 overflow-hidden">
                       {freelancer.avatar_url ? (
                         <img
                           src={freelancer.avatar_url}
                           alt={freelancer.full_name}
-                          className="w-full h-full object-cover object-top rounded-full"
+                          className="size-16 object-cover object-top"
                         />
                       ) : (
                         <i className="ri-user-line text-2xl text-primary" />
@@ -617,6 +581,15 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                       <h3 className="text-xl font-bold text-gray-900">
                         {freelancer.full_name}
                       </h3>
+                      <div
+                        className={`px-3 py-1 mb-2 w-fit rounded-full text-xs font-semibold ${
+                          freelancer.availability === "Disponible"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {freelancer.availability}
+                      </div>
                       <p className="text-primary font-semibold">
                         {freelancer.skills?.[0]
                           ? `${freelancer.skills[0]} Specialist`
@@ -627,15 +600,6 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                         {freelancer.location}
                       </p>
                     </div>
-                  </div>
-                  <div
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      freelancer.availability === "Disponible"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {freelancer.availability}
                   </div>
                 </div>
 
@@ -670,7 +634,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
                   {/* Skills */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {freelancer.skills?.slice(0, 4).map((skill, idx) => (
+                    {freelancer.skills?.slice(0, 3).map((skill, idx) => (
                       <span
                         key={idx}
                         className="bg-blue-100 text-cyan-700 px-3 py-1 rounded-full text-sm font-medium"
@@ -693,7 +657,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   </div>
                 </div>
                 {/* Footer */}
-                <div className="border-t pt-4">
+                <div className="border-t border-gray-300 pt-4">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-2xl font-bold text-gray-900">
                       ${freelancer.hourly_rate}/hora
@@ -744,16 +708,18 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         </div>
 
         {/* Show all / less button */}
-        <div className="text-center mt-12">
-          <button
-            onClick={handleViewAllFreelancers}
-            className="bg-primary hover:bg-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all  whitespace-nowrap cursor-pointer"
-          >
-            {showAllFreelancers
-              ? "Ver Menos Freelancers"
-              : `Ver Todos los Freelancers (${filteredFreelancers.length})`}
-          </button>
-        </div>
+        {filteredFreelancers.length > 6 && (
+          <div className="text-center mt-12">
+            <button
+              onClick={handleViewAllFreelancers}
+              className="bg-primary hover:bg-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all  whitespace-nowrap cursor-pointer"
+            >
+              {showAllFreelancers
+                ? "Ver Menos Freelancers"
+                : `Ver Todos los Freelancers (${filteredFreelancers.length})`}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* -------------------------- Profile Modal -------------------------- */}
@@ -1213,7 +1179,7 @@ export const FreelancerGridList = ({
 
           {/* Skills */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {freelancer.skills.slice(0, 3).map((skill, i) => (
+            {freelancer.skills.slice(0, 2).map((skill, i) => (
               <span
                 key={i}
                 className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs rounded-full font-medium"

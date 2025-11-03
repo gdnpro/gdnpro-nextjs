@@ -6,7 +6,7 @@ import Layout from "@/components/Layout"
 import type { Profile } from "@/interfaces/Profile"
 import { useRouter, usePathname, useParams } from "next/navigation"
 import { supabaseBrowser } from "@/utils/supabase/client"
-import { ReviewsDisplayPublic } from "@/components/feature/ReviewsDisplayPublic"
+import { ReviewsDisplayPublic } from "@/components/dashboard/ReviewsDisplayPublic"
 
 const supabase = supabaseBrowser()
 

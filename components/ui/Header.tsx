@@ -69,15 +69,13 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm lg:px-8 sm:px-6 px-4">
       <div className="max-w-7xl px-6 mx-auto">
         <div className="flex gap-8 justify-between items-center h-16">
-          {/* Logo */}
-          <button
-            onClick={goToHome}
+          <a
+            href="/"
             className={`${user ? "hidden md:block" : "block"} cursor-pointer`}
           >
             <img src="/logo.png" alt="GDN PRO" className="h-10 w-auto" />
-          </button>
+          </a>
 
-          {/* Campanita + Avatar SOLO en móvil si hay sesión */}
           {!loading && user && (
             <div className="flex items-center space-x-3 md:hidden">
               <NotificationBell />
@@ -107,7 +105,7 @@ export default function Header() {
             ))}
           </ul>
 
-          {/* Right section escritorio */}
+          {/* Right section desktop */}
           {!loading && user ? (
             <div className="relative hidden md:block">
               <div className="flex items-center space-x-3">
@@ -176,7 +174,7 @@ export default function Header() {
             </div>
           )}
 
-          {/* Botón hamburguesa móvil */}
+          {/* Mobile Menu */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -191,9 +189,8 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t bg-white/95 backdrop-blur-sm">
+          <div className="md:hidden ">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <ul>
                 {menuItems.map((item, index) => (
@@ -206,7 +203,6 @@ export default function Header() {
                 ))}
               </ul>
 
-              {/* Si hay sesión: dashboard + cerrar sesión */}
               {user && (
                 <div className="border-t pt-3 mt-3 space-y-2">
                   <a
@@ -224,7 +220,6 @@ export default function Header() {
                 </div>
               )}
 
-              {/* Si NO hay sesión: iniciar sesión + registrarse */}
               {!user && (
                 <div className="border-t pt-3 mt-3 space-y-2">
                   <button

@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import FreelancerHero from "@/components/FreelancerHero"
-import FreelancerStats from "@/components/FreelancerStats"
-import FreelancerSearch from "@/components/FreelancerSearch"
-import FreelancerGrid from "@/components/FreelancerGrid"
-import JoinFreelancer from "@/components/JoinFreelancer"
+import FreelancerHero from "@/components/freelancers/FreelancerHero"
+import FreelancerStats from "@/components/freelancers/FreelancerStats"
+import FreelancerSearch from "@/components/freelancers/FreelancerSearch"
+import FreelancerGrid from "@/components/freelancers/FreelancerGrid"
+import JoinFreelancer from "@/components/freelancers/JoinFreelancer"
 import Layout from "@/components/Layout"
 
 export default function Freelancers() {

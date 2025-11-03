@@ -127,9 +127,9 @@ const Hero = () => {
       </div>
 
       {/* Animated scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+      <div className="absolute bottom-2 md:bottom-8 left-1/2 transform -translate-x-1/2 z-10">
         <div className="animate-bounce">
-          <button onClick={scrollToContact}>
+          <button className="cursor-pointer" onClick={scrollToContact}>
             <i className="ri-arrow-down-line text-white text-2xl"></i>
           </button>
         </div>

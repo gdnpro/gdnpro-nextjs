@@ -1,35 +1,10 @@
-"use client"
-
-import { useRouter, usePathname } from "next/navigation"
-
 export default function Footer() {
-  const router = useRouter()
-  const pathname = usePathname()
   const currentYear = new Date().getFullYear()
-
-  const scrollToSection = (sectionId: string) => {
-    if (pathname !== "/") {
-      // Si NO estás en la home → redirige a home con hash
-      router.push(`/#${sectionId}`)
-    } else {
-      // Si YA estás en la home → hace scroll suave
-      const section = document.getElementById(sectionId)
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth" })
-      }
-    }
-  }
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
 
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-6 py-16">
-        {/* Grid principal de 4 columnas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 items-start">
-          {/* Logo y descripción */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 mb-8 items-start md:justify-items-center">
           <div className="space-y-4 flex flex-col justify-start">
             <div className="w-fit">
               <img src="/logo.png" alt="GDN PRO" className="h-12 w-auto" />
@@ -68,95 +43,95 @@ export default function Footer() {
             </div>*/}
           </div>
 
-          {/* Servicios */}
-          <div>
-            <h3 className="text-xl font-bold mb-6">Servicios</h3>
-            <ul className="space-y-3">
-              <li>
-                <button
-                  onClick={() => scrollToSection("services")}
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Desarrollo Web
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("services")}
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Desarrollo Móvil
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("services")}
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Marketing Digital
-                </button>
-              </li>
-              <li>
-                <a
-                  href="/freelancers"
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Red de Freelancers
-                </a>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("contact")}
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Consultoría
-                </button>
-              </li>
-            </ul>
+          <div className="flex-row flex flex-1 gap-12">
+            <div>
+              <h3 className="text-xl font-bold mb-2">Servicios</h3>
+              <ul className="space-y-3">
+                <li>
+                  <a
+                    href="/#services"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Desarrollo Web
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#services"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Desarrollo Móvil
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#services"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Marketing Digital
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/freelancers"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Red de Freelancers
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#contact"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Consultoría
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Empresa */}
+            <div>
+              <h3 className="text-xl font-bold mb-2">Empresa</h3>
+              <ul className="space-y-3">
+                <li>
+                  <a
+                    href="/#about"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Sobre Nosotros
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#portfolio"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Portafolio
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#team"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Nuestro Equipo
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#testimonials"
+                    className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Testimonios
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          {/* Empresa */}
           <div>
-            <h3 className="text-xl font-bold mb-6">Empresa</h3>
-            <ul className="space-y-3">
-              <li>
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Sobre Nosotros
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("portfolio")}
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Portafolio
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("team")}
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Nuestro Equipo
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("testimonials")}
-                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-                >
-                  Testimonios
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <h3 className="text-xl font-bold mb-6">Newsletter</h3>
+            <h3 className="text-xl font-bold mb-2">Newsletter</h3>
             <p className="text-gray-300 mb-4">
               Suscríbete para recibir las últimas noticias y ofertas especiales.
             </p>
@@ -176,35 +151,35 @@ export default function Footer() {
 
         {/* Bottom Section */}
         <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-gray-400 mb-4 md:mb-0">
+          <div className="flex flex-col justify-between gap-2 items-center">
+            <div className="text-gray-400 text-sm">
               © {currentYear} GDN Pro. Todos los derechos reservados.
             </div>
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-col md:flex-row flex-wrap gap-3">
               <a
                 href="/privacy"
-                className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+                className="text-gray-400  text-sm hover:text-white transition-colors cursor-pointer"
               >
                 Política de Privacidad
               </a>
+              <span className="text-gray-400 hidden md:block text-sm cursor-default">
+                •
+              </span>
               <a
                 href="/terms"
-                className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+                className="text-gray-400 text-sm hover:text-white transition-colors cursor-pointer"
               >
                 Términos de Servicio
               </a>
+              <span className="text-gray-400 hidden md:block text-sm cursor-default">
+                •
+              </span>
               <a
                 href="/data-deletion"
-                className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+                className="text-gray-400 text-sm hover:text-white transition-colors cursor-pointer"
               >
                 Eliminación de Datos
               </a>
-              <button
-                onClick={scrollToTop}
-                className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center"
-              >
-                <i className="ri-arrow-up-line mr-1"></i>Volver arriba
-              </button>
             </div>
           </div>
         </div>

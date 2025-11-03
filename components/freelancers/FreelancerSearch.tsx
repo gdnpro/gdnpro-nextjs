@@ -52,13 +52,6 @@ export default function FreelancerSearch({
     "$100+/hora",
   ]
 
-  const availabilityOptions = [
-    "Disponible ahora",
-    "Esta semana",
-    "Este mes",
-    "Próximo mes",
-  ]
-
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = {
       ...searchFilters,
@@ -88,7 +81,7 @@ export default function FreelancerSearch({
   return (
     <section id="freelancer-search" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Encuentra el Freelancer Perfecto
           </h2>
@@ -98,7 +91,7 @@ export default function FreelancerSearch({
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-12">
+        <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Search Input */}
             <div className="lg:col-span-3">

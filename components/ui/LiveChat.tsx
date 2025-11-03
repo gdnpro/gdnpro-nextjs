@@ -308,10 +308,10 @@ export default function LiveChat() {
   return (
     <>
       {/* Botón del Chat */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 md:bottom-6 md:right-6 right-4 z-50">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-primary hover:bg-cyan-700 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg transition-all  cursor-pointer group"
+          className="bg-primary hover:bg-cyan-700 text-white rounded-full size-14 md:size-16 flex items-center justify-center shadow-lg transition-all  cursor-pointer group"
           aria-label="Abrir chat"
         >
           {isOpen ? (

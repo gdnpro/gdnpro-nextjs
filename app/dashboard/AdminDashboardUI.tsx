@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import Layout from "@/components/Layout"
 import { useAuth } from "@/components/AuthContext"
-import WhatsAppSetup from "@/components/feature/WhatsAppSetup"
+import WhatsAppSetup from "@/components/WhatsAppSetup"
 import { supabaseBrowser } from "@/utils/supabase/client"
-import ProtectedRoute from "@/components/feature/ProtectedRoute"
+import ProtectedRoute from "@/components/ProtectedRoute"
 
 const supabase = supabaseBrowser()
 

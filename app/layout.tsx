@@ -11,6 +11,7 @@ import { AuthProvider } from "@/components/AuthContext"
 import { useEffect } from "react"
 import { butterup } from "@/libs/toast"
 import SEO from "@/components/SEO"
+import { GoToTop } from "@/components/ui/GoToTop"
 
 export default function RootLayout({
   children,
@@ -25,7 +26,7 @@ export default function RootLayout({
   }, [])
 
   return (
-    <html lang="es">
+    <html data-scroll-behavior="smooth" lang="es">
       <head>
         <SEO
           title="GDN Pro"
@@ -39,6 +40,7 @@ export default function RootLayout({
 
           <main>{children}</main>
 
+          {!hideLayout && <GoToTop />}
           {!hideLayout && <LiveChat />}
           {!hideLayout && <Footer />}
         </AuthProvider>

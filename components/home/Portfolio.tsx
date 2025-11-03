@@ -43,7 +43,7 @@ export default function Portfolio() {
               <button
                 key={filter.id}
                 onClick={() => setActiveFilter(filter.id)}
-                className={`px-6 py-3 rounded-full font-semibold transition-all  whitespace-nowrap cursor-pointer ${
+                className={`px-6 py-3 rounded-full font-semibold transition-all text-sm md:text-md whitespace-nowrap cursor-pointer ${
                   activeFilter === filter.id
                     ? "bg-sky-600 text-white shadow-lg"
                     : "bg-gray-100 text-gray-700 hover:bg-sky-50 hover:text-sky-600"
