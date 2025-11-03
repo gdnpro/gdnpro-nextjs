@@ -125,7 +125,6 @@ export const ProjectArticle = ({
             )}
           </div>
 
-          {/* NUEVO: Alerta para proyectos pendientes de aprobación */}
           {project.status === "pending_approval" && (
             <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
               <div className="flex items-start">
@@ -165,13 +164,24 @@ export const ProjectArticle = ({
 
                             if (error) throw error
 
-                            alert(
-                              "✅ ¡Proyecto aprobado! El pago ha sido liberado al freelancer."
-                            )
+                            window.toast({
+                              title: "Proyecto aprobado",
+                              type: "success",
+                              location: "bottom-center",
+                              dismissible: true,
+                              icon: true,
+                            })
+
                             loadProjects()
                           } catch (error) {
+                            window.toast({
+                              title: "Error al aprobar el proyecto",
+                              type: "error",
+                              location: "bottom-center",
+                              dismissible: true,
+                              icon: true,
+                            })
                             console.error("Error aprobando proyecto:", error)
-                            alert("Error al aprobar el proyecto")
                           }
                         }
                       }}

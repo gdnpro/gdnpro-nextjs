@@ -4,7 +4,7 @@ import "./globals.css"
 import "./butterup.css"
 import LiveChat from "@/components/ui/LiveChat"
 import Footer from "@/components/ui/Footer"
-import Navigation from "@/components/ui/Navigation"
+import Header from "@/components/ui/Header"
 import "@/libs/toast"
 import { usePathname } from "next/navigation"
 import { AuthProvider } from "@/components/AuthContext"
@@ -55,7 +55,7 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
-          {!hideLayout && <Navigation />}
+          {!hideLayout && <Header />}
 
           <main>{children}</main>
 

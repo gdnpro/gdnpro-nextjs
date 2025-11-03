@@ -342,16 +342,27 @@ export default function ClientDashboardUI() {
         }
 
         if (data.flagged) {
-          alert(
-            "⚠️ Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma."
-          )
+          window.toast({
+            title:
+              "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+            type: "info",
+            location: "bottom-center",
+            dismissible: true,
+            icon: true,
+          })
         }
       } else {
         throw new Error(data.error || "Error desconocido al enviar mensaje")
       }
     } catch (error: any) {
       console.error("Error enviando mensaje:", error)
-      alert(`Error al enviar mensaje: ${error.message}`)
+      window.toast({
+        title: "Error al enviar mensaje",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
     } finally {
       setSendingMessage(false)
     }
@@ -535,16 +546,20 @@ export default function ClientDashboardUI() {
       // NUEVO: Crear notificación automática
       await notifyProposal(proposalId, "proposal_rejected")
 
-      alert("Propuesta rechazada.")
-
       // Refresh proposals
       if (selectedProject) {
         viewProjectProposals(selectedProject)
       }
       loadProjects()
     } catch (error) {
+      window.toast({
+        title: "Error al rechazar la propuesta",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error rejecting proposal:", error)
-      alert("Error al rechazar la propuesta.")
     }
   }
 
@@ -764,9 +779,14 @@ export default function ClientDashboardUI() {
                           try {
                             const session = await supabase.auth.getSession()
                             if (!session.data.session?.access_token) {
-                              alert(
-                                "Necesitas iniciar sesión para usar el matching inteligente"
-                              )
+                              window.toast({
+                                title:
+                                  "Necesitas iniciar sesión para usar el matching inteligente",
+                                type: "error",
+                                location: "bottom-center",
+                                dismissible: true,
+                                icon: true,
+                              })
                               return
                             }
 
@@ -788,21 +808,40 @@ export default function ClientDashboardUI() {
                             if (response.ok) {
                               const data = await response.json()
                               if (data.success) {
-                                alert(
-                                  `🎯 ¡Matching completado! Encontramos ${data.matches?.length || 0} freelancers perfectos para tus proyectos. Los mejores matches han sido enviados por email.`
-                                )
+                                window.toast({
+                                  title: `🎯 ¡Matching completado! Encontramos ${data.matches?.length || 0} freelancers perfectos para tus proyectos. Los mejores matches han sido enviados por email.`,
+                                  type: "sueccess",
+                                  location: "bottom-center",
+                                  dismissible: true,
+                                  icon: true,
+                                })
                               } else {
-                                alert(
-                                  "Error en el matching: " +
-                                    (data.error || "Error desconocido")
-                                )
+                                window.toast({
+                                  title: "Error en el matching",
+                                  type: "error",
+                                  location: "bottom-center",
+                                  dismissible: true,
+                                  icon: true,
+                                })
                               }
                             } else {
-                              alert("Error conectando con el motor de IA")
+                              window.toast({
+                                title: "Error conectando con el motor de IA",
+                                type: "error",
+                                location: "bottom-center",
+                                dismissible: true,
+                                icon: true,
+                              })
                             }
                           } catch (error) {
+                            window.toast({
+                              title: "Error ejecutando el matching inteligente",
+                              type: "error",
+                              location: "bottom-center",
+                              dismissible: true,
+                              icon: true,
+                            })
                             console.error("Error en matching:", error)
-                            alert("Error ejecutando el matching inteligente")
                           }
                         }}
                         className="w-full sm:w-auto bg-linear-to-r from-purple-600 to-primary hover:from-purple-700 hover:to-cyan-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all  whitespace-nowrap cursor-pointer shadow-lg"

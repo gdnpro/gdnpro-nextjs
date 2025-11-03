@@ -6,24 +6,24 @@ import { useAuth } from "@/components/AuthContext"
 import Link from "next/link"
 import { supabaseBrowser } from "@/utils/supabase/client"
 
-const supabase = supabaseBrowser()
-
 export default function Login() {
-  const navigate = useRouter()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const { user } = useAuth() as {
+  const navigate = useRouter()
+  const supabase = supabaseBrowser()
+  const { user, profile } = useAuth() as {
     user: any
+    profile: any
   }
+
   useEffect(() => {
     if (user) {
       navigate.push("/dashboard")
     }
   }, [user, navigate])
-
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
 
   useEffect(() => {
     document.title = "Login | GDN Pro"

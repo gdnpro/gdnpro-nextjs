@@ -1,19 +1,38 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 import NotificationBell from "@/components/NotificationBell"
 import { useAuth } from "@/components/AuthContext"
 import { supabaseBrowser } from "@/utils/supabase/client"
 
 const supabase = supabaseBrowser()
 
-export default function Navigation() {
-  const { user, loading } = useAuth() as { user: any; loading: boolean }
+export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+
+  const { user, loading } = useAuth() as { user: any; loading: boolean }
   const navigate = useRouter()
-  const location = usePathname()
+
+  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node
+
+      if (
+        isUserMenuOpen &&
+        userMenuRef.current &&
+        !userMenuRef.current.contains(target)
+      ) {
+        setIsUserMenuOpen(false)
+      }
+    }
+
+    document.addEventListener("click", handleClickOutside)
+    return () => document.removeEventListener("click", handleClickOutside)
+  }, [isUserMenuOpen])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -21,33 +40,9 @@ export default function Navigation() {
     setIsUserMenuOpen(false)
   }
 
-  const goToDashboard = () => {
-    navigate.push("/dashboard")
-    setIsUserMenuOpen(false)
-  }
-
-  const scrollToSection = (sectionId: string) => {
-    if (location !== "/") {
-      navigate.push("/")
-      setTimeout(() => {
-        document
-          .getElementById(sectionId)
-          ?.scrollIntoView({ behavior: "smooth" })
-      }, 100)
-    } else {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" })
-    }
-    setIsMenuOpen(false)
-  }
-
   const goToHome = () => {
     navigate.push("/")
     window.scrollTo({ top: 0, behavior: "smooth" })
-    setIsMenuOpen(false)
-  }
-
-  const goToFreelancers = () => {
-    navigate.push("/freelancers")
     setIsMenuOpen(false)
   }
 
@@ -62,12 +57,12 @@ export default function Navigation() {
   }
 
   const menuItems = [
-    { label: "Inicio", action: goToHome },
-    { label: "Servicios", action: () => scrollToSection("services") },
-    { label: "Portafolio", action: () => scrollToSection("portfolio") },
-    { label: "Equipo", action: () => scrollToSection("team") },
-    { label: "Freelancers", action: goToFreelancers },
-    { label: "Contacto", action: () => scrollToSection("contact") },
+    { label: "Inicio", url: "/" },
+    { label: "Servicios", url: "/#services" },
+    { label: "Portafolio", url: "/#portfolio" },
+    { label: "Equipo", url: "/#team" },
+    { label: "Freelancers", url: "/freelancers" },
+    { label: "Contacto", url: "/#contact" },
   ]
 
   return (
@@ -101,17 +96,16 @@ export default function Navigation() {
           )}
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-x-8">
+          <ul className="hidden md:flex items-center gap-x-8">
             {menuItems.map((item, index) => (
-              <button
+              <li
                 key={index}
-                onClick={item.action}
                 className="text-gray-700 hover:text-primary cursor-pointer font-medium transition-colors"
               >
-                {item.label}
-              </button>
+                <a href={item.url}>{item.label}</a>
+              </li>
             ))}
-          </div>
+          </ul>
 
           {/* Right section escritorio */}
           {!loading && user ? (
@@ -144,14 +138,17 @@ export default function Navigation() {
 
               {/* Dropdown */}
               {isUserMenuOpen && (
-                <div className="absolute right-0 mt-3 w-48 bg-white border-none rounded-lg shadow-lg border py-2 z-50">
-                  <button
-                    onClick={goToDashboard}
+                <div
+                  className="absolute right-0 mt-3 w-48 bg-white border-none rounded-lg shadow-lg border py-2 z-50"
+                  ref={userMenuRef}
+                >
+                  <a
+                    href="/dashboard"
                     className="flex w-full px-4 py-2 text-left cursor-pointer text-gray-700 hover:bg-gray-100"
                   >
                     <i className="ri-dashboard-line mr-2"></i>
                     Dashboard
-                  </button>
+                  </a>
                   <button
                     onClick={handleLogout}
                     className="flex w-full px-4 py-2 text-left cursor-pointer text-red-600 hover:bg-red-50"
@@ -198,25 +195,26 @@ export default function Navigation() {
         {isMenuOpen && (
           <div className="md:hidden border-t bg-white/95 backdrop-blur-sm">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {menuItems.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={item.action}
-                  className="block w-full text-left px-3 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg font-medium transition-all"
-                >
-                  {item.label}
-                </button>
-              ))}
+              <ul>
+                {menuItems.map((item, index) => (
+                  <li
+                    key={index}
+                    className="block w-full text-left px-3 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg font-medium transition-all"
+                  >
+                    <a href={item.url}>{item.label}</a>
+                  </li>
+                ))}
+              </ul>
 
               {/* Si hay sesión: dashboard + cerrar sesión */}
               {user && (
                 <div className="border-t pt-3 mt-3 space-y-2">
-                  <button
-                    onClick={goToDashboard}
+                  <a
+                    href="/dashboard"
                     className="block w-full text-left px-3 py-3 text-gray-700 hover:bg-gray-50"
                   >
                     Dashboard
-                  </button>
+                  </a>
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-3 py-3 text-red-600 hover:bg-red-50"

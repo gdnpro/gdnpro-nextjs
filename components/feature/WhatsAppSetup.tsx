@@ -53,8 +53,14 @@ export default function WhatsAppSetup({ onClose }: WhatsAppSetupProps) {
         throw new Error("Error guardando configuración")
       }
     } catch (error) {
+      window.toast({
+        title: "Error configurando WhatsApp. Intenta nuevamente.",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error:", error)
-      alert("Error configurando WhatsApp. Intenta nuevamente.")
     } finally {
       setIsLoading(false)
     }

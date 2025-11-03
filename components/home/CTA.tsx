@@ -59,6 +59,8 @@ export default function CTA() {
   const currentYear = currentDate.getFullYear()
 
   useEffect(() => {
+    document.body.style.overflow = isModalOpen ? "hidden" : ""
+
     const days = generateCalendar({
       month: currentMonth,
       year: currentYear,
@@ -81,7 +83,13 @@ export default function CTA() {
       !clientName.trim() ||
       !clientContact.trim()
     ) {
-      alert("Por favor, completa todos los campos antes de agendar.")
+      window.toast({
+        title: "Por favor, completa todos los campos antes de agendar",
+        type: "warning",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       return
     }
 
@@ -103,8 +111,14 @@ export default function CTA() {
       )
 
       if (error) {
+        window.toast({
+          title: "Error al enviar la cita",
+          type: "success",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
         console.error("Error al invocar función:", error)
-        alert("Error al enviar la cita.")
         return
       }
 
@@ -112,14 +126,25 @@ export default function CTA() {
         selectedPlatform === "WhatsApp"
           ? `al número de WhatsApp ${clientContact}`
           : `al correo ${clientContact}`
-      alert(
-        `🎉 Tu cita fue enviada correctamente. Te contactaremos pronto ${contactText}.`
-      )
+
+      window.toast({
+        title: `Tu cita fue enviada correctamente. Te contactaremos pronto ${contactText}.`,
+        type: "success",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
 
       closeModal()
     } catch (error) {
+      window.toast({
+        title: "Hubo un problema al comunicarse con el servidor",
+        type: "success",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error al enviar:", error)
-      alert("❌ Hubo un problema al comunicarse con el servidor.")
     }
   }
 
@@ -191,7 +216,7 @@ export default function CTA() {
             {/* Botón cerrar */}
             <button
               onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold z-10"
+              className="absolute right-4 cursor-pointer text-gray-500 hover:text-gray-800 text-3xl font-bold z-10"
             >
               &times;
             </button>
@@ -321,7 +346,7 @@ export default function CTA() {
               {/* Botón final */}
               <button
                 onClick={handleSchedule}
-                className="w-full mt-6 bg-cyan-600 hover:bg-cyan-700 text-white py-3 rounded-xl font-bold text-lg shadow-lg transition-all"
+                className="w-full mt-6 bg-cyan-600 cursor-pointer hover:bg-cyan-700 text-white py-3 rounded-xl font-bold text-lg shadow-lg transition-all"
               >
                 Agendar cita
               </button>

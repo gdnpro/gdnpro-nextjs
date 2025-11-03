@@ -489,16 +489,27 @@ export default function FreelancerDashboardUI() {
         }
 
         if (data.flagged) {
-          alert(
-            "⚠️ Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma."
-          )
+          window.toast({
+            title:
+              "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+            type: "info",
+            location: "bottom-center",
+            dismissible: true,
+            icon: true,
+          })
         }
       } else {
         throw new Error(data.error || "Error desconocido al enviar mensaje")
       }
     } catch (error: any) {
+      window.toast({
+        title: "Error enviando mensaje",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error enviando mensaje:", error)
-      alert(`Error al enviar mensaje: ${error.message}`)
     } finally {
       setSendingMessage(false)
     }
@@ -553,8 +564,14 @@ export default function FreelancerDashboardUI() {
       setProposalForm({ budget: "", delivery_time: "", message: "" })
       loadData() // Reload data
     } catch (error) {
+      window.toast({
+        title: "Error al enviar la propuesta. Inténtalo de nuevo.",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error sending proposal:", error)
-      alert("Error al enviar la propuesta. Inténtalo de nuevo.")
     }
   }
 
@@ -623,8 +640,14 @@ export default function FreelancerDashboardUI() {
           .single()
 
         if (error) {
+          window.toast({
+            title: "Error al cargar los detalles del proyecto",
+            type: "error",
+            location: "bottom-center",
+            dismissible: true,
+            icon: true,
+          })
           console.error("Error cargando detalles del proyecto:", error)
-          alert("Error al cargar los detalles del proyecto")
           return
         }
 
@@ -632,8 +655,14 @@ export default function FreelancerDashboardUI() {
         setShowProposalDetails(true)
       }
     } catch (error) {
+      window.toast({
+        title: "Error al cargar los detalles del proyecto",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error:", error)
-      alert("Error al cargar los detalles")
     }
   }
 
@@ -660,8 +689,14 @@ export default function FreelancerDashboardUI() {
           .single()
 
         if (error) {
+          window.toast({
+            title: "Error al cargar los detalles del proyecto",
+            type: "error",
+            location: "bottom-center",
+            dismissible: true,
+            icon: true,
+          })
           console.error("Error cargando detalles del proyecto:", error)
-          alert("Error al cargar los detalles del proyecto")
           return
         }
 
@@ -669,8 +704,14 @@ export default function FreelancerDashboardUI() {
         setShowProjectDetailsModal(true)
       }
     } catch (error) {
+      window.toast({
+        title: "Error al cargar los detalles del proyecto",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error:", error)
-      alert("Error al cargar los detalles del proyecto")
     }
   }
 
@@ -705,8 +746,14 @@ export default function FreelancerDashboardUI() {
           .single()
 
         if (error) {
+          window.toast({
+            title: "Error al cargar los detalles del proyecto",
+            type: "error",
+            location: "bottom-center",
+            dismissible: true,
+            icon: true,
+          })
           console.error("Error cargando detalles del proyecto:", error)
-          alert("Error al cargar los detalles del proyecto")
           return
         }
 
@@ -714,8 +761,14 @@ export default function FreelancerDashboardUI() {
         setShowProgressManagement(true)
       }
     } catch (error) {
+      window.toast({
+        title: "Error al cargar los detalles del proyecto",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error:", error)
-      alert("Error al cargar el proyecto para gestión de progreso")
     }
   }
 
@@ -724,7 +777,13 @@ export default function FreelancerDashboardUI() {
     try {
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) {
-        alert("Necesitas iniciar sesión para chatear")
+        window.toast({
+          title: "Necesitas iniciar sesión para chatear",
+          type: "warning",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
         return
       }
 
@@ -776,8 +835,14 @@ export default function FreelancerDashboardUI() {
         throw new Error(data.error || "Error al crear conversación")
       }
     } catch (error: any) {
+      window.toast({
+        title: "Error al iniciar el chat",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error creating chat:", error)
-      alert(`Error al iniciar el chat: ${error.message}`)
     }
   }
 

@@ -50,7 +50,16 @@ export function ShareProfileTab() {
   }
 
   const copyToClipboard = () => {
-    if (!profileUrl) return alert("URL no disponible todavía")
+    if (!profileUrl) {
+      window.toast({
+        title: "URL no disponible todavía",
+        type: "warning",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+      return
+    }
 
     try {
       const tempInput = document.createElement("textarea")
@@ -63,8 +72,14 @@ export function ShareProfileTab() {
       setCopied(true)
       setTimeout(() => setCopied(false), 3000)
     } catch (err) {
+      window.toast({
+        title: "No se pudo copiar la URL. Intenta manualmente",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error al copiar:", err)
-      alert("No se pudo copiar la URL. Intenta manualmente.")
     }
   }
 
@@ -215,8 +230,14 @@ export function ShareProfileTab() {
 
                     window.URL.revokeObjectURL(url)
                   } catch (err) {
+                    window.toast({
+                      title: "No se pudo descargar el QR. Intenta de nuevo.",
+                      type: "error",
+                      location: "bottom-center",
+                      dismissible: true,
+                      icon: true,
+                    })
                     console.error("Error al descargar QR:", err)
-                    alert("No se pudo descargar el QR. Intenta de nuevo.")
                   }
                 }}
                 className="bg-emerald-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap"

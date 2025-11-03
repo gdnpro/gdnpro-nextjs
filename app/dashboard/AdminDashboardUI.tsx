@@ -136,7 +136,13 @@ export default function AdminContacts() {
   // Enviar respuesta por email
   const sendReply = async () => {
     if (!selectedContact || !replyMessage.trim()) {
-      alert("Por favor escribe un mensaje de respuesta")
+      window.toast({
+        title: "Por favor, escribe un mensaje de respuesta",
+        type: "warning",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       return
     }
 
@@ -169,7 +175,13 @@ export default function AdminContacts() {
       if (response.ok) {
         const result = await response.json()
         if (result.success) {
-          alert("✅ Respuesta enviada correctamente al cliente")
+          window.toast({
+            title: "Respuesta enviada correctamente al cliente",
+            type: "success",
+            location: "bottom-center",
+            dismissible: true,
+            icon: true,
+          })
 
           // Marcar como respondido
           await updateContactStatus(selectedContact.id, "responded")
@@ -189,8 +201,14 @@ export default function AdminContacts() {
         throw new Error("Error en el servidor")
       }
     } catch (error: any) {
+      window.toast({
+        title: "Error enviando respuesta",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error enviando respuesta:", error)
-      alert(`Error enviando respuesta: ${error.message}`)
     } finally {
       setSendingReply(false)
     }

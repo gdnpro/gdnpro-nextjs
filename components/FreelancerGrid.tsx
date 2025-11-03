@@ -273,11 +273,23 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   /* ------------------------------------------------------------------------ */
   const handleContactFreelancer = async (freelancer: Freelancer) => {
     if (!currentUser) {
-      alert("Debes iniciar sesión para contactar freelancers")
+      window.toast({
+        title: "Debes iniciar sesión para contactar freelancers",
+        type: "warning",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       return
     }
     if (!currentProfile) {
-      alert("Error: No se pudo cargar tu perfil")
+      window.toast({
+        title: "No se pudo cargar tu perfil",
+        type: "warning",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       return
     }
 
@@ -325,8 +337,14 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         throw new Error(data.error || "Error al crear conversación")
       }
     } catch (err: any) {
+      window.toast({
+        title: "Error al iniciar el chat",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error creating chat:", err)
-      alert(`Error al iniciar el chat: ${err.message}`)
       setShowChat(false)
     } finally {
       setChatLoading(false)
@@ -415,16 +433,27 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         setNewMessage("")
         await loadMessages(conversationId)
         if (data.flagged) {
-          alert(
-            "⚠️ Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma."
-          )
+          window.toast({
+            title:
+              "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+            type: "info",
+            location: "bottom-center",
+            dismissible: true,
+            icon: true,
+          })
         }
       } else {
         throw new Error(data.error || "Error desconocido al enviar mensaje")
       }
     } catch (err: any) {
+      window.toast({
+        title: "Error al enviar mensaje",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error enviando mensaje:", err)
-      alert(`Error al enviar mensaje: ${err.message}`)
     } finally {
       setSendingMessage(false)
     }
@@ -442,11 +471,24 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   /* ------------------------------------------------------------------------ */
   const handleHireFreelancer = (freelancer: Freelancer) => {
     if (!currentUser) {
-      alert("Debes iniciar sesión para contratar freelancers")
+      window.toast({
+        title: "Debes iniciar sesión para contratar freelancers",
+        type: "warning",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       return
     }
+
     if (!currentProfile) {
-      alert("Error: No se pudo cargar tu perfil")
+      window.toast({
+        title: "No se pudo cargar tu perfil",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       return
     }
 
