@@ -12,6 +12,7 @@ import { useEffect } from "react"
 import { butterup } from "@/libs/toast"
 import SEO from "@/components/SEO"
 import { GoToTop } from "@/components/ui/GoToTop"
+import { Analytics } from "@vercel/analytics/next"
 
 export default function RootLayout({
   children,
@@ -35,6 +36,8 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <Analytics />
+
         <AuthProvider>
           {!hideLayout && <Header />}
 
