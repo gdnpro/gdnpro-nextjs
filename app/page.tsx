@@ -13,7 +13,7 @@ import { useEffect } from "react"
 
 export default function Home() {
   useEffect(() => {
-    document.title = "Inicio | GDN Pro"
+    document.title = "Inicio | GDN Pro | Tus Proyectos al siguiente nivel"
   }, [])
 
   return (

@@ -19,7 +19,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const noLayoutRoutes = ["/login", "/register"]
+  const noLayoutRoutes = ["/auth/login", "/auth/register"]
   const hideLayout = noLayoutRoutes.includes(usePathname())
 
   useEffect(() => {

@@ -40,22 +40,6 @@ export default function Header() {
     setIsUserMenuOpen(false)
   }
 
-  const goToHome = () => {
-    navigate.push("/")
-    window.scrollTo({ top: 0, behavior: "smooth" })
-    setIsMenuOpen(false)
-  }
-
-  const goToLogin = () => {
-    navigate.push("/auth/login")
-    setIsMenuOpen(false)
-  }
-
-  const goToRegister = () => {
-    navigate.push("/auth/register")
-    setIsMenuOpen(false)
-  }
-
   const menuItems = [
     { label: "Inicio", url: "/" },
     { label: "Servicios", url: "/#services" },
@@ -159,18 +143,18 @@ export default function Header() {
             </div>
           ) : (
             <div className="hidden md:flex items-center space-x-4">
-              <button
-                onClick={goToLogin}
+              <a
+                href="/auth/login"
                 className="text-gray-700 cursor-pointer hover:text-primary font-medium transition-colors"
               >
                 Iniciar Sesión
-              </button>
-              <button
-                onClick={goToRegister}
+              </a>
+              <a
+                href="/auth/register"
                 className="bg-primary cursor-pointer hover:bg-cyan-700 text-white px-6 py-2 rounded-full font-semibold transition-all transform hover:scale-105"
               >
                 Registrarse
-              </button>
+              </a>
             </div>
           )}
 
@@ -222,18 +206,18 @@ export default function Header() {
 
               {!user && (
                 <div className="border-t pt-3 mt-3 space-y-2">
-                  <button
-                    onClick={goToLogin}
+                  <a
+                    href="/auth/login"
                     className="block w-full text-left px-3 py-3 text-gray-700 hover:bg-gray-50"
                   >
                     Iniciar Sesión
-                  </button>
-                  <button
-                    onClick={goToRegister}
+                  </a>
+                  <a
+                    href="/auth/login"
                     className="block w-full text-left px-3 py-3 text-white bg-primary hover:bg-cyan-700 rounded-lg font-medium"
                   >
                     Registrarse
-                  </button>
+                  </a>
                 </div>
               )}
             </div>
