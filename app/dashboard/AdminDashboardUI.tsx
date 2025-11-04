@@ -41,7 +41,7 @@ export default function AdminContacts() {
   const [showWhatsAppSetup, setShowWhatsAppSetup] = useState(false)
 
   useEffect(() => {
-    document.title = "Contactos | GDN Pro"
+    document.title = "Admin Dashboard | GDN Pro"
     window.scrollTo(0, 0)
 
     loadContacts()
@@ -53,7 +53,7 @@ export default function AdminContacts() {
       const sessionResult = await Promise.race([
         supabase.auth.getSession(),
         new Promise<{ data: { session: null } }>((_, reject) =>
-          setTimeout(() => reject(new Error("Session timeout")), 5000)
+          setTimeout(() => reject(new Error("Session timeout")), 5000),
         ),
       ]).catch((error) => {
         // If timeout occurs, return null session
