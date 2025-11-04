@@ -27,9 +27,7 @@ export default function AdminContacts() {
   const { user, profile, loading: authLoading } = useAuth()
   const [contacts, setContacts] = useState<ContactMessage[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedContact, setSelectedContact] = useState<ContactMessage | null>(
-    null
-  )
+  const [selectedContact, setSelectedContact] = useState<ContactMessage | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const [searchTerm, setSearchTerm] = useState("")
@@ -74,7 +72,7 @@ export default function AdminContacts() {
             Authorization: `Bearer ${session.access_token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       )
 
       if (response.ok) {
@@ -96,14 +94,14 @@ export default function AdminContacts() {
 
   const updateContactStatus = async (
     contactId: string,
-    newStatus: "new" | "read" | "responded"
+    newStatus: "new" | "read" | "responded",
   ) => {
     try {
       // Actualizar localmente primero
       setContacts((prev) =>
         prev.map((contact) =>
-          contact.id === contactId ? { ...contact, status: newStatus } : contact
-        )
+          contact.id === contactId ? { ...contact, status: newStatus } : contact,
+        ),
       )
 
       // Actualizar en la base de datos
@@ -166,10 +164,10 @@ export default function AdminContacts() {
             action: "send-reply",
             contactId: selectedContact.id,
             replyMessage: replyMessage.trim(),
-            adminName: profile?.full_name || "Administrador",
-            adminEmail: user?.email || "admin@empresa.com",
+            adminName: user?.full_name || "Administrador",
+            adminEmail: user?.email || profile?.email || "admin@empresa.com",
           }),
-        }
+        },
       )
 
       if (response.ok) {
@@ -215,8 +213,7 @@ export default function AdminContacts() {
   }
 
   const filteredContacts = contacts.filter((contact) => {
-    const matchesStatus =
-      filterStatus === "all" || contact.status === filterStatus
+    const matchesStatus = filterStatus === "all" || contact.status === filterStatus
     const matchesSearch =
       searchTerm === "" ||
       contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -255,12 +252,10 @@ export default function AdminContacts() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">
-            Verificando acceso de administrador...
-          </p>
+          <div className="border-primary mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <p className="text-gray-600">Verificando acceso de administrador...</p>
         </div>
       </div>
     )
@@ -269,25 +264,23 @@ export default function AdminContacts() {
   return (
     <ProtectedRoute requiredRole="admin">
       <Layout>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+        <div className="mx-auto max-w-7xl px-4 py-8 pt-24 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow p-6 mb-8">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
+          <div className="mb-8 rounded-lg bg-white p-6 shadow">
+            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Panel de Administración
-                </h1>
+                <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
                 <p className="text-gray-600">Gestión de Mensajes de Contacto</p>
-                <div className="mt-2 text-sm text-primary bg-blue-50 px-3 py-1 rounded-full inline-block">
+                <div className="text-primary mt-2 inline-block rounded-full bg-blue-50 px-3 py-1 text-sm">
                   <i className="ri-shield-check-line mr-1"></i>
                   Acceso Exclusivo para Administradores
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="text-sm text-gray-500">
-                  Bienvenido, {profile?.full_name || user?.email}
+                  Bienvenido, {user?.full_name || profile?.email || "Administrador"}
                 </div>
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
                   <i className="ri-admin-line text-primary"></i>
                 </div>
               </div>
@@ -295,26 +288,26 @@ export default function AdminContacts() {
           </div>
 
           {/* Configuración WhatsApp */}
-          <div className="bg-linear-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6 mb-8">
-            <div className="flex md:items-center flex-col md:flex-row gap-6 md:gap-0 justify-between">
+          <div className="mb-8 rounded-lg border border-green-200 bg-linear-to-r from-green-50 to-emerald-50 p-6">
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center md:gap-0">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-green-100">
                   <i className="ri-whatsapp-line text-xl text-green-600"></i>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="mb-2 text-lg font-semibold text-gray-900">
                     📱 Configuración WhatsApp Business
                   </h3>
-                  <div className="text-gray-700 space-y-1">
+                  <div className="space-y-1 text-gray-700">
                     <p>
-                      <strong>Función:</strong> Recibe notificaciones de Sofia
-                      directamente en tu WhatsApp
+                      <strong>Función:</strong> Recibe notificaciones de Sofia directamente en tu
+                      WhatsApp
                     </p>
                     <p>
-                      <strong>Beneficio:</strong> Responde a clientes desde tu
-                      celular sin estar logueado
+                      <strong>Beneficio:</strong> Responde a clientes desde tu celular sin estar
+                      logueado
                     </p>
-                    <p className="text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full inline-block mt-2">
+                    <p className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm text-green-700">
                       <i className="ri-notification-line mr-1"></i>
                       Notificaciones instantáneas en tu celular
                     </p>
@@ -323,7 +316,7 @@ export default function AdminContacts() {
               </div>
               <button
                 onClick={() => setShowWhatsAppSetup(true)}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors whitespace-nowrap cursor-pointer font-medium"
+                className="cursor-pointer rounded-lg bg-green-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-green-700"
               >
                 <i className="ri-settings-3-line mr-2"></i>
                 Configurar WhatsApp
@@ -332,24 +325,22 @@ export default function AdminContacts() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-lg shadow p-6">
+          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
+            <div className="rounded-lg bg-white p-6 shadow">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                  <i className="ri-mail-line text-xl text-primary"></i>
+                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                  <i className="ri-mail-line text-primary text-xl"></i>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {contacts.length}
-                  </p>
+                  <p className="text-2xl font-bold text-gray-900">{contacts.length}</p>
                   <p className="text-sm text-gray-600">Total Mensajes</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="rounded-lg bg-white p-6 shadow">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
                   <i className="ri-notification-line text-xl text-red-600"></i>
                 </div>
                 <div>
@@ -361,9 +352,9 @@ export default function AdminContacts() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="rounded-lg bg-white p-6 shadow">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-yellow-100">
                   <i className="ri-eye-line text-xl text-yellow-600"></i>
                 </div>
                 <div>
@@ -375,9 +366,9 @@ export default function AdminContacts() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="rounded-lg bg-white p-6 shadow">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
                   <i className="ri-check-line text-xl text-green-600"></i>
                 </div>
                 <div>
@@ -391,32 +382,32 @@ export default function AdminContacts() {
           </div>
 
           {/* Instrucciones de Acceso */}
-          <div className="bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6 mb-8">
+          <div className="mb-8 rounded-lg border border-blue-200 bg-linear-to-r from-blue-50 to-indigo-50 p-6">
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-                <i className="ri-information-line text-xl text-primary"></i>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-100">
+                <i className="ri-information-line text-primary text-xl"></i>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="mb-2 text-lg font-semibold text-gray-900">
                   🔐 Panel de Administración Exclusivo
                 </h3>
-                <div className="text-gray-700 space-y-2">
+                <div className="space-y-2 text-gray-700">
                   <p>
-                    <strong>Acceso:</strong> Solo tú y tu equipo de desarrollo
-                    pueden acceder a este panel.
+                    <strong>Acceso:</strong> Solo tú y tu equipo de desarrollo pueden acceder a este
+                    panel.
                   </p>
                   <p>
-                    <strong>Función:</strong> Aquí puedes ver y gestionar todos
-                    los mensajes del formulario de contacto.
+                    <strong>Función:</strong> Aquí puedes ver y gestionar todos los mensajes del
+                    formulario de contacto.
                   </p>
                   <p>
-                    <strong>Respuestas:</strong> Puedes responder directamente
-                    desde aquí y el email se enviará desde tu correo.
+                    <strong>Respuestas:</strong> Puedes responder directamente desde aquí y el email
+                    se enviará desde tu correo.
                   </p>
-                  <div className="mt-4 p-3 bg-white rounded-lg border border-blue-200">
+                  <div className="mt-4 rounded-lg border border-blue-200 bg-white p-3">
                     <p className="text-sm">
-                      <strong>💡 Tip:</strong> Haz clic en "Ver detalles" para
-                      leer el mensaje completo y responder al cliente.
+                      <strong>💡 Tip:</strong> Haz clic en "Ver detalles" para leer el mensaje
+                      completo y responder al cliente.
                     </p>
                   </div>
                 </div>
@@ -425,13 +416,13 @@ export default function AdminContacts() {
           </div>
 
           {/* Filtros y Búsqueda */}
-          <div className="bg-white rounded-lg shadow p-6 mb-8">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
-              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+          <div className="mb-8 rounded-lg bg-white p-6 shadow">
+            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+              <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-8"
+                  className="rounded-lg border border-gray-300 px-4 py-2 pr-8 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">Todos los estados</option>
                   <option value="new">Nuevos</option>
@@ -441,7 +432,7 @@ export default function AdminContacts() {
 
                 <button
                   onClick={loadContacts}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors whitespace-nowrap cursor-pointer"
+                  className="bg-primary cursor-pointer rounded-lg px-4 py-2 whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                 >
                   <i className="ri-refresh-line mr-2"></i>
                   Actualizar
@@ -454,16 +445,16 @@ export default function AdminContacts() {
                   placeholder="Buscar por nombre, email, empresa..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-80 text-sm"
+                  className="w-full rounded-lg border border-gray-300 py-2 pr-4 pl-10 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 sm:w-80"
                 />
-                <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <i className="ri-search-line absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400"></i>
               </div>
             </div>
           </div>
 
           {/* Lista de Contactos */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
+          <div className="overflow-hidden rounded-lg bg-white shadow">
+            <div className="border-b border-gray-200 px-6 py-4">
               <h2 className="text-lg font-semibold text-gray-900">
                 Mensajes de Contacto ({filteredContacts.length})
               </h2>
@@ -473,74 +464,60 @@ export default function AdminContacts() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       Contacto
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       Servicio
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       Presupuesto
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       Estado
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       Fecha
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       Acciones
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 bg-white">
                   {filteredContacts.map((contact) => (
                     <tr key={contact.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {contact.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {contact.email}
-                          </div>
+                          <div className="text-sm font-medium text-gray-900">{contact.name}</div>
+                          <div className="text-sm text-gray-500">{contact.email}</div>
                           {contact.company && (
-                            <div className="text-xs text-gray-400">
-                              {contact.company}
-                            </div>
+                            <div className="text-xs text-gray-400">{contact.company}</div>
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {contact.service}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {contact.timeline}
-                        </div>
+                        <div className="text-sm text-gray-900">{contact.service}</div>
+                        <div className="text-xs text-gray-500">{contact.timeline}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {contact.budget}
-                        </div>
+                        <div className="text-sm text-gray-900">{contact.budget}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(contact.status)}`}
+                          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${getStatusColor(contact.status)}`}
                         >
                           {getStatusText(contact.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(contact.created_at).toLocaleDateString(
-                          "es-ES"
-                        )}
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
+                        {new Date(contact.created_at).toLocaleDateString("es-ES")}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
                         <div className="flex space-x-2">
                           <button
                             onClick={() => viewContact(contact)}
-                            className="text-primary hover:text-blue-900 cursor-pointer bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md transition-colors"
+                            className="text-primary cursor-pointer rounded-md bg-blue-50 px-3 py-1 transition-colors hover:bg-blue-100 hover:text-blue-900"
                             title="Ver detalles completos"
                           >
                             <i className="ri-eye-line mr-1"></i>
@@ -551,10 +528,10 @@ export default function AdminContacts() {
                             onChange={(e) =>
                               updateContactStatus(
                                 contact.id,
-                                e.target.value as "new" | "read" | "responded"
+                                e.target.value as "new" | "read" | "responded",
                               )
                             }
-                            className="text-xs border border-gray-300 rounded px-2 py-1 pr-6"
+                            className="rounded border border-gray-300 px-2 py-1 pr-6 text-xs"
                             title="Cambiar estado"
                           >
                             <option value="new">Nuevo</option>
@@ -570,12 +547,10 @@ export default function AdminContacts() {
             </div>
 
             {filteredContacts.length === 0 && (
-              <div className="text-center py-12">
-                <i className="ri-mail-line text-4xl text-gray-400 mb-4"></i>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  {contacts.length === 0
-                    ? "No hay mensajes aún"
-                    : "No se encontraron mensajes"}
+              <div className="py-12 text-center">
+                <i className="ri-mail-line mb-4 text-4xl text-gray-400"></i>
+                <h3 className="mb-2 text-lg font-medium text-gray-900">
+                  {contacts.length === 0 ? "No hay mensajes aún" : "No se encontraron mensajes"}
                 </h3>
                 <p className="text-gray-600">
                   {searchTerm || filterStatus !== "all"
@@ -583,11 +558,11 @@ export default function AdminContacts() {
                     : "Los mensajes del formulario de contacto aparecerán aquí."}
                 </p>
                 {contacts.length === 0 && (
-                  <div className="mt-4 p-4 bg-blue-50 rounded-lg max-w-md mx-auto">
+                  <div className="mx-auto mt-4 max-w-md rounded-lg bg-blue-50 p-4">
                     <p className="text-sm text-blue-800">
                       <i className="ri-lightbulb-line mr-1"></i>
-                      Los nuevos mensajes aparecerán automáticamente cuando los
-                      visitantes usen el formulario de contacto.
+                      Los nuevos mensajes aparecerán automáticamente cuando los visitantes usen el
+                      formulario de contacto.
                     </p>
                   </div>
                 )}
@@ -598,21 +573,21 @@ export default function AdminContacts() {
 
         {/* Modal de Configuración WhatsApp */}
         {showWhatsAppSetup && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white">
               <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
+                <div className="mb-6 flex items-start justify-between">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">
                       📱 Configuración WhatsApp Business
                     </h2>
-                    <p className="text-gray-600 mt-1">
+                    <p className="mt-1 text-gray-600">
                       Conecta tu WhatsApp para recibir notificaciones de Sofia
                     </p>
                   </div>
                   <button
                     onClick={() => setShowWhatsAppSetup(false)}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer p-2 hover:bg-gray-100 rounded-lg"
+                    className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                   >
                     <i className="ri-close-line text-2xl"></i>
                   </button>
@@ -620,10 +595,10 @@ export default function AdminContacts() {
 
                 <WhatsAppSetup onClose={() => {}} />
 
-                <div className="flex justify-end mt-6 pt-4 border-t border-gray-200">
+                <div className="mt-6 flex justify-end border-t border-gray-200 pt-4">
                   <button
                     onClick={() => setShowWhatsAppSetup(false)}
-                    className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors cursor-pointer whitespace-nowrap font-medium"
+                    className="cursor-pointer rounded-lg bg-gray-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-gray-700"
                   >
                     <i className="ri-close-line mr-2"></i>
                     Cerrar
@@ -636,16 +611,14 @@ export default function AdminContacts() {
 
         {/* Modal de Detalles */}
         {showModal && selectedContact && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white">
               <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
+                <div className="mb-6 flex items-start justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      📧 Mensaje de Contacto
-                    </h2>
+                    <h2 className="text-2xl font-bold text-gray-900">📧 Mensaje de Contacto</h2>
                     <span
-                      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full mt-2 ${getStatusColor(selectedContact.status)}`}
+                      className={`mt-2 inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusColor(selectedContact.status)}`}
                     >
                       {getStatusText(selectedContact.status)}
                     </span>
@@ -655,7 +628,7 @@ export default function AdminContacts() {
                       setShowModal(false)
                       setSelectedContact(null)
                     }}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer p-2 hover:bg-gray-100 rounded-lg"
+                    className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                   >
                     <i className="ri-close-line text-2xl"></i>
                   </button>
@@ -663,44 +636,36 @@ export default function AdminContacts() {
 
                 <div className="space-y-6">
                   {/* Información del Contacto */}
-                  <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                    <h3 className="font-semibold text-blue-900 mb-4 flex items-center">
+                  <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+                    <h3 className="mb-4 flex items-center font-semibold text-blue-900">
                       <i className="ri-user-line mr-2"></i>
                       Información del Contacto
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-white rounded-lg p-4">
-                        <p className="text-sm text-gray-600 font-medium">
-                          Nombre Completo
-                        </p>
-                        <p className="font-semibold text-lg text-gray-900">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div className="rounded-lg bg-white p-4">
+                        <p className="text-sm font-medium text-gray-600">Nombre Completo</p>
+                        <p className="text-lg font-semibold text-gray-900">
                           {selectedContact.name}
                         </p>
                       </div>
-                      <div className="bg-white rounded-lg p-4">
-                        <p className="text-sm text-gray-600 font-medium">
-                          Email de Contacto
-                        </p>
-                        <p className="font-semibold text-lg text-primary">
+                      <div className="rounded-lg bg-white p-4">
+                        <p className="text-sm font-medium text-gray-600">Email de Contacto</p>
+                        <p className="text-primary text-lg font-semibold">
                           {selectedContact.email}
                         </p>
                       </div>
                       {selectedContact.company && (
-                        <div className="bg-white rounded-lg p-4">
-                          <p className="text-sm text-gray-600 font-medium">
-                            Empresa
-                          </p>
-                          <p className="font-semibold text-lg text-gray-900">
+                        <div className="rounded-lg bg-white p-4">
+                          <p className="text-sm font-medium text-gray-600">Empresa</p>
+                          <p className="text-lg font-semibold text-gray-900">
                             {selectedContact.company}
                           </p>
                         </div>
                       )}
                       {selectedContact.phone && (
-                        <div className="bg-white rounded-lg p-4">
-                          <p className="text-sm text-gray-600 font-medium">
-                            Teléfono
-                          </p>
-                          <p className="font-semibold text-lg text-gray-900">
+                        <div className="rounded-lg bg-white p-4">
+                          <p className="text-sm font-medium text-gray-600">Teléfono</p>
+                          <p className="text-lg font-semibold text-gray-900">
                             {selectedContact.phone}
                           </p>
                         </div>
@@ -709,33 +674,27 @@ export default function AdminContacts() {
                   </div>
 
                   {/* Detalles del Proyecto */}
-                  <div className="bg-emerald-50 rounded-lg p-6 border border-emerald-200">
-                    <h3 className="font-semibold text-emerald-900 mb-4 flex items-center">
+                  <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6">
+                    <h3 className="mb-4 flex items-center font-semibold text-emerald-900">
                       <i className="ri-briefcase-line mr-2"></i>
                       Detalles del Proyecto Solicitado
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="bg-white rounded-lg p-4">
-                        <p className="text-sm text-gray-600 font-medium">
-                          Servicio Requerido
-                        </p>
-                        <p className="font-semibold text-lg text-emerald-700">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                      <div className="rounded-lg bg-white p-4">
+                        <p className="text-sm font-medium text-gray-600">Servicio Requerido</p>
+                        <p className="text-lg font-semibold text-emerald-700">
                           {selectedContact.service}
                         </p>
                       </div>
-                      <div className="bg-white rounded-lg p-4">
-                        <p className="text-sm text-gray-600 font-medium">
-                          Presupuesto Estimado
-                        </p>
-                        <p className="font-semibold text-lg text-emerald-700">
+                      <div className="rounded-lg bg-white p-4">
+                        <p className="text-sm font-medium text-gray-600">Presupuesto Estimado</p>
+                        <p className="text-lg font-semibold text-emerald-700">
                           {selectedContact.budget}
                         </p>
                       </div>
-                      <div className="bg-white rounded-lg p-4">
-                        <p className="text-sm text-gray-600 font-medium">
-                          Timeline Esperado
-                        </p>
-                        <p className="font-semibold text-lg text-emerald-700">
+                      <div className="rounded-lg bg-white p-4">
+                        <p className="text-sm font-medium text-gray-600">Timeline Esperado</p>
+                        <p className="text-lg font-semibold text-emerald-700">
                           {selectedContact.timeline}
                         </p>
                       </div>
@@ -743,27 +702,24 @@ export default function AdminContacts() {
                   </div>
 
                   {/* Mensaje Completo */}
-                  <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
-                    <h3 className="font-semibold text-yellow-900 mb-4 flex items-center">
+                  <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+                    <h3 className="mb-4 flex items-center font-semibold text-yellow-900">
                       <i className="ri-message-3-line mr-2"></i>
                       Mensaje Completo del Cliente
                     </h3>
-                    <div className="bg-white border border-yellow-300 rounded-lg p-6">
-                      <p className="text-gray-800 leading-relaxed whitespace-pre-wrap text-base">
+                    <div className="rounded-lg border border-yellow-300 bg-white p-6">
+                      <p className="text-base leading-relaxed whitespace-pre-wrap text-gray-800">
                         {selectedContact.message}
                       </p>
                     </div>
                   </div>
 
                   {/* Información Adicional */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="flex justify-between items-center text-sm text-gray-600">
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <div className="flex items-center justify-between text-sm text-gray-600">
                       <span className="flex items-center">
                         <i className="ri-calendar-line mr-2"></i>
-                        Recibido:{" "}
-                        {new Date(selectedContact.created_at).toLocaleString(
-                          "es-ES"
-                        )}
+                        Recibido: {new Date(selectedContact.created_at).toLocaleString("es-ES")}
                       </span>
                       <span className="flex items-center">
                         <i className="ri-hashtag mr-1"></i>
@@ -774,13 +730,13 @@ export default function AdminContacts() {
                 </div>
 
                 {/* Acciones */}
-                <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 mt-8 pt-6 border-t border-gray-200">
+                <div className="mt-8 flex flex-col justify-end space-y-3 border-t border-gray-200 pt-6 sm:flex-row sm:space-y-0 sm:space-x-3">
                   <button
                     onClick={() => {
                       setShowModal(false)
                       setSelectedContact(null)
                     }}
-                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap font-medium"
+                    className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
                   >
                     <i className="ri-close-line mr-2"></i>
                     Cerrar
@@ -791,7 +747,7 @@ export default function AdminContacts() {
                       onClick={() => {
                         updateContactStatus(selectedContact.id, "responded")
                       }}
-                      className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer whitespace-nowrap font-medium"
+                      className="cursor-pointer rounded-lg bg-green-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-green-700"
                     >
                       <i className="ri-check-line mr-2"></i>
                       Marcar como Respondido
@@ -802,10 +758,10 @@ export default function AdminContacts() {
                     onClick={() => {
                       setShowReplyModal(true)
                       setReplyMessage(
-                        `Hola ${selectedContact.name},\n\nGracias por contactarnos sobre tu proyecto de ${selectedContact.service}.\n\nHemos revisado tu solicitud y nos gustaría programar una llamada para discutir los detalles.\n\n¿Cuándo sería un buen momento para ti?\n\nSaludos,\n${profile?.full_name || "Tu Equipo"}`
+                        `Hola ${selectedContact.name},\n\nGracias por contactarnos sobre tu proyecto de ${selectedContact.service}.\n\nHemos revisado tu solicitud y nos gustaría programar una llamada para discutir los detalles.\n\n¿Cuándo sería un buen momento para ti?\n\nSaludos,\n${user?.full_name || "Tu Equipo"}`,
                       )
                     }}
-                    className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors whitespace-nowrap font-medium"
+                    className="bg-primary rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                   >
                     <i className="ri-reply-line mr-2"></i>
                     Responder desde Dashboard
@@ -819,17 +775,17 @@ export default function AdminContacts() {
         {/* Modal de Respuesta */}
         {showReplyModal && selectedContact && (
           <div
-            className="fixed inset-0 bg-black/60 flex items-center justify-center p-4"
+            className="fixed inset-0 flex items-center justify-center bg-black/60 p-4"
             style={{ zIndex: 70 }}
           >
-            <div className="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white">
               <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
+                <div className="mb-6 flex items-start justify-between">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">
                       📧 Responder a {selectedContact.name}
                     </h2>
-                    <p className="text-gray-600 mt-1">
+                    <p className="mt-1 text-gray-600">
                       El email se enviará desde tu correo: {user?.email}
                     </p>
                   </div>
@@ -838,23 +794,20 @@ export default function AdminContacts() {
                       setShowReplyModal(false)
                       setReplyMessage("")
                     }}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer p-2 hover:bg-gray-100 rounded-lg"
+                    className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                   >
                     <i className="ri-close-line text-2xl"></i>
                   </button>
                 </div>
 
                 {/* Información del destinatario */}
-                <div className="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-200">
+                <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
                   <div className="flex items-center">
                     <i className="ri-mail-line text-primary mr-3 text-xl"></i>
                     <div>
-                      <p className="font-semibold text-blue-900">
-                        Para: {selectedContact.email}
-                      </p>
-                      <p className="text-cyan-700 text-sm">
-                        Asunto: Re: {selectedContact.service} - Respuesta a tu
-                        consulta
+                      <p className="font-semibold text-blue-900">Para: {selectedContact.email}</p>
+                      <p className="text-sm text-cyan-700">
+                        Asunto: Re: {selectedContact.service} - Respuesta a tu consulta
                       </p>
                     </div>
                   </div>
@@ -862,34 +815,29 @@ export default function AdminContacts() {
 
                 {/* Editor de mensaje */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                  <label className="mb-3 block text-sm font-medium text-gray-700">
                     Mensaje de Respuesta:
                   </label>
                   <textarea
                     value={replyMessage}
                     onChange={(e) => setReplyMessage(e.target.value)}
                     rows={12}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     placeholder="Escribe tu respuesta aquí..."
                   />
-                  <p
-                    className="text-xs text-gray-5
-
-                mt-2"
-                  >
-                    💡 Tip: Personaliza el mensaje según las necesidades
-                    específicas del cliente
+                  <p className="text-gray-5 mt-2 text-xs">
+                    💡 Tip: Personaliza el mensaje según las necesidades específicas del cliente
                   </p>
                 </div>
 
                 {/* Acciones */}
-                <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-4 border-t border-gray-200">
+                <div className="flex flex-col justify-end space-y-3 border-t border-gray-200 pt-4 sm:flex-row sm:space-y-0 sm:space-x-3">
                   <button
                     onClick={() => {
                       setShowReplyModal(false)
                       setReplyMessage("")
                     }}
-                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap font-medium"
+                    className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
                     disabled={sendingReply}
                   >
                     <i className="ri-close-line mr-2"></i>
@@ -899,11 +847,11 @@ export default function AdminContacts() {
                   <button
                     onClick={sendReply}
                     disabled={sendingReply || !replyMessage.trim()}
-                    className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors whitespace-nowrap font-medium disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
+                    className="bg-primary cursor-pointer rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-gray-400"
                   >
                     {sendingReply ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 inline-block"></div>
+                        <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                         Enviando...
                       </>
                     ) : (
