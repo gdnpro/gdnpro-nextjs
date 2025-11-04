@@ -209,26 +209,27 @@ export default function FreelancerDashboardUI() {
               projectsFromTransactions = allTransactions.map((transaction: Transaction) => ({
                 id: `transaction-${transaction.id}`,
                 title: transaction.project_title || "Proyecto Contratado",
-                description:
-                  transaction.project_description ||
-                  "Proyecto contratado directamente por el cliente",
-                budget: parseFloat(transaction.amount),
+                description: "Proyecto contratado directamente por el cliente",
+                budget: Number(transaction.amount),
                 status: transaction.status === "paid" ? "in_progress" : "pending_payment",
                 payment_status: transaction.status, // 'paid' o 'pending'
-                created_at: transaction.created_at || transaction.paid_at,
+                created_at:
+                  transaction.created_at || transaction.paid_at || new Date().toISOString(),
                 duration: "Según acuerdo con cliente",
                 requirements: "Proyecto contratado directamente - revisar detalles en chat",
+                // Información del cliente - usar placeholder por ahora (se puede cargar después usando client_id)
                 client: {
-                  id: transaction.client?.id || "",
-                  full_name: transaction.client?.full_name || "Cliente",
-                  email: transaction.client?.email || "",
-                  rating: transaction.client?.rating || 5.0,
-                  avatar_url: transaction.client?.avatar_url || "",
+                  id: "",
+                  full_name: "Cliente",
+                  email: "",
+                  rating: 5.0,
+                  avatar_url: "",
                 },
                 // Marcar como proyecto de transacción para diferenciar
                 _isFromTransaction: true,
                 _transactionId: transaction.id,
                 _stripeSessionId: transaction.stripe_session_id,
+                _clientId: transaction.client_id, // Guardar ID para cargar datos después si es necesario
               }))
             }
           } catch (error) {
@@ -754,6 +755,17 @@ export default function FreelancerDashboardUI() {
 
   // RESTAURADO: Función para manejar contacto con cliente
   const handleContactClient = async (clientId: string, clientName: string) => {
+    if (!user) {
+      window.toast({
+        title: "Necesitas iniciar sesión para chatear",
+        type: "warning",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+      return
+    }
+
     try {
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) {
@@ -777,7 +789,7 @@ export default function FreelancerDashboardUI() {
           },
           body: JSON.stringify({
             action: "create-conversation",
-            freelancerId: user?.id,
+            freelancerId: user.id,
             clientId: clientId,
             projectId: null,
           }),
@@ -799,15 +811,12 @@ export default function FreelancerDashboardUI() {
         const newConversation: Conversation = {
           id: data.conversation.id,
           client_id: clientId,
-          freelancer_id: user?.id,
+          freelancer_id: user.id,
           project_id: null,
           updated_at: new Date().toISOString(),
           client: {
             full_name: clientName,
-            avatar_url: null,
           },
-          project: null,
-          latest_message: null,
         }
 
         openChat(newConversation)
@@ -2130,10 +2139,10 @@ export default function FreelancerDashboardUI() {
                         <button
                           onClick={() => {
                             setShowProposalDetails(false)
-                            handleContactClient(
-                              proposalProjectDetails.client.id,
-                              proposalProjectDetails.client.full_name,
-                            )
+                            const client = proposalProjectDetails.client
+                            if (client) {
+                              handleContactClient(client.id, client.full_name)
+                            }
                           }}
                           className="bg-primary flex-1 cursor-pointer rounded-lg px-6 py-3 font-medium text-white transition-colors hover:bg-cyan-700"
                         >
