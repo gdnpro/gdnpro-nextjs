@@ -12,6 +12,7 @@ import type { Project } from "@/interfaces/Project"
 import type { Conversation } from "@/interfaces/Conversation"
 import type { Proposal } from "@/interfaces/Proposal"
 import type { ChatMessage } from "@/interfaces/ChatMessage"
+import type { Transaction } from "@/interfaces/Transaction"
 import Layout from "@/components/Layout"
 import { useSessionStorage } from "@/hooks/useSessionStorage"
 import { ConversationModal } from "@/components/ConversationModal"
@@ -23,7 +24,7 @@ import ProtectedRoute from "@/components/ProtectedRoute"
 const supabase = supabaseBrowser()
 
 export default function ClientDashboardUI() {
-  const { user } = useAuth() as { user: any }
+  const { user } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeTab, setActiveTab] = useState<string>()
@@ -142,12 +143,12 @@ export default function ClientDashboardUI() {
             const data = await response.json()
             // CORREGIDO: Incluir transacciones PAGADAS Y PENDIENTES
             const allTransactions = (data.transactions || []).filter(
-              (t: any) => t.status === "paid" || t.status === "pending"
+              (t: Transaction) => t.status === "paid" || t.status === "pending"
             )
 
             // Crear "proyectos virtuales" desde TODAS las transacciones para mostrar en "Mis Proyectos"
             projectsFromTransactions = allTransactions.map(
-              (transaction: any) => ({
+              (transaction: Transaction) => ({
                 id: `transaction-${transaction.id}`,
                 title: transaction.project_title || "Proyecto Contratado",
                 description:
@@ -354,7 +355,7 @@ export default function ClientDashboardUI() {
       } else {
         throw new Error(data.error || "Error desconocido al enviar mensaje")
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sending message:", error)
       window.toast({
         title: "Error al enviar mensaje",

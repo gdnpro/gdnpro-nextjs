@@ -83,7 +83,7 @@ export const PendingReviews = ({ onReviewsUpdate }: PendingReviewsProps) => {
       } else {
         throw new Error(data.error || "Error al cargar proyectos pendientes")
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Error cargando proyectos pendientes:", error)
       setError(error.message || "Error al cargar proyectos pendientes")
     } finally {
@@ -119,9 +119,10 @@ export const PendingReviews = ({ onReviewsUpdate }: PendingReviewsProps) => {
     }
 
     // 🔹 Agregar explícitamente el ID del reviewee
-    ;(project as any).reviewee_id = project.reviewee.id
+    // Add reviewee_id to project for review submission
+    const projectWithReviewee = { ...project, reviewee_id: project.reviewee.id } as PendingProject & { reviewee_id: string }
 
-    setSelectedProject(project)
+    setSelectedProject(projectWithReviewee)
     setShowReviewModal(true)
   }
 

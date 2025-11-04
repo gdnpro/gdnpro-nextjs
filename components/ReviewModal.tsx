@@ -121,9 +121,10 @@ export default function ReviewModal({
       } else {
         throw new Error(data.error || "Error al crear reseña")
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Error creando reseña:", error)
-      setError(error.message || "Error al enviar la reseña")
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      setError(errorMessage || "Error al enviar la reseña")
     } finally {
       setSubmitting(false)
     }

@@ -414,8 +414,9 @@ export default function JoinFreelancer() {
       } else {
         window.location.href = "/dashboard/client"
       }
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

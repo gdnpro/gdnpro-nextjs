@@ -71,7 +71,7 @@ export default function NotificationCenter({
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) return
 
-      const filters: any = { limit: 50 }
+      const filters: { limit: number; read?: boolean; type?: string } = { limit: 50 }
       if (activeFilter !== "all") {
         if (activeFilter === "unread") {
           filters.read = false

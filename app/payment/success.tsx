@@ -4,6 +4,7 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/router"
 import { useState, useEffect } from "react"
+import type { PaymentData } from "@/interfaces/PaymentData"
 
 const supabase = supabaseBrowser()
 
@@ -13,7 +14,7 @@ export default function SuccessPayment() {
   const sessionId = searchParams.get("session_id")
 
   const [loading, setLoading] = useState(true)
-  const [paymentData, setPaymentData] = useState<any>(null)
+  const [paymentData, setPaymentData] = useState<PaymentData | null>(null)
   const [error, setError] = useState("")
 
   useEffect(() => {
@@ -57,9 +58,10 @@ export default function SuccessPayment() {
 
       console.log("✅ Payment verified:", data)
       setPaymentData(data)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Error verifying payment:", error)
-      setError(error.message)
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

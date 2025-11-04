@@ -1,3 +1,6 @@
+import type { PortfolioItem } from "./PortfolioItem"
+import type { Review } from "./Review"
+
 export interface Profile {
   id: string
   full_name: string
@@ -11,6 +14,11 @@ export interface Profile {
   completed_projects?: number
   availability: string
   created_at: string
-  portfolio_items?: any[]
-  reviews?: any[]
+  portfolio_items?: PortfolioItem[]
+  reviews?: Review[]
+  user_type?: "freelancer" | "client" | "admin"
+  user_id?: string
+  location?: string
+  role?: string
+  total_reviews?: number
 }

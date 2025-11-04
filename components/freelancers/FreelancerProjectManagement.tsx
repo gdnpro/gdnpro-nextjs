@@ -2,6 +2,7 @@
 
 import { supabaseBrowser } from "@/utils/supabase/client"
 import type { Project } from "@/interfaces/Project"
+import type { ProjectUpdates } from "@/interfaces/ProjectUpdates"
 import { useState, useEffect } from "react"
 
 const supabase = supabaseBrowser()
@@ -82,7 +83,7 @@ export function FreelancerProjectManagement({
     }
   }
 
-  const updateProjectProgress = async (updates: any) => {
+  const updateProjectProgress = async (updates: ProjectUpdates) => {
     if (project._isFromTransaction) {
       window.toast({
         title:

@@ -36,7 +36,7 @@ export default function FreelancerProfilePage() {
   }, [freelancer])
 
   // 🔹 Función para contar proyectos completados desde Supabase
-  const loadCompletedProjects = async (freelancerId: any) => {
+  const loadCompletedProjects = async (freelancerId: string) => {
     try {
       const { data, error } = await supabase
         .from("projects")

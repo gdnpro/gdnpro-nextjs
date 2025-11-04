@@ -4,6 +4,7 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 import { useParams, useSearchParams } from "next/navigation"
 import { useRouter } from "next/router"
 import { useState, useEffect } from "react"
+import type { Profile } from "@/interfaces/Profile"
 
 const supabase = supabaseBrowser()
 
@@ -12,7 +13,7 @@ export default function Checkout() {
   const searchParams = useSearchParams()
   const navigate = useRouter()
 
-  const [freelancer, setFreelancer] = useState<any>(null)
+  const [freelancer, setFreelancer] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState("")
@@ -46,8 +47,9 @@ export default function Checkout() {
       if (!data) throw new Error("Freelancer no encontrado")
 
       setFreelancer(data)
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -129,9 +131,10 @@ export default function Checkout() {
 
       // Redirigir a Stripe Checkout
       window.location.href = data.checkout_url
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Payment error:", error)
-      setError(error.message)
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      setError(errorMessage)
     } finally {
       setProcessing(false)
     }

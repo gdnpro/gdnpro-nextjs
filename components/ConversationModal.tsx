@@ -1,15 +1,16 @@
 import type { ChatMessage } from "@/interfaces/ChatMessage"
 import type { Conversation } from "@/interfaces/Conversation"
+import type { Profile } from "@/interfaces/Profile"
 
 interface Props {
   selectedConversation: Conversation
   setShowChat: (boolean: boolean) => void
-  setChatMessages: (array: any[]) => void
+  setChatMessages: (array: ChatMessage[]) => void
   setSelectedConversation: (conversation: null) => void
   setNewMessage: (message: string) => void
   chatLoading: boolean
   chatMessages: ChatMessage[]
-  user: any
+  user: Profile | null
   newMessage: string
   handleKeyPress: (event: React.KeyboardEvent) => void
   sendingMessage: boolean

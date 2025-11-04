@@ -10,7 +10,7 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 const supabase = supabaseBrowser()
 
 export default function Register() {
-  const { user } = useAuth() as { user: any }
+  const { user } = useAuth()
   const [step, setStep] = useState(1)
   const [userType, setUserType] = useState<"freelancer" | "client">(
     "freelancer"
@@ -306,9 +306,10 @@ export default function Register() {
         console.log("🎯 Redirecting to client dashboard...")
         navigate.push("/dashboard/client")
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("💥 Registration error:", error)
-      setError(error.message || "Error al crear la cuenta")
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      setError(errorMessage || "Error al crear la cuenta")
     } finally {
       setLoading(false)
     }

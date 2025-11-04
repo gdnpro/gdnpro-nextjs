@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { supabaseBrowser } from "@/utils/supabase/client"
 import { Freelancer } from "@/interfaces/Freelancer"
 import { ChatMessage } from "@/interfaces/ChatMessage"
+import type { Profile } from "@/interfaces/Profile"
 
 interface FreelancerGridProps {
   searchFilters?: {
@@ -29,8 +30,8 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     useState<Freelancer | null>(null)
   const [showProfile, setShowProfile] = useState(false)
   const [showChat, setShowChat] = useState(false)
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [currentProfile, setCurrentProfile] = useState<any>(null)
+  const [currentUser, setCurrentUser] = useState<{ id: string } | null>(null)
+  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null)
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState("")
   const [conversationId, setConversationId] = useState<string | null>(null)
@@ -175,7 +176,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         return
       }
 
-      const enhancedFreelancers = (data ?? []).map((freelancer: any) => ({
+      const enhancedFreelancers = (data ?? []).map((freelancer: Profile) => ({
         ...freelancer,
         avatar_url:
           freelancer.avatar_url ||
@@ -299,7 +300,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       } else {
         throw new Error(data.error || "Error al crear conversación")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       window.toast({
         title: "Error al iniciar el chat",
         type: "error",
@@ -415,7 +416,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       } else {
         throw new Error(data.error || "Error desconocido al enviar mensaje")
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       window.toast({
         title: "Error al enviar mensaje",
         type: "error",

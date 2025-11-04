@@ -13,6 +13,7 @@ import { useNotifications } from "@/hooks/useNotifications"
 import { MainComponent } from "@/components/MainComponent"
 import type { Project } from "@/interfaces/Project"
 import type { Conversation } from "@/interfaces/Conversation"
+import type { Transaction } from "@/interfaces/Transaction"
 import Layout from "@/components/Layout"
 import { useSessionStorage } from "@/hooks/useSessionStorage"
 import type { Proposal } from "@/interfaces/Proposal"
@@ -63,7 +64,7 @@ export default function FreelancerDashboardUI() {
   const [selectedProposalForDetails, setSelectedProposalForDetails] = useState<Proposal | null>(
     null,
   )
-  const [proposalProjectDetails, setProposalProjectDetails] = useState<any>(null)
+  const [proposalProjectDetails, setProposalProjectDetails] = useState<Project | null>(null)
 
   // RESTAURADO: Estados para modal de detalles de proyecto en "Mis Proyectos"
   const [showProjectDetailsModal, setShowProjectDetailsModal] = useState(false)
@@ -201,11 +202,11 @@ export default function FreelancerDashboardUI() {
               const data = await response.json()
               // CORREGIDO: Incluir transacciones PAGADAS Y PENDIENTES
               const allTransactions = (data.transactions || []).filter(
-                (t: any) => t.status === "paid" || t.status === "pending",
+                (t: Transaction) => t.status === "paid" || t.status === "pending",
               )
 
               // Crear "proyectos virtuales" desde TODAS las transacciones para mostrar en "Mis Proyectos"
-              projectsFromTransactions = allTransactions.map((transaction: any) => ({
+              projectsFromTransactions = allTransactions.map((transaction: Transaction) => ({
                 id: `transaction-${transaction.id}`,
                 title: transaction.project_title || "Proyecto Contratado",
                 description:
@@ -480,7 +481,7 @@ export default function FreelancerDashboardUI() {
       } else {
         throw new Error(data.error || "Error desconocido al enviar mensaje")
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       window.toast({
         title: "Error enviando mensaje",
         type: "error",
@@ -795,7 +796,7 @@ export default function FreelancerDashboardUI() {
         await loadConversations()
 
         // Encontrar la conversación recién creada y abrirla
-        const newConversation: any = {
+        const newConversation: Conversation = {
           id: data.conversation.id,
           client_id: clientId,
           freelancer_id: user?.id,
@@ -813,7 +814,7 @@ export default function FreelancerDashboardUI() {
       } else {
         throw new Error(data.error || "Error al crear conversación")
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       window.toast({
         title: "Error al iniciar el chat",
         type: "error",

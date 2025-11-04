@@ -63,7 +63,7 @@ export const butterup: ButterupProps = {
       }
     } else {
       // check what location the toaster is in
-      toaster.classList.forEach((item: any) => {
+      toaster.classList.forEach((item: string) => {
         // remove any location classes from the toaster
         if (
           item.includes("top-right") ||

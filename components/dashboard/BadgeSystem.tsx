@@ -2,6 +2,7 @@
 
 import { supabaseBrowser } from "@/utils/supabase/client"
 import { useState, useEffect } from "react"
+import type { BadgeStats } from "@/interfaces/BadgeStats"
 
 const supabase = supabaseBrowser()
 
@@ -135,7 +136,7 @@ export default function BadgeSystem({
     }
   }
 
-  const calculateExperiencePoints = (stats: any) => {
+  const calculateExperiencePoints = (stats: BadgeStats) => {
     let xp = 0
 
     // XP por proyectos completados

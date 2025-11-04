@@ -77,9 +77,10 @@ export function ReviewsDisplay({
       } else {
         throw new Error(data.error || "Error al cargar reseñas")
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Error cargando reseñas:", error)
-      setError(error.message || "Error al cargar reseñas")
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      setError(errorMessage || "Error al cargar reseñas")
     } finally {
       setLoading(false)
     }

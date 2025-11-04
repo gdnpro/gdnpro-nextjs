@@ -200,7 +200,7 @@ export default function AdminContacts() {
       } else {
         throw new Error("Error en el servidor")
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       window.toast({
         title: "Error enviando respuesta",
         type: "error",
@@ -551,7 +551,7 @@ export default function AdminContacts() {
                             onChange={(e) =>
                               updateContactStatus(
                                 contact.id,
-                                e.target.value as any
+                                e.target.value as "new" | "read" | "responded"
                               )
                             }
                             className="text-xs border border-gray-300 rounded px-2 py-1 pr-6"

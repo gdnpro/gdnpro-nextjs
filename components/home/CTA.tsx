@@ -6,10 +6,12 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 
 const supabase = supabaseBrowser()
 
+import type { OccupiedDates } from "@/interfaces/CalendarFilters"
+
 interface Props {
   month: number
   year: number
-  occupiedDates: any
+  occupiedDates: OccupiedDates
 }
 
 interface CalendarDay {
@@ -71,7 +73,7 @@ export default function CTA() {
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
-  const handleTimeSelect = (e: any) => setSelectedTime(e.target.value)
+  const handleTimeSelect = (e: React.ChangeEvent<HTMLInputElement>) => setSelectedTime(e.target.value)
 
   // Enviar los datos al correo (via Supabase Function)
   const handleSchedule = async () => {

@@ -14,10 +14,7 @@ export default function Login() {
 
   const navigate = useRouter()
   const supabase = supabaseBrowser()
-  const { user, profile } = useAuth() as {
-    user: any
-    profile: any
-  }
+  const { user, profile } = useAuth()
 
   useEffect(() => {
     if (user) {
@@ -99,20 +96,21 @@ export default function Login() {
       }
 
       await processSuccessfulLogin(authData.user)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("💥 Complete login error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
 
       // Mostrar errores más específicos
-      if (error.message?.includes("Invalid login credentials")) {
+      if (errorMessage.includes("Invalid login credentials")) {
         setError("Email o contraseña incorrectos.")
-      } else if (error.message?.includes("Invalid API key")) {
+      } else if (errorMessage.includes("Invalid API key")) {
         setError("Las credenciales han sido actualizadas.")
-      } else if (error.message?.includes("network")) {
+      } else if (errorMessage.includes("network")) {
         setError("Verifica tu internet.")
-      } else if (error.message?.includes("Email not confirmed")) {
+      } else if (errorMessage.includes("Email not confirmed")) {
         setError("Tu cuenta necesita ser verificada.")
       } else {
-        setError(error.message || "Error desconocido al iniciar sesión")
+        setError(errorMessage || "Error desconocido al iniciar sesión")
       }
 
       setLoading(false)
@@ -120,7 +118,7 @@ export default function Login() {
   }
 
   // Función separada para procesar login exitoso
-  const processSuccessfulLogin = async (user: any) => {
+  const processSuccessfulLogin = async (user: { id: string }) => {
     // Obtener perfil del usuario
     const { data: profile, error: profileError } = await supabase
       .from("profiles")

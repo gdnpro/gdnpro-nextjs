@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import type { Session, User } from "@supabase/supabase-js"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import type { Profile } from "@/interfaces/Profile"
 
 // Initialize supabase client only on client-side
 const getSupabase = () => {
@@ -17,8 +18,8 @@ const getSupabase = () => {
 }
 
 interface AuthContextType {
-  profile: any
-  user: any
+  profile: User | null
+  user: Profile | null
   loading: boolean
   isAuthenticated: boolean
 }
@@ -32,7 +33,7 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState<User | null>(null)
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 

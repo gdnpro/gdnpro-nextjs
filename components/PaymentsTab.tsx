@@ -2,6 +2,7 @@
 
 import { supabaseBrowser } from "@/utils/supabase/client"
 import type { Project } from "@/interfaces/Project"
+import type { Transaction } from "@/interfaces/Transaction"
 import { useState, useEffect } from "react"
 
 const supabase = supabaseBrowser()
@@ -11,7 +12,7 @@ interface PaymentsTabProps {
 }
 
 export default function PaymentsTab({ userType }: PaymentsTabProps) {
-  const [transactions, setTransactions] = useState<any[]>([])
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -105,9 +106,10 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       } else {
         setProjects(projectsData || [])
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Error cargando datos:", error)
-      setError(error.message)
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
