@@ -31,19 +31,11 @@ export default function Header() {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node
 
-      if (
-        isUserMenuOpen &&
-        userMenuRef.current &&
-        !userMenuRef.current.contains(target)
-      ) {
+      if (isUserMenuOpen && userMenuRef.current && !userMenuRef.current.contains(target)) {
         setIsUserMenuOpen(false)
       }
 
-      if (
-        isMenuOpen &&
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(target)
-      ) {
+      if (isMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
         setIsMenuOpen(false)
       }
     }
@@ -68,39 +60,36 @@ export default function Header() {
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm lg:px-8 sm:px-6 px-4">
-      <div className="max-w-7xl px-6 mx-auto">
-        <div className="flex gap-8 justify-between items-center h-16">
-          <a
-            href="/"
-            className={`${user ? "hidden md:block" : "block"} cursor-pointer`}
-          >
+    <header className="fixed top-0 right-0 left-0 z-50 bg-white/95 px-4 shadow-sm backdrop-blur-sm sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="flex h-16 items-center justify-between gap-8">
+          <a href="/" className={`${user ? "hidden md:block" : "block"} cursor-pointer`}>
             <img src="/logo.png" alt="GDN PRO" className="h-10 w-auto" />
           </a>
 
           {!loading && user && (
             <div className="flex items-center space-x-3 md:hidden">
               <NotificationBell />
-              <div className="size-8 bg-primary/10 rounded-full flex items-center justify-center mr-3 sm:mr-4 overflow-hidden">
+              <div className="bg-primary/10 mr-3 flex size-8 items-center justify-center overflow-hidden rounded-full sm:mr-4">
                 {user?.avatar_url ? (
                   <img
                     src={user.avatar_url}
                     alt={user.full_name}
-                    className="size-full object-cover object-top rounded-full"
+                    className="size-full rounded-full object-cover object-top"
                   />
                 ) : (
-                  <i className="ri-user-line text-xl sm:text-2xl text-primary"></i>
+                  <i className="ri-user-line text-primary text-xl sm:text-2xl"></i>
                 )}
               </div>
             </div>
           )}
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex items-center gap-x-8">
+          <ul className="hidden items-center gap-x-8 md:flex">
             {menuItems.map((item, index) => (
               <li
                 key={index}
-                className="text-gray-700 hover:text-primary cursor-pointer font-medium transition-colors"
+                className="hover:text-primary cursor-pointer font-medium text-gray-700 transition-colors"
               >
                 <a href={item.url}>{item.label}</a>
               </li>
@@ -114,17 +103,17 @@ export default function Header() {
                 <NotificationBell />
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2 text-gray-700 cursor-pointer hover:text-primary font-medium"
+                  className="hover:text-primary flex cursor-pointer items-center space-x-2 font-medium text-gray-700"
                 >
-                  <div className="size-8 sm:size-10 bg-primary/10 rounded-full flex items-center justify-center mr-3 sm:mr-4 overflow-hidden">
+                  <div className="bg-primary/10 mr-3 flex size-8 items-center justify-center overflow-hidden rounded-full sm:mr-4 sm:size-10">
                     {user?.avatar_url ? (
                       <img
                         src={user.avatar_url}
                         alt={user.full_name}
-                        className="size-full object-cover object-top rounded-full"
+                        className="size-full rounded-full object-cover object-top"
                       />
                     ) : (
-                      <i className="ri-user-line text-xl sm:text-2xl text-primary"></i>
+                      <i className="ri-user-line text-primary text-xl sm:text-2xl"></i>
                     )}
                   </div>
                   <span>{user?.full_name?.split(" ")[0] || "Usuario"}</span>
@@ -139,19 +128,19 @@ export default function Header() {
               {/* Dropdown */}
               {isUserMenuOpen && (
                 <div
-                  className="absolute right-0 mt-3 w-48 bg-white border-none rounded-lg shadow-lg border py-2 z-50"
+                  className="absolute right-0 z-50 mt-3 w-48 rounded-lg border border-none bg-white py-2 shadow-lg"
                   ref={userMenuRef}
                 >
                   <a
                     href="/dashboard"
-                    className="flex w-full px-4 py-2 text-left cursor-pointer text-gray-700 hover:bg-gray-100"
+                    className="flex w-full cursor-pointer px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
                   >
                     <i className="ri-dashboard-line mr-2"></i>
                     Dashboard
                   </a>
                   <button
                     onClick={handleLogout}
-                    className="flex w-full px-4 py-2 text-left cursor-pointer text-red-600 hover:bg-red-50"
+                    className="flex w-full cursor-pointer px-4 py-2 text-left text-red-600 hover:bg-red-50"
                   >
                     <i className="ri-logout-box-line mr-2"></i>
                     Cerrar sesión
@@ -160,16 +149,16 @@ export default function Header() {
               )}
             </div>
           ) : (
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden items-center space-x-4 md:flex">
               <a
                 href="/auth/login"
-                className="text-gray-700 cursor-pointer hover:text-primary font-medium transition-colors"
+                className="hover:text-primary cursor-pointer font-medium text-gray-700 transition-colors"
               >
                 Iniciar Sesión
               </a>
               <a
                 href="/auth/register"
-                className="bg-primary cursor-pointer hover:bg-cyan-700 text-white px-6 py-2 rounded-full font-semibold transition-all transform hover:scale-105"
+                className="bg-primary transform cursor-pointer rounded-full px-6 py-2 font-semibold text-white transition-all hover:scale-105 hover:bg-cyan-700"
               >
                 Registrarse
               </a>
@@ -180,7 +169,7 @@ export default function Header() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-primary"
+              className="hover:text-primary text-gray-700"
             >
               <i
                 className={`text-2xl transition-transform ${
@@ -192,13 +181,13 @@ export default function Header() {
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden " ref={mobileMenuRef}>
-            <div className="px-2 pt-2 pb-3 space-y-1">
+          <div className="md:hidden" ref={mobileMenuRef}>
+            <div className="space-y-1 px-2 pt-2 pb-3">
               <ul>
                 {menuItems.map((item, index) => (
                   <li
                     key={index}
-                    className="block w-full text-left px-3 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg font-medium transition-all"
+                    className="hover:text-primary block w-full rounded-lg px-3 py-3 text-left font-medium text-gray-700 transition-all hover:bg-gray-50"
                   >
                     <a href={item.url}>{item.label}</a>
                   </li>
@@ -206,16 +195,16 @@ export default function Header() {
               </ul>
 
               {user && (
-                <div className="border-t pt-3 mt-3 space-y-2">
+                <div className="mt-3 space-y-2 border-t pt-3">
                   <a
                     href="/dashboard"
-                    className="block w-full text-left px-3 py-3 text-gray-700 hover:bg-gray-50"
+                    className="block w-full px-3 py-3 text-left text-gray-700 hover:bg-gray-50"
                   >
                     Dashboard
                   </a>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-3 py-3 text-red-600 hover:bg-red-50"
+                    className="block w-full px-3 py-3 text-left text-red-600 hover:bg-red-50"
                   >
                     Cerrar Sesión
                   </button>
@@ -223,16 +212,16 @@ export default function Header() {
               )}
 
               {!user && (
-                <div className="border-t pt-3 mt-3 space-y-2">
+                <div className="mt-3 space-y-2 border-t pt-3">
                   <a
                     href="/auth/login"
-                    className="block w-full text-left px-3 py-3 text-gray-700 hover:bg-gray-50"
+                    className="block w-full px-3 py-3 text-left text-gray-700 hover:bg-gray-50"
                   >
                     Iniciar Sesión
                   </a>
                   <a
-                    href="/auth/login"
-                    className="block w-full text-left px-3 py-3 text-white bg-primary hover:bg-cyan-700 rounded-lg font-medium"
+                    href="/auth/register"
+                    className="bg-primary block w-full rounded-lg px-3 py-3 text-left font-medium text-white hover:bg-cyan-700"
                   >
                     Registrarse
                   </a>
