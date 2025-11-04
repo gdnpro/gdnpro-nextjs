@@ -22,12 +22,9 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   const supabase = supabaseBrowser()
   const navigate = useRouter()
   const [freelancers, setFreelancers] = useState<Freelancer[]>([])
-  const [filteredFreelancers, setFilteredFreelancers] = useState<Freelancer[]>(
-    []
-  )
+  const [filteredFreelancers, setFilteredFreelancers] = useState<Freelancer[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedFreelancer, setSelectedFreelancer] =
-    useState<Freelancer | null>(null)
+  const [selectedFreelancer, setSelectedFreelancer] = useState<Freelancer | null>(null)
   const [showProfile, setShowProfile] = useState(false)
   const [showChat, setShowChat] = useState(false)
   const [currentUser, setCurrentUser] = useState<{ id: string } | null>(null)
@@ -60,9 +57,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
           (freelancer) =>
             freelancer.full_name.toLowerCase().includes(searchTerm) ||
             freelancer.bio?.toLowerCase().includes(searchTerm) ||
-            freelancer.skills?.some((skill) =>
-              skill.toLowerCase().includes(searchTerm)
-            )
+            freelancer.skills?.some((skill) => skill.toLowerCase().includes(searchTerm)),
         )
       }
 
@@ -70,8 +65,8 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       if (searchFilters.category) {
         filtered = filtered.filter((freelancer) =>
           freelancer.skills?.some((skill) =>
-            skill.toLowerCase().includes(searchFilters.category.toLowerCase())
-          )
+            skill.toLowerCase().includes(searchFilters.category.toLowerCase()),
+          ),
         )
       }
 
@@ -83,13 +78,10 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
           "Senior (5+ años)": [5, 10],
           "Expert (10+ años)": [10, 100],
         }
-        const [minExp, maxExp] = experienceMap[searchFilters.experience] || [
-          0, 100,
-        ]
+        const [minExp, maxExp] = experienceMap[searchFilters.experience] || [0, 100]
         filtered = filtered.filter(
           (freelancer) =>
-            freelancer.experience_years >= minExp &&
-            freelancer.experience_years <= maxExp
+            freelancer.experience_years >= minExp && freelancer.experience_years <= maxExp,
         )
       }
 
@@ -103,18 +95,14 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         }
         const [minRate, maxRate] = budgetMap[searchFilters.budget] || [0, 1000]
         filtered = filtered.filter(
-          (freelancer) =>
-            freelancer.hourly_rate >= minRate &&
-            freelancer.hourly_rate <= maxRate
+          (freelancer) => freelancer.hourly_rate >= minRate && freelancer.hourly_rate <= maxRate,
         )
       }
 
       // Availability filter
       if (searchFilters.availability) {
         if (searchFilters.availability === "Disponible ahora") {
-          filtered = filtered.filter(
-            (freelancer) => freelancer.availability === "Disponible"
-          )
+          filtered = filtered.filter((freelancer) => freelancer.availability === "Disponible")
         }
       }
     }
@@ -181,25 +169,18 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         avatar_url:
           freelancer.avatar_url ||
           `${getGenderFromName(
-            freelancer.full_name
+            freelancer.full_name,
           )}%20hispanic%20software%20developer%20portrait%2C%20confident%20tech%20professional%2C%20modern%20office%20background%2C%20programmer%20headshot%2C%20professional%20developer%20photo&width=300&height=300&seq=freelancer${freelancer.id}&orientation=squarish`,
-        completed_projects:
-          Math.floor(Math.random() * 50) + freelancer.experience_years * 10,
-        response_time: ["1 hora", "2 horas", "3 horas", "4 horas"][
-          Math.floor(Math.random() * 4)
-        ],
+        completed_projects: Math.floor(Math.random() * 50) + freelancer.experience_years * 10,
+        response_time: ["1 hora", "2 horas", "3 horas", "4 horas"][Math.floor(Math.random() * 4)],
         languages: ["Español", "Inglés"],
-        availability:
-          Math.random() > 0.3 ? "Disponible" : "Ocupado hasta Feb 15",
+        availability: Math.random() > 0.3 ? "Disponible" : "Ocupado hasta Feb 15",
         location:
           freelancer.location ||
-          ["Ciudad de México", "Guadalajara", "Monterrey", "Puebla"][
-            Math.floor(Math.random() * 4)
-          ],
-        rating: parseFloat(freelancer.rating ?? "5.0"),
-        hourly_rate: parseFloat(freelancer.hourly_rate ?? "25"),
-        total_reviews:
-          freelancer.total_reviews ?? Math.floor(Math.random() * 100) + 20,
+          ["Ciudad de México", "Guadalajara", "Monterrey", "Puebla"][Math.floor(Math.random() * 4)],
+        rating: parseFloat(freelancer.rating?.toString() ?? "5.0"),
+        hourly_rate: parseFloat(freelancer.hourly_rate?.toString() ?? "25"),
+        total_reviews: freelancer.total_reviews ?? Math.floor(Math.random() * 100) + 20,
       }))
 
       setFreelancers(enhancedFreelancers)
@@ -284,7 +265,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
             clientId: currentProfile.id,
             projectId: null,
           }),
-        }
+        },
       )
 
       if (!response.ok) {
@@ -344,7 +325,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
             action: "get-messages",
             conversationId: convId,
           }),
-        }
+        },
       )
 
       if (!response.ok) {
@@ -360,9 +341,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !conversationId || sendingMessage) {
-      console.log(
-        "❌ Cannot send: empty message, no conversation, or already sending"
-      )
+      console.log("❌ Cannot send: empty message, no conversation, or already sending")
       return
     }
 
@@ -390,7 +369,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
             conversationId,
             messageText: newMessage.trim(),
           }),
-        }
+        },
       )
 
       if (!response.ok) {
@@ -484,10 +463,10 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
   if (loading) {
     return (
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      <section className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex h-64 items-center justify-center">
+            <div className="border-primary h-12 w-12 animate-spin rounded-full border-b-2" />
           </div>
         </div>
       </section>
@@ -496,12 +475,10 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
   if (filteredFreelancers.length === 0) {
     return (
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-7xl px-6">
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              No se encontraron freelancers
-            </h3>
+            <h3 className="mb-4 text-2xl font-bold text-gray-900">No se encontraron freelancers</h3>
             <p className="text-gray-600">
               {searchFilters &&
               (searchFilters.search ||
@@ -518,17 +495,14 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   }
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="bg-gray-50 py-20">
+      <div className="mx-auto max-w-7xl px-6">
         {/* Header + Sorting */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="mb-8 flex items-center justify-between">
           <div>
-            <h3 className="text-2xl font-bold text-gray-900">
-              Freelancers Destacados
-            </h3>
+            <h3 className="text-2xl font-bold text-gray-900">Freelancers Destacados</h3>
             <p className="text-gray-600">
-              Mostrando {displayedFreelancers.length} de{" "}
-              {filteredFreelancers.length} freelancers
+              Mostrando {displayedFreelancers.length} de {filteredFreelancers.length} freelancers
               {searchFilters &&
                 (searchFilters.search ||
                   searchFilters.category ||
@@ -543,7 +517,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full sm:w-auto px-4 py-2 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+                className="w-full cursor-pointer appearance-none rounded-lg border border-gray-300 px-4 py-2 pr-8 focus:border-transparent focus:ring-2 focus:ring-blue-500 sm:w-auto"
               >
                 <option value="rating">Mejor calificados</option>
                 <option value="price-low">Precio: menor a mayor</option>
@@ -551,23 +525,23 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 <option value="projects">Más proyectos</option>
                 <option value="response">Respuesta más rápida</option>
               </select>
-              <i className="ri-arrow-down-s-line absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <i className="ri-arrow-down-s-line pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 transform text-gray-400" />
             </div>
           </div>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {displayedFreelancers.map((freelancer) => (
             <div
               key={freelancer.id}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all  hover:-translate-y-1"
+              className="rounded-2xl bg-white shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="p-4 flex flex-col justify-between h-full">
+              <div className="flex h-full flex-col justify-between p-4">
                 {/* Header */}
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="size-16 bg-primary/10 rounded-full mb-4 overflow-hidden">
+                    <div className="bg-primary/10 mb-4 size-16 overflow-hidden rounded-full">
                       {freelancer.avatar_url ? (
                         <img
                           src={freelancer.avatar_url}
@@ -575,15 +549,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                           className="size-16 object-cover object-top"
                         />
                       ) : (
-                        <i className="ri-user-line text-2xl text-primary" />
+                        <i className="ri-user-line text-primary text-2xl" />
                       )}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {freelancer.full_name}
-                      </h3>
+                      <h3 className="text-xl font-bold text-gray-900">{freelancer.full_name}</h3>
                       <div
-                        className={`px-3 py-1 mb-2 w-fit rounded-full text-xs font-semibold ${
+                        className={`mb-2 w-fit rounded-full px-3 py-1 text-xs font-semibold ${
                           freelancer.availability === "Disponible"
                             ? "bg-green-100 text-green-700"
                             : "bg-yellow-100 text-yellow-700"
@@ -596,7 +568,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                           ? `${freelancer.skills[0]} Specialist`
                           : "Freelancer"}
                       </p>
-                      <p className="text-gray-500 text-sm flex items-center">
+                      <p className="flex items-center text-sm text-gray-500">
                         <i className="ri-map-pin-line mr-1" />
                         {freelancer.location}
                       </p>
@@ -605,40 +577,33 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 </div>
 
                 {/* Rating */}
-                <div className="flex items-center mb-4">
+                <div className="mb-4 flex items-center">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <i
                         key={i}
                         className={`ri-star-fill ${
-                          i < Math.floor(freelancer.rating)
-                            ? "text-yellow-400"
-                            : "text-gray-300"
+                          i < Math.floor(freelancer.rating) ? "text-yellow-400" : "text-gray-300"
                         }`}
                       />
                     ))}
-                    <span className="ml-2 text-gray-600 font-semibold">
-                      {freelancer.rating}
-                    </span>
-                    <span className="ml-1 text-gray-500">
-                      ({freelancer.total_reviews} reviews)
-                    </span>
+                    <span className="ml-2 font-semibold text-gray-600">{freelancer.rating}</span>
+                    <span className="ml-1 text-gray-500">({freelancer.total_reviews} reviews)</span>
                   </div>
                 </div>
 
                 {/* Bio */}
-                <div className="flex-1 h-full">
-                  <p className="text-gray-600 mb-4 leading-relaxed">
-                    {freelancer.bio ||
-                      "Freelancer profesional con experiencia comprobada."}
+                <div className="h-full flex-1">
+                  <p className="mb-4 leading-relaxed text-gray-600">
+                    {freelancer.bio || "Freelancer profesional con experiencia comprobada."}
                   </p>
 
                   {/* Skills */}
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="mb-4 flex flex-wrap gap-2">
                     {freelancer.skills?.slice(0, 3).map((skill, idx) => (
                       <span
                         key={idx}
-                        className="bg-blue-100 text-cyan-700 px-3 py-1 rounded-full text-sm font-medium"
+                        className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-cyan-700"
                       >
                         {skill}
                       </span>
@@ -646,7 +611,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   </div>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-600">
+                  <div className="mb-6 grid grid-cols-2 gap-4 text-sm text-gray-600">
                     <div className="flex items-center">
                       <i className="ri-briefcase-line mr-2" />
                       {freelancer.completed_projects} proyectos
@@ -659,16 +624,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 </div>
                 {/* Footer */}
                 <div className="border-t border-gray-300 pt-4">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="mb-4 flex items-center justify-between">
                     <div className="text-2xl font-bold text-gray-900">
                       ${freelancer.hourly_rate}/hora
                     </div>
                     <div className="flex items-center text-gray-600">
                       {freelancer.languages?.map((lang, idx) => (
-                        <span
-                          key={idx}
-                          className="text-xs bg-gray-100 px-2 py-1 rounded mr-1"
-                        >
+                        <span key={idx} className="mr-1 rounded bg-gray-100 px-2 py-1 text-xs">
                           {lang}
                         </span>
                       ))}
@@ -679,13 +641,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 <div className="flex gap-3">
                   <button
                     onClick={() => handleContactFreelancer(freelancer)}
-                    className="flex-1 bg-primary hover:bg-cyan-700 text-white py-3 rounded-xl font-semibold transition-all  whitespace-nowrap cursor-pointer"
+                    className="bg-primary flex-1 cursor-pointer rounded-xl py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
                   >
                     Contactar
                   </button>
                   <button
                     onClick={() => handleViewProfile(freelancer)}
-                    className="flex-1 border border-primary text-primary hover:bg-blue-50 py-3 rounded-xl font-semibold transition-all  whitespace-nowrap cursor-pointer"
+                    className="border-primary text-primary flex-1 cursor-pointer rounded-xl border py-3 font-semibold whitespace-nowrap transition-all hover:bg-blue-50"
                   >
                     Ver Perfil
                   </button>
@@ -694,12 +656,12 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 <div className="mt-3">
                   <button
                     onClick={() => handleHireFreelancer(freelancer)}
-                    className="w-full bg-primary hover:bg-cyan-700 text-white py-3 rounded-xl font-semibold transition-all  whitespace-nowrap cursor-pointer flex items-center justify-center"
+                    className="bg-primary flex w-full cursor-pointer items-center justify-center rounded-xl py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
                   >
                     <i className="ri-secure-payment-line mr-2" />
                     Contratar Ahora - ${freelancer.hourly_rate * 10}
                   </button>
-                  <p className="text-xs text-gray-500 text-center mt-1">
+                  <p className="mt-1 text-center text-xs text-gray-500">
                     Pago seguro con Stripe • Estimación 10 horas
                   </p>
                 </div>
@@ -710,10 +672,10 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
         {/* Show all / less button */}
         {filteredFreelancers.length > 6 && (
-          <div className="text-center mt-12">
+          <div className="mt-12 text-center">
             <button
               onClick={handleViewAllFreelancers}
-              className="bg-primary hover:bg-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all  whitespace-nowrap cursor-pointer"
+              className="bg-primary cursor-pointer rounded-full px-8 py-4 text-lg font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
             >
               {showAllFreelancers
                 ? "Ver Menos Freelancers"
@@ -725,68 +687,64 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
       {/* -------------------------- Profile Modal -------------------------- */}
       {showProfile && selectedFreelancer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white">
             <div className="p-6">
               {/* Header */}
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Perfil del Freelancer
-                </h2>
+              <div className="mb-6 flex items-start justify-between">
+                <h2 className="text-2xl font-bold text-gray-900">Perfil del Freelancer</h2>
                 <button
                   onClick={() => setShowProfile(false)}
-                  className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                  className="cursor-pointer text-gray-400 hover:text-gray-600"
                 >
                   <i className="ri-close-line text-2xl" />
                 </button>
               </div>
 
               {/* Main Info */}
-              <div className="flex items-center mb-6">
+              <div className="mb-6 flex items-center">
                 <img
                   src={selectedFreelancer.avatar_url}
                   alt={selectedFreelancer.full_name}
-                  className="w-24 h-24 rounded-full object-cover object-top mr-6"
+                  className="mr-6 h-24 w-24 rounded-full object-cover object-top"
                 />
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900">
                     {selectedFreelancer.full_name}
                   </h3>
-                  <p className="text-primary font-semibold text-lg">
+                  <p className="text-primary text-lg font-semibold">
                     {selectedFreelancer.skills?.[0]
                       ? `${selectedFreelancer.skills[0]} Specialist`
                       : "Freelancer"}
                   </p>
                   <p className="text-gray-600">{selectedFreelancer.location}</p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-yellow-500 mr-1">
-                      {selectedFreelancer.rating}★
-                    </span>
+                  <div className="mt-2 flex items-center">
+                    <span className="mr-1 text-yellow-500">{selectedFreelancer.rating}★</span>
                     <span className="text-gray-600">
                       ({selectedFreelancer.total_reviews} reseñas)
                     </span>
                   </div>
-                  <p className="text-gray-500 mt-1">
+                  <p className="mt-1 text-gray-500">
                     {selectedFreelancer.experience_years} años de experiencia
                   </p>
                 </div>
               </div>
 
               {/* Summary stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+                <div className="rounded-lg bg-gray-50 p-4 text-center">
                   <div className="text-2xl font-bold text-gray-900">
                     ${selectedFreelancer.hourly_rate}
                   </div>
                   <div className="text-gray-600">Por hora</div>
                 </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="rounded-lg bg-gray-50 p-4 text-center">
                   <div className="text-2xl font-bold text-gray-900">
                     {selectedFreelancer.completed_projects}
                   </div>
                   <div className="text-gray-600">Proyectos</div>
                 </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="rounded-lg bg-gray-50 p-4 text-center">
                   <div className="text-2xl font-bold text-gray-900">
                     {selectedFreelancer.response_time}
                   </div>
@@ -796,23 +754,17 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
               {/* Sections */}
               <div className="mb-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">
-                  Acerca de
-                </h4>
-                <p className="text-gray-700 leading-relaxed">
-                  {selectedFreelancer.bio}
-                </p>
+                <h4 className="mb-3 text-lg font-semibold text-gray-900">Acerca de</h4>
+                <p className="leading-relaxed text-gray-700">{selectedFreelancer.bio}</p>
               </div>
 
               <div className="mb-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">
-                  Habilidades
-                </h4>
+                <h4 className="mb-3 text-lg font-semibold text-gray-900">Habilidades</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedFreelancer.skills?.map((skill, idx) => (
                     <span
                       key={idx}
-                      className="bg-blue-100 text-cyan-700 px-3 py-2 rounded-full text-sm font-medium"
+                      className="rounded-full bg-blue-100 px-3 py-2 text-sm font-medium text-cyan-700"
                     >
                       {skill}
                     </span>
@@ -821,12 +773,10 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
               </div>
 
               <div className="mb-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                <h4 className="mb-3 text-lg font-semibold text-gray-900">
                   Información de Contacto
                 </h4>
-                <p className="text-gray-600">
-                  Email: {selectedFreelancer.email}
-                </p>
+                <p className="text-gray-600">Email: {selectedFreelancer.email}</p>
               </div>
 
               {/* Action buttons */}
@@ -836,7 +786,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     setShowProfile(false)
                     handleContactFreelancer(selectedFreelancer)
                   }}
-                  className="flex-1 bg-primary hover:bg-cyan-700 text-white py-3 rounded-xl font-semibold transition-all  whitespace-nowrap cursor-pointer"
+                  className="bg-primary flex-1 cursor-pointer rounded-xl py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
                 >
                   <i className="ri-chat-3-line mr-2" />
                   Contactar Ahora
@@ -846,7 +796,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     setShowProfile(false)
                     handleHireFreelancer(selectedFreelancer)
                   }}
-                  className="flex-1 bg-emerald-600 hover:bg-cyan-700 text-white py-3 rounded-xl font-semibold transition-all  whitespace-nowrap cursor-pointer"
+                  className="flex-1 cursor-pointer rounded-xl bg-emerald-600 py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
                 >
                   <i className="ri-secure-payment-line mr-2" />
                   Contratar Ahora
@@ -859,21 +809,19 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
       {/* -------------------------- Chat Modal -------------------------- */}
       {showChat && selectedFreelancer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl h-[80vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="flex h-[80vh] w-full max-w-2xl flex-col rounded-2xl bg-white">
             {/* Header */}
-            <div className="bg-primary text-white p-4 rounded-t-2xl flex items-center justify-between">
+            <div className="bg-primary flex items-center justify-between rounded-t-2xl p-4 text-white">
               <div className="flex items-center">
                 <img
                   src={selectedFreelancer.avatar_url}
                   alt={selectedFreelancer.full_name}
-                  className="w-10 h-10 rounded-full object-cover object-top mr-3"
+                  className="mr-3 h-10 w-10 rounded-full object-cover object-top"
                 />
                 <div>
-                  <h3 className="font-semibold">
-                    {selectedFreelancer.full_name}
-                  </h3>
-                  <p className="text-blue-100 text-sm">
+                  <h3 className="font-semibold">{selectedFreelancer.full_name}</h3>
+                  <p className="text-sm text-blue-100">
                     {selectedFreelancer.skills?.[0]} Specialist
                   </p>
                 </div>
@@ -885,20 +833,18 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   setConversationId(null)
                   setNewMessage("")
                 }}
-                className="hover:bg-cyan-700 p-2 rounded cursor-pointer"
+                className="cursor-pointer rounded p-2 hover:bg-cyan-700"
               >
                 <i className="ri-close-line text-xl" />
               </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+            <div className="flex-1 overflow-y-auto bg-gray-50 p-4">
               {chatLoading ? (
-                <div className="flex justify-center items-center h-full">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-                  <span className="ml-2 text-gray-600">
-                    Cargando conversación...
-                  </span>
+                <div className="flex h-full items-center justify-center">
+                  <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2" />
+                  <span className="ml-2 text-gray-600">Cargando conversación...</span>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -906,23 +852,21 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     <div
                       key={message.id}
                       className={`flex ${
-                        message.sender_id === currentProfile?.id
-                          ? "justify-end"
-                          : "justify-start"
+                        message.sender_id === currentProfile?.id ? "justify-end" : "justify-start"
                       }`}
                     >
                       <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+                        className={`max-w-xs rounded-2xl px-4 py-2 lg:max-w-md ${
                           message.sender_id === currentProfile?.id
                             ? "bg-primary text-white"
                             : message.sender_id === null
-                              ? "bg-yellow-100 text-yellow-800 border border-yellow-300"
-                              : "bg-white text-gray-900 border border-gray-200"
+                              ? "border border-yellow-300 bg-yellow-100 text-yellow-800"
+                              : "border border-gray-200 bg-white text-gray-900"
                         }`}
                       >
                         <p className="text-sm">{message.message_text}</p>
                         <p
-                          className={`text-xs mt-1 ${
+                          className={`mt-1 text-xs ${
                             message.sender_id === currentProfile?.id
                               ? "text-blue-100"
                               : "text-gray-500"
@@ -938,15 +882,10 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   ))}
 
                   {chatMessages.length === 0 && !chatLoading && (
-                    <div className="text-center text-gray-500 py-8">
-                      <i className="ri-chat-3-line text-4xl mb-4" />
-                      <p>
-                        Inicia la conversación con{" "}
-                        {selectedFreelancer.full_name.split(" ")[0]}
-                      </p>
-                      <p className="text-sm mt-2">
-                        Tu primer mensaje aparecerá aquí
-                      </p>
+                    <div className="py-8 text-center text-gray-500">
+                      <i className="ri-chat-3-line mb-4 text-4xl" />
+                      <p>Inicia la conversación con {selectedFreelancer.full_name.split(" ")[0]}</p>
+                      <p className="mt-2 text-sm">Tu primer mensaje aparecerá aquí</p>
                     </div>
                   )}
                 </div>
@@ -954,7 +893,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
             </div>
 
             {/* Input area */}
-            <div className="p-4 border-t bg-white rounded-b-2xl">
+            <div className="rounded-b-2xl border-t bg-white p-4">
               <div className="flex items-center space-x-3">
                 <input
                   type="text"
@@ -963,26 +902,21 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   onKeyPress={handleKeyPress}
                   placeholder="Escribe tu mensaje..."
                   disabled={chatLoading || !conversationId || sendingMessage}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm disabled:bg-gray-100"
+                  className="flex-1 rounded-full border border-gray-300 px-4 py-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                 />
                 <button
                   onClick={sendMessage}
-                  disabled={
-                    !newMessage.trim() ||
-                    chatLoading ||
-                    !conversationId ||
-                    sendingMessage
-                  }
-                  className="w-12 h-12 bg-primary hover:bg-cyan-700 disabled:bg-gray-300 text-white rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                  disabled={!newMessage.trim() || chatLoading || !conversationId || sendingMessage}
+                  className="bg-primary flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-white transition-colors hover:bg-cyan-700 disabled:bg-gray-300"
                 >
                   {sendingMessage ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                    <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white" />
                   ) : (
                     <i className="ri-send-plane-line" />
                   )}
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mt-2 flex items-center">
+              <p className="mt-2 flex items-center text-xs text-gray-500">
                 <i className="ri-shield-check-line mr-1" />
                 Chat seguro monitoreado por GDN Pro
               </p>
@@ -1036,18 +970,16 @@ export const FreelancerGridList = ({
     switch (platform) {
       case "linkedin":
         shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-          profileUrl
+          profileUrl,
         )}&title=${encodeURIComponent(shareText)}`
         break
       case "twitter":
         shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          shareText
+          shareText,
         )}&url=${encodeURIComponent(profileUrl)}`
         break
       case "whatsapp":
-        shareUrl = `https://wa.me/?text=${encodeURIComponent(
-          `${shareText} ${profileUrl}`
-        )}`
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText} ${profileUrl}`)}`
         break
       case "copy":
         navigator.clipboard.writeText(profileUrl)
@@ -1065,29 +997,29 @@ export const FreelancerGridList = ({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-pulse"
+            className="animate-pulse rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
           >
-            <div className="flex items-center mb-4">
-              <div className="w-16 h-16 bg-gray-200 rounded-full" />
+            <div className="mb-4 flex items-center">
+              <div className="h-16 w-16 rounded-full bg-gray-200" />
               <div className="ml-4 flex-1">
-                <div className="h-4 bg-gray-200 rounded mb-2" />
-                <div className="h-3 bg-gray-200 rounded w-2/3" />
+                <div className="mb-2 h-4 rounded bg-gray-200" />
+                <div className="h-3 w-2/3 rounded bg-gray-200" />
               </div>
             </div>
-            <div className="space-y-2 mb-4">
-              <div className="h-3 bg-gray-200 rounded" />
-              <div className="h-3 bg-gray-200 rounded w-4/5" />
+            <div className="mb-4 space-y-2">
+              <div className="h-3 rounded bg-gray-200" />
+              <div className="h-3 w-4/5 rounded bg-gray-200" />
             </div>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="mb-4 flex flex-wrap gap-2">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-6 bg-gray-200 rounded-full w-16" />
+                <div key={i} className="h-6 w-16 rounded-full bg-gray-200" />
               ))}
             </div>
-            <div className="h-10 bg-gray-200 rounded" />
+            <div className="h-10 rounded bg-gray-200" />
           </div>
         ))}
       </div>
@@ -1095,37 +1027,35 @@ export const FreelancerGridList = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {freelancers.map((freelancer) => (
         <div
           key={freelancer.id}
-          className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all  p-6 group"
+          className="group rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-lg"
         >
           {/* Header */}
-          <div className="flex items-center mb-4">
+          <div className="mb-4 flex items-center">
             <div className="relative">
               {freelancer.avatar_url ? (
                 <img
                   src={freelancer.avatar_url}
                   alt={freelancer.full_name}
-                  className="w-16 h-16 rounded-full object-cover object-top border-2 border-gray-100"
+                  className="h-16 w-16 rounded-full border-2 border-gray-100 object-cover object-top"
                 />
               ) : (
-                <div className="w-16 h-16 bg-linear-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-emerald-400 to-emerald-600">
+                  <span className="text-lg font-semibold text-white">
                     {freelancer.full_name.charAt(0).toUpperCase()}
                   </span>
                 </div>
               )}
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white" />
+              <div className="absolute -right-1 -bottom-1 h-5 w-5 rounded-full border-2 border-white bg-green-500" />
             </div>
 
             <div className="ml-4 flex-1">
-              <h3 className="font-semibold text-gray-900 text-lg">
-                {freelancer.full_name}
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900">{freelancer.full_name}</h3>
               <div className="flex items-center text-sm text-gray-600">
-                <i className="ri-star-fill text-yellow-400 mr-1" />
+                <i className="ri-star-fill mr-1 text-yellow-400" />
                 <span>{freelancer.rating ?? 5.0}</span>
                 <span className="mx-2">•</span>
                 <span>{freelancer.completed_projects ?? 0} proyectos</span>
@@ -1133,39 +1063,39 @@ export const FreelancerGridList = ({
             </div>
 
             {/* Share button */}
-            <div className="relative group/share">
-              <button className="p-2 text-gray-400 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100">
+            <div className="group/share relative">
+              <button className="p-2 text-gray-400 opacity-0 transition-colors group-hover:opacity-100 hover:text-emerald-600">
                 <i className="ri-share-line text-lg" />
               </button>
 
               {/* Share menu */}
-              <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 py-2 min-w-[160px] opacity-0 invisible group-hover/share:opacity-100 group-hover/share:visible transition-all duration-200 z-10">
+              <div className="invisible absolute top-full right-0 z-10 mt-2 min-w-[160px] rounded-lg border border-gray-200 bg-white py-2 opacity-0 shadow-lg transition-all duration-200 group-hover/share:visible group-hover/share:opacity-100">
                 <button
                   onClick={() => handleShareProfile(freelancer, "linkedin")}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                  className="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <i className="ri-linkedin-fill text-primary mr-3" />
                   LinkedIn
                 </button>
                 <button
                   onClick={() => handleShareProfile(freelancer, "twitter")}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                  className="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
                 >
-                  <i className="ri-twitter-fill text-blue-400 mr-3" />
+                  <i className="ri-twitter-fill mr-3 text-blue-400" />
                   Twitter
                 </button>
                 <button
                   onClick={() => handleShareProfile(freelancer, "whatsapp")}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                  className="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
                 >
-                  <i className="ri-whatsapp-fill text-green-500 mr-3" />
+                  <i className="ri-whatsapp-fill mr-3 text-green-500" />
                   WhatsApp
                 </button>
                 <button
                   onClick={() => handleShareProfile(freelancer, "copy")}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                  className="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
                 >
-                  <i className="ri-link text-gray-500 mr-3" />
+                  <i className="ri-link mr-3 text-gray-500" />
                   Copiar enlace
                 </button>
               </div>
@@ -1173,46 +1103,41 @@ export const FreelancerGridList = ({
           </div>
 
           {/* Bio */}
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-            {freelancer.bio ||
-              "Profesional experimentado listo para ayudarte con tus proyectos."}
+          <p className="mb-4 line-clamp-2 text-sm text-gray-600">
+            {freelancer.bio || "Profesional experimentado listo para ayudarte con tus proyectos."}
           </p>
 
           {/* Skills */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="mb-4 flex flex-wrap gap-2">
             {freelancer.skills.slice(0, 2).map((skill, i) => (
               <span
                 key={i}
-                className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs rounded-full font-medium"
+                className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700"
               >
                 {skill}
               </span>
             ))}
             {freelancer.skills.length > 3 && (
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
                 +{freelancer.skills.length - 3} más
               </span>
             )}
           </div>
 
           {/* Rate & Experience */}
-          <div className="flex items-center justify-between mb-4 text-sm">
+          <div className="mb-4 flex items-center justify-between text-sm">
             <div className="flex items-center text-gray-600">
               <i className="ri-time-line mr-1" />
               <span>{freelancer.experience_years}+ años exp.</span>
             </div>
-            <div className="font-semibold text-emerald-600">
-              ${freelancer.hourly_rate}/hora
-            </div>
+            <div className="font-semibold text-emerald-600">${freelancer.hourly_rate}/hora</div>
           </div>
 
           {/* Availability */}
-          <div className="flex items-center mb-4">
+          <div className="mb-4 flex items-center">
             <div className="flex items-center text-sm">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-              <span className="text-gray-600 capitalize">
-                {freelancer.availability}
-              </span>
+              <div className="mr-2 h-2 w-2 rounded-full bg-green-500"></div>
+              <span className="text-gray-600 capitalize">{freelancer.availability}</span>
             </div>
           </div>
 
@@ -1220,11 +1145,11 @@ export const FreelancerGridList = ({
           <div className="flex gap-2">
             <button
               onClick={() => handleViewProfile(freelancer)}
-              className="flex-1 bg-emerald-600 hover:bg-cyan-700 text-white py-2 px-4 rounded-lg font-medium transition-colors text-sm whitespace-nowrap"
+              className="flex-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
             >
               Ver Perfil
             </button>
-            <button className="px-4 py-2 border border-emerald-600 text-emerald-600 hover:bg-emerald-50 rounded-lg font-medium transition-colors text-sm whitespace-nowrap">
+            <button className="rounded-lg border border-emerald-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-emerald-600 transition-colors hover:bg-emerald-50">
               Contactar
             </button>
           </div>

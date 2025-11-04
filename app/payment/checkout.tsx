@@ -56,9 +56,7 @@ export default function Checkout() {
   }
 
   const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     setFormData({
       ...formData,
@@ -104,7 +102,7 @@ export default function Checkout() {
           },
           body: JSON.stringify({
             action: "create-payment-session",
-            freelancerId: freelancer.id,
+            freelancerId: freelancer?.id,
             amount: parseFloat(formData.amount),
             currency: "usd",
             projectTitle: formData.projectTitle,
@@ -118,7 +116,7 @@ export default function Checkout() {
               requirements: formData.requirements,
             },
           }),
-        }
+        },
       )
 
       const data = await response.json()
@@ -142,12 +140,10 @@ export default function Checkout() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">
-            Cargando información del freelancer...
-          </p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-600"></div>
+          <p className="mt-4 text-gray-600">Cargando información del freelancer...</p>
         </div>
       </div>
     )
@@ -155,16 +151,16 @@ export default function Checkout() {
 
   if (error && !freelancer) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
             <i className="ri-error-warning-line text-2xl text-red-600"></i>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h2 className="mb-2 text-xl font-semibold text-gray-900">Error</h2>
+          <p className="mb-4 text-gray-600">{error}</p>
           <button
             onClick={() => navigate.push("/freelancers")}
-            className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-cyan-700 transition-colors cursor-pointer whitespace-nowrap"
+            className="cursor-pointer rounded-lg bg-emerald-600 px-6 py-2 whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
           >
             Ver Freelancers
           </button>
@@ -174,28 +170,24 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Contratar Freelancer
-          </h1>
+        <div className="mb-8 text-center">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">Contratar Freelancer</h1>
           <p className="text-gray-600">
             Completa los detalles del proyecto y realiza el pago seguro
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Formulario de proyecto */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                Detalles del Proyecto
-              </h2>
+            <div className="rounded-lg bg-white p-6 shadow-sm">
+              <h2 className="mb-6 text-xl font-semibold text-gray-900">Detalles del Proyecto</h2>
 
               {error && (
-                <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
+                <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-600">
                   <div className="flex items-center">
                     <i className="ri-error-warning-line mr-2"></i>
                     <strong>Error:</strong>
@@ -208,7 +200,7 @@ export default function Checkout() {
                 <div>
                   <label
                     htmlFor="projectTitle"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="mb-2 block text-sm font-medium text-gray-700"
                   >
                     Título del Proyecto *
                   </label>
@@ -220,14 +212,14 @@ export default function Checkout() {
                     value={formData.projectTitle}
                     onChange={handleInputChange}
                     placeholder="Ej: Desarrollo de sitio web corporativo"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="projectDescription"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="mb-2 block text-sm font-medium text-gray-700"
                   >
                     Descripción del Proyecto *
                   </label>
@@ -239,22 +231,20 @@ export default function Checkout() {
                     value={formData.projectDescription}
                     onChange={handleInputChange}
                     placeholder="Describe los detalles del proyecto, objetivos y expectativas..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
                     <label
                       htmlFor="amount"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="mb-2 block text-sm font-medium text-gray-700"
                     >
                       Presupuesto (USD) *
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-2 text-gray-500">
-                        $
-                      </span>
+                      <span className="absolute top-2 left-3 text-gray-500">$</span>
                       <input
                         type="number"
                         id="amount"
@@ -266,18 +256,16 @@ export default function Checkout() {
                         value={formData.amount}
                         onChange={handleInputChange}
                         placeholder="100.00"
-                        className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full rounded-md border border-gray-300 py-2 pr-3 pl-8 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                       />
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Mínimo $5 - Máximo $10,000
-                    </p>
+                    <p className="mt-1 text-xs text-gray-500">Mínimo $5 - Máximo $10,000</p>
                   </div>
 
                   <div>
                     <label
                       htmlFor="duration"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="mb-2 block text-sm font-medium text-gray-700"
                     >
                       Duración Estimada
                     </label>
@@ -286,7 +274,7 @@ export default function Checkout() {
                       name="duration"
                       value={formData.duration}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 pr-8"
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 pr-8 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                     >
                       <option value="1-3 días">1-3 días</option>
                       <option value="1 semana">1 semana</option>
@@ -301,7 +289,7 @@ export default function Checkout() {
                 <div>
                   <label
                     htmlFor="requirements"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="mb-2 block text-sm font-medium text-gray-700"
                   >
                     Requisitos Especiales
                   </label>
@@ -312,7 +300,7 @@ export default function Checkout() {
                     value={formData.requirements}
                     onChange={handleInputChange}
                     placeholder="Cualquier requisito adicional o especificación técnica..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
 
@@ -320,11 +308,11 @@ export default function Checkout() {
                   <button
                     type="submit"
                     disabled={processing}
-                    className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
+                    className="flex w-full cursor-pointer items-center justify-center rounded-md border border-transparent bg-emerald-600 px-4 py-3 text-sm font-medium whitespace-nowrap text-white shadow-sm hover:bg-cyan-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {processing ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                         Procesando...
                       </>
                     ) : (
@@ -341,29 +329,25 @@ export default function Checkout() {
 
           {/* Resumen del freelancer */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Freelancer Seleccionado
-              </h3>
+            <div className="sticky top-4 rounded-lg bg-white p-6 shadow-sm">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Freelancer Seleccionado</h3>
 
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mr-3">
+              <div className="mb-4 flex items-center">
+                <div className="mr-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
                   {freelancer?.avatar_url ? (
                     <img
                       src={freelancer.avatar_url}
                       alt={freelancer.full_name}
-                      className="w-12 h-12 rounded-full object-cover"
+                      className="h-12 w-12 rounded-full object-cover"
                     />
                   ) : (
-                    <i className="ri-user-line text-emerald-600 text-xl"></i>
+                    <i className="ri-user-line text-xl text-emerald-600"></i>
                   )}
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">
-                    {freelancer?.full_name}
-                  </h4>
+                  <h4 className="font-medium text-gray-900">{freelancer?.full_name}</h4>
                   <div className="flex items-center text-sm text-gray-600">
-                    <i className="ri-star-fill text-yellow-500 mr-1"></i>
+                    <i className="ri-star-fill mr-1 text-yellow-500"></i>
                     <span>{freelancer?.rating?.toFixed(1) || "5.0"}</span>
                     <span className="mx-2">•</span>
                     <span>{freelancer?.total_reviews || 0} reseñas</span>
@@ -371,41 +355,35 @@ export default function Checkout() {
                 </div>
               </div>
 
-              <div className="space-y-3 mb-6">
+              <div className="mb-6 space-y-3">
                 <div className="flex items-center text-sm text-gray-600">
                   <i className="ri-money-dollar-circle-line mr-2 text-emerald-600"></i>
                   <span>${freelancer?.hourly_rate}/hora</span>
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <i className="ri-time-line mr-2 text-emerald-600"></i>
-                  <span>
-                    {freelancer?.experience_years} años de experiencia
-                  </span>
+                  <span>{freelancer?.experience_years} años de experiencia</span>
                 </div>
               </div>
 
               {freelancer?.skills && freelancer.skills.length > 0 && (
                 <div className="mb-6">
-                  <h5 className="text-sm font-medium text-gray-900 mb-2">
-                    Habilidades
-                  </h5>
+                  <h5 className="mb-2 text-sm font-medium text-gray-900">Habilidades</h5>
                   <div className="flex flex-wrap gap-1">
-                    {freelancer.skills
-                      .slice(0, 6)
-                      .map((skill: string, index: number) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-emerald-100 text-emerald-800"
-                        >
-                          {skill}
-                        </span>
-                      ))}
+                    {freelancer.skills.slice(0, 6).map((skill: string, index: number) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs text-emerald-800"
+                      >
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}
 
               <div className="border-t pt-4">
-                <div className="flex items-center text-xs text-gray-500 mb-2">
+                <div className="mb-2 flex items-center text-xs text-gray-500">
                   <i className="ri-shield-check-line mr-1 text-emerald-600"></i>
                   <span>Pago protegido por Stripe</span>
                 </div>
