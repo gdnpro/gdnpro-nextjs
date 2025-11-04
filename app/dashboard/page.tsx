@@ -5,6 +5,10 @@ import FreelancerDashboardUI from "./FreelancerDashboardUI"
 import ClientDashboardUI from "./ClientDashboardUI"
 import AdminDashboardUI from "./AdminDashboardUI"
 
+// Force dynamic rendering to prevent caching and ensure session is checked on every request
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function Page() {
   const supabase = await supabaseServer()
 
