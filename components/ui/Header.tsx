@@ -16,6 +16,15 @@ export default function Header() {
   const navigate = useRouter()
 
   const userMenuRef = useRef<HTMLDivElement>(null)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+  }, [isMenuOpen])
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -28,11 +37,19 @@ export default function Header() {
       ) {
         setIsUserMenuOpen(false)
       }
+
+      if (
+        isMenuOpen &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(target)
+      ) {
+        setIsMenuOpen(false)
+      }
     }
 
     document.addEventListener("click", handleClickOutside)
     return () => document.removeEventListener("click", handleClickOutside)
-  }, [isUserMenuOpen])
+  }, [isUserMenuOpen, isMenuOpen])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -174,7 +191,7 @@ export default function Header() {
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden ">
+          <div className="md:hidden " ref={mobileMenuRef}>
             <div className="px-2 pt-2 pb-3 space-y-1">
               <ul>
                 {menuItems.map((item, index) => (

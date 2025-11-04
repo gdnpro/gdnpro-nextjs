@@ -296,7 +296,7 @@ export default function AdminContacts() {
 
           {/* Configuración WhatsApp */}
           <div className="bg-linear-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6 mb-8">
-            <div className="flex items-center justify-between">
+            <div className="flex md:items-center flex-col md:flex-row gap-6 md:gap-0 justify-between">
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
                   <i className="ri-whatsapp-line text-xl text-green-600"></i>
