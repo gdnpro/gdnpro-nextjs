@@ -31,7 +31,7 @@ export default function RootLayout({
       <head>
         <SEO
           title="GDN Pro"
-          description="GDN Pro es una plataforma en la desarrolladores freelancers y clientes en búsqueda de trabajadores se encuentran y llegan a acuerdos corporativos. En GDN PRO creamos soluciones digitales innovadoras. Desarrollo web, apps móviles y marketing digital de clase mundial."
+          description="GDN Pro es una plataforma en la que desarrolladores freelancers y clientes en búsqueda de trabajadores se encuentran y llegan a acuerdos corporativos. En GDN PRO creamos soluciones digitales innovadoras. Desarrollo web, apps móviles y marketing digital de clase mundial."
           canonical="https://gdnpro.com"
         />
       </head>

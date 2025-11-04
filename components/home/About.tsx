@@ -27,7 +27,7 @@ export default function About() {
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               Somos una empresa de consultoría digital especializada en
               transformar ideas en soluciones tecnológicas innovadoras. Con más
-              de 4 años de experiencia, hemos ayudado a empresas de todos los
+              de 2 años de experiencia, hemos ayudado a empresas de todos los
               tamaños a digitalizar sus procesos y alcanzar sus objetivos.
             </p>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
@@ -80,7 +80,7 @@ export default function About() {
             />
             <div className="absolute -bottom-8 -left-8 bg-white rounded-2xl p-6 shadow-xl">
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary mb-2">2021</div>
+                <div className="text-3xl font-bold text-primary mb-2">2023</div>
                 <div className="text-gray-600">Fundada</div>
               </div>
             </div>
