@@ -30,23 +30,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     let mounted = true
 
     const init = async () => {
+      // Use getSession() instead of getUser() to properly restore sessions from localStorage
+      // getSession() reads from localStorage/cookies, while getUser() makes an API call
       const {
-        data: { user },
-      } = await supabase.auth.getUser()
+        data: { session },
+      } = await supabase.auth.getSession()
 
       if (!mounted) return
 
-      setProfile(user ?? null)
+      const user = session?.user ?? null
+      setProfile(user)
       setIsAuthenticated(!!user)
 
       if (user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("user_id", user.id)
-          .single()
+        try {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("user_id", user.id)
+            .single()
 
-        setUser(data)
+          if (error) {
+            console.error("Error loading profile:", error)
+            setUser(null)
+          } else {
+            setUser(data)
+          }
+        } catch (error) {
+          console.error("Error loading profile:", error)
+          setUser(null)
+        }
+      } else {
+        setUser(null)
       }
 
       setLoading(false)
@@ -56,20 +71,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return
 
-      setProfile(session?.user ?? null)
-      setIsAuthenticated(!!session?.user)
+      const user = session?.user ?? null
+      setProfile(user)
+      setIsAuthenticated(!!user)
 
-      if (session?.user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("user_id", session.user.id)
-          .single()
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("user_id", user.id)
+            .single()
 
-        setUser(data)
+          if (error) {
+            console.error("Error loading profile:", error)
+            setUser(null)
+          } else {
+            setUser(data)
+          }
+        } catch (error) {
+          console.error("Error loading profile:", error)
+          setUser(null)
+        }
       } else {
         setUser(null)
       }

@@ -19,7 +19,7 @@ export default function Freelancers() {
   })
 
   useEffect(() => {
-    document.title = "Freelancer | GDN Pro"
+    document.title = "Freelancer | GDN Pro | Encuentra al freelancer ideal para tu proyecto"
     window.scrollTo(0, 0)
   }, [])
 

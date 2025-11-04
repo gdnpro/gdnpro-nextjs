@@ -13,9 +13,7 @@ interface FreelancerSearchProps {
   }) => void
 }
 
-export default function FreelancerSearch({
-  onFiltersChange,
-}: FreelancerSearchProps) {
+export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchProps) {
   const [searchFilters, setSearchFilters] = useState({
     search: "",
     category: "",
@@ -45,12 +43,7 @@ export default function FreelancerSearch({
     "Expert (10+ años)",
   ]
 
-  const budgetRanges = [
-    "$10-25/hora",
-    "$25-50/hora",
-    "$50-100/hora",
-    "$100+/hora",
-  ]
+  const budgetRanges = ["$10-25/hora", "$25-50/hora", "$50-100/hora", "$100+/hora"]
 
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = {
@@ -79,46 +72,41 @@ export default function FreelancerSearch({
   }
 
   return (
-    <section id="freelancer-search" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+    <section id="freelancer-search" className="bg-white py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mb-8 text-center">
+          <h2 className="mb-4 text-4xl font-bold text-gray-900">
             Encuentra el Freelancer Perfecto
           </h2>
           <p className="text-xl text-gray-600">
-            Filtra por especialidad, experiencia y presupuesto para encontrar el
-            talento ideal
+            Filtra por especialidad, experiencia y presupuesto para encontrar el talento ideal
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="rounded-2xl bg-white p-8 shadow-lg">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Search Input */}
             <div className="lg:col-span-3">
               <div className="relative">
-                <i className="ri-search-line absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl"></i>
+                <i className="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 transform text-xl text-gray-400"></i>
                 <input
                   type="text"
                   placeholder="Buscar por habilidades, nombre o descripción..."
                   value={searchFilters.search}
                   onChange={(e) => handleFilterChange("search", e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 border transition-colors border-gray-300 rounded-xl focus:ring-2 focus:outline-none focus:ring-cyan-500 focus:border-transparent text-lg"
+                  className="w-full rounded-xl border border-gray-300 py-4 pr-4 pl-12 text-lg transition-colors focus:border-transparent focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                 />
               </div>
             </div>
 
             {/* Category Filter */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Categoría
-              </label>
+              <label className="mb-2 block font-semibold text-gray-700">Categoría</label>
               <div className="relative">
                 <select
                   value={searchFilters.category}
-                  onChange={(e) =>
-                    handleFilterChange("category", e.target.value)
-                  }
-                  className="w-full px-4 focus:outline-none py-3 pr-8 border border-gray-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent appearance-none cursor-pointer"
+                  onChange={(e) => handleFilterChange("category", e.target.value)}
+                  className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 px-4 py-3 pr-8 focus:border-transparent focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                 >
                   <option value="">Todas las categorías</option>
                   {categories.map((category, index) => (
@@ -127,22 +115,18 @@ export default function FreelancerSearch({
                     </option>
                   ))}
                 </select>
-                <i className="ri-arrow-down-s-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                <i className="ri-arrow-down-s-line pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400"></i>
               </div>
             </div>
 
             {/* Experience Filter */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Experiencia
-              </label>
+              <label className="mb-2 block font-semibold text-gray-700">Experiencia</label>
               <div className="relative">
                 <select
                   value={searchFilters.experience}
-                  onChange={(e) =>
-                    handleFilterChange("experience", e.target.value)
-                  }
-                  className="w-full px-4 py-3 pr-8 focus:outline-none border border-gray-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent appearance-none cursor-pointer"
+                  onChange={(e) => handleFilterChange("experience", e.target.value)}
+                  className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 px-4 py-3 pr-8 focus:border-transparent focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                 >
                   <option value="">Cualquier nivel</option>
                   {experienceLevels.map((level, index) => (
@@ -151,20 +135,18 @@ export default function FreelancerSearch({
                     </option>
                   ))}
                 </select>
-                <i className="ri-arrow-down-s-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                <i className="ri-arrow-down-s-line pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400"></i>
               </div>
             </div>
 
             {/* Budget Filter */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Presupuesto por hora
-              </label>
+              <label className="mb-2 block font-semibold text-gray-700">Presupuesto por hora</label>
               <div className="relative">
                 <select
                   value={searchFilters.budget}
                   onChange={(e) => handleFilterChange("budget", e.target.value)}
-                  className="w-full px-4 py-3 pr-8 border focus:outline-none border-gray-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent appearance-none cursor-pointer"
+                  className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 px-4 py-3 pr-8 focus:border-transparent focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                 >
                   <option value="">Cualquier presupuesto</option>
                   {budgetRanges.map((range, index) => (
@@ -173,22 +155,22 @@ export default function FreelancerSearch({
                     </option>
                   ))}
                 </select>
-                <i className="ri-arrow-down-s-line absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                <i className="ri-arrow-down-s-line pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400"></i>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <button
               onClick={handleSearch}
-              className="bg-primary hover:bg-cyan-700 text-white px-8 py-3 rounded-xl font-semibold transition-all  whitespace-nowrap cursor-pointer"
+              className="bg-primary cursor-pointer rounded-xl px-8 py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
             >
               <i className="ri-search-line mr-2"></i>
               Buscar Freelancers
             </button>
             <button
               onClick={handleClearFilters}
-              className="border border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 rounded-xl font-semibold transition-all  whitespace-nowrap cursor-pointer"
+              className="cursor-pointer rounded-xl border border-gray-300 px-8 py-3 font-semibold whitespace-nowrap text-gray-700 transition-all hover:bg-gray-50"
             >
               <i className="ri-refresh-line mr-2"></i>
               Limpiar Filtros
