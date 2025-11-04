@@ -138,7 +138,7 @@ export default function Register() {
         }
       }
 
-      console.log("🚀 Iniciando registro...")
+      console.log("🚀 Starting registration...")
 
       // 1. Registrar usuario en Supabase Auth SIN CONFIRMACIÓN DE EMAIL
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -194,7 +194,7 @@ export default function Register() {
 
       // 3. Subir foto de perfil si existe (solo para freelancers)
       if (userType === "freelancer" && formData.profileImage) {
-        console.log("📸 Subiendo foto de perfil...")
+        console.log("📸 Uploading profile photo...")
 
         try {
           const fileName = `${authData.user.id}-${Date.now()}.${formData.profileImage.name.split(".").pop()}`
@@ -214,7 +214,7 @@ export default function Register() {
 
           if (!uploadResponse.ok) {
             const errorText = await uploadResponse.text()
-            console.error("❌ Error en respuesta de upload:", errorText)
+            console.error("❌ Error in upload response:", errorText)
             throw new Error("Error subiendo imagen")
           }
 
@@ -222,12 +222,12 @@ export default function Register() {
 
           if (uploadResult.success && uploadResult.publicUrl) {
             avatarUrl = uploadResult.publicUrl
-            console.log("✅ Foto subida exitosamente:", avatarUrl)
+            console.log("✅ Photo uploaded successfully:", avatarUrl)
           } else {
-            console.error("❌ Error en resultado de upload:", uploadResult)
+            console.error("❌ Error in upload result:", uploadResult)
           }
         } catch (uploadError) {
-          console.error("❌ Error subiendo foto:", uploadError)
+          console.error("❌ Error uploading photo:", uploadError)
           // No fallar el registro por error de foto
         }
       }
@@ -252,14 +252,14 @@ export default function Register() {
         }),
       }
 
-      console.log("💾 Creando perfil:", profileData)
+      console.log("💾 Creating profile:", profileData)
 
       const { error: profileError } = await supabase
         .from("profiles")
         .insert([profileData])
 
       if (profileError) {
-        console.error("❌ Error creating perfil:", profileError)
+        console.error("❌ Error creating profile:", profileError)
         throw profileError
       }
 
@@ -300,14 +300,14 @@ export default function Register() {
 
       // 6. Redirigir según el tipo de usuario
       if (userType === "freelancer") {
-        console.log("🎯 Redirigiendo a dashboard de freelancer...")
+        console.log("🎯 Redirecting to freelancer dashboard...")
         navigate.push("/dashboard/freelancer")
       } else {
-        console.log("🎯 Redirigiendo a dashboard de cliente...")
+        console.log("🎯 Redirecting to client dashboard...")
         navigate.push("/dashboard/client")
       }
     } catch (error: any) {
-      console.error("💥 Error en registro:", error)
+      console.error("💥 Registration error:", error)
       setError(error.message || "Error al crear la cuenta")
     } finally {
       setLoading(false)

@@ -84,7 +84,7 @@ export default function Login() {
               throw new Error("No se pudo confirmar el email automáticamente")
             }
           } catch (confirmError) {
-            console.error("❌ Error confirmando email:", confirmError)
+            console.error("❌ Error confirming email:", confirmError)
             throw new Error(
               "Tu cuenta necesita verificación de email. Por favor contacta al soporte."
             )
@@ -100,25 +100,21 @@ export default function Login() {
 
       await processSuccessfulLogin(authData.user)
     } catch (error: any) {
-      console.error("💥 Error completo de login:", error)
+      console.error("💥 Complete login error:", error)
 
       // Mostrar errores más específicos
       if (error.message?.includes("Invalid login credentials")) {
-        setError("Email o contraseña incorrectos. Verifica tus datos.")
+        setError("Email o contraseña incorrectos.")
       } else if (error.message?.includes("Invalid API key")) {
-        setError(
-          "Error de configuración. Las credenciales han sido actualizadas."
-        )
+        setError("Las credenciales han sido actualizadas.")
       } else if (error.message?.includes("network")) {
-        setError("Error de conexión. Verifica tu internet.")
+        setError("Verifica tu internet.")
       } else if (error.message?.includes("Email not confirmed")) {
-        setError(
-          "Tu cuenta necesita verificación. Intentando confirmar automáticamente..."
-        )
+        setError("Tu cuenta necesita ser verificada.")
       } else {
         setError(error.message || "Error desconocido al iniciar sesión")
       }
-    } finally {
+
       setLoading(false)
     }
   }
@@ -133,12 +129,13 @@ export default function Login() {
       .single()
 
     if (profileError) {
-      console.error("⚠️ Error al obtener perfil:", profileError)
+      console.error("⚠️ Error getting profile:", profileError)
       // Si no encuentra perfil, redirigir a completar registro
-      navigate.push("/register")
+      navigate.push("/auth/register")
       return
     }
 
+    setLoading(false)
     navigate.push("/dashboard")
   }
 
@@ -146,7 +143,7 @@ export default function Login() {
     try {
       supabase.auth.resend({ type: "signup", email: email })
     } catch (error) {
-      console.log(error)
+      console.error("Error resending email:", error)
     }
   }
 
@@ -201,19 +198,6 @@ export default function Login() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
-              <div className="flex items-center">
-                <i className="ri-error-warning-line mr-2"></i>
-                <strong>Error:</strong>
-              </div>
-              <p className="mt-1">{error}</p>
-              <button className="underline pt-2" onClick={handleResendEmail}>
-                Reenviar verificación
-              </button>
-            </div>
-          )}
-
           <form className="space-y-6" onSubmit={handleLogin}>
             <div>
               <label
@@ -258,6 +242,20 @@ export default function Login() {
                 />
               </div>
             </div>
+
+            {error && (
+              <div className="my-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
+                <p className="mt-1">{error}</p>
+                {error.includes("Email not confirmed") && (
+                  <button
+                    className="underline pt-2"
+                    onClick={handleResendEmail}
+                  >
+                    Reenviar verificación
+                  </button>
+                )}
+              </div>
+            )}
 
             <div>
               <button

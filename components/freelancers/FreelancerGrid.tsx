@@ -360,7 +360,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   const sendMessage = async () => {
     if (!newMessage.trim() || !conversationId || sendingMessage) {
       console.log(
-        "❌ No se puede enviar: mensaje vacío, sin conversación o ya enviando"
+        "❌ Cannot send: empty message, no conversation, or already sending"
       )
       return
     }
@@ -423,7 +423,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         dismissible: true,
         icon: true,
       })
-      console.error("Error enviando mensaje:", err)
+      console.error("Error sending message:", err)
     } finally {
       setSendingMessage(false)
     }

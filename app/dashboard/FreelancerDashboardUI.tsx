@@ -298,7 +298,7 @@ export default function FreelancerDashboardUI() {
         .order("created_at", { ascending: false })
 
       if (proposalsError) {
-        console.error("❌ Error cargando propuestas:", proposalsError)
+        console.error("❌ Error loading proposals:", proposalsError)
       } else {
         setProposals(proposalsData || [])
       }
@@ -339,7 +339,7 @@ export default function FreelancerDashboardUI() {
 
   const loadConversations = async () => {
     if (!user) {
-      console.log("❌ No hay perfil disponible")
+      console.log("❌ No profile available")
       return
     }
 
@@ -370,9 +370,9 @@ export default function FreelancerDashboardUI() {
       )
 
       if (!response.ok) {
-        console.error("❌ Error HTTP:", response.status, response.statusText)
+        console.error("❌ HTTP Error:", response.status, response.statusText)
         const errorText = await response.text()
-        console.error("❌ Error detalle:", errorText)
+        console.error("❌ Error detail:", errorText)
         setConversations([])
         setConversationsLoading(false)
         return
@@ -383,11 +383,11 @@ export default function FreelancerDashboardUI() {
       if (data.success) {
         setConversations(data.conversations || [])
       } else {
-        console.error("❌ Error en respuesta:", data.error)
+        console.error("❌ Error in response:", data.error)
         setConversations([])
       }
     } catch (error) {
-      console.error("💥 Error completo loading conversations:", error)
+      console.error("💥 Complete error loading conversations:", error)
       setConversations([])
     } finally {
       setConversationsLoading(false)
@@ -509,7 +509,7 @@ export default function FreelancerDashboardUI() {
         dismissible: true,
         icon: true,
       })
-      console.error("Error enviando mensaje:", error)
+      console.error("Error sending message:", error)
     } finally {
       setSendingMessage(false)
     }
@@ -647,7 +647,7 @@ export default function FreelancerDashboardUI() {
             dismissible: true,
             icon: true,
           })
-          console.error("Error cargando detalles del proyecto:", error)
+          console.error("Error loading project details:", error)
           return
         }
 
@@ -696,7 +696,7 @@ export default function FreelancerDashboardUI() {
             dismissible: true,
             icon: true,
           })
-          console.error("Error cargando detalles del proyecto:", error)
+          console.error("Error loading project details:", error)
           return
         }
 
@@ -753,7 +753,7 @@ export default function FreelancerDashboardUI() {
             dismissible: true,
             icon: true,
           })
-          console.error("Error cargando detalles del proyecto:", error)
+          console.error("Error loading project details:", error)
           return
         }
 

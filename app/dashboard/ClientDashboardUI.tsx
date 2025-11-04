@@ -234,11 +234,11 @@ export default function ClientDashboardUI() {
         if (data.success) {
           setConversations(data.conversations || [])
         } else {
-          console.error("Error en respuesta del servidor:", data.error)
+          console.error("Error in server response:", data.error)
         }
       } else {
         const errorText = await response.text()
-        console.error("Error en respuesta HTTP:", response.status, errorText)
+        console.error("Error in HTTP response:", response.status, errorText)
       }
     } catch (error) {
       console.error("Error loading conversations:", error)
@@ -355,7 +355,7 @@ export default function ClientDashboardUI() {
         throw new Error(data.error || "Error desconocido al enviar mensaje")
       }
     } catch (error: any) {
-      console.error("Error enviando mensaje:", error)
+      console.error("Error sending message:", error)
       window.toast({
         title: "Error al enviar mensaje",
         type: "error",

@@ -55,7 +55,7 @@ export default function LiveChat() {
 
     try {
       console.log(
-        "🔍 Verificando respuesta del admin para conversación:",
+        "🔍 Checking admin response for conversation:",
         conversation.id
       )
 
@@ -74,12 +74,12 @@ export default function LiveChat() {
 
       if (response.ok) {
         const data = await response.json()
-        console.log("📨 Respuesta del servidor:", data)
+        console.log("📨 Server response:", data)
 
         if (data.success && data.admin_response) {
           const adminMessage = data.admin_response
 
-          console.log("💬 Mensaje del admin encontrado:", {
+          console.log("💬 Admin message found:", {
             id: adminMessage.id,
             message: adminMessage.message.substring(0, 50) + "...",
             created_at: adminMessage.created_at,
@@ -97,7 +97,7 @@ export default function LiveChat() {
           const isNewerThanLastChecked =
             !lastCheckedMessageId || adminMessage.id !== lastCheckedMessageId
 
-          console.log("🔄 Verificación de mensaje:", {
+          console.log("🔄 Message verification:", {
             isNewMessage,
             isNewerThanLastChecked,
             lastCheckedMessageId,
@@ -105,7 +105,7 @@ export default function LiveChat() {
           })
 
           if (isNewMessage && isNewerThanLastChecked) {
-            console.log("✅ Agregando nuevo mensaje del admin")
+            console.log("✅ Adding new admin message")
 
             const newAdminMessage: Message = {
               id: adminMessage.id,
@@ -119,26 +119,26 @@ export default function LiveChat() {
               // Verificar una vez más que no esté duplicado
               const exists = prev.some((msg) => msg.id === adminMessage.id)
               if (exists) {
-                console.log("⚠️ Mensaje ya existe, no agregando")
+                console.log("⚠️ Message already exists, not adding")
                 return prev
               }
-              console.log("📝 Agregando mensaje a la lista")
+              console.log("📝 Adding message to list")
               return [...prev, newAdminMessage]
             })
 
             setIsWaitingForResponse(false)
             setLastCheckedMessageId(adminMessage.id)
           } else {
-            console.log("ℹ️ Mensaje ya procesado o no es nuevo")
+            console.log("ℹ️ Message already processed or not new")
           }
         } else {
-          console.log("📭 No hay nuevas respuestas del admin")
+          console.log("📭 No new admin responses")
         }
       } else {
-        console.error("❌ Error en respuesta del servidor:", response.status)
+        console.error("❌ Error in server response:", response.status)
       }
     } catch (error) {
-      console.error("❌ Error verificando respuesta del admin:", error)
+      console.error("❌ Error checking admin response:", error)
     }
   }
 
@@ -152,7 +152,7 @@ export default function LiveChat() {
       // Guardar nombre del cliente
       localStorage.setItem("clientName", clientName)
 
-      console.log("🆕 Iniciando conversación para:", clientName)
+      console.log("🆕 Starting conversation for:", clientName)
 
       // Usar el edge function para crear la conversación de soporte
       const response = await fetch(
@@ -172,7 +172,7 @@ export default function LiveChat() {
 
       if (response.ok && data.success && data.conversation) {
         setConversation(data.conversation)
-        console.log("✅ Conversación creada:", data.conversation.id)
+        console.log("✅ Conversation created:", data.conversation.id)
 
         // Mensaje de bienvenida
         const welcomeMessage: Message = {
@@ -185,7 +185,7 @@ export default function LiveChat() {
 
         setMessages([welcomeMessage])
       } else {
-        console.error("Error en respuesta del servidor:", data)
+        console.error("Error in server response:", data)
         throw new Error(data.error || "Error creando conversación")
       }
     } catch (error) {
@@ -230,7 +230,7 @@ export default function LiveChat() {
     setIsLoading(true)
     setIsWaitingForResponse(true)
 
-    console.log("📤 Enviando mensaje:", newMessage.substring(0, 50) + "...")
+    console.log("📤 Sending message:", newMessage.substring(0, 50) + "...")
 
     try {
       // Enviar mensaje a WhatsApp del admin
@@ -252,7 +252,7 @@ export default function LiveChat() {
       const data = await response.json()
 
       if (response.ok && data.success) {
-        console.log("✅ Mensaje enviado exitosamente")
+        console.log("✅ Message sent successfully")
 
         // Mostrar mensaje de confirmación
         const confirmMessage: Message = {
@@ -268,11 +268,11 @@ export default function LiveChat() {
 
         // Iniciar verificación inmediata de respuestas
         setTimeout(() => {
-          console.log("🔄 Iniciando verificación de respuestas...")
+          console.log("🔄 Starting response verification...")
           checkForAdminResponse()
         }, 1000)
       } else {
-        console.error("Error en respuesta del servidor:", data)
+        console.error("Error in server response:", data)
         throw new Error(data.error || "Error enviando mensaje")
       }
     } catch (error) {

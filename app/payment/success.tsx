@@ -55,10 +55,10 @@ export default function SuccessPayment() {
         throw new Error(data.error || "Error al verificar el pago")
       }
 
-      console.log("✅ Pago verificado:", data)
+      console.log("✅ Payment verified:", data)
       setPaymentData(data)
     } catch (error: any) {
-      console.error("❌ Error verificando pago:", error)
+      console.error("❌ Error verifying payment:", error)
       setError(error.message)
     } finally {
       setLoading(false)

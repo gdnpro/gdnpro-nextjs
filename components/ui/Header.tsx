@@ -36,7 +36,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    navigate.push("/")
+    navigate.push("/auth/login")
     setIsUserMenuOpen(false)
   }
 

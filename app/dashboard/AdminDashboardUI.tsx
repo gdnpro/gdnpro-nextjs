@@ -83,11 +83,11 @@ export default function AdminContacts() {
           setContacts(result.messages || [])
         }
       } else {
-        console.error("Error cargando mensajes:", response.statusText)
+        console.error("Error loading messages:", response.statusText)
         setContacts([])
       }
     } catch (error) {
-      console.error("Error cargando contactos:", error)
+      console.error("Error loading contacts:", error)
       setContacts([])
     } finally {
       setLoading(false)
@@ -113,12 +113,12 @@ export default function AdminContacts() {
         .eq("id", contactId)
 
       if (error) {
-        console.error("Error actualizando estado:", error)
+        console.error("Error updating status:", error)
         // Revertir cambio local si hay error
         loadContacts()
       }
     } catch (error) {
-      console.error("Error actualizando estado:", error)
+      console.error("Error updating status:", error)
       loadContacts()
     }
   }
@@ -208,7 +208,7 @@ export default function AdminContacts() {
         dismissible: true,
         icon: true,
       })
-      console.error("Error enviando respuesta:", error)
+      console.error("Error sending response:", error)
     } finally {
       setSendingReply(false)
     }
