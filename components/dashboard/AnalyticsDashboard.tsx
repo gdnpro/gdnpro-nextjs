@@ -21,6 +21,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
   const [metrics, setMetrics] = useState<AnalyticsData["metrics"] | null>(null)
   const [chartData, setChartData] = useState<AnalyticsData["monthlyData"]>([])
   const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+  const [growthRate, setGrowthRate] = useState(0)
 
   useEffect(() => {
     loadAnalytics()
@@ -124,12 +125,14 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         })
         .reduce((sum: number, t: Transaction) => sum + (Number(t.amount) || 0), 0) || 0
 
-    const growthRate =
+    const calculatedGrowthRate =
       lastMonthEarnings > 0
         ? ((monthlyEarnings - lastMonthEarnings) / lastMonthEarnings) * 100
         : monthlyEarnings > 0
           ? 100
           : 0
+
+    setGrowthRate(calculatedGrowthRate)
 
     // Generar datos para gráficos (últimos 6 meses)
     const chartData = []
@@ -161,8 +164,8 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
     // Servicios más rentables (basado en categorías de proyectos)
     const serviceStats =
-      projects?.reduce((acc: Record<string, number>, project: Project) => {
-        const category = project.category || "Otros"
+      projects?.reduce((acc: Record<string, { earnings: number; count: number }>, project: Project) => {
+        const category = project.project_type || "Otros"
         const projectEarnings =
           transactions
             ?.filter((t: Transaction) => t.project_id === project.id)
@@ -175,13 +178,13 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         acc[category].count += 1
 
         return acc
-      }, {}) || {}
+      }, {} as Record<string, { earnings: number; count: number }>) || {}
 
-    const topServices = Object.entries(serviceStats)
-      .map(([service, stats]: [string, { earnings: number; count: number }]) => ({
+    const topServices = (Object.entries(serviceStats) as [string, { earnings: number; count: number }][])
+      .map(([service, stats]) => ({
         service,
         earnings: stats.earnings,
-        count: stats.count,
+        projects: stats.count,
       }))
       .sort((a, b) => b.earnings - a.earnings)
       .slice(0, 5)
@@ -196,26 +199,34 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
     const predictedNextMonth = Math.max(0, avgMonthlyEarnings + trend)
     const predictedProjects = Math.ceil((completedProjects / 6) * 1.1) // 10% de crecimiento estimado
 
+    const totalProjects = projects?.length || 0
+    const totalReviews = reviews?.length || 0
+
     setMetrics({
       totalEarnings,
-      monthlyEarnings,
+      totalProjects,
       completedProjects,
+      activeProjects: 0,
       averageRating,
-      growthRate,
-      predictedNextMonth,
-      predictedProjects,
+      totalReviews,
+      monthlyEarnings,
+      pendingEarnings: 0,
     })
 
     setChartData(chartData)
 
     // Configurar analytics con datos calculados
     setAnalytics({
-      totalEarnings,
-      monthlyEarnings,
-      projectsCompleted: completedProjects,
-      averageRating,
-      clientRetention: 85, // Valor por defecto
-      earningsGrowth: growthRate,
+      metrics: {
+        totalEarnings,
+        totalProjects,
+        completedProjects,
+        activeProjects: 0,
+        averageRating,
+        totalReviews,
+        monthlyEarnings,
+        pendingEarnings: 0,
+      },
       monthlyData: chartData,
       topServices,
     })
@@ -232,7 +243,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       })
     }
 
-    if (growthRate < 0) {
+    if (calculatedGrowthRate < 0) {
       recommendations.push({
         type: "growth",
         title: "Aumenta tus ingresos",
@@ -339,26 +350,33 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       })
     }
 
+    const totalReviews = reviews?.length || 0
+
     setMetrics({
       totalEarnings: totalSpent,
-      monthlyEarnings: chartData[chartData.length - 1]?.earnings || 0,
-      completedProjects,
-      averageRating: averageSatisfaction,
-      activeProjects,
       totalProjects,
-      growthRate: 0, // Para clientes, no calculamos crecimiento de la misma manera
+      completedProjects,
+      activeProjects,
+      averageRating: averageSatisfaction,
+      totalReviews,
+      monthlyEarnings: chartData[chartData.length - 1]?.earnings || 0,
+      pendingEarnings: 0,
     })
 
     setChartData(chartData)
 
     // Configurar analytics para cliente
     setAnalytics({
-      totalEarnings: totalSpent,
-      monthlyEarnings: chartData[chartData.length - 1]?.earnings || 0,
-      projectsCompleted: completedProjects,
-      averageRating: averageSatisfaction,
-      clientRetention: 90,
-      earningsGrowth: 0,
+      metrics: {
+        totalEarnings: totalSpent,
+        totalProjects,
+        completedProjects,
+        activeProjects,
+        averageRating: averageSatisfaction,
+        totalReviews,
+        monthlyEarnings: chartData[chartData.length - 1]?.earnings || 0,
+        pendingEarnings: 0,
+      },
       monthlyData: chartData,
       topServices: [],
     })
@@ -455,11 +473,11 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
               <p className="text-sm font-medium text-blue-100">
                 {userType === "freelancer" ? "Ingresos Totales" : "Inversión Total"}
               </p>
-              <p className="mt-1 text-3xl font-bold">${analytics.totalEarnings.toLocaleString()}</p>
+              <p className="mt-1 text-3xl font-bold">${analytics.metrics.totalEarnings.toLocaleString()}</p>
               <div className="mt-2 flex items-center">
                 <i className="ri-arrow-up-line mr-1 text-green-300"></i>
                 <span className="text-sm text-green-300">
-                  +{analytics.earningsGrowth.toFixed(1)}% este mes
+                  +{growthRate.toFixed(1)}% este mes
                 </span>
               </div>
             </div>
@@ -474,7 +492,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
             <div>
               <p className="text-sm font-medium text-emerald-100">Este Mes</p>
               <p className="mt-1 text-3xl font-bold">
-                ${analytics.monthlyEarnings.toLocaleString()}
+                ${analytics.metrics.monthlyEarnings.toLocaleString()}
               </p>
               <div className="mt-2 flex items-center">
                 <i className="ri-calendar-line mr-1 text-emerald-300"></i>
@@ -491,7 +509,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-purple-100">Proyectos Completados</p>
-              <p className="mt-1 text-3xl font-bold">{analytics.projectsCompleted}</p>
+              <p className="mt-1 text-3xl font-bold">{analytics.metrics.completedProjects}</p>
               <div className="mt-2 flex items-center">
                 <i className="ri-check-line mr-1 text-purple-300"></i>
                 <span className="text-sm text-purple-300">Finalizados</span>
@@ -507,12 +525,12 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-amber-100">Rating Promedio</p>
-              <p className="mt-1 text-3xl font-bold">{analytics.averageRating.toFixed(1)}</p>
+              <p className="mt-1 text-3xl font-bold">{analytics.metrics.averageRating.toFixed(1)}</p>
               <div className="mt-2 flex items-center">
                 {[1, 2, 3, 4, 5].map((star: number) => (
                   <i
                     key={star}
-                    className={`ri-star-${star <= analytics.averageRating ? "fill" : "line"} text-sm text-amber-300`}
+                    className={`ri-star-${star <= analytics.metrics.averageRating ? "fill" : "line"} text-sm text-amber-300`}
                   ></i>
                 ))}
               </div>
@@ -580,7 +598,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
                   <div className="flex-1">
                     <div className="mb-1 flex items-center justify-between">
                       <span className="font-medium text-gray-900">{service.service}</span>
-                      <span className="text-sm text-gray-600">{service.count} proyectos</span>
+                      <span className="text-sm text-gray-600">{service.projects} proyectos</span>
                     </div>
                     <div className="relative h-2 overflow-hidden rounded-full bg-gray-200">
                       <div
@@ -613,7 +631,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Ingresos próximo mes</span>
                 <span className="font-semibold text-indigo-600">
-                  ${Math.round(analytics.monthlyEarnings * 1.15).toLocaleString()}
+                  ${Math.round(analytics.metrics.monthlyEarnings * 1.15).toLocaleString()}
                 </span>
               </div>
             </div>
@@ -621,7 +639,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Proyectos estimados</span>
                 <span className="font-semibold text-indigo-600">
-                  {Math.round(analytics.projectsCompleted * 0.3)} nuevos
+                  {Math.round(analytics.metrics.completedProjects * 0.3)} nuevos
                 </span>
               </div>
             </div>

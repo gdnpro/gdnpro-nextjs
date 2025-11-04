@@ -56,7 +56,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
           body: JSON.stringify({
             action: "get-transactions",
           }),
-        }
+        },
       )
 
       const data = await response.json()
@@ -79,7 +79,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
             freelancer:profiles!projects_freelancer_id_fkey(
               id, full_name, email, rating, skills
             )
-          `
+          `,
           )
           .eq("client_id", profile.id)
           .not("freelancer_id", "is", null) // Solo proyectos con freelancer asignado
@@ -93,7 +93,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
             client:profiles!projects_client_id_fkey(
               id, full_name, email, rating
             )
-          `
+          `,
           )
           .eq("freelancer_id", profile.id)
           .in("status", ["in_progress", "completed"])
@@ -128,8 +128,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
   const filteredProjects = projects.filter((project) => {
     if (filter === "all") return true
     if (filter === "paid") return project.payment_status === "paid"
-    if (filter === "pending")
-      return project.payment_status === "pending" || !project.payment_status
+    if (filter === "pending") return project.payment_status === "pending" || !project.payment_status
     return false
   })
 
@@ -190,10 +189,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
   const calculateTotals = () => {
     const paidTransactions = transactions.filter((t) => t.status === "paid")
-    const totalAmount = paidTransactions.reduce(
-      (sum, t) => sum + parseFloat(t.amount),
-      0
-    )
+    const totalAmount = paidTransactions.reduce((sum, t) => sum + t.amount, 0)
     const thisMonth = paidTransactions.filter((t) => {
       const transactionDate = new Date(t.paid_at || t.created_at)
       const now = new Date()
@@ -202,10 +198,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
         transactionDate.getFullYear() === now.getFullYear()
       )
     })
-    const monthlyAmount = thisMonth.reduce(
-      (sum, t) => sum + parseFloat(t.amount),
-      0
-    )
+    const monthlyAmount = thisMonth.reduce((sum, t) => sum + t.amount, 0)
 
     return {
       totalAmount,
@@ -218,7 +211,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <div className="border-primary mx-auto h-8 w-8 animate-spin rounded-full border-b-2"></div>
           <p className="mt-2 text-gray-600">Cargando información de pagos...</p>
         </div>
       </div>
@@ -227,17 +220,15 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="py-12 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
           <i className="ri-error-warning-line text-2xl text-red-600"></i>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
-          Error al cargar
-        </h3>
-        <p className="text-gray-600 mb-4">{error}</p>
+        <h3 className="mb-2 text-lg font-medium text-gray-900">Error al cargar</h3>
+        <p className="mb-4 text-gray-600">{error}</p>
         <button
           onClick={loadData}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors cursor-pointer whitespace-nowrap"
+          className="bg-primary cursor-pointer rounded-lg px-4 py-2 whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
         >
           Intentar de Nuevo
         </button>
@@ -250,58 +241,52 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
   return (
     <div className="space-y-6">
       {/* Estadísticas de pagos */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="rounded-lg border bg-white p-6 shadow-sm">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+            <div className="bg-primary/10 mr-4 flex h-12 w-12 items-center justify-center rounded-lg">
               <i className="ri-money-dollar-circle-line text-primary text-xl"></i>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">
                 {userType === "client" ? "Total Pagado" : "Total Recibido"}
               </p>
-              <p className="text-2xl font-bold text-gray-900">
-                ${totalAmount.toFixed(2)}
-              </p>
+              <p className="text-2xl font-bold text-gray-900">${totalAmount.toFixed(2)}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <div className="rounded-lg border bg-white p-6 shadow-sm">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+            <div className="bg-primary/10 mr-4 flex h-12 w-12 items-center justify-center rounded-lg">
               <i className="ri-calendar-line text-primary text-xl"></i>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Este Mes</p>
-              <p className="text-2xl font-bold text-gray-900">
-                ${monthlyAmount.toFixed(2)}
-              </p>
+              <p className="text-2xl font-bold text-gray-900">${monthlyAmount.toFixed(2)}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <div className="rounded-lg border bg-white p-6 shadow-sm">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
-              <i className="ri-briefcase-line text-purple-600 text-xl"></i>
+            <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100">
+              <i className="ri-briefcase-line text-xl text-purple-600"></i>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Proyectos</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {projects.length}
-              </p>
+              <p className="text-2xl font-bold text-gray-900">{projects.length}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filtros */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border">
+      <div className="rounded-lg border bg-white p-4 shadow-sm">
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+            className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
               filter === "all"
                 ? "bg-primary/10 text-emerald-800"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -311,7 +296,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
           </button>
           <button
             onClick={() => setFilter("paid")}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+            className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
               filter === "paid"
                 ? "bg-green-100 text-green-800"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -324,16 +309,14 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
           </button>
           <button
             onClick={() => setFilter("pending")}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
+            className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
               filter === "pending"
                 ? "bg-yellow-100 text-yellow-800"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
             Pendientes (
-            {projects.filter(
-              (p) => p.payment_status === "pending" || !p.payment_status
-            ).length +
+            {projects.filter((p) => p.payment_status === "pending" || !p.payment_status).length +
               transactions.filter((t) => t.status === "pending").length}
             )
           </button>
@@ -341,22 +324,20 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       </div>
 
       {/* Lista de proyectos pagados */}
-      <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-            <i className="ri-briefcase-line mr-2 text-primary"></i>
+      <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
+        <div className="border-b border-gray-200 px-6 py-4">
+          <h3 className="flex items-center text-lg font-semibold text-gray-900">
+            <i className="ri-briefcase-line text-primary mr-2"></i>
             Proyectos Contratados
           </h3>
         </div>
 
         {filteredProjects.length === 0 && filteredTransactions.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="py-12 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
               <i className="ri-receipt-line text-2xl text-gray-400"></i>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No hay proyectos
-            </h3>
+            <h3 className="mb-2 text-lg font-medium text-gray-900">No hay proyectos</h3>
             <p className="text-gray-600">
               {filter === "all"
                 ? "Aún no tienes proyectos contratados."
@@ -367,20 +348,15 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
           <div className="divide-y divide-gray-200">
             {/* Proyectos */}
             {filteredProjects.map((project) => (
-              <div
-                key={`project-${project.id}`}
-                className="p-6 hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex justify-between items-start mb-4">
+              <div key={`project-${project.id}`} className="p-6 transition-colors hover:bg-gray-50">
+                <div className="mb-4 flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center mb-2">
+                    <div className="mb-2 flex items-center">
                       <i className="ri-briefcase-line text-primary mr-2"></i>
-                      <h4 className="text-lg font-semibold text-gray-900">
-                        {project.title}
-                      </h4>
+                      <h4 className="text-lg font-semibold text-gray-900">{project.title}</h4>
                     </div>
 
-                    <div className="flex items-center text-sm text-gray-600 mb-3 space-x-4">
+                    <div className="mb-3 flex items-center space-x-4 text-sm text-gray-600">
                       <div className="flex items-center">
                         <i className="ri-user-line mr-1"></i>
                         <span>
@@ -396,7 +372,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       </div>
 
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                           project.payment_status === "paid"
                             ? "bg-green-100 text-green-800"
                             : "bg-yellow-100 text-yellow-800"
@@ -409,27 +385,21 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                             <i className="ri-time-line"></i>
                           )}
                         </span>
-                        {project.payment_status === "paid"
-                          ? "Pagado"
-                          : "Pendiente"}
+                        {project.payment_status === "paid" ? "Pagado" : "Pendiente"}
                       </span>
                     </div>
 
-                    <p className="text-gray-700 text-sm line-clamp-2 mb-3">
-                      {project.description}
-                    </p>
+                    <p className="mb-3 line-clamp-2 text-sm text-gray-700">{project.description}</p>
                   </div>
 
-                  <div className="text-right ml-6">
-                    <div className="text-xl font-bold text-primary mb-2">
-                      $
-                      {project.budget ||
-                        `${project.budget_min}-${project.budget_max}`}
+                  <div className="ml-6 text-right">
+                    <div className="text-primary mb-2 text-xl font-bold">
+                      ${project.budget || `${project.budget_min}-${project.budget_max}`}
                     </div>
 
                     <button
                       onClick={() => viewProjectDetails(project)}
-                      className="px-4 py-2 bg-primary hover:bg-cyan-700 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer whitespace-nowrap"
+                      className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                     >
                       <i className="ri-eye-line mr-1"></i>
                       Ver Detalles
@@ -443,59 +413,43 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
             {filteredTransactions.map((transaction) => (
               <div
                 key={`transaction-${transaction.id}`}
-                className="p-6 hover:bg-gray-50 transition-colors"
+                className="p-6 transition-colors hover:bg-gray-50"
               >
-                <div className="flex justify-between items-start">
+                <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center mb-2">
+                    <div className="mb-2 flex items-center">
                       <i className="ri-money-dollar-circle-line text-primary mr-2"></i>
                       <h4 className="text-lg font-semibold text-gray-900">
                         {transaction.project_title}
                       </h4>
                     </div>
 
-                    <div className="flex items-center text-sm text-gray-600 mb-3 space-x-4">
+                    <div className="mb-3 flex items-center space-x-4 text-sm text-gray-600">
                       <div className="flex items-center">
                         <i className="ri-user-line mr-1"></i>
-                        <span>
-                          {userType === "client"
-                            ? transaction.freelancer?.full_name
-                            : transaction.client?.full_name}
-                        </span>
+                        <span>{userType === "client" ? "Freelancer" : "Cliente"}</span>
                       </div>
 
                       <div className="flex items-center">
                         <i className="ri-calendar-line mr-1"></i>
-                        <span>
-                          {formatDate(
-                            transaction.paid_at || transaction.created_at
-                          )}
-                        </span>
+                        <span>{formatDate(transaction.paid_at || transaction.created_at)}</span>
                       </div>
 
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(transaction.status)}`}
                       >
-                        <span className="mr-1">
-                          {getStatusIcon(transaction.status)}
-                        </span>
+                        <span className="mr-1">{getStatusIcon(transaction.status)}</span>
                         {getStatusText(transaction.status)}
                       </span>
                     </div>
-
-                    {transaction.project_description && (
-                      <p className="text-gray-700 text-sm line-clamp-2 mb-3">
-                        {transaction.project_description}
-                      </p>
-                    )}
                   </div>
 
-                  <div className="text-right ml-6">
-                    <div className="text-xl font-bold text-primary mb-2">
+                  <div className="ml-6 text-right">
+                    <div className="text-primary mb-2 text-xl font-bold">
                       ${transaction.amount} {transaction.currency.toUpperCase()}
                     </div>
 
-                    <button className="px-4 py-2 bg-primary hover:bg-cyan-700 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer whitespace-nowrap">
+                    <button className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700">
                       <i className="ri-eye-line mr-1"></i>
                       Ver Detalles
                     </button>
@@ -509,17 +463,15 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
       {/* Modal de Detalles del Proyecto */}
       {showProjectDetails && selectedProject && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white">
             <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
+              <div className="mb-6 flex items-start justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {selectedProject.title}
-                  </h2>
-                  <div className="flex items-center mt-2 space-x-4">
+                  <h2 className="text-2xl font-bold text-gray-900">{selectedProject.title}</h2>
+                  <div className="mt-2 flex items-center space-x-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      className={`rounded-full px-3 py-1 text-sm font-medium ${
                         selectedProject.status === "in_progress"
                           ? "bg-primary/10 text-blue-800"
                           : selectedProject.status === "completed"
@@ -534,81 +486,69 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                           : "Completado"}
                     </span>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      className={`rounded-full px-3 py-1 text-sm font-medium ${
                         selectedProject.payment_status === "paid"
                           ? "bg-primary/10 text-emerald-800"
                           : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
                       <i className="ri-secure-payment-line mr-1"></i>
-                      {selectedProject.payment_status === "paid"
-                        ? "Pagado"
-                        : "Pendiente"}
+                      {selectedProject.payment_status === "paid" ? "Pagado" : "Pendiente"}
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowProjectDetails(false)}
-                  className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                  className="cursor-pointer text-gray-400 hover:text-gray-600"
                 >
                   <i className="ri-close-line text-2xl"></i>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 {/* Información del Proyecto */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="space-y-6 lg:col-span-2">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">
                       Descripción del Proyecto
                     </h3>
-                    <p className="text-gray-700 leading-relaxed">
-                      {selectedProject.description}
-                    </p>
+                    <p className="leading-relaxed text-gray-700">{selectedProject.description}</p>
                   </div>
 
                   {selectedProject.duration && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                      <h3 className="mb-3 text-lg font-semibold text-gray-900">
                         Duración Estimada
                       </h3>
-                      <p className="text-gray-700">
-                        {selectedProject.duration}
-                      </p>
+                      <p className="text-gray-700">{selectedProject.duration}</p>
                     </div>
                   )}
 
                   {selectedProject.requirements && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                      <h3 className="mb-3 text-lg font-semibold text-gray-900">
                         Requisitos Especiales
                       </h3>
-                      <p className="text-gray-700">
-                        {selectedProject.requirements}
-                      </p>
+                      <p className="text-gray-700">{selectedProject.requirements}</p>
                     </div>
                   )}
 
                   {/* Mostrar habilidades si las hay */}
-                  {((userType === "client" &&
-                    selectedProject.freelancer?.skills) ||
-                    (userType === "freelancer" &&
-                      selectedProject.freelancer?.skills)) && (
+                  {((userType === "client" && selectedProject.freelancer?.skills) ||
+                    (userType === "freelancer" && selectedProject.freelancer?.skills)) && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                      <h3 className="mb-3 text-lg font-semibold text-gray-900">
                         Habilidades del Freelancer
                       </h3>
                       <div className="flex flex-wrap gap-2">
-                        {(selectedProject.freelancer?.skills || []).map(
-                          (skill, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-primary/10 text-emerald-800 rounded-full text-sm font-medium"
-                            >
-                              {skill}
-                            </span>
-                          )
-                        )}
+                        {(selectedProject.freelancer?.skills || []).map((skill, index) => (
+                          <span
+                            key={index}
+                            className="bg-primary/10 rounded-full px-3 py-1 text-sm font-medium text-emerald-800"
+                          >
+                            {skill}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -617,27 +557,23 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                 {/* Panel lateral */}
                 <div className="space-y-6">
                   {/* Información del Presupuesto */}
-                  <div className="bg-emerald-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                      Presupuesto
-                    </h3>
-                    <div className="text-2xl font-bold text-primary">
+                  <div className="rounded-lg bg-emerald-50 p-4">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">Presupuesto</h3>
+                    <div className="text-primary text-2xl font-bold">
                       $
                       {selectedProject.budget ||
                         `${selectedProject.budget_min} - ${selectedProject.budget_max}`}
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Precio del proyecto
-                    </p>
+                    <p className="mt-1 text-sm text-gray-600">Precio del proyecto</p>
                   </div>
 
                   {/* Información del Cliente/Freelancer */}
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  <div className="rounded-lg bg-blue-50 p-4">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">
                       {userType === "client" ? "Freelancer" : "Cliente"}
                     </h3>
-                    <div className="flex items-center mb-3">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                    <div className="mb-3 flex items-center">
+                      <div className="bg-primary/10 mr-3 flex h-12 w-12 items-center justify-center rounded-full">
                         <i className="ri-user-line text-primary text-xl"></i>
                       </div>
                       <div>
@@ -647,12 +583,10 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                             : selectedProject.client?.full_name}
                         </h4>
                         <div className="flex items-center text-sm text-gray-600">
-                          {((userType === "client" &&
-                            selectedProject.freelancer?.rating) ||
-                            (userType === "freelancer" &&
-                              selectedProject.client?.rating)) && (
+                          {((userType === "client" && selectedProject.freelancer?.rating) ||
+                            (userType === "freelancer" && selectedProject.client?.rating)) && (
                             <>
-                              <i className="ri-star-fill text-yellow-500 mr-1"></i>
+                              <i className="ri-star-fill mr-1 text-yellow-500"></i>
                               <span>
                                 {(userType === "client"
                                   ? selectedProject.freelancer?.rating
@@ -673,10 +607,8 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                   </div>
 
                   {/* Fechas importantes */}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                      Fechas
-                    </h3>
+                  <div className="rounded-lg bg-gray-50 p-4">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">Fechas</h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Iniciado:</span>
@@ -687,9 +619,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       {selectedProject.status === "completed" && (
                         <div className="flex justify-between">
                           <span className="text-gray-600">Estado:</span>
-                          <span className="font-medium text-green-600">
-                            Completado
-                          </span>
+                          <span className="font-medium text-green-600">Completado</span>
                         </div>
                       )}
                     </div>
@@ -701,7 +631,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
               <div className="mt-6 flex justify-end space-x-3">
                 <button
                   onClick={() => setShowProjectDetails(false)}
-                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap"
+                  className="cursor-pointer rounded-lg border border-gray-300 px-6 py-2 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
                 >
                   Cerrar
                 </button>

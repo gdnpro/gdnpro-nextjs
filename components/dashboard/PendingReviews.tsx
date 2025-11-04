@@ -85,7 +85,8 @@ export const PendingReviews = ({ onReviewsUpdate }: PendingReviewsProps) => {
       }
     } catch (error: unknown) {
       console.error("❌ Error cargando proyectos pendientes:", error)
-      setError(error.message || "Error al cargar proyectos pendientes")
+      const errorMessage = error instanceof Error ? error.message : "Error al cargar proyectos pendientes"
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

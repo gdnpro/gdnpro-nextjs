@@ -61,7 +61,7 @@ export function ReviewsDisplayPublic({
       if (reviewsError) throw reviewsError
 
       // Obtener info de los reviewers
-      const reviewerIds = reviewsData?.map((r) => r.reviewer_id) || []
+      const reviewerIds = reviewsData?.map((r: Review) => r.reviewer_id) || []
       const { data: reviewersData } = await supabase
         .from("profiles")
         .select("id, full_name, avatar_url")
@@ -69,8 +69,8 @@ export function ReviewsDisplayPublic({
 
       // Mapear nombre y avatar a cada reseña
       const reviewsWithReviewer =
-        reviewsData?.map((r) => {
-          const reviewer = reviewersData?.find((p) => p.id === r.reviewer_id)
+        reviewsData?.map((r: Review) => {
+          const reviewer = reviewersData?.find((p: { id: string; full_name: string; avatar_url?: string }) => p.id === r.reviewer_id)
           return {
             ...r,
             reviewer_name: reviewer?.full_name || "Usuario",

@@ -30,7 +30,7 @@ const generateCalendar = ({ month, year, occupiedDates }: Props) => {
     const date = `${year}-${month}-${i < 10 ? "0" + i : i}`
     const dayOfWeek = new Date(year, month - 1, i).getDay() // 0=Dom, 1=Lun,...
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
-    const isOccupied = occupiedDates.includes(date)
+    const isOccupied = occupiedDates[date] === true
     days.push({ day: i, date, isOccupied, isWeekend })
   }
 
@@ -50,10 +50,10 @@ export default function CTA() {
   const [selectedPlatform, setSelectedPlatform] = useState("") // Zoom o WhatsApp
   const [clientName, setClientName] = useState("")
   const [clientContact, setClientContact] = useState("")
-  const [occupiedDates, setOccupiedDates] = useState([
-    "2025-10-05",
-    "2025-10-10",
-  ])
+  const [occupiedDates, setOccupiedDates] = useState<OccupiedDates>({
+    "2025-10-05": true,
+    "2025-10-10": true,
+  })
   const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([])
 
   const currentDate = new Date()
@@ -73,7 +73,7 @@ export default function CTA() {
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
-  const handleTimeSelect = (e: React.ChangeEvent<HTMLInputElement>) => setSelectedTime(e.target.value)
+  const handleTimeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => setSelectedTime(e.target.value)
 
   // Enviar los datos al correo (via Supabase Function)
   const handleSchedule = async () => {

@@ -87,7 +87,7 @@ export default function BadgeSystem({
 
         const averageRating =
           reviews && reviews.length > 0
-            ? reviews.reduce((sum, review) => sum + review.rating, 0) /
+            ? reviews.reduce((sum: number, review: { rating: number }) => sum + review.rating, 0) /
               reviews.length
             : 0
 
@@ -102,7 +102,7 @@ export default function BadgeSystem({
 
           totalRevenue = transactions
             ? transactions.reduce(
-                (sum, transaction) => sum + transaction.amount,
+                (sum: number, transaction: { amount: number }) => sum + transaction.amount,
                 0
               )
             : 0
@@ -117,8 +117,12 @@ export default function BadgeSystem({
 
         // Calcular XP basado en actividad
         const experiencePoints = calculateExperiencePoints({
-          projectsCompleted: projectsCount || 0,
+          totalProjects: 0,
+          completedProjects: projectsCount || 0,
+          totalEarnings: totalRevenue,
           averageRating,
+          totalReviews: reviews?.length || 0,
+          projectsCompleted: projectsCount || 0,
           totalRevenue,
           daysActive,
         })
@@ -140,7 +144,7 @@ export default function BadgeSystem({
     let xp = 0
 
     // XP por proyectos completados
-    xp += stats.projectsCompleted * 100
+    xp += (stats.projectsCompleted ?? stats.completedProjects ?? 0) * 100
 
     // XP por rating alto
     if (stats.averageRating >= 4.5) xp += 500
@@ -148,10 +152,10 @@ export default function BadgeSystem({
     else if (stats.averageRating >= 3.5) xp += 100
 
     // XP por ingresos (freelancers)
-    xp += Math.floor(stats.totalRevenue / 100) * 10
+    xp += Math.floor((stats.totalRevenue ?? stats.totalEarnings ?? 0) / 100) * 10
 
     // XP por días activos
-    xp += stats.daysActive * 5
+    xp += (stats.daysActive ?? 0) * 5
 
     return xp
   }
