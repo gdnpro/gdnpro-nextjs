@@ -44,35 +44,68 @@ export default function AdminContacts() {
     document.title = "Admin Dashboard | GDN Pro"
     window.scrollTo(0, 0)
 
-    loadContacts()
-  }, [])
+    // Wait for auth to finish loading before trying to load contacts
+    if (!authLoading) {
+      loadContacts()
+    }
+  }, [authLoading])
 
   const loadContacts = async () => {
     try {
-      // Add timeout for getSession to prevent hanging
-      const sessionResult = await Promise.race([
-        supabase.auth.getSession(),
-        new Promise<{ data: { session: null } }>((_, reject) =>
-          setTimeout(() => reject(new Error("Session timeout")), 5000),
+      // First validate user exists using getUser() (validates with server, won't hang)
+      const { data: userData, error: userError } = (await Promise.race([
+        supabase.auth.getUser(),
+        new Promise<{ data: { user: null }; error: Error }>((_, reject) =>
+          setTimeout(() => reject(new Error("Get user timeout")), 5000),
         ),
       ]).catch((error) => {
-        // If timeout occurs, return null session
-        if (error.message === "Session timeout") {
-          return { data: { session: null } }
-        }
-        throw error
-      })
+        return { data: { user: null }, error: error as Error }
+      })) as { data: { user: any }; error: any }
 
-      const {
-        data: { session },
-      } = sessionResult as {
-        data: { session: any }
-      }
-
-      if (!session) {
+      if (userError || !userData.user) {
         window.toast({
           title: "No hay sesión activa",
           type: "info",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
+        setLoading(false)
+        return
+      }
+
+      // Now get the session token (should be fast since user is validated)
+      let accessToken = ""
+      try {
+        const sessionResult = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise<{ data: { session: null } }>((_, reject) =>
+            setTimeout(() => reject(new Error("Session timeout")), 3000),
+          ),
+        ]).catch((error) => {
+          if (error.message === "Session timeout") {
+            return { data: { session: null } }
+          }
+          throw error
+        })
+
+        const {
+          data: { session },
+        } = sessionResult as {
+          data: { session: any }
+        }
+
+        accessToken = session?.access_token || ""
+      } catch (error) {
+        // If getSession fails, try to get token another way or skip
+        console.warn("Could not get session token, trying alternative method")
+        // For now, we'll skip - the API call will fail but won't hang
+      }
+
+      if (!accessToken) {
+        window.toast({
+          title: "No se pudo obtener el token de acceso",
+          type: "warning",
           location: "bottom-center",
           dismissible: true,
           icon: true,
@@ -91,7 +124,7 @@ export default function AdminContacts() {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${session.access_token}`,
+              Authorization: `Bearer ${accessToken}`,
               "Content-Type": "application/json",
             },
             signal: controller.signal,

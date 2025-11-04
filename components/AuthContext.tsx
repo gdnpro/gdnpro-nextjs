@@ -71,63 +71,70 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }, 10000) // 10 second timeout
 
-      // Use getSession() instead of getUser() to properly restore sessions from localStorage
-      // getSession() reads from localStorage/cookies, while getUser() makes an API call
       try {
-        // Add timeout wrapper for getSession
-        const sessionResult = await Promise.race([
-          supabase.auth.getSession(),
-          new Promise<{ data: { session: null }; error: Error }>((_, reject) =>
-            setTimeout(() => reject(new Error("Session timeout")), 5000),
-          ),
-        ]).catch((error) => {
-          // If timeout occurs, return null session
-          if (error.message === "Session timeout") {
-            return { data: { session: null }, error: null }
+        // Use getUser() which validates with server and doesn't hang on corrupted localStorage
+        // This is more reliable than getSession() when cache might be corrupted
+        let user: User | null = null
+
+        try {
+          const getUserPromise = supabase.auth.getUser()
+          const timeoutPromise = new Promise<{ data: { user: null }; error: Error }>(
+            (_, reject) => {
+              setTimeout(() => reject(new Error("Get user timeout")), 8000)
+            },
+          )
+
+          const result = await Promise.race([getUserPromise, timeoutPromise])
+          const userData = result as { data: { user: User | null }; error: any }
+
+          if (userData.error) {
+            console.error("Error getting user:", userData.error)
+            user = null
+            // If there's an error, clear potentially corrupted session
+            try {
+              await supabase.auth.signOut()
+            } catch {}
+          } else {
+            user = userData.data.user
           }
-          throw error
-        })
+        } catch (error: any) {
+          // If getUser times out or fails, treat as no user
+          console.warn("getUser() failed or timed out:", error.message)
+          user = null
+          // Clear potentially corrupted session
+          try {
+            await supabase.auth.signOut()
+          } catch {}
+        }
 
         clearTimeout(timeoutId)
 
         if (!mounted) return
 
-        const {
-          data: { session },
-          error: sessionError,
-        } = sessionResult as {
-          data: { session: Session | null }
-          error: any
-        }
-
-        if (sessionError) {
-          console.error("Error getting session:", sessionError)
-          setProfile(null)
-          setIsAuthenticated(false)
-          setUser(null)
-          setLoading(false)
-          return
-        }
-
-        const user = session?.user ?? null
         setProfile(user)
         setIsAuthenticated(!!user)
 
         if (user) {
           try {
             // Add timeout for profile fetch
-            const profileResult = await Promise.race([
-              supabase!.from("profiles").select("*").eq("user_id", user.id).single(),
-              new Promise<{ data: null; error: Error }>((_, reject) =>
-                setTimeout(() => reject(new Error("Profile fetch timeout")), 5000),
-              ),
-            ]).catch((error) => {
-              // If timeout occurs, return error
-              if (error.message === "Profile fetch timeout") {
-                return { data: null, error: new Error("Profile fetch timeout") }
-              }
-              throw error
-            })
+            const profilePromise = supabase!
+              .from("profiles")
+              .select("*")
+              .eq("user_id", user.id)
+              .single()
+
+            const profileTimeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
+              setTimeout(() => reject(new Error("Profile fetch timeout")), 5000),
+            )
+
+            const profileResult = await Promise.race([profilePromise, profileTimeoutPromise]).catch(
+              (error) => {
+                if (error.message === "Profile fetch timeout") {
+                  return { data: null, error: new Error("Profile fetch timeout") }
+                }
+                throw error
+              },
+            )
 
             const { data, error } = profileResult as { data: any; error: any }
 
