@@ -32,9 +32,17 @@ export async function updateSession(request: NextRequest) {
           supabaseResponse = NextResponse.next({
             request,
           })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+          cookiesToSet.forEach(({ name, value, options }) => {
+            // Ensure cookies are set with proper options for persistence
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              httpOnly: options?.httpOnly ?? false,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: options?.sameSite ?? "lax",
+              path: options?.path ?? "/",
+              maxAge: options?.maxAge ?? 60 * 60 * 24 * 7, // 7 days default
+            })
+          })
         },
       },
     }
