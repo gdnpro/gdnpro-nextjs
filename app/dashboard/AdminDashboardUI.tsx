@@ -49,9 +49,25 @@ export default function AdminContacts() {
 
   const loadContacts = async () => {
     try {
+      // Add timeout for getSession to prevent hanging
+      const sessionResult = await Promise.race([
+        supabase.auth.getSession(),
+        new Promise<{ data: { session: null } }>((_, reject) =>
+          setTimeout(() => reject(new Error("Session timeout")), 5000)
+        ),
+      ]).catch((error) => {
+        // If timeout occurs, return null session
+        if (error.message === "Session timeout") {
+          return { data: { session: null } }
+        }
+        throw error
+      })
+
       const {
         data: { session },
-      } = await supabase.auth.getSession()
+      } = sessionResult as {
+        data: { session: any }
+      }
 
       if (!session) {
         window.toast({
@@ -61,30 +77,48 @@ export default function AdminContacts() {
           dismissible: true,
           icon: true,
         })
+        setLoading(false)
         return
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/contact-form-handler`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-            "Content-Type": "application/json",
-          },
-        },
-      )
+      // Add timeout for fetch request
+      const controller = new AbortController()
+      const fetchTimeout = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          setContacts(result.messages || [])
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/contact-form-handler`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+              "Content-Type": "application/json",
+            },
+            signal: controller.signal,
+          },
+        )
+
+        clearTimeout(fetchTimeout)
+
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success) {
+            setContacts(result.messages || [])
+          }
+        } else {
+          console.error("Error loading messages:", response.statusText)
+          setContacts([])
         }
-      } else {
-        console.error("Error loading messages:", response.statusText)
+      } catch (fetchError: any) {
+        clearTimeout(fetchTimeout)
+        if (fetchError.name === "AbortError") {
+          console.error("Request timeout while loading contacts")
+        } else {
+          console.error("Error loading contacts:", fetchError)
+        }
         setContacts([])
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error loading contacts:", error)
       setContacts([])
     } finally {
