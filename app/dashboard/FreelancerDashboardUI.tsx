@@ -41,8 +41,7 @@ export default function FreelancerDashboardUI() {
 
   // Chat states
   const [showChat, setShowChat] = useState(false)
-  const [selectedConversation, setSelectedConversation] =
-    useState<Conversation | null>(null)
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState("")
   const [chatLoading, setChatLoading] = useState(false)
@@ -50,31 +49,29 @@ export default function FreelancerDashboardUI() {
 
   const [myProjects, setMyProjects] = useState<Project[]>([])
   const [showProjectDetails, setShowProjectDetails] = useState(false)
-  const [selectedProjectDetails, setSelectedProjectDetails] =
-    useState<Project | null>(null)
+  const [selectedProjectDetails, setSelectedProjectDetails] = useState<Project | null>(null)
 
   const [showProjectManagement, setShowProjectManagement] = useState(false)
-  const [selectedProjectForManagement, setSelectedProjectForManagement] =
-    useState<Project | null>(null)
+  const [selectedProjectForManagement, setSelectedProjectForManagement] = useState<Project | null>(
+    null,
+  )
 
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0)
 
   // RESTAURADO: Estados para modal de detalles de propuesta
   const [showProposalDetails, setShowProposalDetails] = useState(false)
-  const [selectedProposalForDetails, setSelectedProposalForDetails] =
-    useState<Proposal | null>(null)
-  const [proposalProjectDetails, setProposalProjectDetails] =
-    useState<any>(null)
+  const [selectedProposalForDetails, setSelectedProposalForDetails] = useState<Proposal | null>(
+    null,
+  )
+  const [proposalProjectDetails, setProposalProjectDetails] = useState<any>(null)
 
   // RESTAURADO: Estados para modal de detalles de proyecto en "Mis Proyectos"
   const [showProjectDetailsModal, setShowProjectDetailsModal] = useState(false)
-  const [selectedProjectForDetails, setSelectedProjectForDetails] =
-    useState<Project | null>(null)
+  const [selectedProjectForDetails, setSelectedProjectForDetails] = useState<Project | null>(null)
 
   // NUEVO: Estados para modal de gestión de progreso
   const [showProgressManagement, setShowProgressManagement] = useState(false)
-  const [selectedProjectForProgress, setSelectedProjectForProgress] =
-    useState<Project | null>(null)
+  const [selectedProjectForProgress, setSelectedProjectForProgress] = useState<Project | null>(null)
 
   const { notifyProposal, notifyNewMessage } = useNotifications()
 
@@ -117,7 +114,7 @@ export default function FreelancerDashboardUI() {
           *,
           client:profiles!projects_client_id_fkey(id, full_name, rating, email),
           proposals!inner(status)
-        `
+        `,
         )
         .eq("status", "open")
         .neq("proposals.status", "accepted") // EXCLUIR proyectos con propuestas aceptadas
@@ -130,7 +127,7 @@ export default function FreelancerDashboardUI() {
           `
           *,
           client:profiles!projects_client_id_fkey(id, full_name, rating, email)
-        `
+        `,
         )
         .eq("status", "open")
         .is("freelancer_id", null) // Sin freelancer asignado
@@ -142,25 +139,20 @@ export default function FreelancerDashboardUI() {
         .select("project_id")
         .eq("status", "accepted")
 
-      const acceptedProjectIds =
-        acceptedProposals?.map((p) => p.project_id) || []
+      const acceptedProjectIds = acceptedProposals?.map((p: Proposal) => p.project_id) || []
 
       // Filtrar proyectos sin propuestas que NO tengan propuestas aceptadas
       const filteredProjectsWithoutProposals =
         projectsWithoutProposals?.filter(
-          (project) => !acceptedProjectIds.includes(project.id)
+          (project: Project) => !acceptedProjectIds.includes(project.id),
         ) || []
 
       // Combinar ambos conjuntos de proyectos
-      const allAvailableProjects = [
-        ...(projectsData || []),
-        ...filteredProjectsWithoutProposals,
-      ]
+      const allAvailableProjects = [...(projectsData || []), ...filteredProjectsWithoutProposals]
 
       // Eliminar duplicados por ID
       const uniqueProjects = allAvailableProjects.filter(
-        (project, index, self) =>
-          index === self.findIndex((p) => p.id === project.id)
+        (project, index, self) => index === self.findIndex((p) => p.id === project.id),
       )
 
       if (uniqueProjects) setProjects(uniqueProjects)
@@ -180,7 +172,7 @@ export default function FreelancerDashboardUI() {
               rating,
               avatar_url
             )
-          `
+          `,
           )
           .eq("freelancer_id", user.id)
           .order("created_at", { ascending: false })
@@ -202,66 +194,53 @@ export default function FreelancerDashboardUI() {
                 body: JSON.stringify({
                   action: "get-transactions",
                 }),
-              }
+              },
             )
 
             if (response.ok) {
               const data = await response.json()
               // CORREGIDO: Incluir transacciones PAGADAS Y PENDIENTES
               const allTransactions = (data.transactions || []).filter(
-                (t: any) => t.status === "paid" || t.status === "pending"
+                (t: any) => t.status === "paid" || t.status === "pending",
               )
 
               // Crear "proyectos virtuales" desde TODAS las transacciones para mostrar en "Mis Proyectos"
-              projectsFromTransactions = allTransactions.map(
-                (transaction: any) => ({
-                  id: `transaction-${transaction.id}`,
-                  title: transaction.project_title || "Proyecto Contratado",
-                  description:
-                    transaction.project_description ||
-                    "Proyecto contratado directamente por el cliente",
-                  budget: parseFloat(transaction.amount),
-                  status:
-                    transaction.status === "paid"
-                      ? "in_progress"
-                      : "pending_payment",
-                  payment_status: transaction.status, // 'paid' o 'pending'
-                  created_at: transaction.created_at || transaction.paid_at,
-                  duration: "Según acuerdo con cliente",
-                  requirements:
-                    "Proyecto contratado directamente - revisar detalles en chat",
-                  client: {
-                    id: transaction.client?.id || "",
-                    full_name: transaction.client?.full_name || "Cliente",
-                    email: transaction.client?.email || "",
-                    rating: transaction.client?.rating || 5.0,
-                    avatar_url: transaction.client?.avatar_url || "",
-                  },
-                  // Marcar como proyecto de transacción para diferenciar
-                  _isFromTransaction: true,
-                  _transactionId: transaction.id,
-                  _stripeSessionId: transaction.stripe_session_id,
-                })
-              )
+              projectsFromTransactions = allTransactions.map((transaction: any) => ({
+                id: `transaction-${transaction.id}`,
+                title: transaction.project_title || "Proyecto Contratado",
+                description:
+                  transaction.project_description ||
+                  "Proyecto contratado directamente por el cliente",
+                budget: parseFloat(transaction.amount),
+                status: transaction.status === "paid" ? "in_progress" : "pending_payment",
+                payment_status: transaction.status, // 'paid' o 'pending'
+                created_at: transaction.created_at || transaction.paid_at,
+                duration: "Según acuerdo con cliente",
+                requirements: "Proyecto contratado directamente - revisar detalles en chat",
+                client: {
+                  id: transaction.client?.id || "",
+                  full_name: transaction.client?.full_name || "Cliente",
+                  email: transaction.client?.email || "",
+                  rating: transaction.client?.rating || 5.0,
+                  avatar_url: transaction.client?.avatar_url || "",
+                },
+                // Marcar como proyecto de transacción para diferenciar
+                _isFromTransaction: true,
+                _transactionId: transaction.id,
+                _stripeSessionId: transaction.stripe_session_id,
+              }))
             }
           } catch (error) {
-            console.error(
-              "⚠️ Error cargando transacciones para proyectos:",
-              error
-            )
+            console.error("⚠️ Error cargando transacciones para proyectos:", error)
           }
         }
 
         // 3. Combinar proyectos asignados + proyectos de transacciones
-        const allMyProjects = [
-          ...(assignedProjects || []),
-          ...projectsFromTransactions,
-        ]
+        const allMyProjects = [...(assignedProjects || []), ...projectsFromTransactions]
 
         // Eliminar duplicados por ID si existen
         const uniqueProjects = allMyProjects.filter(
-          (project, index, self) =>
-            index === self.findIndex((p) => p.id === project.id)
+          (project, index, self) => index === self.findIndex((p) => p.id === project.id),
         )
         setMyProjects(uniqueProjects)
       }
@@ -292,7 +271,7 @@ export default function FreelancerDashboardUI() {
             ),
             progress_percentage
           )
-        `
+        `,
         )
         .eq("freelancer_id", user.id)
         .order("created_at", { ascending: false })
@@ -323,7 +302,7 @@ export default function FreelancerDashboardUI() {
           body: JSON.stringify({
             action: "get-pending-reviews",
           }),
-        }
+        },
       )
 
       if (response.ok) {
@@ -366,7 +345,7 @@ export default function FreelancerDashboardUI() {
             userId: user.id,
             userType: "freelancer",
           }),
-        }
+        },
       )
 
       if (!response.ok) {
@@ -427,7 +406,7 @@ export default function FreelancerDashboardUI() {
             action: "get-messages",
             conversationId,
           }),
-        }
+        },
       )
 
       if (!response.ok) {
@@ -469,7 +448,7 @@ export default function FreelancerDashboardUI() {
             conversationId: selectedConversation.id,
             messageText: newMessage.trim(),
           }),
-        }
+        },
       )
 
       if (!response.ok) {
@@ -596,7 +575,7 @@ export default function FreelancerDashboardUI() {
             clientId,
             freelancerId: user?.id,
           }),
-        }
+        },
       )
 
       const data = await response.json()
@@ -634,7 +613,7 @@ export default function FreelancerDashboardUI() {
             client:profiles!projects_client_id_fkey(
               id, full_name, email, rating, avatar_url
             )
-          `
+          `,
           )
           .eq("id", proposal.project_id)
           .single()
@@ -683,7 +662,7 @@ export default function FreelancerDashboardUI() {
             client:profiles!projects_client_id_fkey(
               id, full_name, email, rating, avatar_url
             )
-          `
+          `,
           )
           .eq("id", project.id)
           .single()
@@ -740,7 +719,7 @@ export default function FreelancerDashboardUI() {
             project_milestones(
               id, title, description, due_date, status, amount, created_at
             )
-          `
+          `,
           )
           .eq("id", project.id)
           .single()
@@ -801,7 +780,7 @@ export default function FreelancerDashboardUI() {
             clientId: clientId,
             projectId: null,
           }),
-        }
+        },
       )
 
       if (!response.ok) {
@@ -856,93 +835,89 @@ export default function FreelancerDashboardUI() {
       <Layout>
         <MainComponent>
           {/* Header - RESPONSIVE */}
-          <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
+          <div className="mb-6 rounded-lg bg-white p-4 shadow sm:mb-8 sm:p-6">
+            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
               <div className="flex items-center">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center mr-3 sm:mr-4 overflow-hidden">
+                <div className="bg-primary/10 mr-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full sm:mr-4 sm:h-16 sm:w-16">
                   {user?.avatar_url ? (
                     <img
                       src={user.avatar_url}
                       alt={user.full_name}
-                      className="w-full h-full object-cover object-top rounded-full"
+                      className="h-full w-full rounded-full object-cover object-top"
                     />
                   ) : (
-                    <i className="ri-user-line text-xl sm:text-2xl text-primary"></i>
+                    <i className="ri-user-line text-primary text-xl sm:text-2xl"></i>
                   )}
                 </div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                  <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
                     ¡Hola, {user?.full_name}!
                   </h1>
-                  <p className="text-sm sm:text-base text-gray-600">
-                    Freelancer Dashboard
-                  </p>
+                  <p className="text-sm text-gray-600 sm:text-base">Freelancer Dashboard</p>
                 </div>
               </div>
 
               <div className="text-center sm:text-right">
-                <div className="text-2xl sm:text-3xl font-bold text-primary">
+                <div className="text-primary text-2xl font-bold sm:text-3xl">
                   {user?.rating || 0}★
                 </div>
-                <p className="text-xs sm:text-sm text-gray-500">Rating</p>
+                <p className="text-xs text-gray-500 sm:text-sm">Rating</p>
               </div>
             </div>
           </div>
 
           {/* Stats Cards - RESPONSIVE */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
-            <div className="bg-white rounded-lg shadow p-3 sm:p-6">
+          <div className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-6 lg:grid-cols-4">
+            <div className="rounded-lg bg-white p-3 shadow sm:p-6">
               <div className="flex items-center">
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-2 sm:mr-4">
-                  <i className="ri-file-text-line text-sm sm:text-xl text-primary"></i>
+                <div className="bg-primary/10 mr-2 flex h-8 w-8 items-center justify-center rounded-lg sm:mr-4 sm:h-12 sm:w-12">
+                  <i className="ri-file-text-line text-primary text-sm sm:text-xl"></i>
                 </div>
                 <div>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">
-                    {proposals.length}
-                  </p>
-                  <p className="text-xs sm:text-sm text-gray-600">Propuestas</p>
+                  <p className="text-lg font-bold text-gray-900 sm:text-2xl">{proposals.length}</p>
+                  <p className="text-xs text-gray-600 sm:text-sm">Propuestas</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-3 sm:p-6">
+            <div className="rounded-lg bg-white p-3 shadow sm:p-6">
               <div className="flex items-center">
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center mr-2 sm:mr-4">
-                  <i className="ri-check-line text-sm sm:text-xl text-primary"></i>
+                <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 sm:mr-4 sm:h-12 sm:w-12">
+                  <i className="ri-check-line text-primary text-sm sm:text-xl"></i>
                 </div>
                 <div>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">
+                  <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                     {proposals.filter((p) => p.status === "accepted").length}
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-600">Aceptadas</p>
+                  <p className="text-xs text-gray-600 sm:text-sm">Aceptadas</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-3 sm:p-6">
+            <div className="rounded-lg bg-white p-3 shadow sm:p-6">
               <div className="flex items-center">
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-2 sm:mr-4">
-                  <i className="ri-time-line text-sm sm:text-xl text-yellow-600"></i>
+                <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-100 sm:mr-4 sm:h-12 sm:w-12">
+                  <i className="ri-time-line text-sm text-yellow-600 sm:text-xl"></i>
                 </div>
                 <div>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">
+                  <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                     {proposals.filter((p) => p.status === "pending").length}
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-600">Pendientes</p>
+                  <p className="text-xs text-gray-600 sm:text-sm">Pendientes</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-3 sm:p-6">
+            <div className="rounded-lg bg-white p-3 shadow sm:p-6">
               <div className="flex items-center">
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-2 sm:mr-4">
-                  <i className="ri-chat-3-line text-sm sm:text-xl text-primary"></i>
+                <div className="bg-primary/10 mr-2 flex h-8 w-8 items-center justify-center rounded-lg sm:mr-4 sm:h-12 sm:w-12">
+                  <i className="ri-chat-3-line text-primary text-sm sm:text-xl"></i>
                 </div>
                 <div>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">
+                  <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                     {conversations.length}
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-600">Mensajes</p>
+                  <p className="text-xs text-gray-600 sm:text-sm">Mensajes</p>
                 </div>
               </div>
             </div>
@@ -950,11 +925,11 @@ export default function FreelancerDashboardUI() {
 
           {/* NUEVO: Panel de Gamificación - Solo se muestra si hay datos */}
           {user?.id && (
-            <div className="bg-linear-to-br from-primary/10 to-cyan-50 border border-primary/20 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8">
-              <div className="flex items-center justify-between mb-4">
+            <div className="from-primary/10 border-primary/20 mb-6 rounded-xl border bg-linear-to-br to-cyan-50 p-4 sm:mb-8 sm:p-6">
+              <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-linear-to-r from-primary to-primary rounded-full flex items-center justify-center mr-4">
-                    <i className="ri-trophy-line text-white text-xl"></i>
+                  <div className="from-primary to-primary mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-r">
+                    <i className="ri-trophy-line text-xl text-white"></i>
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">
@@ -965,32 +940,22 @@ export default function FreelancerDashboardUI() {
                     </p>
                   </div>
                 </div>
-                <BadgeSystem
-                  userId={user.id}
-                  userType="freelancer"
-                  compact={true}
-                />
+                <BadgeSystem userId={user.id} userType="freelancer" compact={true} />
               </div>
 
-              <div className="bg-white rounded-lg p-4 border border-cyan-200">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+              <div className="rounded-lg border border-cyan-200 bg-white p-4">
+                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
                   <div className="flex items-center">
                     <i className="ri-check-line text-primary mr-2"></i>
-                    <span className="text-gray-700">
-                      Gana XP completando proyectos
-                    </span>
+                    <span className="text-gray-700">Gana XP completando proyectos</span>
                   </div>
                   <div className="flex items-center">
-                    <i className="ri-star-line text-yellow-500 mr-2"></i>
-                    <span className="text-gray-700">
-                      Desbloquea badges por logros
-                    </span>
+                    <i className="ri-star-line mr-2 text-yellow-500"></i>
+                    <span className="text-gray-700">Desbloquea badges por logros</span>
                   </div>
                   <div className="flex items-center">
                     <i className="ri-trophy-line text-primary mr-2"></i>
-                    <span className="text-gray-700">
-                      Sube tu nivel profesional
-                    </span>
+                    <span className="text-gray-700">Sube tu nivel profesional</span>
                   </div>
                 </div>
               </div>
@@ -998,8 +963,8 @@ export default function FreelancerDashboardUI() {
           )}
 
           {/* Tabs - RESPONSIVE */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="border-b border-gray-200 overflow-x-auto overflow-y-hidden">
+          <div className="rounded-lg bg-white shadow">
+            <div className="overflow-x-auto overflow-y-hidden border-b border-gray-200">
               <nav className="-mb-px flex min-w-max">
                 <button
                   type="button"
@@ -1008,10 +973,10 @@ export default function FreelancerDashboardUI() {
                     e.stopPropagation()
                     handleActiveTab("projects")
                   }}
-                  className={`py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm cursor-pointer whitespace-nowrap ${
+                  className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
                     activeTab === "projects"
                       ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   Proyectos Disponibles ({projects.length})
@@ -1023,10 +988,10 @@ export default function FreelancerDashboardUI() {
                     e.stopPropagation()
                     handleActiveTab("my-projects")
                   }}
-                  className={`py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm cursor-pointer whitespace-nowrap ${
+                  className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
                     activeTab === "my-projects"
                       ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   Mis Proyectos ({myProjects.length})
@@ -1038,10 +1003,10 @@ export default function FreelancerDashboardUI() {
                     e.stopPropagation()
                     handleActiveTab("proposals")
                   }}
-                  className={`py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm cursor-pointer whitespace-nowrap ${
+                  className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
                     activeTab === "proposals"
                       ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   Mis Propuestas ({proposals.length})
@@ -1053,10 +1018,10 @@ export default function FreelancerDashboardUI() {
                     e.stopPropagation()
                     handleActiveTab("messages")
                   }}
-                  className={`py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm cursor-pointer whitespace-nowrap ${
+                  className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
                     activeTab === "messages"
                       ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   Mensajes ({conversations.length})
@@ -1070,16 +1035,16 @@ export default function FreelancerDashboardUI() {
                     handleActiveTab("reviews")
                     loadPendingReviewsCount()
                   }}
-                  className={`py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm cursor-pointer whitespace-nowrap relative ${
+                  className={`relative cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
                     activeTab === "reviews"
                       ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   <i className="ri-star-line mr-1"></i>
                   Reseñas
                   {pendingReviewsCount > 0 && (
-                    <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
                       {pendingReviewsCount}
                     </span>
                   )}
@@ -1092,10 +1057,10 @@ export default function FreelancerDashboardUI() {
                     e.stopPropagation()
                     handleActiveTab("achievements")
                   }}
-                  className={`py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm cursor-pointer whitespace-nowrap ${
+                  className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
                     activeTab === "achievements"
                       ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   <i className="ri-trophy-line mr-1"></i>
@@ -1108,20 +1073,20 @@ export default function FreelancerDashboardUI() {
                     e.stopPropagation()
                     handleActiveTab("user")
                   }}
-                  className={`py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm cursor-pointer whitespace-nowrap ${
+                  className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
                     activeTab === "user"
                       ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   Mi Perfil
                 </button>
                 <button
                   onClick={() => handleActiveTab("payments")}
-                  className={`flex items-center px-3 sm:px-4 py-2 sm:py-3 rounded-lg font-medium transition-colors cursor-pointer whitespace-nowrap text-xs sm:text-sm ${
+                  className={`flex cursor-pointer items-center rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:px-4 sm:py-3 sm:text-sm ${
                     activeTab === "payments"
                       ? "bg-primary/10 text-emerald-700"
-                      : "text-gray-600 hover:text-primary hover:bg-emerald-50"
+                      : "hover:text-primary text-gray-600 hover:bg-emerald-50"
                   }`}
                 >
                   <i className="ri-bank-card-line mr-1 sm:mr-2"></i>
@@ -1135,10 +1100,10 @@ export default function FreelancerDashboardUI() {
                     e.stopPropagation()
                     handleActiveTab("analytics")
                   }}
-                  className={`py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm cursor-pointer whitespace-nowrap ${
+                  className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
                     activeTab === "analytics"
                       ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   }`}
                 >
                   <i className="ri-bar-chart-line mr-1"></i>
@@ -1151,10 +1116,8 @@ export default function FreelancerDashboardUI() {
               {/* Proyectos Disponibles */}
               {activeTab === "projects" && (
                 <div className="space-y-4 sm:space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Proyectos Disponibles
-                    </h3>
+                  <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+                    <h3 className="text-lg font-semibold text-gray-900">Proyectos Disponibles</h3>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <i className="ri-information-line"></i>
                       <span>Proyectos sin propuestas aceptadas</span>
@@ -1162,12 +1125,12 @@ export default function FreelancerDashboardUI() {
                   </div>
 
                   {projects.length === 0 ? (
-                    <div className="text-center py-8 sm:py-12">
-                      <i className="ri-folder-open-line text-4xl sm:text-6xl text-gray-300 mb-4"></i>
-                      <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+                    <div className="py-8 text-center sm:py-12">
+                      <i className="ri-folder-open-line mb-4 text-4xl text-gray-300 sm:text-6xl"></i>
+                      <h3 className="mb-2 text-lg font-medium text-gray-900 sm:text-xl">
                         No hay proyectos disponibles
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-500">
+                      <p className="text-sm text-gray-500 sm:text-base">
                         Vuelve más tarde para ver nuevas oportunidades
                       </p>
                     </div>
@@ -1180,9 +1143,7 @@ export default function FreelancerDashboardUI() {
                           viewProjectDetails={() => viewProjectDetails(project)}
                           proposals={proposals}
                           sendProposal={() => sendProposal(project.id)}
-                          startChat={() =>
-                            startChat(project.id, project.client?.id!)
-                          }
+                          startChat={() => startChat(project.id, project.client?.id!)}
                         />
                       ))}
                     </div>
@@ -1193,10 +1154,8 @@ export default function FreelancerDashboardUI() {
               {/* Mis Proyectos */}
               {activeTab === "my-projects" && (
                 <div className="space-y-4 sm:space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Mis Proyectos Activos
-                    </h3>
+                  <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+                    <h3 className="text-lg font-semibold text-gray-900">Mis Proyectos Activos</h3>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <i className="ri-briefcase-line"></i>
                       <span>{myProjects.length} proyectos en total</span>
@@ -1204,12 +1163,12 @@ export default function FreelancerDashboardUI() {
                   </div>
 
                   {myProjects.length === 0 ? (
-                    <div className="text-center py-8 sm:py-12">
-                      <i className="ri-briefcase-line text-4xl sm:text-6xl text-gray-300 mb-4"></i>
-                      <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+                    <div className="py-8 text-center sm:py-12">
+                      <i className="ri-briefcase-line mb-4 text-4xl text-gray-300 sm:text-6xl"></i>
+                      <h3 className="mb-2 text-lg font-medium text-gray-900 sm:text-xl">
                         No tienes proyectos asignados
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-500">
+                      <p className="text-sm text-gray-500 sm:text-base">
                         Envía propuestas para conseguir tus primeros proyectos
                       </p>
                     </div>
@@ -1218,19 +1177,19 @@ export default function FreelancerDashboardUI() {
                       {myProjects.map((project) => (
                         <div
                           key={project.id}
-                          className="bg-linear-to-r from-cyan-50 to-cyan-100 rounded-lg p-4 sm:p-6 border border-cyan-200"
+                          className="rounded-lg border border-cyan-200 bg-linear-to-r from-cyan-50 to-cyan-100 p-4 sm:p-6"
                         >
-                          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
+                          <div className="flex flex-col space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-y-0">
                             <div className="flex-1">
-                              <div className="flex flex-col sm:flex-row sm:justify-between mb-3">
-                                <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-0">
+                              <div className="mb-3 flex flex-col sm:flex-row sm:justify-between">
+                                <h4 className="mb-2 text-lg font-semibold text-gray-900 sm:mb-0 sm:text-xl">
                                   {project.title}
                                 </h4>
                                 <div className="flex items-center space-x-4">
                                   {project._isFromTransaction ? (
                                     <div className="flex items-center space-x-2">
                                       <span
-                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                                           project.payment_status === "paid"
                                             ? "bg-green-100 text-green-800"
                                             : "bg-yellow-100 text-yellow-800"
@@ -1247,14 +1206,14 @@ export default function FreelancerDashboardUI() {
                                           ? "Pagado"
                                           : "Pago Pendiente"}
                                       </span>
-                                      <span className="text-lg sm:text-xl font-bold text-primary">
+                                      <span className="text-primary text-lg font-bold sm:text-xl">
                                         ${project.budget}
                                       </span>
                                     </div>
                                   ) : (
                                     <div className="flex items-center space-x-2">
                                       <span
-                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                                           project.status === "in_progress"
                                             ? "bg-primary/10 text-cyan-800"
                                             : project.status === "completed"
@@ -1268,7 +1227,7 @@ export default function FreelancerDashboardUI() {
                                             ? "Completado"
                                             : "Pendiente"}
                                       </span>
-                                      <span className="text-lg sm:text-xl font-bold text-primary">
+                                      <span className="text-primary text-lg font-bold sm:text-xl">
                                         $
                                         {project.budget ||
                                           `${project.budget_min}-${project.budget_max}`}
@@ -1278,21 +1237,17 @@ export default function FreelancerDashboardUI() {
                                 </div>
                               </div>
 
-                              <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">
-                                {project.description &&
-                                project.description.length > 200
+                              <p className="mb-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                                {project.description && project.description.length > 200
                                   ? `${project.description.substring(0, 200)}...`
-                                  : project.description ||
-                                    "Proyecto contratado directamente"}
+                                  : project.description || "Proyecto contratado directamente"}
                               </p>
 
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                              <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                                   <div className="flex items-center">
                                     <i className="ri-user-line mr-1"></i>
-                                    <span>
-                                      {project.client?.full_name || "Cliente"}
-                                    </span>
+                                    <span>{project.client?.full_name || "Cliente"}</span>
                                     {project.client?.rating && (
                                       <span className="ml-1 text-yellow-500">
                                         ★{project.client.rating}
@@ -1302,9 +1257,7 @@ export default function FreelancerDashboardUI() {
                                   <div className="flex items-center">
                                     <i className="ri-calendar-line mr-1"></i>
                                     <span>
-                                      {new Date(
-                                        project.created_at
-                                      ).toLocaleDateString("es-ES")}
+                                      {new Date(project.created_at).toLocaleDateString("es-ES")}
                                     </span>
                                   </div>
                                   {project._isFromTransaction && (
@@ -1317,12 +1270,10 @@ export default function FreelancerDashboardUI() {
                               </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row lg:flex-col space-y-2 sm:space-y-0 sm:space-x-2 lg:space-x-0 lg:space-y-2 lg:ml-6">
+                            <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 lg:ml-6 lg:flex-col lg:space-y-2 lg:space-x-0">
                               <button
-                                onClick={() =>
-                                  viewProjectDetailsInMyProjects(project)
-                                }
-                                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+                                onClick={() => viewProjectDetailsInMyProjects(project)}
+                                className="cursor-pointer rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-200"
                               >
                                 <i className="ri-eye-line mr-2"></i>
                                 Ver Detalles
@@ -1330,19 +1281,15 @@ export default function FreelancerDashboardUI() {
                               {!project._isFromTransaction && (
                                 <>
                                   <button
-                                    onClick={() =>
-                                      openProjectManagement(project)
-                                    }
-                                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+                                    onClick={() => openProjectManagement(project)}
+                                    className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                                   >
                                     <i className="ri-settings-3-line mr-2"></i>
                                     Gestionar
                                   </button>
                                   <button
-                                    onClick={() =>
-                                      openProgressManagement(project)
-                                    }
-                                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+                                    onClick={() => openProgressManagement(project)}
+                                    className="cursor-pointer rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-purple-700"
                                   >
                                     <i className="ri-bar-chart-line mr-2"></i>
                                     Gestionar Progreso
@@ -1351,10 +1298,8 @@ export default function FreelancerDashboardUI() {
                               )}
                               {project.client?.id && (
                                 <button
-                                  onClick={() =>
-                                    startChat(project.id, project.client?.id!)
-                                  }
-                                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+                                  onClick={() => startChat(project.id, project.client?.id!)}
+                                  className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                                 >
                                   <i className="ri-chat-3-line mr-2"></i>
                                   Chat Cliente
@@ -1372,53 +1317,38 @@ export default function FreelancerDashboardUI() {
               {/* Mis Propuestas */}
               {activeTab === "proposals" && (
                 <div className="space-y-4 sm:space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Mis Propuestas
-                    </h3>
+                  <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+                    <h3 className="text-lg font-semibold text-gray-900">Mis Propuestas</h3>
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center space-x-2 text-sm">
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <div className="h-3 w-3 rounded-full bg-green-500"></div>
                         <span>
-                          Aceptadas:{" "}
-                          {
-                            proposals.filter((p) => p.status === "accepted")
-                              .length
-                          }
+                          Aceptadas: {proposals.filter((p) => p.status === "accepted").length}
                         </span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm">
-                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
                         <span>
-                          Pendientes:{" "}
-                          {
-                            proposals.filter((p) => p.status === "pending")
-                              .length
-                          }
+                          Pendientes: {proposals.filter((p) => p.status === "pending").length}
                         </span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm">
-                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div className="h-3 w-3 rounded-full bg-red-500"></div>
                         <span>
-                          Rechazadas:{" "}
-                          {
-                            proposals.filter((p) => p.status === "rejected")
-                              .length
-                          }
+                          Rechazadas: {proposals.filter((p) => p.status === "rejected").length}
                         </span>
                       </div>
                     </div>
                   </div>
 
                   {proposals.length === 0 ? (
-                    <div className="text-center py-8 sm:py-12">
-                      <i className="ri-file-text-line text-4xl sm:text-6xl text-gray-300 mb-4"></i>
-                      <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+                    <div className="py-8 text-center sm:py-12">
+                      <i className="ri-file-text-line mb-4 text-4xl text-gray-300 sm:text-6xl"></i>
+                      <h3 className="mb-2 text-lg font-medium text-gray-900 sm:text-xl">
                         No has enviado propuestas
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-500">
-                        Explora los proyectos disponibles y envía tu primera
-                        propuesta
+                      <p className="text-sm text-gray-500 sm:text-base">
+                        Explora los proyectos disponibles y envía tu primera propuesta
                       </p>
                     </div>
                   ) : (
@@ -1426,23 +1356,23 @@ export default function FreelancerDashboardUI() {
                       {proposals.map((proposal) => (
                         <div
                           key={proposal.id}
-                          className={`rounded-lg p-4 sm:p-6 border-2 ${
+                          className={`rounded-lg border-2 p-4 sm:p-6 ${
                             proposal.status === "accepted"
-                              ? "bg-green-50 border-green-200"
+                              ? "border-green-200 bg-green-50"
                               : proposal.status === "pending"
-                                ? "bg-yellow-50 border-yellow-200"
-                                : "bg-red-50 border-red-200"
+                                ? "border-yellow-200 bg-yellow-50"
+                                : "border-red-200 bg-red-50"
                           }`}
                         >
-                          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
+                          <div className="flex flex-col space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-y-0">
                             <div className="flex-1">
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
-                                <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-0">
+                              <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                <h4 className="mb-2 text-lg font-semibold text-gray-900 sm:mb-0 sm:text-xl">
                                   {proposal.project?.title || "Proyecto"}
                                 </h4>
                                 <div className="flex items-center space-x-4">
                                   <span
-                                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                                    className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
                                       proposal.status === "accepted"
                                         ? "bg-green-100 text-green-800"
                                         : proposal.status === "pending"
@@ -1465,13 +1395,13 @@ export default function FreelancerDashboardUI() {
                                         ? "Pendiente"
                                         : "Rechazada"}
                                   </span>
-                                  <span className="text-lg sm:text-xl font-bold text-primary">
+                                  <span className="text-primary text-lg font-bold sm:text-xl">
                                     ${proposal.proposed_budget}
                                   </span>
                                 </div>
                               </div>
 
-                              <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">
+                              <p className="mb-4 text-sm leading-relaxed text-gray-600 sm:text-base">
                                 {/*  */}
                                 {proposal.message.length > 150
                                   ? `${proposal.message.substring(0, 150)}...`
@@ -1480,10 +1410,9 @@ export default function FreelancerDashboardUI() {
 
                               {/* NUEVO: Mostrar progreso si la propuesta está aceptada */}
                               {proposal.status === "accepted" &&
-                                proposal.project?.progress_percentage !==
-                                  undefined && (
-                                  <div className="flex items-center mb-3">
-                                    <div className="flex-1 bg-gray-200 rounded-full h-2 mr-3">
+                                proposal.project?.progress_percentage !== undefined && (
+                                  <div className="mb-3 flex items-center">
+                                    <div className="mr-3 h-2 flex-1 rounded-full bg-gray-200">
                                       <div
                                         className="bg-primary h-2 rounded-full transition-all duration-500"
                                         style={{
@@ -1491,29 +1420,22 @@ export default function FreelancerDashboardUI() {
                                         }}
                                       ></div>
                                     </div>
-                                    <span className="text-sm text-gray-600 font-medium">
-                                      {proposal.project.progress_percentage ||
-                                        0}
-                                      %
+                                    <span className="text-sm font-medium text-gray-600">
+                                      {proposal.project.progress_percentage || 0}%
                                     </span>
                                   </div>
                                 )}
 
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                              <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                                   <div className="flex items-center">
                                     <i className="ri-user-line mr-1"></i>
-                                    <span>
-                                      {proposal.project?.client?.full_name ||
-                                        "Cliente"}
-                                    </span>
+                                    <span>{proposal.project?.client?.full_name || "Cliente"}</span>
                                   </div>
                                   <div className="flex items-center">
                                     <i className="ri-calendar-line mr-1"></i>
                                     <span>
-                                      {new Date(
-                                        proposal.created_at
-                                      ).toLocaleDateString("es-ES")}
+                                      {new Date(proposal.created_at).toLocaleDateString("es-ES")}
                                     </span>
                                   </div>
                                   <div className="flex items-center">
@@ -1524,10 +1446,10 @@ export default function FreelancerDashboardUI() {
                               </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row lg:flex-col space-y-2 sm:space-y-0 sm:space-x-2 lg:space-x-0 lg:space-y-2 lg:ml-6">
+                            <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 lg:ml-6 lg:flex-col lg:space-y-2 lg:space-x-0">
                               <button
                                 onClick={() => viewProposalDetails(proposal)}
-                                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+                                className="cursor-pointer rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-200"
                               >
                                 <i className="ri-eye-line mr-2"></i>
                                 Ver Detalles
@@ -1536,10 +1458,8 @@ export default function FreelancerDashboardUI() {
                               {/* NUEVO: Botón Gestionar Progreso para propuestas aceptadas */}
                               {proposal.status === "accepted" && (
                                 <button
-                                  onClick={() =>
-                                    openProgressManagement(proposal.project)
-                                  }
-                                  className="px-4 py-2 bg-primary hover:bg-cyan-700 text-white font-medium text-sm rounded-lg transition-colors whitespace-nowrap cursor-pointer"
+                                  onClick={() => openProgressManagement(proposal.project)}
+                                  className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                                 >
                                   <i className="ri-bar-chart-line mr-2"></i>
                                   Gestionar Progreso
@@ -1551,10 +1471,10 @@ export default function FreelancerDashboardUI() {
                                   onClick={() =>
                                     handleContactClient(
                                       proposal.project.client?.id!,
-                                      proposal.project.client?.full_name!
+                                      proposal.project.client?.full_name!,
                                     )
                                   }
-                                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+                                  className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                                 >
                                   <i className="ri-chat-3-line mr-2"></i>
                                   Contactar
@@ -1572,10 +1492,8 @@ export default function FreelancerDashboardUI() {
               {/* Mensajes */}
               {activeTab === "messages" && (
                 <div className="space-y-4 sm:space-y-6">
-                  <div className="flex flex-col sm:justify-between sm:items-center space-y-4 sm:space-y-0">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Mensajes
-                    </h3>
+                  <div className="flex flex-col space-y-4 sm:items-center sm:justify-between sm:space-y-0">
+                    <h3 className="text-lg font-semibold text-gray-900">Mensajes</h3>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <i className="ri-chat-3-line"></i>
                       <span>{conversations.length} conversaciones</span>
@@ -1583,19 +1501,17 @@ export default function FreelancerDashboardUI() {
                   </div>
 
                   {conversationsLoading ? (
-                    <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                      <p className="mt-2 text-gray-500">
-                        Cargando conversaciones...
-                      </p>
+                    <div className="py-8 text-center">
+                      <div className="border-primary mx-auto h-8 w-8 animate-spin rounded-full border-b-2"></div>
+                      <p className="mt-2 text-gray-500">Cargando conversaciones...</p>
                     </div>
                   ) : conversations.length === 0 ? (
-                    <div className="text-center py-8 sm:py-12">
-                      <i className="ri-chat-3-line text-4xl sm:6xl text-gray-300 mb-4"></i>
-                      <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+                    <div className="py-8 text-center sm:py-12">
+                      <i className="ri-chat-3-line sm:6xl mb-4 text-4xl text-gray-300"></i>
+                      <h3 className="mb-2 text-lg font-medium text-gray-900 sm:text-xl">
                         No tienes mensajes
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-500">
+                      <p className="text-sm text-gray-500 sm:text-base">
                         Las conversaciones con los clientes aparecerán aquí
                       </p>
                     </div>
@@ -1604,17 +1520,17 @@ export default function FreelancerDashboardUI() {
                       {conversations.map((conversation) => (
                         <div
                           key={conversation.id}
-                          className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                          className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md"
                           onClick={() => openChat(conversation)}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
-                              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center overflow-hidden">
+                              <div className="bg-primary/10 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
                                 {conversation.client?.avatar_url ? (
                                   <img
                                     src={conversation.client.avatar_url}
                                     alt={conversation.client.full_name}
-                                    className="w-full h-full object-cover object-top"
+                                    className="h-full w-full object-cover object-top"
                                   />
                                 ) : (
                                   <i className="ri-user-line text-primary"></i>
@@ -1630,12 +1546,10 @@ export default function FreelancerDashboardUI() {
                                   </p>
                                 )}
                                 {conversation.latest_message && (
-                                  <p className="text-sm text-gray-600 mt-1">
-                                    {conversation.latest_message.message_text
-                                      .length > 50
+                                  <p className="mt-1 text-sm text-gray-600">
+                                    {conversation.latest_message.message_text.length > 50
                                       ? `${conversation.latest_message.message_text.substring(0, 50)}...`
-                                      : conversation.latest_message
-                                          .message_text}
+                                      : conversation.latest_message.message_text}
                                   </p>
                                 )}
                               </div>
@@ -1644,11 +1558,11 @@ export default function FreelancerDashboardUI() {
                               {conversation.latest_message && (
                                 <p className="text-xs text-gray-500">
                                   {new Date(
-                                    conversation.latest_message.created_at
+                                    conversation.latest_message.created_at,
                                   ).toLocaleDateString("es-ES")}
                                 </p>
                               )}
-                              <i className="ri-arrow-right-line text-gray-400 mt-2"></i>
+                              <i className="ri-arrow-right-line mt-2 text-gray-400"></i>
                             </div>
                           </div>
                         </div>
@@ -1661,10 +1575,8 @@ export default function FreelancerDashboardUI() {
               {/* Reseñas */}
               {activeTab === "reviews" && (
                 <div className="space-y-6">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Gestión de Reseñas
-                    </h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900">Gestión de Reseñas</h3>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <i className="ri-star-line"></i>
                       <span>Calificación promedio: {user?.rating || 0}★</span>
@@ -1672,24 +1584,22 @@ export default function FreelancerDashboardUI() {
                   </div>
 
                   {/* Reseñas pendientes de escribir */}
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-yellow-800 mb-4 flex items-center">
+                  <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+                    <h4 className="mb-4 flex items-center text-lg font-semibold text-yellow-800">
                       <i className="ri-edit-line mr-2"></i>
                       Reseñas Pendientes de Escribir
                       {pendingReviewsCount > 0 && (
-                        <span className="ml-2 bg-yellow-500 text-white text-sm rounded-full w-6 h-6 flex items-center justify-center">
+                        <span className="ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500 text-sm text-white">
                           {pendingReviewsCount}
                         </span>
                       )}
                     </h4>
-                    <PendingReviews
-                      onReviewsUpdate={() => loadPendingReviewsCount()}
-                    />
+                    <PendingReviews onReviewsUpdate={() => loadPendingReviewsCount()} />
                   </div>
 
                   {/* Reseñas recibidas */}
-                  <div className="bg-white border border-gray-200 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <div className="rounded-lg border border-gray-200 bg-white p-6">
+                    <h4 className="mb-4 flex items-center text-lg font-semibold text-gray-900">
                       <i className="ri-star-fill mr-2 text-yellow-500"></i>
                       Reseñas Recibidas
                     </h4>
@@ -1701,35 +1611,31 @@ export default function FreelancerDashboardUI() {
               {/* Mi Perfil */}
               {activeTab === "user" && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Mi Perfil
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Mi Perfil</h3>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     {/* Información Personal */}
-                    <div className="bg-white border border-gray-200 rounded-lg p-6">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                    <div className="rounded-lg border border-gray-200 bg-white p-6">
+                      <h4 className="mb-4 text-lg font-semibold text-gray-900">
                         Información Personal
                       </h4>
                       <div className="space-y-4">
                         <div className="flex items-center space-x-4">
-                          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center overflow-hidden">
+                          <div className="bg-primary/10 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full">
                             {user?.avatar_url ? (
                               <img
                                 src={user.avatar_url}
                                 alt={user.full_name}
-                                className="w-full h-full object-cover object-top rounded-full"
+                                className="h-full w-full rounded-full object-cover object-top"
                               />
                             ) : (
-                              <i className="ri-user-line text-2xl text-primary"></i>
+                              <i className="ri-user-line text-primary text-2xl"></i>
                             )}
                           </div>
                           <div>
-                            <h5 className="font-semibold text-gray-900">
-                              {user?.full_name}
-                            </h5>
+                            <h5 className="font-semibold text-gray-900">{user?.full_name}</h5>
                             <p className="text-gray-600">{user?.email}</p>
-                            <div className="flex items-center mt-1">
+                            <div className="mt-1 flex items-center">
                               <span className="text-yellow-500">★</span>
                               <span className="ml-1 text-sm text-gray-600">
                                 {user?.rating || 0} calificación
@@ -1739,7 +1645,7 @@ export default function FreelancerDashboardUI() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
                             Bio
                           </label>
                           <p className="text-gray-600">
@@ -1748,23 +1654,21 @@ export default function FreelancerDashboardUI() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <label className="mb-1 block text-sm font-medium text-gray-700">
                             Habilidades
                           </label>
                           <div className="flex flex-wrap gap-2">
                             {user?.skills ? (
-                              user.skills.map(
-                                (skill: string, index: number) => (
-                                  <span
-                                    key={index}
-                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
-                                  >
-                                    {skill}
-                                  </span>
-                                )
-                              )
+                              user.skills.map((skill: string, index: number) => (
+                                <span
+                                  key={index}
+                                  className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                >
+                                  {skill}
+                                </span>
+                              ))
                             ) : (
-                              <span className="text-gray-500 text-sm">
+                              <span className="text-sm text-gray-500">
                                 No has agregado habilidades
                               </span>
                             )}
@@ -1774,45 +1678,28 @@ export default function FreelancerDashboardUI() {
                     </div>
 
                     {/* Estadísticas */}
-                    <div className="bg-white border border-gray-200 rounded-lg p-6">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                        Estadísticas
-                      </h4>
+                    <div className="rounded-lg border border-gray-200 bg-white p-6">
+                      <h4 className="mb-4 text-lg font-semibold text-gray-900">Estadísticas</h4>
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center p-4 bg-emerald-50 rounded-lg">
-                          <div className="text-2xl font-bold text-primary">
-                            {myProjects.length}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            Proyectos Activos
-                          </div>
+                        <div className="rounded-lg bg-emerald-50 p-4 text-center">
+                          <div className="text-primary text-2xl font-bold">{myProjects.length}</div>
+                          <div className="text-sm text-gray-600">Proyectos Activos</div>
                         </div>
-                        <div className="text-center p-4 bg-blue-50 rounded-lg">
-                          <div className="text-2xl font-bold text-primary">
-                            {proposals.length}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            Propuestas Enviadas
-                          </div>
+                        <div className="rounded-lg bg-blue-50 p-4 text-center">
+                          <div className="text-primary text-2xl font-bold">{proposals.length}</div>
+                          <div className="text-sm text-gray-600">Propuestas Enviadas</div>
                         </div>
-                        <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                        <div className="rounded-lg bg-yellow-50 p-4 text-center">
                           <div className="text-2xl font-bold text-yellow-600">
-                            {
-                              proposals.filter((p) => p.status === "accepted")
-                                .length
-                            }
+                            {proposals.filter((p) => p.status === "accepted").length}
                           </div>
-                          <div className="text-sm text-gray-600">
-                            Propuestas Aceptadas
-                          </div>
+                          <div className="text-sm text-gray-600">Propuestas Aceptadas</div>
                         </div>
-                        <div className="text-center p-4 bg-purple-50 rounded-lg">
+                        <div className="rounded-lg bg-purple-50 p-4 text-center">
                           <div className="text-2xl font-bold text-purple-600">
                             {conversations.length}
                           </div>
-                          <div className="text-sm text-gray-600">
-                            Conversaciones
-                          </div>
+                          <div className="text-sm text-gray-600">Conversaciones</div>
                         </div>
                       </div>
                     </div>
@@ -1822,9 +1709,7 @@ export default function FreelancerDashboardUI() {
               )}
 
               {/* Ingresos */}
-              {activeTab === "payments" && (
-                <PaymentsTab userType="freelancer" />
-              )}
+              {activeTab === "payments" && <PaymentsTab userType="freelancer" />}
 
               {/* Analytics Profesionales */}
               {activeTab === "analytics" && user?.id && (
@@ -1834,10 +1719,8 @@ export default function FreelancerDashboardUI() {
               {/* NUEVA PESTAÑA: Logros y Badges */}
               {activeTab === "achievements" && user?.id && (
                 <div className="space-y-6">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      🏆 Sistema de Logros
-                    </h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900">🏆 Sistema de Logros</h3>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <i className="ri-magic-line"></i>
                       <span>Gamificación activada</span>
@@ -1853,19 +1736,19 @@ export default function FreelancerDashboardUI() {
 
         {/* NUEVO: Modal de Gestión de Progreso para Propuestas Aceptadas */}
         {showProgressManagement && selectedProjectForProgress && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-            <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-full sm:max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+            <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-xl bg-white sm:max-h-[90vh] sm:max-w-6xl sm:rounded-2xl">
               <div className="p-4 sm:p-6">
-                <div className="flex justify-between items-start mb-4 sm:mb-6">
+                <div className="mb-4 flex items-start justify-between sm:mb-6">
                   <div>
-                    <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
+                    <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">
                       Gestión de Progreso
                     </h2>
-                    <h3 className="text-sm sm:text-lg text-gray-600">
+                    <h3 className="text-sm text-gray-600 sm:text-lg">
                       {selectedProjectForProgress.title}
                     </h3>
-                    <div className="flex items-center mt-2">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <div className="mt-2 flex items-center">
+                      <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
                         <i className="ri-check-line mr-1"></i>
                         {selectedProjectForProgress._isFromTransaction
                           ? "Proyecto Contratado"
@@ -1881,7 +1764,7 @@ export default function FreelancerDashboardUI() {
                       setShowProgressManagement(false)
                       setSelectedProjectForProgress(null)
                     }}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+                    className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
                   >
                     <i className="ri-close-line text-xl sm:text-2xl"></i>
                   </button>
@@ -1917,30 +1800,24 @@ export default function FreelancerDashboardUI() {
 
         {/* Modal de Detalles de Proyecto (Proyectos Disponibles) */}
         {showProjectDetails && selectedProjectDetails && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-            <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-full sm:max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+            <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-xl bg-white sm:max-h-[90vh] sm:max-w-4xl sm:rounded-2xl">
               <div className="p-4 sm:p-6">
-                <div className="flex justify-between items-start mb-4 sm:mb-6">
+                <div className="mb-4 flex items-start justify-between sm:mb-6">
                   <div>
-                    <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
+                    <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">
                       {selectedProjectDetails.title}
                     </h2>
-                    <div className="flex items-center mt-2 space-x-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <div className="mt-2 flex items-center space-x-4">
+                      <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
                         <i className="ri-check-line mr-1"></i>
                         {selectedProjectDetails.status === "open"
                           ? "Abierto"
                           : selectedProjectDetails.status}
                       </span>
-                      <span className="text-lg font-bold text-primary">
-                        $
-                        {selectedProjectDetails.budget_min ||
-                          selectedProjectDetails.budget ||
-                          0}{" "}
-                        - $
-                        {selectedProjectDetails.budget_max ||
-                          selectedProjectDetails.budget ||
-                          0}
+                      <span className="text-primary text-lg font-bold">
+                        ${selectedProjectDetails.budget_min || selectedProjectDetails.budget || 0} -
+                        ${selectedProjectDetails.budget_max || selectedProjectDetails.budget || 0}
                       </span>
                     </div>
                   </div>
@@ -1949,7 +1826,7 @@ export default function FreelancerDashboardUI() {
                       setShowProjectDetails(false)
                       setSelectedProjectDetails(null)
                     }}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+                    className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
                   >
                     <i className="ri-close-line text-xl sm:text-2xl"></i>
                   </button>
@@ -1957,17 +1834,17 @@ export default function FreelancerDashboardUI() {
 
                 <div className="space-y-6">
                   {/* Información del Cliente */}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  <div className="rounded-lg bg-gray-50 p-4">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">
                       Información del Cliente
                     </h3>
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center overflow-hidden">
+                      <div className="bg-primary/10 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
                         {selectedProjectDetails.client?.avatar_url ? (
                           <img
                             src={selectedProjectDetails.client.avatar_url}
                             alt={selectedProjectDetails.client.full_name}
-                            className="w-full h-full object-cover object-top"
+                            className="h-full w-full object-cover object-top"
                           />
                         ) : (
                           <i className="ri-user-line text-primary text-xl"></i>
@@ -1977,15 +1854,12 @@ export default function FreelancerDashboardUI() {
                         <h4 className="font-semibold text-gray-900">
                           {selectedProjectDetails.client?.full_name}
                         </h4>
-                        <p className="text-gray-600">
-                          {selectedProjectDetails.client?.email}
-                        </p>
+                        <p className="text-gray-600">{selectedProjectDetails.client?.email}</p>
                         {selectedProjectDetails.client?.rating && (
-                          <div className="flex items-center mt-1">
+                          <div className="mt-1 flex items-center">
                             <span className="text-yellow-500">★</span>
                             <span className="ml-1 text-sm text-gray-600">
-                              {selectedProjectDetails.client.rating}{" "}
-                              calificación
+                              {selectedProjectDetails.client.rating} calificación
                             </span>
                           </div>
                         )}
@@ -1995,10 +1869,10 @@ export default function FreelancerDashboardUI() {
 
                   {/* Descripción del Proyecto */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">
                       Descripción del Proyecto
                     </h3>
-                    <p className="text-gray-700 leading-relaxed">
+                    <p className="leading-relaxed text-gray-700">
                       {selectedProjectDetails.description}
                     </p>
                   </div>
@@ -2007,79 +1881,56 @@ export default function FreelancerDashboardUI() {
                   {selectedProjectDetails.required_skills &&
                     selectedProjectDetails.required_skills.length > 0 && (
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        <h3 className="mb-3 text-lg font-semibold text-gray-900">
                           Habilidades Requeridas
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                          {selectedProjectDetails.required_skills.map(
-                            (skill, index) => (
-                              <span
-                                key={index}
-                                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-cyan-800"
-                              >
-                                {skill}
-                              </span>
-                            )
-                          )}
+                          {selectedProjectDetails.required_skills.map((skill, index) => (
+                            <span
+                              key={index}
+                              className="bg-primary/10 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium text-cyan-800"
+                            >
+                              {skill}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     )}
 
                   {/* Detalles del Proyecto */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        Presupuesto
-                      </h4>
-                      <p className="text-2xl font-bold text-primary">
-                        $
-                        {selectedProjectDetails.budget_min ||
-                          selectedProjectDetails.budget ||
-                          0}{" "}
-                        - $
-                        {selectedProjectDetails.budget_max ||
-                          selectedProjectDetails.budget ||
-                          0}
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold text-gray-900">Presupuesto</h4>
+                      <p className="text-primary text-2xl font-bold">
+                        ${selectedProjectDetails.budget_min || selectedProjectDetails.budget || 0} -
+                        ${selectedProjectDetails.budget_max || selectedProjectDetails.budget || 0}
                       </p>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        Tipo de Proyecto
-                      </h4>
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold text-gray-900">Tipo de Proyecto</h4>
                       <p className="text-gray-700">
-                        {selectedProjectDetails.project_type ||
-                          "No especificado"}
+                        {selectedProjectDetails.project_type || "No especificado"}
                       </p>
                     </div>
                     {selectedProjectDetails.deadline && (
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Fecha Límite
-                        </h4>
+                      <div className="rounded-lg bg-gray-50 p-4">
+                        <h4 className="mb-2 font-semibold text-gray-900">Fecha Límite</h4>
                         <p className="text-gray-700">
-                          {new Date(
-                            selectedProjectDetails.deadline
-                          ).toLocaleDateString("es-ES")}
+                          {new Date(selectedProjectDetails.deadline).toLocaleDateString("es-ES")}
                         </p>
                       </div>
                     )}
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        Publicado
-                      </h4>
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold text-gray-900">Publicado</h4>
                       <p className="text-gray-700">
-                        {new Date(
-                          selectedProjectDetails.created_at
-                        ).toLocaleDateString("es-ES")}
+                        {new Date(selectedProjectDetails.created_at).toLocaleDateString("es-ES")}
                       </p>
                     </div>
                   </div>
 
                   {/* Botones de Acción */}
-                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pt-4 border-t">
-                    {!proposals.find(
-                      (p) => p.project.id === selectedProjectDetails.id
-                    ) &&
+                  <div className="flex flex-col space-y-2 border-t pt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+                    {!proposals.find((p) => p.project.id === selectedProjectDetails.id) &&
                       proposals &&
                       selectedProjectDetails && (
                         <button
@@ -2087,7 +1938,7 @@ export default function FreelancerDashboardUI() {
                             setShowProjectDetails(false)
                             sendProposal(selectedProjectDetails.id)
                           }}
-                          className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium cursor-pointer"
+                          className="bg-primary flex-1 cursor-pointer rounded-lg px-6 py-3 font-medium text-white transition-colors hover:bg-cyan-700"
                         >
                           <i className="ri-send-plane-line mr-2"></i>
                           Enviar Propuesta
@@ -2097,12 +1948,9 @@ export default function FreelancerDashboardUI() {
                       <button
                         onClick={() => {
                           setShowProjectDetails(false)
-                          startChat(
-                            selectedProjectDetails.id,
-                            selectedProjectDetails.client!.id
-                          )
+                          startChat(selectedProjectDetails.id, selectedProjectDetails.client!.id)
                         }}
-                        className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium cursor-pointer"
+                        className="bg-primary flex-1 cursor-pointer rounded-lg px-6 py-3 font-medium text-white transition-colors hover:bg-cyan-700"
                       >
                         <i className="ri-chat-3-line mr-2"></i>
                         Chat con Cliente
@@ -2116,227 +1964,205 @@ export default function FreelancerDashboardUI() {
         )}
 
         {/* RESTAURADO: Modal de detalles de propuesta */}
-        {showProposalDetails &&
-          selectedProposalForDetails &&
-          proposalProjectDetails && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-              <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-full sm:max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
-                <div className="p-4 sm:p-6">
-                  <div className="flex justify-between items-start mb-4 sm:mb-6">
-                    <div>
-                      <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
-                        Detalles de la Propuesta
-                      </h2>
-                      <h3 className="text-sm sm:text-lg text-gray-600">
-                        {proposalProjectDetails.title}
-                      </h3>
-                      <div className="flex items-center mt-2 space-x-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            selectedProposalForDetails.status === "accepted"
-                              ? "bg-green-100 text-green-800"
-                              : selectedProposalForDetails.status === "pending"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          <i
-                            className={`mr-1 ${
-                              selectedProposalForDetails.status === "accepted"
-                                ? "ri-check-line"
-                                : selectedProposalForDetails.status ===
-                                    "pending"
-                                  ? "ri-time-line"
-                                  : "ri-close-line"
-                            }`}
-                          ></i>
-                          {selectedProposalForDetails.status === "accepted"
-                            ? "Aceptada"
+        {showProposalDetails && selectedProposalForDetails && proposalProjectDetails && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+            <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-xl bg-white sm:max-h-[90vh] sm:max-w-4xl sm:rounded-2xl">
+              <div className="p-4 sm:p-6">
+                <div className="mb-4 flex items-start justify-between sm:mb-6">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">
+                      Detalles de la Propuesta
+                    </h2>
+                    <h3 className="text-sm text-gray-600 sm:text-lg">
+                      {proposalProjectDetails.title}
+                    </h3>
+                    <div className="mt-2 flex items-center space-x-4">
+                      <span
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          selectedProposalForDetails.status === "accepted"
+                            ? "bg-green-100 text-green-800"
                             : selectedProposalForDetails.status === "pending"
-                              ? "Pendiente"
-                              : "Rechazada"}
-                        </span>
-                        <span className="text-lg font-bold text-primary">
-                          ${selectedProposalForDetails.proposed_budget}
-                        </span>
-                      </div>
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        <i
+                          className={`mr-1 ${
+                            selectedProposalForDetails.status === "accepted"
+                              ? "ri-check-line"
+                              : selectedProposalForDetails.status === "pending"
+                                ? "ri-time-line"
+                                : "ri-close-line"
+                          }`}
+                        ></i>
+                        {selectedProposalForDetails.status === "accepted"
+                          ? "Aceptada"
+                          : selectedProposalForDetails.status === "pending"
+                            ? "Pendiente"
+                            : "Rechazada"}
+                      </span>
+                      <span className="text-primary text-lg font-bold">
+                        ${selectedProposalForDetails.proposed_budget}
+                      </span>
                     </div>
-                    <button
-                      onClick={() => {
-                        setShowProposalDetails(false)
-                        setSelectedProposalForDetails(null)
-                        setProposalProjectDetails(null)
-                      }}
-                      className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
-                    >
-                      <i className="ri-close-line text-xl sm:text-2xl"></i>
-                    </button>
                   </div>
+                  <button
+                    onClick={() => {
+                      setShowProposalDetails(false)
+                      setSelectedProposalForDetails(null)
+                      setProposalProjectDetails(null)
+                    }}
+                    className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
+                  >
+                    <i className="ri-close-line text-xl sm:text-2xl"></i>
+                  </button>
+                </div>
 
-                  <div className="space-y-6">
-                    {/* Mi Propuesta */}
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-                      <h3 className="text-lg font-semibold text-emerald-800 mb-3">
-                        Mi Propuesta
-                      </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                        <div>
-                          <h4 className="font-semibold text-emerald-700">
-                            Presupuesto Propuesto
-                          </h4>
-                          <p className="text-2xl font-bold text-primary">
-                            ${selectedProposalForDetails.proposed_budget}
-                          </p>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-emerald-700">
-                            Tiempo de Entrega
-                          </h4>
-                          <p className="text-xl font-semibold text-primary">
-                            {selectedProposalForDetails.delivery_time} días
-                          </p>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-emerald-700">
-                            Enviada
-                          </h4>
-                          <p className="text-primary">
-                            {new Date(
-                              selectedProposalForDetails.created_at
-                            ).toLocaleDateString("es-ES")}
-                          </p>
-                        </div>
+                <div className="space-y-6">
+                  {/* Mi Propuesta */}
+                  <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+                    <h3 className="mb-3 text-lg font-semibold text-emerald-800">Mi Propuesta</h3>
+                    <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                      <div>
+                        <h4 className="font-semibold text-emerald-700">Presupuesto Propuesto</h4>
+                        <p className="text-primary text-2xl font-bold">
+                          ${selectedProposalForDetails.proposed_budget}
+                        </p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-cyan-700 mb-2">
-                          Carta de Presentación
-                        </h4>
-                        <p className="text-cyan-700 leading-relaxed">
-                          {selectedProposalForDetails.message}
+                        <h4 className="font-semibold text-emerald-700">Tiempo de Entrega</h4>
+                        <p className="text-primary text-xl font-semibold">
+                          {selectedProposalForDetails.delivery_time} días
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-emerald-700">Enviada</h4>
+                        <p className="text-primary">
+                          {new Date(selectedProposalForDetails.created_at).toLocaleDateString(
+                            "es-ES",
+                          )}
                         </p>
                       </div>
                     </div>
-
-                    {/* Información del Proyecto */}
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                        Información del Proyecto
-                      </h3>
-                      <p className="text-gray-700 leading-relaxed mb-4">
-                        {proposalProjectDetails.description}
+                      <h4 className="mb-2 font-semibold text-cyan-700">Carta de Presentación</h4>
+                      <p className="leading-relaxed text-cyan-700">
+                        {selectedProposalForDetails.message}
                       </p>
+                    </div>
+                  </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="bg-gray-50 rounded-lg p-4">
-                          <h4 className="font-semibold text-gray-900 mb-2">
-                            Presupuesto del Cliente
-                          </h4>
-                          <p className="text-xl font-bold text-gray-700">
-                            ${proposalProjectDetails.budget_min} - $
-                            {proposalProjectDetails.budget_max}
-                          </p>
-                        </div>
-                        <div className="bg-gray-50 rounded-lg p-4">
-                          <h4 className="font-semibold text-gray-900 mb-2">
-                            Tipo de Proyecto
-                          </h4>
-                          <p className="text-gray-700">
-                            {proposalProjectDetails.project_type ||
-                              "No especificado"}
-                          </p>
-                        </div>
+                  {/* Información del Proyecto */}
+                  <div>
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">
+                      Información del Proyecto
+                    </h3>
+                    <p className="mb-4 leading-relaxed text-gray-700">
+                      {proposalProjectDetails.description}
+                    </p>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="rounded-lg bg-gray-50 p-4">
+                        <h4 className="mb-2 font-semibold text-gray-900">
+                          Presupuesto del Cliente
+                        </h4>
+                        <p className="text-xl font-bold text-gray-700">
+                          ${proposalProjectDetails.budget_min} - $
+                          {proposalProjectDetails.budget_max}
+                        </p>
+                      </div>
+                      <div className="rounded-lg bg-gray-50 p-4">
+                        <h4 className="mb-2 font-semibold text-gray-900">Tipo de Proyecto</h4>
+                        <p className="text-gray-700">
+                          {proposalProjectDetails.project_type || "No especificado"}
+                        </p>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Información del Cliente */}
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                        Cliente
-                      </h3>
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center overflow-hidden">
-                          {proposalProjectDetails.client?.avatar_url ? (
-                            <img
-                              src={proposalProjectDetails.client.avatar_url}
-                              alt={proposalProjectDetails.client.full_name}
-                              className="w-full h-full object-cover object-top"
-                            />
-                          ) : (
-                            <i className="ri-user-line text-primary text-xl"></i>
-                          )}
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900">
-                            {proposalProjectDetails.client?.full_name}
-                          </h4>
-                          <p className="text-gray-600">
-                            {proposalProjectDetails.client?.email}
-                          </p>
-                          {proposalProjectDetails.client?.rating && (
-                            <div className="flex items-center mt-1">
-                              <span className="text-yellow-500">★</span>
-                              <span className="ml-1 text-sm text-gray-600">
-                                {proposalProjectDetails.client.rating}{" "}
-                                calificación
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                  {/* Información del Cliente */}
+                  <div className="rounded-lg bg-gray-50 p-4">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">Cliente</h3>
+                    <div className="flex items-center space-x-4">
+                      <div className="bg-primary/10 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
+                        {proposalProjectDetails.client?.avatar_url ? (
+                          <img
+                            src={proposalProjectDetails.client.avatar_url}
+                            alt={proposalProjectDetails.client.full_name}
+                            className="h-full w-full object-cover object-top"
+                          />
+                        ) : (
+                          <i className="ri-user-line text-primary text-xl"></i>
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900">
+                          {proposalProjectDetails.client?.full_name}
+                        </h4>
+                        <p className="text-gray-600">{proposalProjectDetails.client?.email}</p>
+                        {proposalProjectDetails.client?.rating && (
+                          <div className="mt-1 flex items-center">
+                            <span className="text-yellow-500">★</span>
+                            <span className="ml-1 text-sm text-gray-600">
+                              {proposalProjectDetails.client.rating} calificación
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
+                  </div>
 
-                    {/* Botones de Acción */}
-                    {selectedProposalForDetails.status === "accepted" && (
-                      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pt-4 border-t">
+                  {/* Botones de Acción */}
+                  {selectedProposalForDetails.status === "accepted" && (
+                    <div className="flex flex-col space-y-2 border-t pt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+                      <button
+                        onClick={() => {
+                          setShowProposalDetails(false)
+                          openProgressManagement(proposalProjectDetails)
+                        }}
+                        className="bg-primary flex-1 cursor-pointer rounded-lg px-6 py-3 font-medium text-white transition-colors hover:bg-cyan-700"
+                      >
+                        <i className="ri-bar-chart-line mr-2"></i>
+                        Gestionar Progreso
+                      </button>
+                      {proposalProjectDetails.client?.id && (
                         <button
                           onClick={() => {
                             setShowProposalDetails(false)
-                            openProgressManagement(proposalProjectDetails)
+                            handleContactClient(
+                              proposalProjectDetails.client.id,
+                              proposalProjectDetails.client.full_name,
+                            )
                           }}
-                          className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium cursor-pointer"
+                          className="bg-primary flex-1 cursor-pointer rounded-lg px-6 py-3 font-medium text-white transition-colors hover:bg-cyan-700"
                         >
-                          <i className="ri-bar-chart-line mr-2"></i>
-                          Gestionar Progreso
+                          <i className="ri-chat-3-line mr-2"></i>
+                          Contactar Cliente
                         </button>
-                        {proposalProjectDetails.client?.id && (
-                          <button
-                            onClick={() => {
-                              setShowProposalDetails(false)
-                              handleContactClient(
-                                proposalProjectDetails.client.id,
-                                proposalProjectDetails.client.full_name
-                              )
-                            }}
-                            className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium cursor-pointer"
-                          >
-                            <i className="ri-chat-3-line mr-2"></i>
-                            Contactar Cliente
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
         {/* RESTAURADO: Modal de detalles de proyecto en "Mis Proyectos" */}
         {showProjectDetailsModal && selectedProjectForDetails && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-            <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-full sm:max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+            <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-xl bg-white sm:max-h-[90vh] sm:max-w-4xl sm:rounded-2xl">
               <div className="p-4 sm:p-6">
-                <div className="flex justify-between items-start mb-4 sm:mb-6">
+                <div className="mb-4 flex items-start justify-between sm:mb-6">
                   <div>
-                    <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
+                    <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">
                       {selectedProjectForDetails.title}
                     </h2>
-                    <div className="flex items-center mt-2 space-x-4">
+                    <div className="mt-2 flex items-center space-x-4">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                           selectedProjectForDetails._isFromTransaction
-                            ? selectedProjectForDetails.payment_status ===
-                              "paid"
+                            ? selectedProjectForDetails.payment_status === "paid"
                               ? "bg-green-100 text-green-800"
                               : "bg-yellow-100 text-yellow-800"
                             : "bg-primary/10 text-cyan-800"
@@ -2345,8 +2171,7 @@ export default function FreelancerDashboardUI() {
                         <i
                           className={`mr-1 ${
                             selectedProjectForDetails._isFromTransaction
-                              ? selectedProjectForDetails.payment_status ===
-                                "paid"
+                              ? selectedProjectForDetails.payment_status === "paid"
                                 ? "ri-check-line"
                                 : "ri-time-line"
                               : "ri-briefcase-line"
@@ -2358,7 +2183,7 @@ export default function FreelancerDashboardUI() {
                             : "Pago Pendiente"
                           : "Mi Proyecto"}
                       </span>
-                      <span className="text-lg font-bold text-primary">
+                      <span className="text-primary text-lg font-bold">
                         $
                         {selectedProjectForDetails.budget ||
                           `${selectedProjectForDetails.budget_min}-${selectedProjectForDetails.budget_max}`}
@@ -2370,7 +2195,7 @@ export default function FreelancerDashboardUI() {
                       setShowProjectDetailsModal(false)
                       setSelectedProjectForDetails(null)
                     }}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+                    className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
                   >
                     <i className="ri-close-line text-xl sm:text-2xl"></i>
                   </button>
@@ -2378,17 +2203,15 @@ export default function FreelancerDashboardUI() {
 
                 <div className="space-y-6">
                   {/* Información del Cliente */}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                      Cliente
-                    </h3>
+                  <div className="rounded-lg bg-gray-50 p-4">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">Cliente</h3>
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center overflow-hidden">
+                      <div className="bg-primary/10 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full">
                         {selectedProjectForDetails.client?.avatar_url ? (
                           <img
                             src={selectedProjectForDetails.client.avatar_url}
                             alt={selectedProjectForDetails.client.full_name}
-                            className="w-full h-full object-cover object-top"
+                            className="h-full w-full object-cover object-top"
                           />
                         ) : (
                           <i className="ri-user-line text-primary text-xl"></i>
@@ -2398,15 +2221,12 @@ export default function FreelancerDashboardUI() {
                         <h4 className="font-semibold text-gray-900">
                           {selectedProjectForDetails.client?.full_name}
                         </h4>
-                        <p className="text-gray-600">
-                          {selectedProjectForDetails.client?.email}
-                        </p>
+                        <p className="text-gray-600">{selectedProjectForDetails.client?.email}</p>
                         {selectedProjectForDetails.client?.rating && (
-                          <div className="flex items-center mt-1">
+                          <div className="mt-1 flex items-center">
                             <span className="text-yellow-500">★</span>
                             <span className="ml-1 text-sm text-gray-600">
-                              {selectedProjectForDetails.client.rating}{" "}
-                              calificación
+                              {selectedProjectForDetails.client.rating} calificación
                             </span>
                           </div>
                         )}
@@ -2416,31 +2236,25 @@ export default function FreelancerDashboardUI() {
 
                   {/* Descripción del Proyecto */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                      Descripción
-                    </h3>
-                    <p className="text-gray-700 leading-relaxed">
+                    <h3 className="mb-3 text-lg font-semibold text-gray-900">Descripción</h3>
+                    <p className="leading-relaxed text-gray-700">
                       {selectedProjectForDetails.description ||
                         "Proyecto contratado directamente por el cliente"}
                     </p>
                   </div>
 
                   {/* Detalles del Proyecto */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        Valor del Proyecto
-                      </h4>
-                      <p className="text-2xl font-bold text-primary">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold text-gray-900">Valor del Proyecto</h4>
+                      <p className="text-primary text-2xl font-bold">
                         $
                         {selectedProjectForDetails.budget ||
                           `${selectedProjectForDetails.budget_min}-${selectedProjectForDetails.budget_max}`}
                       </p>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        Estado
-                      </h4>
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold text-gray-900">Estado</h4>
                       <p className="text-gray-700">
                         {selectedProjectForDetails._isFromTransaction
                           ? selectedProjectForDetails.payment_status === "paid"
@@ -2451,35 +2265,29 @@ export default function FreelancerDashboardUI() {
                             : "Completado"}
                       </p>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        Fecha de Inicio
-                      </h4>
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold text-gray-900">Fecha de Inicio</h4>
                       <p className="text-gray-700">
-                        {new Date(
-                          selectedProjectForDetails.created_at
-                        ).toLocaleDateString("es-ES")}
+                        {new Date(selectedProjectForDetails.created_at).toLocaleDateString("es-ES")}
                       </p>
                     </div>
                     {selectedProjectForDetails._isFromTransaction && (
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Tipo
-                        </h4>
+                      <div className="rounded-lg bg-gray-50 p-4">
+                        <h4 className="mb-2 font-semibold text-gray-900">Tipo</h4>
                         <p className="text-gray-700">Contratación Directa</p>
                       </div>
                     )}
                   </div>
 
                   {/* Botones de Acción */}
-                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pt-4 border-t">
+                  <div className="flex flex-col space-y-2 border-t pt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                     {!selectedProjectForDetails._isFromTransaction && (
                       <button
                         onClick={() => {
                           setShowProjectDetailsModal(false)
                           openProjectManagement(selectedProjectForDetails)
                         }}
-                        className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium cursor-pointer"
+                        className="bg-primary flex-1 cursor-pointer rounded-lg px-6 py-3 font-medium text-white transition-colors hover:bg-cyan-700"
                       >
                         <i className="ri-settings-3-line mr-2"></i>
                         Gestionar Proyecto
@@ -2490,7 +2298,7 @@ export default function FreelancerDashboardUI() {
                         setShowProjectDetailsModal(false)
                         openProgressManagement(selectedProjectForDetails)
                       }}
-                      className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium cursor-pointer"
+                      className="bg-primary flex-1 cursor-pointer rounded-lg px-6 py-3 font-medium text-white transition-colors hover:bg-cyan-700"
                     >
                       <i className="ri-bar-chart-line mr-2"></i>
                       Gestionar Progreso
@@ -2501,10 +2309,10 @@ export default function FreelancerDashboardUI() {
                           setShowProjectDetailsModal(false)
                           startChat(
                             selectedProjectForDetails.id,
-                            selectedProjectForDetails.client!.id
+                            selectedProjectForDetails.client!.id,
                           )
                         }}
-                        className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium cursor-pointer"
+                        className="flex-1 cursor-pointer rounded-lg bg-purple-600 px-6 py-3 font-medium text-white transition-colors hover:bg-purple-700"
                       >
                         <i className="ri-chat-3-line mr-2"></i>
                         Chat Cliente
@@ -2519,17 +2327,15 @@ export default function FreelancerDashboardUI() {
 
         {/* Modal de Envío de Propuesta */}
         {showProposalModal && selectedProject && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
-            <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+            <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-xl bg-white sm:max-h-[90vh] sm:max-w-2xl sm:rounded-2xl">
               <div className="p-4 sm:p-6">
-                <div className="flex justify-between items-start mb-4 sm:mb-6">
+                <div className="mb-4 flex items-start justify-between sm:mb-6">
                   <div>
-                    <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
+                    <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">
                       Enviar Propuesta
                     </h2>
-                    <h3 className="text-sm sm:text-lg text-gray-600">
-                      {selectedProject.title}
-                    </h3>
+                    <h3 className="text-sm text-gray-600 sm:text-lg">{selectedProject.title}</h3>
                   </div>
                   <button
                     onClick={() => {
@@ -2541,7 +2347,7 @@ export default function FreelancerDashboardUI() {
                         message: "",
                       })
                     }}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+                    className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
                   >
                     <i className="ri-close-line text-xl sm:text-2xl"></i>
                   </button>
@@ -2555,7 +2361,7 @@ export default function FreelancerDashboardUI() {
                   className="space-y-6"
                 >
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Presupuesto Propuesto (USD)
                     </label>
                     <input
@@ -2567,18 +2373,18 @@ export default function FreelancerDashboardUI() {
                           budget: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="focus:ring-primary focus:border-primary w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2"
                       placeholder="Ej: 500"
                       required
                     />
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="mt-1 text-sm text-gray-500">
                       Presupuesto del cliente: ${selectedProject.budget_min} - $
                       {selectedProject.budget_max}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Tiempo de Entrega (días)
                     </label>
                     <input
@@ -2590,14 +2396,14 @@ export default function FreelancerDashboardUI() {
                           delivery_time: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="focus:ring-primary focus:border-primary w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2"
                       placeholder="Ej: 7"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Carta de Presentación
                     </label>
                     <textarea
@@ -2609,13 +2415,13 @@ export default function FreelancerDashboardUI() {
                         })
                       }
                       rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="focus:ring-primary focus:border-primary w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2"
                       placeholder="Explica por qué eres el freelancer ideal para este proyecto..."
                       required
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 pt-4 border-t">
+                  <div className="flex flex-col space-y-2 border-t pt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                     <button
                       type="button"
                       onClick={() => {
@@ -2627,13 +2433,13 @@ export default function FreelancerDashboardUI() {
                           message: "",
                         })
                       }}
-                      className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium cursor-pointer"
+                      className="flex-1 cursor-pointer rounded-lg bg-gray-100 px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-200"
                     >
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors font-medium cursor-pointer"
+                      className="bg-primary flex-1 cursor-pointer rounded-lg px-6 py-3 font-medium text-white transition-colors hover:bg-cyan-700"
                     >
                       <i className="ri-send-plane-line mr-2"></i>
                       Enviar Propuesta
@@ -2651,9 +2457,7 @@ export default function FreelancerDashboardUI() {
             selectedConversation={selectedConversation}
             setShowChat={(boolean) => setShowChat(boolean)}
             setChatMessages={(array) => setChatMessages(array)}
-            setSelectedConversation={(conversation) =>
-              setSelectedConversation(conversation)
-            }
+            setSelectedConversation={(conversation) => setSelectedConversation(conversation)}
             setNewMessage={(message: string) => setNewMessage(message)}
             chatLoading={chatLoading}
             chatMessages={chatMessages}
