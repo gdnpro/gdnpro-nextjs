@@ -8,7 +8,7 @@ import { type FormState } from "@/validations/auth"
 import { FormError } from "./FormError"
 import { useRouter, useSearchParams } from "next/navigation"
 import { FormInfo } from "./FormInfo"
-import { useAuth } from "@/components/ui/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 
 const INITIAL_STATE: FormState = {
   success: false,

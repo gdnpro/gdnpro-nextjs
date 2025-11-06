@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useAuth } from "@/components/ui/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 import { removeAccents } from "@/libs/removeAccents"
 
 export function ShareProfileTab() {

@@ -1,7 +1,8 @@
+// contexts/AuthContext.tsx
 "use client"
 
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { Session, User } from "@supabase/supabase-js"
+import { User } from "@supabase/supabase-js"
 import { supabaseBrowser } from "@/utils/supabase/client"
 import type { Profile } from "@/interfaces/Profile"
 
@@ -18,7 +19,7 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   loading: true,
   isAuthenticated: false,
-  refreshAuth: () => Promise.resolve(),
+  refreshAuth: async () => {},
 })
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -29,37 +30,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const supabase = supabaseBrowser()
 
   const loadAuth = async () => {
-    if (!supabase) return
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
 
     try {
       setLoading(true)
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession()
-      if (error) throw error
 
-      const currentUser = session?.user ?? null
+      // FORZAR lectura de cookies → escribe en localStorage
+      const { data, error } = await supabase.auth.getSession()
+
+      if (error) {
+        console.warn("getSession error:", error)
+        setUser(null)
+        setProfile(null)
+        return
+      }
+
+      const currentUser = data.session?.user ?? null
       setUser(currentUser)
 
       if (currentUser) {
-        const { data, error } = await supabase
+        const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select("*")
           .eq("user_id", currentUser.id)
           .single()
 
-        if (error && error.code !== "PGRST116") {
-          console.error("Error loading profile:", error)
+        if (profileError && profileError.code !== "PGRST116") {
+          console.error("Profile error:", profileError)
           setProfile(null)
         } else {
-          setProfile(data || null)
+          setProfile(profileData || null)
         }
       } else {
         setProfile(null)
       }
-    } catch (error) {
-      console.error("Error loading auth:", error)
+    } catch (err) {
+      console.error("loadAuth error:", err)
       setUser(null)
       setProfile(null)
     } finally {
@@ -72,8 +81,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
-      await loadAuth()
+    } = supabase.auth.onAuthStateChange((event: any, session: any) => {
+      const newUser = session?.user ?? null
+      if (newUser?.id !== user?.id) {
+        loadAuth()
+      }
     })
 
     return () => {

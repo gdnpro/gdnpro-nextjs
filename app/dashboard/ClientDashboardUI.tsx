@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/components/ui/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 import PaymentsTab from "@/components/PaymentsTab"
 import ProjectManagement from "@/components/ProjectManagement"
 import { PendingReviews } from "@/components/dashboard/PendingReviews"

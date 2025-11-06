@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Layout from "@/components/Layout"
-import { useAuth } from "@/components/ui/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 import WhatsAppSetup from "@/components/WhatsAppSetup"
 import { supabaseBrowser } from "@/utils/supabase/client"
 

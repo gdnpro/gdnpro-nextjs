@@ -30,7 +30,12 @@
       "@services/*": ["/services/*"],
       "@libs/*": ["/libs/*"],
       "@interfaces/*": ["/interfaces/*"],
-      "@layouts/*": ["/layouts/*"]
+      "@layouts/*": ["/layouts/*"],
+      "@contexts/*": ["/contexts/*"],
+      "@components/ui/*": ["/components/ui/*"],
+      "@components/auth/*": ["/components/auth/*"],
+      "@components/dashboard/*": ["/components/dashboard/*"],
+      "@components/freelancer/*": ["/components/freelancer/*"],
     }
   },
   "include": [

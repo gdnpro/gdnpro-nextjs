@@ -5,6 +5,9 @@ import FreelancerDashboardUI from "./FreelancerDashboardUI"
 import ClientDashboardUI from "./ClientDashboardUI"
 import AdminDashboardUI from "./AdminDashboardUI"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export default async function Page() {
   const supabase = await supabaseServer()
 

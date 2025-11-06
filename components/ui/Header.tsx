@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import NotificationBell from "@/components/NotificationBell"
-import { useAuth } from "@/components/ui/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 import { supabaseBrowser } from "@/utils/supabase/client"
 
 const supabase = supabaseBrowser()
