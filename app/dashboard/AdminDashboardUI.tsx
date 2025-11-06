@@ -5,7 +5,6 @@ import Layout from "@/components/Layout"
 import { useAuth } from "@/components/AuthContext"
 import WhatsAppSetup from "@/components/WhatsAppSetup"
 import { supabaseBrowser } from "@/utils/supabase/client"
-import ProtectedRoute from "@/components/ProtectedRoute"
 
 const supabase = supabaseBrowser()
 
@@ -329,611 +328,605 @@ export default function AdminContacts() {
   }
 
   return (
-    <ProtectedRoute requiredRole="admin">
-      <Layout>
-        <div className="mx-auto max-w-7xl px-4 py-8 pt-24 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="mb-8 rounded-lg bg-white p-6 shadow">
-            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
-                <p className="text-gray-600">Gestión de Mensajes de Contacto</p>
-                <div className="text-primary mt-2 inline-block rounded-full bg-blue-50 px-3 py-1 text-sm">
-                  <i className="ri-shield-check-line mr-1"></i>
-                  Acceso Exclusivo para Administradores
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="text-sm text-gray-500">
-                  Bienvenido, {user?.full_name || profile?.email || "Administrador"}
-                </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                  <i className="ri-admin-line text-primary"></i>
-                </div>
+    <Layout>
+      <div className="mx-auto max-w-7xl px-4 py-8 pt-24 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8 rounded-lg bg-white p-6 shadow">
+          <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
+              <p className="text-gray-600">Gestión de Mensajes de Contacto</p>
+              <div className="text-primary mt-2 inline-block rounded-full bg-blue-50 px-3 py-1 text-sm">
+                <i className="ri-shield-check-line mr-1"></i>
+                Acceso Exclusivo para Administradores
               </div>
             </div>
-          </div>
-
-          {/* Configuración WhatsApp */}
-          <div className="mb-8 rounded-lg border border-green-200 bg-linear-to-r from-green-50 to-emerald-50 p-6">
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center md:gap-0">
-              <div className="flex items-start space-x-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-green-100">
-                  <i className="ri-whatsapp-line text-xl text-green-600"></i>
-                </div>
-                <div className="flex-1">
-                  <h3 className="mb-2 text-lg font-semibold text-gray-900">
-                    📱 Configuración WhatsApp Business
-                  </h3>
-                  <div className="space-y-1 text-gray-700">
-                    <p>
-                      <strong>Función:</strong> Recibe notificaciones de Sofia directamente en tu
-                      WhatsApp
-                    </p>
-                    <p>
-                      <strong>Beneficio:</strong> Responde a clientes desde tu celular sin estar
-                      logueado
-                    </p>
-                    <p className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm text-green-700">
-                      <i className="ri-notification-line mr-1"></i>
-                      Notificaciones instantáneas en tu celular
-                    </p>
-                  </div>
-                </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-500">
+                Bienvenido, {user?.full_name || profile?.email || "Administrador"}
               </div>
-              <button
-                onClick={() => setShowWhatsAppSetup(true)}
-                className="cursor-pointer rounded-lg bg-green-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-green-700"
-              >
-                <i className="ri-settings-3-line mr-2"></i>
-                Configurar WhatsApp
-              </button>
-            </div>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
-            <div className="rounded-lg bg-white p-6 shadow">
-              <div className="flex items-center">
-                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-                  <i className="ri-mail-line text-primary text-xl"></i>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{contacts.length}</p>
-                  <p className="text-sm text-gray-600">Total Mensajes</p>
-                </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+                <i className="ri-admin-line text-primary"></i>
               </div>
             </div>
-
-            <div className="rounded-lg bg-white p-6 shadow">
-              <div className="flex items-center">
-                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
-                  <i className="ri-notification-line text-xl text-red-600"></i>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {contacts.filter((c) => c.status === "new").length}
-                  </p>
-                  <p className="text-sm text-gray-600">Nuevos</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-lg bg-white p-6 shadow">
-              <div className="flex items-center">
-                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-yellow-100">
-                  <i className="ri-eye-line text-xl text-yellow-600"></i>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {contacts.filter((c) => c.status === "read").length}
-                  </p>
-                  <p className="text-sm text-gray-600">Leídos</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-lg bg-white p-6 shadow">
-              <div className="flex items-center">
-                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
-                  <i className="ri-check-line text-xl text-green-600"></i>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {contacts.filter((c) => c.status === "responded").length}
-                  </p>
-                  <p className="text-sm text-gray-600">Respondidos</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Instrucciones de Acceso */}
-          <div className="mb-8 rounded-lg border border-blue-200 bg-linear-to-r from-blue-50 to-indigo-50 p-6">
-            <div className="flex items-start space-x-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-100">
-                <i className="ri-information-line text-primary text-xl"></i>
-              </div>
-              <div className="flex-1">
-                <h3 className="mb-2 text-lg font-semibold text-gray-900">
-                  🔐 Panel de Administración Exclusivo
-                </h3>
-                <div className="space-y-2 text-gray-700">
-                  <p>
-                    <strong>Acceso:</strong> Solo tú y tu equipo de desarrollo pueden acceder a este
-                    panel.
-                  </p>
-                  <p>
-                    <strong>Función:</strong> Aquí puedes ver y gestionar todos los mensajes del
-                    formulario de contacto.
-                  </p>
-                  <p>
-                    <strong>Respuestas:</strong> Puedes responder directamente desde aquí y el email
-                    se enviará desde tu correo.
-                  </p>
-                  <div className="mt-4 rounded-lg border border-blue-200 bg-white p-3">
-                    <p className="text-sm">
-                      <strong>💡 Tip:</strong> Haz clic en "Ver detalles" para leer el mensaje
-                      completo y responder al cliente.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Filtros y Búsqueda */}
-          <div className="mb-8 rounded-lg bg-white p-6 shadow">
-            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-              <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="rounded-lg border border-gray-300 px-4 py-2 pr-8 focus:border-transparent focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="all">Todos los estados</option>
-                  <option value="new">Nuevos</option>
-                  <option value="read">Leídos</option>
-                  <option value="responded">Respondidos</option>
-                </select>
-
-                <button
-                  onClick={loadContacts}
-                  className="bg-primary cursor-pointer rounded-lg px-4 py-2 whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
-                >
-                  <i className="ri-refresh-line mr-2"></i>
-                  Actualizar
-                </button>
-              </div>
-
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Buscar por nombre, email, empresa..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 py-2 pr-4 pl-10 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 sm:w-80"
-                />
-                <i className="ri-search-line absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400"></i>
-              </div>
-            </div>
-          </div>
-
-          {/* Lista de Contactos */}
-          <div className="overflow-hidden rounded-lg bg-white shadow">
-            <div className="border-b border-gray-200 px-6 py-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Mensajes de Contacto ({filteredContacts.length})
-              </h2>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                      Contacto
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                      Servicio
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                      Presupuesto
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                      Estado
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                      Fecha
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {filteredContacts.map((contact) => (
-                    <tr key={contact.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{contact.name}</div>
-                          <div className="text-sm text-gray-500">{contact.email}</div>
-                          {contact.company && (
-                            <div className="text-xs text-gray-400">{contact.company}</div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{contact.service}</div>
-                        <div className="text-xs text-gray-500">{contact.timeline}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{contact.budget}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${getStatusColor(contact.status)}`}
-                        >
-                          {getStatusText(contact.status)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
-                        {new Date(contact.created_at).toLocaleDateString("es-ES")}
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => viewContact(contact)}
-                            className="text-primary cursor-pointer rounded-md bg-blue-50 px-3 py-1 transition-colors hover:bg-blue-100 hover:text-blue-900"
-                            title="Ver detalles completos"
-                          >
-                            <i className="ri-eye-line mr-1"></i>
-                            Ver detalles
-                          </button>
-                          <select
-                            value={contact.status}
-                            onChange={(e) =>
-                              updateContactStatus(
-                                contact.id,
-                                e.target.value as "new" | "read" | "responded",
-                              )
-                            }
-                            className="rounded border border-gray-300 px-2 py-1 pr-6 text-xs"
-                            title="Cambiar estado"
-                          >
-                            <option value="new">Nuevo</option>
-                            <option value="read">Leído</option>
-                            <option value="responded">Respondido</option>
-                          </select>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {filteredContacts.length === 0 && (
-              <div className="py-12 text-center">
-                <i className="ri-mail-line mb-4 text-4xl text-gray-400"></i>
-                <h3 className="mb-2 text-lg font-medium text-gray-900">
-                  {contacts.length === 0 ? "No hay mensajes aún" : "No se encontraron mensajes"}
-                </h3>
-                <p className="text-gray-600">
-                  {searchTerm || filterStatus !== "all"
-                    ? "No se encontraron mensajes con los filtros aplicados."
-                    : "Los mensajes del formulario de contacto aparecerán aquí."}
-                </p>
-                {contacts.length === 0 && (
-                  <div className="mx-auto mt-4 max-w-md rounded-lg bg-blue-50 p-4">
-                    <p className="text-sm text-blue-800">
-                      <i className="ri-lightbulb-line mr-1"></i>
-                      Los nuevos mensajes aparecerán automáticamente cuando los visitantes usen el
-                      formulario de contacto.
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
-        {/* Modal de Configuración WhatsApp */}
-        {showWhatsAppSetup && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white">
-              <div className="p-6">
-                <div className="mb-6 flex items-start justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      📱 Configuración WhatsApp Business
-                    </h2>
-                    <p className="mt-1 text-gray-600">
-                      Conecta tu WhatsApp para recibir notificaciones de Sofia
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setShowWhatsAppSetup(false)}
-                    className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                  >
-                    <i className="ri-close-line text-2xl"></i>
-                  </button>
-                </div>
-
-                <WhatsAppSetup onClose={() => {}} />
-
-                <div className="mt-6 flex justify-end border-t border-gray-200 pt-4">
-                  <button
-                    onClick={() => setShowWhatsAppSetup(false)}
-                    className="cursor-pointer rounded-lg bg-gray-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-gray-700"
-                  >
-                    <i className="ri-close-line mr-2"></i>
-                    Cerrar
-                  </button>
-                </div>
+        {/* Configuración WhatsApp */}
+        <div className="mb-8 rounded-lg border border-green-200 bg-linear-to-r from-green-50 to-emerald-50 p-6">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center md:gap-0">
+            <div className="flex items-start space-x-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-green-100">
+                <i className="ri-whatsapp-line text-xl text-green-600"></i>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Modal de Detalles */}
-        {showModal && selectedContact && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white">
-              <div className="p-6">
-                <div className="mb-6 flex items-start justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">📧 Mensaje de Contacto</h2>
-                    <span
-                      className={`mt-2 inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusColor(selectedContact.status)}`}
-                    >
-                      {getStatusText(selectedContact.status)}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setShowModal(false)
-                      setSelectedContact(null)
-                    }}
-                    className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                  >
-                    <i className="ri-close-line text-2xl"></i>
-                  </button>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Información del Contacto */}
-                  <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
-                    <h3 className="mb-4 flex items-center font-semibold text-blue-900">
-                      <i className="ri-user-line mr-2"></i>
-                      Información del Contacto
-                    </h3>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                      <div className="rounded-lg bg-white p-4">
-                        <p className="text-sm font-medium text-gray-600">Nombre Completo</p>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {selectedContact.name}
-                        </p>
-                      </div>
-                      <div className="rounded-lg bg-white p-4">
-                        <p className="text-sm font-medium text-gray-600">Email de Contacto</p>
-                        <p className="text-primary text-lg font-semibold">
-                          {selectedContact.email}
-                        </p>
-                      </div>
-                      {selectedContact.company && (
-                        <div className="rounded-lg bg-white p-4">
-                          <p className="text-sm font-medium text-gray-600">Empresa</p>
-                          <p className="text-lg font-semibold text-gray-900">
-                            {selectedContact.company}
-                          </p>
-                        </div>
-                      )}
-                      {selectedContact.phone && (
-                        <div className="rounded-lg bg-white p-4">
-                          <p className="text-sm font-medium text-gray-600">Teléfono</p>
-                          <p className="text-lg font-semibold text-gray-900">
-                            {selectedContact.phone}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Detalles del Proyecto */}
-                  <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6">
-                    <h3 className="mb-4 flex items-center font-semibold text-emerald-900">
-                      <i className="ri-briefcase-line mr-2"></i>
-                      Detalles del Proyecto Solicitado
-                    </h3>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      <div className="rounded-lg bg-white p-4">
-                        <p className="text-sm font-medium text-gray-600">Servicio Requerido</p>
-                        <p className="text-lg font-semibold text-emerald-700">
-                          {selectedContact.service}
-                        </p>
-                      </div>
-                      <div className="rounded-lg bg-white p-4">
-                        <p className="text-sm font-medium text-gray-600">Presupuesto Estimado</p>
-                        <p className="text-lg font-semibold text-emerald-700">
-                          {selectedContact.budget}
-                        </p>
-                      </div>
-                      <div className="rounded-lg bg-white p-4">
-                        <p className="text-sm font-medium text-gray-600">Timeline Esperado</p>
-                        <p className="text-lg font-semibold text-emerald-700">
-                          {selectedContact.timeline}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mensaje Completo */}
-                  <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
-                    <h3 className="mb-4 flex items-center font-semibold text-yellow-900">
-                      <i className="ri-message-3-line mr-2"></i>
-                      Mensaje Completo del Cliente
-                    </h3>
-                    <div className="rounded-lg border border-yellow-300 bg-white p-6">
-                      <p className="text-base leading-relaxed whitespace-pre-wrap text-gray-800">
-                        {selectedContact.message}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Información Adicional */}
-                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span className="flex items-center">
-                        <i className="ri-calendar-line mr-2"></i>
-                        Recibido: {new Date(selectedContact.created_at).toLocaleString("es-ES")}
-                      </span>
-                      <span className="flex items-center">
-                        <i className="ri-hashtag mr-1"></i>
-                        ID: {selectedContact.id}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Acciones */}
-                <div className="mt-8 flex flex-col justify-end space-y-3 border-t border-gray-200 pt-6 sm:flex-row sm:space-y-0 sm:space-x-3">
-                  <button
-                    onClick={() => {
-                      setShowModal(false)
-                      setSelectedContact(null)
-                    }}
-                    className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
-                  >
-                    <i className="ri-close-line mr-2"></i>
-                    Cerrar
-                  </button>
-
-                  {selectedContact.status !== "responded" && (
-                    <button
-                      onClick={() => {
-                        updateContactStatus(selectedContact.id, "responded")
-                      }}
-                      className="cursor-pointer rounded-lg bg-green-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-green-700"
-                    >
-                      <i className="ri-check-line mr-2"></i>
-                      Marcar como Respondido
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => {
-                      setShowReplyModal(true)
-                      setReplyMessage(
-                        `Hola ${selectedContact.name},\n\nGracias por contactarnos sobre tu proyecto de ${selectedContact.service}.\n\nHemos revisado tu solicitud y nos gustaría programar una llamada para discutir los detalles.\n\n¿Cuándo sería un buen momento para ti?\n\nSaludos,\n${user?.full_name || "Tu Equipo"}`,
-                      )
-                    }}
-                    className="bg-primary rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
-                  >
-                    <i className="ri-reply-line mr-2"></i>
-                    Responder desde Dashboard
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Modal de Respuesta */}
-        {showReplyModal && selectedContact && (
-          <div
-            className="fixed inset-0 flex items-center justify-center bg-black/60 p-4"
-            style={{ zIndex: 70 }}
-          >
-            <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white">
-              <div className="p-6">
-                <div className="mb-6 flex items-start justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      📧 Responder a {selectedContact.name}
-                    </h2>
-                    <p className="mt-1 text-gray-600">
-                      El email se enviará desde tu correo: {user?.email}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setShowReplyModal(false)
-                      setReplyMessage("")
-                    }}
-                    className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                  >
-                    <i className="ri-close-line text-2xl"></i>
-                  </button>
-                </div>
-
-                {/* Información del destinatario */}
-                <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
-                  <div className="flex items-center">
-                    <i className="ri-mail-line text-primary mr-3 text-xl"></i>
-                    <div>
-                      <p className="font-semibold text-blue-900">Para: {selectedContact.email}</p>
-                      <p className="text-sm text-cyan-700">
-                        Asunto: Re: {selectedContact.service} - Respuesta a tu consulta
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Editor de mensaje */}
-                <div className="mb-6">
-                  <label className="mb-3 block text-sm font-medium text-gray-700">
-                    Mensaje de Respuesta:
-                  </label>
-                  <textarea
-                    value={replyMessage}
-                    onChange={(e) => setReplyMessage(e.target.value)}
-                    rows={12}
-                    className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
-                    placeholder="Escribe tu respuesta aquí..."
-                  />
-                  <p className="text-gray-5 mt-2 text-xs">
-                    💡 Tip: Personaliza el mensaje según las necesidades específicas del cliente
+              <div className="flex-1">
+                <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                  📱 Configuración WhatsApp Business
+                </h3>
+                <div className="space-y-1 text-gray-700">
+                  <p>
+                    <strong>Función:</strong> Recibe notificaciones de Sofia directamente en tu
+                    WhatsApp
+                  </p>
+                  <p>
+                    <strong>Beneficio:</strong> Responde a clientes desde tu celular sin estar
+                    logueado
+                  </p>
+                  <p className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-sm text-green-700">
+                    <i className="ri-notification-line mr-1"></i>
+                    Notificaciones instantáneas en tu celular
                   </p>
                 </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowWhatsAppSetup(true)}
+              className="cursor-pointer rounded-lg bg-green-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-green-700"
+            >
+              <i className="ri-settings-3-line mr-2"></i>
+              Configurar WhatsApp
+            </button>
+          </div>
+        </div>
 
-                {/* Acciones */}
-                <div className="flex flex-col justify-end space-y-3 border-t border-gray-200 pt-4 sm:flex-row sm:space-y-0 sm:space-x-3">
-                  <button
-                    onClick={() => {
-                      setShowReplyModal(false)
-                      setReplyMessage("")
-                    }}
-                    className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
-                    disabled={sendingReply}
-                  >
-                    <i className="ri-close-line mr-2"></i>
-                    Cancelar
-                  </button>
+        {/* Stats Cards */}
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
+          <div className="rounded-lg bg-white p-6 shadow">
+            <div className="flex items-center">
+              <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                <i className="ri-mail-line text-primary text-xl"></i>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{contacts.length}</p>
+                <p className="text-sm text-gray-600">Total Mensajes</p>
+              </div>
+            </div>
+          </div>
 
-                  <button
-                    onClick={sendReply}
-                    disabled={sendingReply || !replyMessage.trim()}
-                    className="bg-primary cursor-pointer rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-gray-400"
-                  >
-                    {sendingReply ? (
-                      <>
-                        <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
-                        Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <i className="ri-send-plane-line mr-2"></i>
-                        Enviar Respuesta
-                      </>
-                    )}
-                  </button>
+          <div className="rounded-lg bg-white p-6 shadow">
+            <div className="flex items-center">
+              <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
+                <i className="ri-notification-line text-xl text-red-600"></i>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">
+                  {contacts.filter((c) => c.status === "new").length}
+                </p>
+                <p className="text-sm text-gray-600">Nuevos</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg bg-white p-6 shadow">
+            <div className="flex items-center">
+              <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-yellow-100">
+                <i className="ri-eye-line text-xl text-yellow-600"></i>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">
+                  {contacts.filter((c) => c.status === "read").length}
+                </p>
+                <p className="text-sm text-gray-600">Leídos</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg bg-white p-6 shadow">
+            <div className="flex items-center">
+              <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
+                <i className="ri-check-line text-xl text-green-600"></i>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">
+                  {contacts.filter((c) => c.status === "responded").length}
+                </p>
+                <p className="text-sm text-gray-600">Respondidos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Instrucciones de Acceso */}
+        <div className="mb-8 rounded-lg border border-blue-200 bg-linear-to-r from-blue-50 to-indigo-50 p-6">
+          <div className="flex items-start space-x-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-100">
+              <i className="ri-information-line text-primary text-xl"></i>
+            </div>
+            <div className="flex-1">
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                🔐 Panel de Administración Exclusivo
+              </h3>
+              <div className="space-y-2 text-gray-700">
+                <p>
+                  <strong>Acceso:</strong> Solo tú y tu equipo de desarrollo pueden acceder a este
+                  panel.
+                </p>
+                <p>
+                  <strong>Función:</strong> Aquí puedes ver y gestionar todos los mensajes del
+                  formulario de contacto.
+                </p>
+                <p>
+                  <strong>Respuestas:</strong> Puedes responder directamente desde aquí y el email
+                  se enviará desde tu correo.
+                </p>
+                <div className="mt-4 rounded-lg border border-blue-200 bg-white p-3">
+                  <p className="text-sm">
+                    <strong>💡 Tip:</strong> Haz clic en "Ver detalles" para leer el mensaje
+                    completo y responder al cliente.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-        )}
-      </Layout>
-    </ProtectedRoute>
+        </div>
+
+        {/* Filtros y Búsqueda */}
+        <div className="mb-8 rounded-lg bg-white p-6 shadow">
+          <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+            <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="rounded-lg border border-gray-300 px-4 py-2 pr-8 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">Todos los estados</option>
+                <option value="new">Nuevos</option>
+                <option value="read">Leídos</option>
+                <option value="responded">Respondidos</option>
+              </select>
+
+              <button
+                onClick={loadContacts}
+                className="bg-primary cursor-pointer rounded-lg px-4 py-2 whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
+              >
+                <i className="ri-refresh-line mr-2"></i>
+                Actualizar
+              </button>
+            </div>
+
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Buscar por nombre, email, empresa..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 py-2 pr-4 pl-10 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 sm:w-80"
+              />
+              <i className="ri-search-line absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400"></i>
+            </div>
+          </div>
+        </div>
+
+        {/* Lista de Contactos */}
+        <div className="overflow-hidden rounded-lg bg-white shadow">
+          <div className="border-b border-gray-200 px-6 py-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Mensajes de Contacto ({filteredContacts.length})
+            </h2>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Contacto
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Servicio
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Presupuesto
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Estado
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Fecha
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {filteredContacts.map((contact) => (
+                  <tr key={contact.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{contact.name}</div>
+                        <div className="text-sm text-gray-500">{contact.email}</div>
+                        {contact.company && (
+                          <div className="text-xs text-gray-400">{contact.company}</div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{contact.service}</div>
+                      <div className="text-xs text-gray-500">{contact.timeline}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{contact.budget}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${getStatusColor(contact.status)}`}
+                      >
+                        {getStatusText(contact.status)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
+                      {new Date(contact.created_at).toLocaleDateString("es-ES")}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => viewContact(contact)}
+                          className="text-primary cursor-pointer rounded-md bg-blue-50 px-3 py-1 transition-colors hover:bg-blue-100 hover:text-blue-900"
+                          title="Ver detalles completos"
+                        >
+                          <i className="ri-eye-line mr-1"></i>
+                          Ver detalles
+                        </button>
+                        <select
+                          value={contact.status}
+                          onChange={(e) =>
+                            updateContactStatus(
+                              contact.id,
+                              e.target.value as "new" | "read" | "responded",
+                            )
+                          }
+                          className="rounded border border-gray-300 px-2 py-1 pr-6 text-xs"
+                          title="Cambiar estado"
+                        >
+                          <option value="new">Nuevo</option>
+                          <option value="read">Leído</option>
+                          <option value="responded">Respondido</option>
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {filteredContacts.length === 0 && (
+            <div className="py-12 text-center">
+              <i className="ri-mail-line mb-4 text-4xl text-gray-400"></i>
+              <h3 className="mb-2 text-lg font-medium text-gray-900">
+                {contacts.length === 0 ? "No hay mensajes aún" : "No se encontraron mensajes"}
+              </h3>
+              <p className="text-gray-600">
+                {searchTerm || filterStatus !== "all"
+                  ? "No se encontraron mensajes con los filtros aplicados."
+                  : "Los mensajes del formulario de contacto aparecerán aquí."}
+              </p>
+              {contacts.length === 0 && (
+                <div className="mx-auto mt-4 max-w-md rounded-lg bg-blue-50 p-4">
+                  <p className="text-sm text-blue-800">
+                    <i className="ri-lightbulb-line mr-1"></i>
+                    Los nuevos mensajes aparecerán automáticamente cuando los visitantes usen el
+                    formulario de contacto.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Modal de Configuración WhatsApp */}
+      {showWhatsAppSetup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white">
+            <div className="p-6">
+              <div className="mb-6 flex items-start justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    📱 Configuración WhatsApp Business
+                  </h2>
+                  <p className="mt-1 text-gray-600">
+                    Conecta tu WhatsApp para recibir notificaciones de Sofia
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowWhatsAppSetup(false)}
+                  className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                >
+                  <i className="ri-close-line text-2xl"></i>
+                </button>
+              </div>
+
+              <WhatsAppSetup onClose={() => {}} />
+
+              <div className="mt-6 flex justify-end border-t border-gray-200 pt-4">
+                <button
+                  onClick={() => setShowWhatsAppSetup(false)}
+                  className="cursor-pointer rounded-lg bg-gray-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-gray-700"
+                >
+                  <i className="ri-close-line mr-2"></i>
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Detalles */}
+      {showModal && selectedContact && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white">
+            <div className="p-6">
+              <div className="mb-6 flex items-start justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">📧 Mensaje de Contacto</h2>
+                  <span
+                    className={`mt-2 inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusColor(selectedContact.status)}`}
+                  >
+                    {getStatusText(selectedContact.status)}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowModal(false)
+                    setSelectedContact(null)
+                  }}
+                  className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                >
+                  <i className="ri-close-line text-2xl"></i>
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* Información del Contacto */}
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+                  <h3 className="mb-4 flex items-center font-semibold text-blue-900">
+                    <i className="ri-user-line mr-2"></i>
+                    Información del Contacto
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="rounded-lg bg-white p-4">
+                      <p className="text-sm font-medium text-gray-600">Nombre Completo</p>
+                      <p className="text-lg font-semibold text-gray-900">{selectedContact.name}</p>
+                    </div>
+                    <div className="rounded-lg bg-white p-4">
+                      <p className="text-sm font-medium text-gray-600">Email de Contacto</p>
+                      <p className="text-primary text-lg font-semibold">{selectedContact.email}</p>
+                    </div>
+                    {selectedContact.company && (
+                      <div className="rounded-lg bg-white p-4">
+                        <p className="text-sm font-medium text-gray-600">Empresa</p>
+                        <p className="text-lg font-semibold text-gray-900">
+                          {selectedContact.company}
+                        </p>
+                      </div>
+                    )}
+                    {selectedContact.phone && (
+                      <div className="rounded-lg bg-white p-4">
+                        <p className="text-sm font-medium text-gray-600">Teléfono</p>
+                        <p className="text-lg font-semibold text-gray-900">
+                          {selectedContact.phone}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Detalles del Proyecto */}
+                <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6">
+                  <h3 className="mb-4 flex items-center font-semibold text-emerald-900">
+                    <i className="ri-briefcase-line mr-2"></i>
+                    Detalles del Proyecto Solicitado
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div className="rounded-lg bg-white p-4">
+                      <p className="text-sm font-medium text-gray-600">Servicio Requerido</p>
+                      <p className="text-lg font-semibold text-emerald-700">
+                        {selectedContact.service}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-white p-4">
+                      <p className="text-sm font-medium text-gray-600">Presupuesto Estimado</p>
+                      <p className="text-lg font-semibold text-emerald-700">
+                        {selectedContact.budget}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-white p-4">
+                      <p className="text-sm font-medium text-gray-600">Timeline Esperado</p>
+                      <p className="text-lg font-semibold text-emerald-700">
+                        {selectedContact.timeline}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mensaje Completo */}
+                <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+                  <h3 className="mb-4 flex items-center font-semibold text-yellow-900">
+                    <i className="ri-message-3-line mr-2"></i>
+                    Mensaje Completo del Cliente
+                  </h3>
+                  <div className="rounded-lg border border-yellow-300 bg-white p-6">
+                    <p className="text-base leading-relaxed whitespace-pre-wrap text-gray-800">
+                      {selectedContact.message}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Información Adicional */}
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span className="flex items-center">
+                      <i className="ri-calendar-line mr-2"></i>
+                      Recibido: {new Date(selectedContact.created_at).toLocaleString("es-ES")}
+                    </span>
+                    <span className="flex items-center">
+                      <i className="ri-hashtag mr-1"></i>
+                      ID: {selectedContact.id}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Acciones */}
+              <div className="mt-8 flex flex-col justify-end space-y-3 border-t border-gray-200 pt-6 sm:flex-row sm:space-y-0 sm:space-x-3">
+                <button
+                  onClick={() => {
+                    setShowModal(false)
+                    setSelectedContact(null)
+                  }}
+                  className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
+                >
+                  <i className="ri-close-line mr-2"></i>
+                  Cerrar
+                </button>
+
+                {selectedContact.status !== "responded" && (
+                  <button
+                    onClick={() => {
+                      updateContactStatus(selectedContact.id, "responded")
+                    }}
+                    className="cursor-pointer rounded-lg bg-green-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-green-700"
+                  >
+                    <i className="ri-check-line mr-2"></i>
+                    Marcar como Respondido
+                  </button>
+                )}
+
+                <button
+                  onClick={() => {
+                    setShowReplyModal(true)
+                    setReplyMessage(
+                      `Hola ${selectedContact.name},\n\nGracias por contactarnos sobre tu proyecto de ${selectedContact.service}.\n\nHemos revisado tu solicitud y nos gustaría programar una llamada para discutir los detalles.\n\n¿Cuándo sería un buen momento para ti?\n\nSaludos,\n${user?.full_name || "Tu Equipo"}`,
+                    )
+                  }}
+                  className="bg-primary rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
+                >
+                  <i className="ri-reply-line mr-2"></i>
+                  Responder desde Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Respuesta */}
+      {showReplyModal && selectedContact && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black/60 p-4"
+          style={{ zIndex: 70 }}
+        >
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white">
+            <div className="p-6">
+              <div className="mb-6 flex items-start justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    📧 Responder a {selectedContact.name}
+                  </h2>
+                  <p className="mt-1 text-gray-600">
+                    El email se enviará desde tu correo: {user?.email}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowReplyModal(false)
+                    setReplyMessage("")
+                  }}
+                  className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                >
+                  <i className="ri-close-line text-2xl"></i>
+                </button>
+              </div>
+
+              {/* Información del destinatario */}
+              <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <div className="flex items-center">
+                  <i className="ri-mail-line text-primary mr-3 text-xl"></i>
+                  <div>
+                    <p className="font-semibold text-blue-900">Para: {selectedContact.email}</p>
+                    <p className="text-sm text-cyan-700">
+                      Asunto: Re: {selectedContact.service} - Respuesta a tu consulta
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Editor de mensaje */}
+              <div className="mb-6">
+                <label className="mb-3 block text-sm font-medium text-gray-700">
+                  Mensaje de Respuesta:
+                </label>
+                <textarea
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                  rows={12}
+                  className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                  placeholder="Escribe tu respuesta aquí..."
+                />
+                <p className="text-gray-5 mt-2 text-xs">
+                  💡 Tip: Personaliza el mensaje según las necesidades específicas del cliente
+                </p>
+              </div>
+
+              {/* Acciones */}
+              <div className="flex flex-col justify-end space-y-3 border-t border-gray-200 pt-4 sm:flex-row sm:space-y-0 sm:space-x-3">
+                <button
+                  onClick={() => {
+                    setShowReplyModal(false)
+                    setReplyMessage("")
+                  }}
+                  className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
+                  disabled={sendingReply}
+                >
+                  <i className="ri-close-line mr-2"></i>
+                  Cancelar
+                </button>
+
+                <button
+                  onClick={sendReply}
+                  disabled={sendingReply || !replyMessage.trim()}
+                  className="bg-primary cursor-pointer rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+                >
+                  {sendingReply ? (
+                    <>
+                      <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <i className="ri-send-plane-line mr-2"></i>
+                      Enviar Respuesta
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </Layout>
   )
 }

@@ -23,7 +23,7 @@ const Hero = () => {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-16">
       {/* Background Image */}
       <div
         className="absolute inset-0 z-0"
@@ -39,28 +39,28 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           {/* Left Content */}
-          <div className="text-white space-y-8">
+          <div className="space-y-8 text-white">
             <div className="space-y-6">
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+              <h1 className="text-5xl leading-tight font-bold lg:text-6xl">
                 Transformamos
-                <span className="block text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-300">
+                <span className="block bg-linear-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
                   Ideas en Realidad
                 </span>
               </h1>
 
-              <p className="text-xl lg:text-2xl text-blue-100 leading-relaxed">
-                En <span className="font-semibold text-white">GDN PRO</span>{" "}
-                creamos soluciones digitales innovadoras. Desarrollo web, apps
-                móviles y marketing digital de clase mundial.
+              <p className="text-xl leading-relaxed text-blue-100 lg:text-2xl">
+                En <span className="font-semibold text-white">GDN PRO</span> creamos soluciones
+                digitales innovadoras. Desarrollo web, apps móviles y marketing digital de clase
+                mundial.
               </p>
 
               <div className="flex flex-wrap gap-4 text-sm text-blue-200">
                 <div className="flex items-center gap-2">
                   <i className="ri-check-line text-green-400"></i>
-                  <span>+30 Proyectos Completados</span>
+                  <span>+19 Proyectos Completados</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <i className="ri-check-line text-green-400"></i>
@@ -74,10 +74,10 @@ const Hero = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row">
               <button
                 onClick={scrollToPortfolio}
-                className="px-8 py-4 bg-linear-to-r from-emerald-600 to-emerald-500 text-white font-semibold rounded-lg hover:from-emerald-700 hover:to-emerald-600 transition-all  transform hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap cursor-pointer"
+                className="transform cursor-pointer rounded-lg bg-linear-to-r from-emerald-600 to-emerald-500 px-8 py-4 font-semibold whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-emerald-700 hover:to-emerald-600 hover:shadow-xl"
               >
                 Ver Portafolio
                 <i className="ri-arrow-right-line ml-2"></i>
@@ -85,7 +85,7 @@ const Hero = () => {
 
               <button
                 onClick={scrollToContact}
-                className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border border-white/30 hover:bg-white/20 transition-all  whitespace-nowrap cursor-pointer"
+                className="cursor-pointer rounded-lg border border-white/30 bg-white/10 px-8 py-4 font-semibold whitespace-nowrap text-white backdrop-blur-sm transition-all hover:bg-white/20"
               >
                 Contactar Ahora
                 <i className="ri-phone-line ml-2"></i>
@@ -93,7 +93,7 @@ const Hero = () => {
 
               <button
                 onClick={goToFreelancers}
-                className="px-8 py-4 bg-linear-to-r from-cyan-600 to-cyan-500 text-white font-semibold rounded-lg hover:from-cyan-700 hover:to-cyan-600 transition-all  transform hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap cursor-pointer"
+                className="transform cursor-pointer rounded-lg bg-linear-to-r from-cyan-600 to-cyan-500 px-8 py-4 font-semibold whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-cyan-700 hover:to-cyan-600 hover:shadow-xl"
               >
                 Ver Freelancers
                 <i className="ri-team-line ml-2"></i>
@@ -101,22 +101,18 @@ const Hero = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-white/20">
+            <div className="grid grid-cols-3 gap-8 border-t border-white/20 pt-8">
               <div className="text-center">
-                <div className="text-3xl font-bold text-white">
-                  +{gdnStats.completedProjects}
-                </div>
-                <div className="text-blue-200 text-sm">Proyectos</div>
+                <div className="text-3xl font-bold text-white">+{gdnStats.completedProjects}</div>
+                <div className="text-sm text-blue-200">Proyectos</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white">
-                  +{gdnStats.satisfiedClients}
-                </div>
-                <div className="text-blue-200 text-sm">Clientes</div>
+                <div className="text-3xl font-bold text-white">+{gdnStats.satisfiedClients}</div>
+                <div className="text-sm text-blue-200">Clientes</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">5★</div>
-                <div className="text-blue-200 text-sm">Calificación</div>
+                <div className="text-sm text-blue-200">Calificación</div>
               </div>
             </div>
           </div>
@@ -127,10 +123,10 @@ const Hero = () => {
       </div>
 
       {/* Animated scroll indicator */}
-      <div className="absolute bottom-2 md:bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+      <div className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 transform md:bottom-8">
         <div className="animate-bounce">
           <button className="cursor-pointer" onClick={scrollToContact}>
-            <i className="ri-arrow-down-line text-white text-2xl"></i>
+            <i className="ri-arrow-down-line text-2xl text-white"></i>
           </button>
         </div>
       </div>

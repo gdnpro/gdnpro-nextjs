@@ -1,4 +1,5 @@
 "use client"
+import { useRouter } from "next/navigation"
 
 export default function FreelancerHero() {
   const scrollToSearch = () => {
@@ -7,16 +8,10 @@ export default function FreelancerHero() {
       element.scrollIntoView({ behavior: "smooth" })
     }
   }
-
-  const scrollToJoin = () => {
-    const element = document.getElementById("join-freelancer")
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-  }
+  const router = useRouter()
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -29,36 +24,36 @@ export default function FreelancerHero() {
         <div className="absolute inset-0 bg-black/50"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 text-center text-white">
-        <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 text-center text-white">
+        <h1 className="mb-8 text-5xl leading-tight font-bold md:text-7xl">
           Marketplace de
           <span className="block text-cyan-400">Freelancers</span>
         </h1>
-        <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed">
-          Conecta con los mejores freelancers especializados o únete a nuestra
-          red de talento verificado
+        <p className="mx-auto mb-12 max-w-4xl text-xl leading-relaxed md:text-2xl">
+          Conecta con los mejores freelancers especializados o únete a nuestra red de talento
+          verificado
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-6 justify-center">
+        <div className="flex flex-col justify-center gap-6 sm:flex-row">
           <button
             onClick={scrollToSearch}
-            className="bg-primary hover:bg-cyan-700 text-white px-12 py-5 rounded-full text-xl font-bold transition-all  hover:scale-105 whitespace-nowrap cursor-pointer"
+            className="bg-primary cursor-pointer rounded-full px-12 py-5 text-xl font-bold whitespace-nowrap text-white transition-all hover:scale-105 hover:bg-cyan-700"
           >
             Buscar Freelancers
           </button>
           <button
-            onClick={scrollToJoin}
-            className="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-12 py-5 rounded-full text-xl font-bold transition-all  hover:scale-105 whitespace-nowrap cursor-pointer"
+            onClick={() => router.push("auth/register")}
+            className="cursor-pointer rounded-full border-2 border-white px-12 py-5 text-xl font-bold whitespace-nowrap text-white transition-all hover:scale-105 hover:bg-white hover:text-gray-900"
           >
             Únete Como Freelancer
           </button>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 transform animate-bounce text-white">
         <button
           onClick={scrollToSearch}
-          className="w-12 h-12 border-2 border-white rounded-full flex items-center justify-center hover:bg-white hover:text-gray-900 transition-all  cursor-pointer"
+          className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-2 border-white transition-all hover:bg-white hover:text-gray-900"
         >
           <i className="ri-arrow-down-line text-2xl"></i>
         </button>
