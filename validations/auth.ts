@@ -29,9 +29,17 @@ export type FormState = {
   loading?: boolean
   error?: string
   fields?: {
+    avatar_url?: File | null
+    full_name?: string
     email?: string
     password?: string
     confirmPassword?: string
+    location?: string
+    skills?: string[]
+    bio?: string
+    user_type?: "freelancer" | "client"
+    hourly_rate?: number
+    experience_years?: number
   }
   databaseErrors?: {
     message?: string
@@ -43,4 +51,5 @@ export type FormState = {
     password?: string[]
     confirmPassword?: string[]
   } | null
+  redirectTo?: string | null
 }

@@ -6,7 +6,8 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 import { actions } from "@/actions"
 import { type FormState } from "@/validations/auth"
 import { FormError } from "./FormError"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
+import { FormInfo } from "./FormInfo"
 
 const INITIAL_STATE: FormState = {
   success: false,
@@ -28,8 +29,12 @@ export function LoginForm() {
     INITIAL_STATE,
   )
   const navigate = useRouter()
+  const searchParams = useSearchParams()
 
-  const [email, setEmail] = useState("")
+  const verified = searchParams.get("verified")
+  const emailParam = searchParams.get("email")
+
+  const [email, setEmail] = useState(emailParam ?? "")
   const [password, setPassword] = useState("")
 
   useEffect(() => {
@@ -132,6 +137,12 @@ export function LoginForm() {
             </div>
 
             <FormError error={formState.error ?? null} handleResendEmail={handleResendEmail} />
+            {verified === "false" && (
+              <FormInfo
+                info="Te enviamos un correo de verificación. Revisa tu bandeja antes de iniciar sesión."
+                handleResendEmail={handleResendEmail}
+              />
+            )}
 
             <div>
               <button
