@@ -98,17 +98,15 @@ export const AvailableProjectArticle = ({
             <i className="ri-eye-line mr-2"></i>
             Ver Detalles
           </button>
-          {!proposals.find((p) => p.project.id === project.id) &&
-            proposals.length > 0 &&
-            project && (
-              <button
-                onClick={() => sendProposal(project.id)}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
-              >
-                <i className="ri-send-plane-line mr-2"></i>
-                Enviar Propuesta
-              </button>
-            )}
+          {!proposals.find((p) => p.project?.id === project.id) && (
+            <button
+              onClick={() => sendProposal(project.id)}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+            >
+              <i className="ri-send-plane-line mr-2"></i>
+              Enviar Propuesta
+            </button>
+          )}
           {project.client?.id && (
             <button
               onClick={() => startChat(project.id, project.client?.id!)}

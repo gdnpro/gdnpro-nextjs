@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation"
 import { supabaseBrowser } from "@/utils/supabase/client"
 import { Freelancer } from "@/interfaces/Freelancer"
 import { ChatMessage } from "@/interfaces/ChatMessage"
+import { Conversation } from "@/interfaces/Conversation"
 import type { Profile } from "@/interfaces/Profile"
+import { ConversationModal } from "@/components/ConversationModal"
 
 interface FreelancerGridProps {
   searchFilters?: {
@@ -31,20 +33,51 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null)
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState("")
-  const [conversationId, setConversationId] = useState<string | null>(null)
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [chatLoading, setChatLoading] = useState(false)
   const [sendingMessage, setSendingMessage] = useState(false)
   const [showAllFreelancers, setShowAllFreelancers] = useState(false)
   const [sortBy, setSortBy] = useState("rating")
+  const [page, setPage] = useState(0)
+  const [hasMore, setHasMore] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const ITEMS_PER_PAGE = 12
 
   useEffect(() => {
-    loadFreelancers()
+    loadFreelancers(true)
     checkCurrentUser()
   }, [])
 
   useEffect(() => {
     applyFilters()
   }, [freelancers, searchFilters, sortBy])
+
+  useEffect(() => {
+    // Reset pagination when filters change and reload
+    setPage(0)
+    setHasMore(true)
+    if (searchFilters && Object.values(searchFilters).some((v) => v)) {
+      // If filters are active, we'll filter client-side
+      // Otherwise reload from server
+      if (!searchFilters.search && !searchFilters.category && !searchFilters.experience && !searchFilters.budget && !searchFilters.availability) {
+        loadFreelancers(true)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchFilters])
+
+  // Handle body overflow when modals open/close
+  useEffect(() => {
+    if (showProfile || showChat) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [showProfile, showChat])
 
   const applyFilters = () => {
     let filtered = [...freelancers]
@@ -149,18 +182,32 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     }
   }
 
-  const loadFreelancers = async () => {
+  const loadFreelancers = async (reset = false) => {
     try {
-      const { data, error } = await supabase
+      if (reset) {
+        setLoading(true)
+        setPage(0)
+        setHasMore(true)
+      } else {
+        setLoadingMore(true)
+      }
+
+      const from = reset ? 0 : page * ITEMS_PER_PAGE
+      const to = from + ITEMS_PER_PAGE - 1
+
+      const { data, error, count } = await supabase
         .from("profiles")
-        .select("*")
+        .select("*", { count: "exact" })
         .eq("user_type", "freelancer")
         .eq("is_active", true)
         .order("rating", { ascending: false })
+        .range(from, to)
 
       if (error) {
         console.error("Error loading freelancers:", error)
-        setFreelancers([])
+        if (reset) {
+          setFreelancers([])
+        }
         return
       }
 
@@ -183,14 +230,52 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         total_reviews: freelancer.total_reviews ?? Math.floor(Math.random() * 100) + 20,
       }))
 
-      setFreelancers(enhancedFreelancers)
+      if (reset) {
+        setFreelancers(enhancedFreelancers)
+      } else {
+        setFreelancers((prev) => [...prev, ...enhancedFreelancers])
+      }
+
+      // Check if there are more items to load
+      const totalItems = count ?? 0
+      const loadedItems = reset ? enhancedFreelancers.length : freelancers.length + enhancedFreelancers.length
+      setHasMore(loadedItems < totalItems && enhancedFreelancers.length === ITEMS_PER_PAGE)
+
+      if (!reset) {
+        setPage((prev) => prev + 1)
+      }
     } catch (err) {
       console.error("Error loading freelancers:", err)
-      setFreelancers([])
+      if (reset) {
+        setFreelancers([])
+      }
     } finally {
       setLoading(false)
+      setLoadingMore(false)
     }
   }
+
+  const loadMoreFreelancers = () => {
+    if (!loadingMore && hasMore) {
+      loadFreelancers(false)
+    }
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        !loadingMore &&
+        hasMore &&
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1000
+      ) {
+        loadMoreFreelancers()
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadingMore, hasMore])
 
   const getGenderFromName = (name: string) => {
     const femaleNames = [
@@ -251,7 +336,8 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         throw new Error("No hay sesión activa")
       }
 
-      const response = await fetch(
+      // First, check if a conversation already exists
+      const checkResponse = await fetch(
         "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
         {
           method: "POST",
@@ -260,27 +346,78 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
             Authorization: `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({
-            action: "create-conversation",
-            freelancerId: freelancer.id,
-            clientId: currentProfile.id,
-            projectId: null,
+            action: "get-conversations",
+            userId: currentProfile.id,
+            userType: "client",
           }),
         },
       )
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Error ${response.status}: ${errorText}`)
+      let conversation: Conversation | null = null
+
+      if (checkResponse.ok) {
+        const checkData = await checkResponse.json()
+        if (checkData.success && checkData.conversations) {
+          // Find existing conversation with this freelancer
+          conversation = checkData.conversations.find(
+            (conv: Conversation) =>
+              conv.freelancer_id === freelancer.id && conv.project_id === null,
+          )
+        }
       }
 
-      const data = await response.json()
+      // If no existing conversation, create a new one
+      if (!conversation) {
+        const response = await fetch(
+          "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({
+              action: "create-conversation",
+              freelancerId: freelancer.id,
+              clientId: currentProfile.id,
+              projectId: null,
+            }),
+          },
+        )
 
-      if (data.success) {
-        setConversationId(data.conversation.id)
-        await loadMessages(data.conversation.id)
+        if (!response.ok) {
+          const errorText = await response.text()
+          throw new Error(`Error ${response.status}: ${errorText}`)
+        }
+
+        const data = await response.json()
+
+        if (data.success) {
+          conversation = {
+            id: data.conversation.id,
+            client_id: currentProfile.id,
+            freelancer_id: freelancer.id,
+            project_id: null,
+            updated_at: new Date().toISOString(),
+            client: {
+              full_name: freelancer.full_name,
+              avatar_url: freelancer.avatar_url,
+            },
+          }
+        } else {
+          throw new Error(data.error || "Error al crear conversación")
+        }
       } else {
-        throw new Error(data.error || "Error al crear conversación")
+        // Ensure conversation has freelancer info (shown as "client" in modal)
+        conversation.client = {
+          full_name: freelancer.full_name,
+          avatar_url: freelancer.avatar_url,
+        }
       }
+
+      // Set the conversation and load messages
+      setSelectedConversation(conversation)
+      await loadMessages(conversation.id)
     } catch (err: unknown) {
       window.toast({
         title: "Error al iniciar el chat",
@@ -291,6 +428,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       })
       console.error("Error creating chat:", err)
       setShowChat(false)
+      setSelectedConversation(null)
     } finally {
       setChatLoading(false)
     }
@@ -340,7 +478,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   }
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !conversationId || sendingMessage) {
+    if (!newMessage.trim() || !selectedConversation || sendingMessage) {
       console.log("❌ Cannot send: empty message, no conversation, or already sending")
       return
     }
@@ -366,7 +504,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
           },
           body: JSON.stringify({
             action: "send-message",
-            conversationId,
+            conversationId: selectedConversation.id,
             messageText: newMessage.trim(),
           }),
         },
@@ -381,7 +519,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
       if (data.success) {
         setNewMessage("")
-        await loadMessages(conversationId)
+        await loadMessages(selectedConversation.id)
         if (data.flagged) {
           window.toast({
             title:
@@ -457,9 +595,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
   const handleViewAllFreelancers = () => setShowAllFreelancers((prev) => !prev)
 
-  const displayedFreelancers = showAllFreelancers
-    ? filteredFreelancers
-    : filteredFreelancers.slice(0, 6)
+  const displayedFreelancers = filteredFreelancers
 
   if (loading) {
     return (
@@ -670,19 +806,23 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
           ))}
         </div>
 
-        {/* Show all / less button */}
-        {filteredFreelancers.length > 6 && (
-          <div className="mt-12 text-center">
-            <button
-              onClick={handleViewAllFreelancers}
-              className="bg-primary cursor-pointer rounded-full px-8 py-4 text-lg font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
-            >
-              {showAllFreelancers
-                ? "Ver Menos Freelancers"
-                : `Ver Todos los Freelancers (${filteredFreelancers.length})`}
-            </button>
-          </div>
-        )}
+        {/* Loading More / No More Message */}
+        <div className="mt-12 text-center">
+          {loadingMore && (
+            <div className="flex items-center justify-center">
+              <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
+              <span className="ml-3 text-gray-600">Cargando más freelancers...</span>
+            </div>
+          )}
+          {!hasMore && !loadingMore && filteredFreelancers.length > 0 && (
+            <div className="py-8">
+              <p className="text-gray-500">
+                <i className="ri-check-line mr-2 text-green-500"></i>
+                Has visto todos los freelancers disponibles
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* -------------------------- Profile Modal -------------------------- */}
@@ -808,121 +948,21 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       )}
 
       {/* -------------------------- Chat Modal -------------------------- */}
-      {showChat && selectedFreelancer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="flex h-[80vh] w-full max-w-2xl flex-col rounded-2xl bg-white">
-            {/* Header */}
-            <div className="bg-primary flex items-center justify-between rounded-t-2xl p-4 text-white">
-              <div className="flex items-center">
-                <img
-                  src={selectedFreelancer.avatar_url}
-                  alt={selectedFreelancer.full_name}
-                  className="mr-3 h-10 w-10 rounded-full object-cover object-top"
-                />
-                <div>
-                  <h3 className="font-semibold">{selectedFreelancer.full_name}</h3>
-                  <p className="text-sm text-blue-100">
-                    {selectedFreelancer.skills?.[0]} Specialist
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  setShowChat(false)
-                  setChatMessages([])
-                  setConversationId(null)
-                  setNewMessage("")
-                }}
-                className="cursor-pointer rounded p-2 hover:bg-cyan-700"
-              >
-                <i className="ri-close-line text-xl" />
-              </button>
-            </div>
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto bg-gray-50 p-4">
-              {chatLoading ? (
-                <div className="flex h-full items-center justify-center">
-                  <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2" />
-                  <span className="ml-2 text-gray-600">Cargando conversación...</span>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {chatMessages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${
-                        message.sender_id === currentProfile?.id ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`max-w-xs rounded-2xl px-4 py-2 lg:max-w-md ${
-                          message.sender_id === currentProfile?.id
-                            ? "bg-primary text-white"
-                            : message.sender_id === null
-                              ? "border border-yellow-300 bg-yellow-100 text-yellow-800"
-                              : "border border-gray-200 bg-white text-gray-900"
-                        }`}
-                      >
-                        <p className="text-sm">{message.message_text}</p>
-                        <p
-                          className={`mt-1 text-xs ${
-                            message.sender_id === currentProfile?.id
-                              ? "text-blue-100"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {new Date(message.created_at).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-
-                  {chatMessages.length === 0 && !chatLoading && (
-                    <div className="py-8 text-center text-gray-500">
-                      <i className="ri-chat-3-line mb-4 text-4xl" />
-                      <p>Inicia la conversación con {selectedFreelancer.full_name.split(" ")[0]}</p>
-                      <p className="mt-2 text-sm">Tu primer mensaje aparecerá aquí</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Input area */}
-            <div className="rounded-b-2xl border-t bg-white p-4">
-              <div className="flex items-center space-x-3">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Escribe tu mensaje..."
-                  disabled={chatLoading || !conversationId || sendingMessage}
-                  className="flex-1 rounded-full border border-gray-300 px-4 py-3 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
-                />
-                <button
-                  onClick={sendMessage}
-                  disabled={!newMessage.trim() || chatLoading || !conversationId || sendingMessage}
-                  className="bg-primary flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-white transition-colors hover:bg-cyan-700 disabled:bg-gray-300"
-                >
-                  {sendingMessage ? (
-                    <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white" />
-                  ) : (
-                    <i className="ri-send-plane-line" />
-                  )}
-                </button>
-              </div>
-              <p className="mt-2 flex items-center text-xs text-gray-500">
-                <i className="ri-shield-check-line mr-1" />
-                Chat seguro monitoreado por GDN Pro
-              </p>
-            </div>
-          </div>
-        </div>
+      {showChat && selectedConversation && (
+        <ConversationModal
+          selectedConversation={selectedConversation}
+          setShowChat={setShowChat}
+          setChatMessages={setChatMessages}
+          setSelectedConversation={setSelectedConversation}
+          setNewMessage={setNewMessage}
+          chatLoading={chatLoading}
+          chatMessages={chatMessages}
+          user={currentProfile}
+          newMessage={newMessage}
+          handleKeyPress={handleKeyPress}
+          sendingMessage={sendingMessage}
+          sendMessage={sendMessage}
+        />
       )}
     </section>
   )

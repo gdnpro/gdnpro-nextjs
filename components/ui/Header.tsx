@@ -55,14 +55,24 @@ export default function Header() {
     setIsUserMenuOpen(false)
   }
 
-  const menuItems = [
-    { label: "Inicio", url: "/" },
-    { label: "Servicios", url: "/#services" },
-    { label: "Portafolio", url: "/#portfolio" },
-    { label: "Equipo", url: "/#team" },
-    { label: "Freelancers", url: "/freelancers" },
-    { label: "Contacto", url: "/#contact" },
-  ]
+  // Menu items based on user type
+  const getMenuItems = () => {
+    const baseItems = [
+      { label: "Inicio", url: "/" },
+      { label: "Servicios", url: "/#services" },
+      { label: "Portafolio", url: "/#portfolio" },
+      { label: "Equipo", url: "/#team" },
+    ]
+
+    // Show "Works" for freelancers, "Freelancers" for clients and non-logged users
+    if (user?.user_type === "freelancer") {
+      return [...baseItems, { label: "Trabajos", url: "/works" }, { label: "Contacto", url: "/#contact" }]
+    } else {
+      return [...baseItems, { label: "Freelancers", url: "/freelancers" }, { label: "Contacto", url: "/#contact" }]
+    }
+  }
+
+  const menuItems = getMenuItems()
 
   return (
     <header className="fixed top-0 right-0 left-0 z-50 bg-white/95 px-4 shadow-sm backdrop-blur-sm sm:px-6 lg:px-8">

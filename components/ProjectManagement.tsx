@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import type { ProjectDetails } from "@/interfaces/ProjectDetails"
 import type { Milestone } from "@/interfaces/Milestone"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import { useBadges } from "@/hooks/useBadges"
+import { useNotifications } from "@/hooks/useNotifications"
 
 const supabase = supabaseBrowser()
 
@@ -26,6 +28,9 @@ export default function ProjectManagement({
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(
     null
   )
+
+  const { checkAndUnlockBadges } = useBadges()
+  const { notifyProjectUpdate } = useNotifications()
 
   // Estados para nuevo hito
   const [newMilestone, setNewMilestone] = useState({
@@ -230,6 +235,31 @@ export default function ProjectManagement({
       if (response.ok) {
         const data = await response.json()
         if (data.success) {
+          // Notify project completion
+          await notifyProjectUpdate(projectId, "project_completed")
+
+          // Get current user to check badges
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user) {
+            // Check badges for both freelancer and client
+            const projectData = await supabase
+              .from("projects")
+              .select("freelancer_id, client_id")
+              .eq("id", projectId)
+              .single()
+
+            if (projectData.data) {
+              // Check badges for freelancer
+              if (projectData.data.freelancer_id) {
+                await checkAndUnlockBadges(projectData.data.freelancer_id, "freelancer")
+              }
+              // Check badges for client
+              if (projectData.data.client_id) {
+                await checkAndUnlockBadges(projectData.data.client_id, "client")
+              }
+            }
+          }
+
           window.toast({
             title:
               "¡Proyecto completado! Los pagos han sido liberados automáticamente.",

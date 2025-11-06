@@ -7,7 +7,7 @@ const Hero = () => {
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: `url('/herobanner.jpg')`,
+          backgroundImage: `url('/banners/hero-banner.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

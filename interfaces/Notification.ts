@@ -20,6 +20,8 @@ export interface Notification {
     | "system"
     | "reminder"
     | "milestone"
+    | "badge"
+    | "achievement"
   priority?: "low" | "normal" | "high" | "urgent"
   read?: boolean
   action_url?: string

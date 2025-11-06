@@ -64,7 +64,7 @@ export default function About() {
 
           <div className="relative">
             <img
-              src="https://images.unsplash.com/photo-1580920461931-fcb03a940df5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1470"
+              src="/images/about-image.avif"
               alt="GDN Pro Team"
               className="h-96 w-full rounded-2xl object-cover object-top shadow-2xl"
             />

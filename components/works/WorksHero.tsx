@@ -1,25 +1,19 @@
 "use client"
 
-import { useAuth } from "@/contexts/AuthContext"
-
-export default function FreelancerHero() {
-  const { profile, loading } = useAuth()
-
+export default function WorksHero() {
   const scrollToSearch = () => {
-    const element = document.getElementById("freelancer-search")
+    const element = document.getElementById("works-search")
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }
   }
-
-  const isLoggedIn = !!profile && !loading
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: `url('/banners/freelancers-banner.jpg')`,
+          backgroundImage: `url('/banners/works-banner.avif')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -30,12 +24,12 @@ export default function FreelancerHero() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 text-center text-white">
         <h1 className="mb-8 text-5xl leading-tight font-bold md:text-7xl">
-          Marketplace de
-          <span className="block text-cyan-400">Freelancers</span>
+          Encuentra Proyectos
+          <span className="block text-cyan-400">Que Te Inspiren</span>
         </h1>
         <p className="mx-auto mb-12 max-w-4xl text-xl leading-relaxed md:text-2xl">
-          Conecta con los mejores freelancers especializados o únete a nuestra red de talento
-          verificado
+          Descubre oportunidades de trabajo que se ajusten a tus habilidades y experiencia. Conecta
+          con clientes verificados y crece tu carrera como freelancer
         </p>
 
         <div className="flex flex-col justify-center gap-6 sm:flex-row">
@@ -43,23 +37,14 @@ export default function FreelancerHero() {
             onClick={scrollToSearch}
             className="bg-primary cursor-pointer rounded-full px-12 py-5 text-xl font-bold whitespace-nowrap text-white transition-all hover:scale-105 hover:bg-cyan-700"
           >
-            Buscar Freelancers
+            Explorar Proyectos
           </button>
-          {isLoggedIn ? (
-            <a
-              href="/dashboard"
-              className="cursor-pointer rounded-full border-2 border-white px-12 py-5 text-xl font-bold whitespace-nowrap text-white transition-all hover:scale-105 hover:bg-white hover:text-gray-900"
-            >
-              Ver Mi Dashboard
-            </a>
-          ) : (
-            <a
-              href="/auth/register"
-              className="cursor-pointer rounded-full border-2 border-white px-12 py-5 text-xl font-bold whitespace-nowrap text-white transition-all hover:scale-105 hover:bg-white hover:text-gray-900"
-            >
-              Únete Como Freelancer
-            </a>
-          )}
+          <a
+            href="/dashboard"
+            className="cursor-pointer rounded-full border-2 border-white px-12 py-5 text-xl font-bold whitespace-nowrap text-white transition-all hover:scale-105 hover:bg-white hover:text-gray-900"
+          >
+            Ver Mi Dashboard
+          </a>
         </div>
       </div>
 

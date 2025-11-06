@@ -164,23 +164,28 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
     // Servicios más rentables (basado en categorías de proyectos)
     const serviceStats =
-      projects?.reduce((acc: Record<string, { earnings: number; count: number }>, project: Project) => {
-        const category = project.project_type || "Otros"
-        const projectEarnings =
-          transactions
-            ?.filter((t: Transaction) => t.project_id === project.id)
-            .reduce((sum: number, t: Transaction) => sum + (Number(t.amount) || 0), 0) || 0
+      projects?.reduce(
+        (acc: Record<string, { earnings: number; count: number }>, project: Project) => {
+          const category = project.project_type || "Otros"
+          const projectEarnings =
+            transactions
+              ?.filter((t: Transaction) => t.project_id === project.id)
+              .reduce((sum: number, t: Transaction) => sum + (Number(t.amount) || 0), 0) || 0
 
-        if (!acc[category]) {
-          acc[category] = { earnings: 0, count: 0 }
-        }
-        acc[category].earnings += projectEarnings
-        acc[category].count += 1
+          if (!acc[category]) {
+            acc[category] = { earnings: 0, count: 0 }
+          }
+          acc[category].earnings += projectEarnings
+          acc[category].count += 1
 
-        return acc
-      }, {} as Record<string, { earnings: number; count: number }>) || {}
+          return acc
+        },
+        {} as Record<string, { earnings: number; count: number }>,
+      ) || {}
 
-    const topServices = (Object.entries(serviceStats) as [string, { earnings: number; count: number }][])
+    const topServices = (
+      Object.entries(serviceStats) as [string, { earnings: number; count: number }][]
+    )
       .map(([service, stats]) => ({
         service,
         earnings: stats.earnings,
@@ -456,7 +461,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           <select
             value={timeRange}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTimeRange(e.target.value)}
-            className="rounded-lg border border-gray-300 px-4 py-2 pr-8 focus:ring-2 focus:ring-blue-500"
+            className="focus:ring-primary rounded-lg border border-gray-300 px-4 py-2 pr-8 focus:ring-2"
           >
             <option value="3months">Últimos 3 meses</option>
             <option value="6months">Últimos 6 meses</option>
@@ -467,18 +472,18 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
       {/* Métricas principales */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div className="to-primary rounded-xl bg-linear-to-br from-blue-500 p-6 text-white shadow-lg">
+        <div className="to-primary from-primary rounded-xl bg-linear-to-br p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-blue-100">
                 {userType === "freelancer" ? "Ingresos Totales" : "Inversión Total"}
               </p>
-              <p className="mt-1 text-3xl font-bold">${analytics.metrics.totalEarnings.toLocaleString()}</p>
+              <p className="mt-1 text-3xl font-bold">
+                ${analytics.metrics.totalEarnings.toLocaleString()}
+              </p>
               <div className="mt-2 flex items-center">
                 <i className="ri-arrow-up-line mr-1 text-green-300"></i>
-                <span className="text-sm text-green-300">
-                  +{growthRate.toFixed(1)}% este mes
-                </span>
+                <span className="text-sm text-green-300">+{growthRate.toFixed(1)}% este mes</span>
               </div>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-400">
@@ -525,7 +530,9 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-amber-100">Rating Promedio</p>
-              <p className="mt-1 text-3xl font-bold">{analytics.metrics.averageRating.toFixed(1)}</p>
+              <p className="mt-1 text-3xl font-bold">
+                {analytics.metrics.averageRating.toFixed(1)}
+              </p>
               <div className="mt-2 flex items-center">
                 {[1, 2, 3, 4, 5].map((star: number) => (
                   <i
@@ -551,7 +558,9 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           </h3>
           <div className="space-y-4">
             {analytics.monthlyData.map((month: AnalyticsData["monthlyData"][0], index: number) => {
-              const maxEarnings = Math.max(...analytics.monthlyData.map((m: AnalyticsData["monthlyData"][0]) => m.earnings))
+              const maxEarnings = Math.max(
+                ...analytics.monthlyData.map((m: AnalyticsData["monthlyData"][0]) => m.earnings),
+              )
               const percentage = maxEarnings > 0 ? (month.earnings / maxEarnings) * 100 : 0
 
               return (
@@ -560,7 +569,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
                   <div className="flex-1">
                     <div className="relative h-3 overflow-hidden rounded-full bg-gray-200">
                       <div
-                        className="to-primary h-full rounded-full bg-linear-to-r from-blue-500 transition-all duration-1000"
+                        className="to-primary from-primary h-full rounded-full bg-linear-to-r transition-all duration-1000"
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
@@ -586,35 +595,39 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
             Servicios Más Rentables
           </h3>
           <div className="space-y-4">
-            {analytics.topServices.map((service: AnalyticsData["topServices"][0], index: number) => {
-              const maxEarnings = Math.max(...analytics.topServices.map((s: AnalyticsData["topServices"][0]) => s.earnings))
-              const percentage = maxEarnings > 0 ? (service.earnings / maxEarnings) * 100 : 0
+            {analytics.topServices.map(
+              (service: AnalyticsData["topServices"][0], index: number) => {
+                const maxEarnings = Math.max(
+                  ...analytics.topServices.map((s: AnalyticsData["topServices"][0]) => s.earnings),
+                )
+                const percentage = maxEarnings > 0 ? (service.earnings / maxEarnings) * 100 : 0
 
-              return (
-                <div key={index} className="flex items-center space-x-4">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-amber-400 to-amber-500 text-sm font-bold text-white">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div className="mb-1 flex items-center justify-between">
-                      <span className="font-medium text-gray-900">{service.service}</span>
-                      <span className="text-sm text-gray-600">{service.projects} proyectos</span>
+                return (
+                  <div key={index} className="flex items-center space-x-4">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-amber-400 to-amber-500 text-sm font-bold text-white">
+                      {index + 1}
                     </div>
-                    <div className="relative h-2 overflow-hidden rounded-full bg-gray-200">
-                      <div
-                        className="h-full rounded-full bg-linear-to-r from-amber-400 to-amber-500 transition-all duration-1000"
-                        style={{ width: `${percentage}%` }}
-                      ></div>
+                    <div className="flex-1">
+                      <div className="mb-1 flex items-center justify-between">
+                        <span className="font-medium text-gray-900">{service.service}</span>
+                        <span className="text-sm text-gray-600">{service.projects} proyectos</span>
+                      </div>
+                      <div className="relative h-2 overflow-hidden rounded-full bg-gray-200">
+                        <div
+                          className="h-full rounded-full bg-linear-to-r from-amber-400 to-amber-500 transition-all duration-1000"
+                          style={{ width: `${percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-semibold text-gray-900">
+                        ${service.earnings.toLocaleString()}
+                      </span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <span className="font-semibold text-gray-900">
-                      ${service.earnings.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
+                )
+              },
+            )}
           </div>
         </div>
       )}

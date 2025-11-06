@@ -1,6 +1,10 @@
+import { useEffect, useRef } from "react"
 import type { ChatMessage } from "@/interfaces/ChatMessage"
 import type { Conversation } from "@/interfaces/Conversation"
 import type { Profile } from "@/interfaces/Profile"
+import { supabaseBrowser } from "@/utils/supabase/client"
+
+const supabase = supabaseBrowser()
 
 interface Props {
   selectedConversation: Conversation
@@ -31,6 +35,65 @@ export const ConversationModal = ({
   sendingMessage,
   sendMessage,
 }: Props) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const subscriptionRef = useRef<any>(null)
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [chatMessages])
+
+  // Set up realtime subscription for new messages
+  useEffect(() => {
+    if (!selectedConversation?.id || !user?.id) return
+
+    // Subscribe to new messages in this conversation
+    const channel = supabase
+      .channel(`conversation:${selectedConversation.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "chat_messages",
+          filter: `conversation_id=eq.${selectedConversation.id}`,
+        },
+        async (payload) => {
+          // Only add message if it's not from the current user (to avoid duplicates)
+          const newMessage = payload.new as any
+          if (newMessage.sender_id !== user.id) {
+            // Add the message directly from the payload
+            setChatMessages((prev) => {
+              // Check if message already exists to avoid duplicates
+              if (prev.some((m) => m.id === newMessage.id)) {
+                return prev
+              }
+              // Construct message object from payload
+              return [
+                ...prev,
+                {
+                  id: newMessage.id,
+                  message_text: newMessage.message_text,
+                  sender_id: newMessage.sender_id,
+                  created_at: newMessage.created_at,
+                },
+              ]
+            })
+          }
+        }
+      )
+      .subscribe()
+
+    subscriptionRef.current = channel
+
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current)
+        subscriptionRef.current = null
+      }
+    }
+  }, [selectedConversation?.id, user?.id, setChatMessages])
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
       <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-full sm:max-w-2xl h-[90vh] sm:h-[80vh] flex flex-col">
@@ -129,6 +192,8 @@ export const ConversationModal = ({
                   </p>
                 </div>
               )}
+              {/* Invisible div to scroll to */}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>

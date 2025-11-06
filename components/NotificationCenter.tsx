@@ -12,7 +12,7 @@ interface NotificationCenterProps {
   onNotificationClick?: (notification: Notification) => void
 }
 
-const typeIcons = {
+const typeIcons: Record<string, string> = {
   message: "ri-chat-3-line",
   proposal: "ri-file-text-line",
   payment: "ri-secure-payment-line",
@@ -21,9 +21,11 @@ const typeIcons = {
   system: "ri-information-line",
   reminder: "ri-alarm-line",
   milestone: "ri-flag-line",
+  badge: "ri-award-line",
+  achievement: "ri-trophy-line",
 }
 
-const typeColors = {
+const typeColors: Record<string, string> = {
   message: "text-primary bg-primary/10",
   proposal: "text-primary bg-primary/10",
   payment: "text-green-600 bg-green-100",
@@ -32,6 +34,8 @@ const typeColors = {
   system: "text-gray-600 bg-gray-100",
   reminder: "text-orange-600 bg-orange-100",
   milestone: "text-indigo-600 bg-indigo-100",
+  badge: "text-yellow-600 bg-yellow-100",
+  achievement: "text-amber-600 bg-amber-100",
 }
 
 const priorityColors = {
@@ -55,6 +59,93 @@ export default function NotificationCenter({
     if (isOpen) {
       loadNotifications()
     }
+  }, [isOpen, activeFilter])
+
+  // Smart polling for notifications when panel is open (since Realtime replication is not available)
+  useEffect(() => {
+    if (!isOpen) return
+
+    let pollInterval: NodeJS.Timeout | null = null
+
+    const startPolling = () => {
+      // Poll every 3 seconds when panel is open to get new notifications quickly
+      const poll = async () => {
+        try {
+          const session = await supabase.auth.getSession()
+          if (!session.data.session?.access_token) return
+
+          const filters: { limit: number; read?: boolean; type?: string } = { limit: 50 }
+          if (activeFilter !== "all") {
+            if (activeFilter === "unread") {
+              filters.read = false
+            } else {
+              filters.type = activeFilter
+            }
+          }
+
+          const response = await fetch(
+            "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/notifications-handler",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.data.session.access_token}`,
+              },
+              body: JSON.stringify({
+                action: "get-notifications",
+                filters,
+              }),
+            }
+          )
+
+          if (response.ok) {
+            const data = await response.json()
+            if (data.success) {
+              // Check if we have new notifications by comparing IDs
+              setNotifications((prev) => {
+                const newNotifications = data.notifications || []
+                // Merge and deduplicate, keeping the latest version
+                const notificationMap = new Map<string, Notification>()
+                
+                // Add existing notifications first
+                prev.forEach((n) => {
+                  if (n.id) notificationMap.set(n.id, n)
+                })
+                
+                // Add/update with new notifications (newer ones take precedence)
+                newNotifications.forEach((n: Notification) => {
+                  if (n.id) notificationMap.set(n.id, n)
+                })
+                
+                // Convert back to array and sort by created_at descending
+                return Array.from(notificationMap.values()).sort((a, b) => {
+                  const timeA = new Date(a.created_at || 0).getTime()
+                  const timeB = new Date(b.created_at || 0).getTime()
+                  return timeB - timeA
+                })
+              })
+              
+              setUnreadCount(data.unreadCount || 0)
+            }
+          }
+        } catch (error) {
+          console.error("Error polling notifications:", error)
+        }
+      }
+
+      // Poll immediately, then set up interval
+      poll()
+      pollInterval = setInterval(poll, 3000)
+    }
+
+    startPolling()
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, activeFilter])
 
   useEffect(() => {
@@ -92,7 +183,7 @@ export default function NotificationCenter({
             action: "get-notifications",
             filters,
           }),
-        }
+        },
       )
 
       if (response.ok) {
@@ -126,12 +217,12 @@ export default function NotificationCenter({
             action: "mark-as-read",
             notificationId,
           }),
-        }
+        },
       )
 
       if (response.ok) {
         setNotifications((prev) =>
-          prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
+          prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n)),
         )
         setUnreadCount((prev) => Math.max(0, prev - 1))
       }
@@ -157,7 +248,7 @@ export default function NotificationCenter({
             action: "mark-as-read",
             markAllRead: true,
           }),
-        }
+        },
       )
 
       if (response.ok) {
@@ -186,7 +277,7 @@ export default function NotificationCenter({
             action: "delete-notification",
             notificationId,
           }),
-        }
+        },
       )
 
       if (response.ok) {
@@ -209,17 +300,47 @@ export default function NotificationCenter({
 
     if (onNotificationClick) {
       onNotificationClick(notification)
-    } else if (notification.action_url) {
+    } else {
+      // Navigate to dashboard section based on notification type
+      navigateToNotificationSection(notification)
+    }
+  }
+
+  const navigateToNotificationSection = (notification: Notification) => {
+    // Map notification types to dashboard sections
+    const typeToSectionMap: Record<string, string> = {
+      message: "messages",
+      proposal: "proposals",
+      payment: "payments",
+      project_update: "projects",
+      review: "reviews",
+      system: "projects", // Default to projects for system notifications
+      reminder: "projects",
+      milestone: "projects",
+      badge: "achievements",
+      achievement: "achievements",
+    }
+
+    const section = typeToSectionMap[notification.type] || "projects"
+
+    // Store the section in session storage for the dashboard to read
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("last_tab", section)
+    }
+
+    // Navigate to dashboard
+    if (notification.action_url) {
       window.location.href = notification.action_url
+    } else {
+      // Default to dashboard if no action_url
+      window.location.href = "/dashboard"
     }
   }
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
-    const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60)
-    )
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
 
     if (diffInMinutes < 1) return "Ahora"
     if (diffInMinutes < 60) return `${diffInMinutes}m`
@@ -255,18 +376,16 @@ export default function NotificationCenter({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 flex items-start justify-center z-50 pt-16">
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] mx-4 flex flex-col shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16">
+      <div className="mx-4 flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between border-b border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+            <div className="bg-primary/10 mr-3 flex h-10 w-10 items-center justify-center rounded-full">
               <i className="ri-notification-line text-primary text-xl"></i>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">
-                Notificaciones
-              </h2>
+              <h2 className="text-xl font-bold text-gray-900">Notificaciones</h2>
               <p className="text-sm text-gray-500">
                 {unreadCount > 0 ? `${unreadCount} sin leer` : "Todo al día"}
               </p>
@@ -276,14 +395,14 @@ export default function NotificationCenter({
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-primary hover:text-cyan-700 text-sm font-medium cursor-pointer"
+                className="text-primary cursor-pointer text-sm font-medium hover:text-cyan-700"
               >
                 Marcar todas como leídas
               </button>
             )}
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
+              className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
             >
               <i className="ri-close-line text-xl"></i>
             </button>
@@ -291,13 +410,13 @@ export default function NotificationCenter({
         </div>
 
         {/* Filtros */}
-        <div className="px-6 py-4 border-b border-gray-100">
+        <div className="border-b border-gray-100 px-6 py-4">
           <div className="flex space-x-1 overflow-x-auto">
             {filterOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setActiveFilter(option.value)}
-                className={`px-3 py-2 rounded-full text-sm font-medium whitespace-nowrap cursor-pointer transition-colors ${
+                className={`cursor-pointer rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
                   activeFilter === option.value
                     ? "bg-primary/10 text-cyan-700"
                     : "text-gray-600 hover:bg-gray-100"
@@ -305,7 +424,7 @@ export default function NotificationCenter({
               >
                 {option.label}
                 {option.count > 0 && (
-                  <span className="ml-1 bg-gray-200 text-gray-600 text-xs px-1.5 py-0.5 rounded-full">
+                  <span className="ml-1 rounded-full bg-gray-200 px-1.5 py-0.5 text-xs text-gray-600">
                     {option.count}
                   </span>
                 )}
@@ -317,15 +436,13 @@ export default function NotificationCenter({
         {/* Lista de Notificaciones */}
         <div className="flex-1 overflow-y-auto">
           {loading ? (
-            <div className="flex justify-center items-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <div className="flex h-32 items-center justify-center">
+              <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
             </div>
           ) : notifications.length === 0 ? (
-            <div className="text-center py-12">
-              <i className="ri-notification-off-line text-4xl text-gray-400 mb-4"></i>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No hay notificaciones
-              </h3>
+            <div className="py-12 text-center">
+              <i className="ri-notification-off-line mb-4 text-4xl text-gray-400"></i>
+              <h3 className="mb-2 text-lg font-medium text-gray-900">No hay notificaciones</h3>
               <p className="text-gray-500">
                 {activeFilter === "unread"
                   ? "Todas las notificaciones están leídas"
@@ -337,42 +454,36 @@ export default function NotificationCenter({
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 hover:bg-gray-50 cursor-pointer border-l-4 ${priorityColors[notification.priority!]} ${
+                  className={`cursor-pointer border-l-4 p-4 hover:bg-gray-50 ${priorityColors[notification.priority!]} ${
                     !notification.read ? "bg-cyan-50/30" : ""
                   }`}
                   onClick={() => handleNotificationClick(notification)}
                 >
                   <div className="flex items-start justify-between">
-                    <div className="flex items-start flex-1 min-w-0">
+                    <div className="flex min-w-0 flex-1 items-start">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0 ${typeColors[notification.type]}`}
+                        className={`mr-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${typeColors[notification.type]}`}
                       >
-                        <i
-                          className={`${typeIcons[notification.type]} text-sm`}
-                        ></i>
+                        <i className={`${typeIcons[notification.type]} text-sm`}></i>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center mb-1">
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-1 flex items-center">
                           <h4
-                            className={`text-sm font-medium truncate ${
-                              !notification.read
-                                ? "text-gray-900"
-                                : "text-gray-700"
+                            className={`truncate text-sm font-medium ${
+                              !notification.read ? "text-gray-900" : "text-gray-700"
                             }`}
                           >
                             {notification.title}
                           </h4>
                           {!notification.read && (
-                            <div className="w-2 h-2 bg-cyan-500 rounded-full ml-2 shrink-0"></div>
+                            <div className="ml-2 h-2 w-2 shrink-0 rounded-full bg-cyan-500"></div>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600 leading-relaxed">
+                        <p className="text-sm leading-relaxed text-gray-600">
                           {notification.message}
                         </p>
-                        <div className="flex items-center mt-2 text-xs text-gray-500">
-                          <span className="capitalize">
-                            {notification.type.replace("_", " ")}
-                          </span>
+                        <div className="mt-2 flex items-center text-xs text-gray-500">
+                          <span className="capitalize">{notification.type.replace("_", " ")}</span>
                           <span className="mx-2">•</span>
                           <span>{formatTime(notification.created_at!)}</span>
                           {notification.priority === "high" ||
@@ -386,23 +497,21 @@ export default function NotificationCenter({
                                     : "text-orange-600"
                                 }`}
                               >
-                                {notification.priority === "urgent"
-                                  ? "Urgente"
-                                  : "Alta prioridad"}
+                                {notification.priority === "urgent" ? "Urgente" : "Alta prioridad"}
                               </span>
                             </>
                           ) : null}
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 ml-2">
+                    <div className="ml-2 flex items-center space-x-2">
                       {!notification.read && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
                             markAsRead(notification.id!)
                           }}
-                          className="text-primary hover:text-cyan-700 p-1 rounded cursor-pointer"
+                          className="text-primary cursor-pointer rounded p-1 hover:text-cyan-700"
                           title="Marcar como leída"
                         >
                           <i className="ri-check-line text-sm"></i>
@@ -413,7 +522,7 @@ export default function NotificationCenter({
                           e.stopPropagation()
                           deleteNotification(notification.id!)
                         }}
-                        className="text-gray-400 hover:text-red-500 p-1 rounded cursor-pointer"
+                        className="cursor-pointer rounded p-1 text-gray-400 hover:text-red-500"
                         title="Eliminar notificación"
                       >
                         <i className="ri-delete-bin-line text-sm"></i>
@@ -428,10 +537,10 @@ export default function NotificationCenter({
 
         {/* Footer */}
         {notifications.length > 0 && (
-          <div className="p-4 border-t border-gray-200 text-center">
+          <div className="border-t border-gray-200 p-4 text-center">
             <button
               onClick={loadNotifications}
-              className="text-primary hover:text-cyan-700 text-sm font-medium cursor-pointer"
+              className="text-primary cursor-pointer text-sm font-medium hover:text-cyan-700"
             >
               <i className="ri-refresh-line mr-1"></i>
               Actualizar notificaciones

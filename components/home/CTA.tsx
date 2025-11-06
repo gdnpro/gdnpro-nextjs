@@ -73,7 +73,8 @@ export default function CTA() {
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
-  const handleTimeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => setSelectedTime(e.target.value)
+  const handleTimeSelect = (e: React.ChangeEvent<HTMLSelectElement>) =>
+    setSelectedTime(e.target.value)
 
   // Enviar los datos al correo (via Supabase Function)
   const handleSchedule = async () => {
@@ -105,12 +106,9 @@ export default function CTA() {
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke(
-        "appointment-handler",
-        {
-          body: appointmentData,
-        }
-      )
+      const { data, error } = await supabase.functions.invoke("appointment-handler", {
+        body: appointmentData,
+      })
 
       if (error) {
         window.toast({
@@ -160,46 +158,45 @@ export default function CTA() {
 
   return (
     <section
-      className="py-24 bg-cover bg-center bg-no-repeat relative"
+      className="relative bg-cover bg-center bg-no-repeat py-24"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/ctabanner.jpg')`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/banners/cta-banner.jpg')`,
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 text-center text-white">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">
+      <div className="mx-auto max-w-7xl px-6 text-center text-white">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="mb-6 text-4xl font-bold md:text-6xl">
             ¿Listo para transformar tu negocio?
           </h2>
-          <p className="text-xl md:text-2xl mb-12 leading-relaxed">
-            No esperes más. Comencemos a construir el futuro digital de tu
-            empresa hoy mismo. Nuestro equipo está listo para hacer realidad tus
-            ideas más ambiciosas.
+          <p className="mb-12 text-xl leading-relaxed md:text-2xl">
+            No esperes más. Comencemos a construir el futuro digital de tu empresa hoy mismo.
+            Nuestro equipo está listo para hacer realidad tus ideas más ambiciosas.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col justify-center gap-6 sm:flex-row">
             <button
               onClick={scrollToContact}
-              className="bg-primary cursor-pointer hover:bg-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl"
+              className="bg-primary cursor-pointer rounded-full px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all hover:bg-cyan-700 hover:shadow-xl"
             >
               Empezar Ahora
             </button>
             <button
               onClick={openModal}
-              className="border-2 cursor-pointer border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 rounded-full text-lg font-semibold transition-all"
+              className="cursor-pointer rounded-full border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white hover:text-gray-900"
             >
               Agenda una cita
             </button>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <i className="ri-mail-line text-3xl mb-4"></i>
-              <h4 className="font-semibold mb-2">Escríbenos</h4>
+          <div className="mt-16 grid grid-cols-1 gap-8 text-center md:grid-cols-2">
+            <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
+              <i className="ri-mail-line mb-4 text-3xl"></i>
+              <h4 className="mb-2 font-semibold">Escríbenos</h4>
               <p className="text-emerald-100">contact@gdnpro.com</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <i className="ri-calendar-line text-3xl mb-4"></i>
-              <h4 className="font-semibold mb-2">Reunión Virtual</h4>
+            <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
+              <i className="ri-calendar-line mb-4 text-3xl"></i>
+              <h4 className="mb-2 font-semibold">Reunión Virtual</h4>
               <p className="text-emerald-100">Agenda una cita</p>
             </div>
           </div>
@@ -208,17 +205,17 @@ export default function CTA() {
 
       {/* MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 px-4 sm:px-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm sm:px-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="bg-white text-gray-900 rounded-2xl p-6 sm:p-8 max-w-4xl w-full shadow-2xl relative overflow-y-auto max-h-[90vh] grid grid-cols-1 lg:grid-cols-2 gap-8"
+            className="relative grid max-h-[90vh] w-full max-w-4xl grid-cols-1 gap-8 overflow-y-auto rounded-2xl bg-white p-6 text-gray-900 shadow-2xl sm:p-8 lg:grid-cols-2"
           >
             {/* Botón cerrar */}
             <button
               onClick={closeModal}
-              className="absolute right-4 cursor-pointer text-gray-500 hover:text-gray-800 text-3xl font-bold z-10"
+              className="absolute right-4 z-10 cursor-pointer text-3xl font-bold text-gray-500 hover:text-gray-800"
             >
               &times;
             </button>
@@ -226,32 +223,28 @@ export default function CTA() {
             {/* Columna izquierda - Info y Calendario */}
             <div className="flex flex-col justify-between">
               <div>
-                <h3 className="text-2xl sm:text-3xl font-bold mb-3 text-gray-800">
+                <h3 className="mb-3 text-2xl font-bold text-gray-800 sm:text-3xl">
                   Agenda tu cita gratuita
                 </h3>
-                <p className="text-gray-600 text-sm sm:text-base mb-6">
-                  Completa los datos para confirmar tu reunión. Nuestro equipo
-                  te contactará para coordinar los detalles.
+                <p className="mb-6 text-sm text-gray-600 sm:text-base">
+                  Completa los datos para confirmar tu reunión. Nuestro equipo te contactará para
+                  coordinar los detalles.
                 </p>
               </div>
 
               {/* Calendario */}
               <div>
-                <h4 className="text-lg font-semibold text-gray-800 mb-2">
-                  Selecciona una fecha
-                </h4>
-                <div className="grid grid-cols-7 gap-2 mb-4">
+                <h4 className="mb-2 text-lg font-semibold text-gray-800">Selecciona una fecha</h4>
+                <div className="mb-4 grid grid-cols-7 gap-2">
                   {calendarDays?.map(({ day, date, isOccupied, isWeekend }) => (
                     <button
                       key={date}
-                      onClick={() =>
-                        !isWeekend && !isOccupied && setSelectedDate(date)
-                      }
-                      className={`p-2 rounded-lg text-sm font-semibold transition-all ${
+                      onClick={() => !isWeekend && !isOccupied && setSelectedDate(date)}
+                      className={`rounded-lg p-2 text-sm font-semibold transition-all ${
                         isWeekend
-                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          ? "cursor-not-allowed bg-gray-300 text-gray-500"
                           : isOccupied
-                            ? "bg-red-500 text-white cursor-not-allowed"
+                            ? "cursor-not-allowed bg-red-500 text-white"
                             : selectedDate === date
                               ? "bg-cyan-600 text-white shadow-lg"
                               : "bg-gray-200 hover:bg-gray-300"
@@ -264,13 +257,11 @@ export default function CTA() {
                 </div>
 
                 {/* Hora */}
-                <h4 className="text-lg font-semibold text-gray-800 mb-2">
-                  Selecciona la hora
-                </h4>
+                <h4 className="mb-2 text-lg font-semibold text-gray-800">Selecciona la hora</h4>
                 <select
                   value={selectedTime}
                   onChange={handleTimeSelect}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition"
+                  className="w-full rounded-xl border border-gray-300 p-3 transition focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                 >
                   <option value="">Elige una hora</option>
                   {workingHours.map((hour) => (
@@ -286,7 +277,7 @@ export default function CTA() {
               <div>
                 {/* 💬 Tema */}
                 <textarea
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition resize-none"
+                  className="w-full resize-none rounded-xl border border-gray-300 p-3 transition focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                   rows={4}
                   placeholder="Cuéntanos brevemente de qué te gustaría hablar..."
                   value={topic}
@@ -299,34 +290,34 @@ export default function CTA() {
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
                   placeholder="Tu nombre completo"
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition mt-4"
+                  className="mt-4 w-full rounded-xl border border-gray-300 p-3 transition focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                 />
 
                 {/* Plataforma */}
-                <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2 text-center">
+                <h4 className="mt-6 mb-2 text-center text-lg font-semibold text-gray-800">
                   ¿Cómo prefieres reunirte?
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     onClick={() => setSelectedPlatform("Zoom")}
-                    className={`rounded-2xl p-5 flex flex-col items-center justify-center border transition-all ${
+                    className={`flex flex-col items-center justify-center rounded-2xl border p-5 transition-all ${
                       selectedPlatform === "Zoom"
-                        ? "bg-cyan-600 text-white border-cyan-600 shadow-lg"
+                        ? "border-cyan-600 bg-cyan-600 text-white shadow-lg"
                         : "bg-gray-100 hover:bg-gray-200"
                     }`}
                   >
-                    <i className="ri-camera-line text-3xl mb-2"></i>
+                    <i className="ri-camera-line mb-2 text-3xl"></i>
                     <span className="font-semibold">ZOOM</span>
                   </button>
                   <button
                     onClick={() => setSelectedPlatform("WhatsApp")}
-                    className={`rounded-2xl p-5 flex flex-col items-center justify-center border transition-all ${
+                    className={`flex flex-col items-center justify-center rounded-2xl border p-5 transition-all ${
                       selectedPlatform === "WhatsApp"
-                        ? "bg-cyan-600 text-white border-cyan-600 shadow-lg"
+                        ? "border-cyan-600 bg-cyan-600 text-white shadow-lg"
                         : "bg-gray-100 hover:bg-gray-200"
                     }`}
                   >
-                    <i className="ri-whatsapp-line text-3xl mb-2"></i>
+                    <i className="ri-whatsapp-line mb-2 text-3xl"></i>
                     <span className="font-semibold">WHATSAPP</span>
                   </button>
                 </div>
@@ -337,18 +328,16 @@ export default function CTA() {
                   value={clientContact}
                   onChange={(e) => setClientContact(e.target.value)}
                   placeholder={
-                    selectedPlatform === "WhatsApp"
-                      ? "Número de WhatsApp"
-                      : "Correo electrónico"
+                    selectedPlatform === "WhatsApp" ? "Número de WhatsApp" : "Correo electrónico"
                   }
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition mt-4"
+                  className="mt-4 w-full rounded-xl border border-gray-300 p-3 transition focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                 />
               </div>
 
               {/* Botón final */}
               <button
                 onClick={handleSchedule}
-                className="w-full mt-6 bg-cyan-600 cursor-pointer hover:bg-cyan-700 text-white py-3 rounded-xl font-bold text-lg shadow-lg transition-all"
+                className="mt-6 w-full cursor-pointer rounded-xl bg-cyan-600 py-3 text-lg font-bold text-white shadow-lg transition-all hover:bg-cyan-700"
               >
                 Agendar cita
               </button>

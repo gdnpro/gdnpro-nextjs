@@ -242,7 +242,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
     <div className="space-y-6">
       {/* Estadísticas de pagos */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <div className="rounded-lg border bg-white p-6 shadow-sm">
+        <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="flex items-center">
             <div className="bg-primary/10 mr-4 flex h-12 w-12 items-center justify-center rounded-lg">
               <i className="ri-money-dollar-circle-line text-primary text-xl"></i>
@@ -256,7 +256,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
           </div>
         </div>
 
-        <div className="rounded-lg border bg-white p-6 shadow-sm">
+        <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="flex items-center">
             <div className="bg-primary/10 mr-4 flex h-12 w-12 items-center justify-center rounded-lg">
               <i className="ri-calendar-line text-primary text-xl"></i>
@@ -268,7 +268,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
           </div>
         </div>
 
-        <div className="rounded-lg border bg-white p-6 shadow-sm">
+        <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="flex items-center">
             <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100">
               <i className="ri-briefcase-line text-xl text-purple-600"></i>
@@ -282,7 +282,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       </div>
 
       {/* Filtros */}
-      <div className="rounded-lg border bg-white p-4 shadow-sm">
+      <div className="rounded-lg bg-white p-4 shadow-md">
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter("all")}
@@ -324,7 +324,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       </div>
 
       {/* Lista de proyectos pagados */}
-      <div className="overflow-hidden rounded-lg border bg-white shadow-sm">
+      <div className="overflow-hidden rounded-lg bg-white shadow-md">
         <div className="border-b border-gray-200 px-6 py-4">
           <h3 className="flex items-center text-lg font-semibold text-gray-900">
             <i className="ri-briefcase-line text-primary mr-2"></i>

@@ -1,5 +1,9 @@
+"use client"
+
 import { supabaseBrowser } from "@/utils/supabase/client"
 import type { Project } from "@/interfaces/Project"
+import { useBadges } from "@/hooks/useBadges"
+import { useNotifications } from "@/hooks/useNotifications"
 
 const supabase = supabaseBrowser()
 
@@ -18,6 +22,8 @@ export const ProjectArticle = ({
   handleActiveTab,
   viewProjectProposals,
 }: Props) => {
+  const { checkAndUnlockBadges } = useBadges()
+  const { notifyProjectUpdate } = useNotifications()
   return (
     <article
       key={project.id}
@@ -163,6 +169,20 @@ export const ProjectArticle = ({
                               .eq("id", project.id)
 
                             if (error) throw error
+
+                            // Notify project completion
+                            await notifyProjectUpdate(project.id, "project_completed")
+
+                            // Check badges for both freelancer and client
+                            const { data: { user } } = await supabase.auth.getUser()
+                            if (user) {
+                              if (project.freelancer_id) {
+                                await checkAndUnlockBadges(project.freelancer_id, "freelancer")
+                              }
+                              if (project.client_id) {
+                                await checkAndUnlockBadges(project.client_id, "client")
+                              }
+                            }
 
                             window.toast({
                               title: "Proyecto aprobado",

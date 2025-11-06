@@ -1,22 +1,7 @@
 "use client"
 
-import { supabaseBrowser } from "@/utils/supabase/client"
 import { useState, useEffect } from "react"
-import type { BadgeStats } from "@/interfaces/BadgeStats"
-
-const supabase = supabaseBrowser()
-
-interface Badge {
-  id: string
-  name: string
-  description: string
-  icon: string
-  color: string
-  requirement: number
-  type: "projects" | "reviews" | "revenue" | "experience" | "special"
-  unlocked: boolean
-  unlockedAt?: string
-}
+import { useBadges, type Badge } from "@/hooks/useBadges"
 
 interface BadgeSystemProps {
   userId: string
@@ -39,6 +24,9 @@ export default function BadgeSystem({
   })
   const [loading, setLoading] = useState(true)
   const [showAchievement, setShowAchievement] = useState<Badge | null>(null)
+  const [newlyUnlockedBadges, setNewlyUnlockedBadges] = useState<Badge[]>([])
+
+  const { getBadgesWithStatus, loadUserStats, checkAndUnlockBadges } = useBadges()
 
   useEffect(() => {
     loadBadgesAndStats()
@@ -46,283 +34,28 @@ export default function BadgeSystem({
 
   const loadBadgesAndStats = async () => {
     try {
-      // Cargar estadísticas del usuario
-      await loadUserStats()
+      // Load user stats
+      const stats = await loadUserStats(userId, userType)
+      setUserStats(stats)
 
-      // Definir badges disponibles
-      const availableBadges = getBadgeDefinitions()
+      // Check for newly unlocked badges
+      const newlyUnlocked = await checkAndUnlockBadges(userId, userType)
+      if (newlyUnlocked.length > 0) {
+        setNewlyUnlockedBadges(newlyUnlocked)
+        // Show the first newly unlocked badge
+        if (newlyUnlocked[0]) {
+          setShowAchievement(newlyUnlocked[0])
+        }
+      }
 
-      // Verificar qué badges ha desbloqueado
-      const badgesWithStatus = await checkUnlockedBadges(availableBadges)
-
+      // Get all badges with their status
+      const badgesWithStatus = await getBadgesWithStatus(userId, userType)
       setBadges(badgesWithStatus)
     } catch (error) {
       console.error("Error cargando badges:", error)
     } finally {
       setLoading(false)
     }
-  }
-
-  const loadUserStats = async () => {
-    try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single()
-
-      if (profile) {
-        // Calcular proyectos completados
-        const { count: projectsCount } = await supabase
-          .from("projects")
-          .select("*", { count: "exact" })
-          .eq(userType === "freelancer" ? "freelancer_id" : "client_id", userId)
-          .eq("status", "completed")
-
-        // Calcular rating promedio
-        const { data: reviews } = await supabase
-          .from("reviews")
-          .select("rating")
-          .eq("reviewed_user_id", userId)
-
-        const averageRating =
-          reviews && reviews.length > 0
-            ? reviews.reduce((sum: number, review: { rating: number }) => sum + review.rating, 0) /
-              reviews.length
-            : 0
-
-        // Calcular ingresos totales (para freelancers)
-        let totalRevenue = 0
-        if (userType === "freelancer") {
-          const { data: transactions } = await supabase
-            .from("transactions")
-            .select("amount")
-            .eq("freelancer_id", userId)
-            .eq("status", "completed")
-
-          totalRevenue = transactions
-            ? transactions.reduce(
-                (sum: number, transaction: { amount: number }) => sum + transaction.amount,
-                0
-              )
-            : 0
-        }
-
-        // Calcular días activos
-        const createdAt = new Date(profile.created_at)
-        const now = new Date()
-        const daysActive = Math.floor(
-          (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)
-        )
-
-        // Calcular XP basado en actividad
-        const experiencePoints = calculateExperiencePoints({
-          totalProjects: 0,
-          completedProjects: projectsCount || 0,
-          totalEarnings: totalRevenue,
-          averageRating,
-          totalReviews: reviews?.length || 0,
-          projectsCompleted: projectsCount || 0,
-          totalRevenue,
-          daysActive,
-        })
-
-        setUserStats({
-          projectsCompleted: projectsCount || 0,
-          averageRating,
-          totalRevenue,
-          experiencePoints,
-          daysActive,
-        })
-      }
-    } catch (error) {
-      console.error("Error cargando estadísticas:", error)
-    }
-  }
-
-  const calculateExperiencePoints = (stats: BadgeStats) => {
-    let xp = 0
-
-    // XP por proyectos completados
-    xp += (stats.projectsCompleted ?? stats.completedProjects ?? 0) * 100
-
-    // XP por rating alto
-    if (stats.averageRating >= 4.5) xp += 500
-    else if (stats.averageRating >= 4.0) xp += 300
-    else if (stats.averageRating >= 3.5) xp += 100
-
-    // XP por ingresos (freelancers)
-    xp += Math.floor((stats.totalRevenue ?? stats.totalEarnings ?? 0) / 100) * 10
-
-    // XP por días activos
-    xp += (stats.daysActive ?? 0) * 5
-
-    return xp
-  }
-
-  const getBadgeDefinitions = (): Badge[] => {
-    const commonBadges = [
-      {
-        id: "welcome",
-        name: "🎉 Bienvenido",
-        description: "Te uniste a la plataforma",
-        icon: "ri-hand-heart-line",
-        color: "bg-primary/10 text-primary",
-        requirement: 0,
-        type: "special" as const,
-        unlocked: false,
-      },
-      {
-        id: "first_week",
-        name: "📅 Primera Semana",
-        description: "Una semana activo en la plataforma",
-        icon: "ri-calendar-check-line",
-        color: "bg-green-100 text-green-600",
-        requirement: 7,
-        type: "experience" as const,
-        unlocked: false,
-      },
-      {
-        id: "month_veteran",
-        name: "🗓️ Veterano Mensual",
-        description: "Un mes activo en la plataforma",
-        icon: "ri-trophy-line",
-        color: "bg-purple-100 text-purple-600",
-        requirement: 30,
-        type: "experience" as const,
-        unlocked: false,
-      },
-    ]
-
-    const freelancerBadges = [
-      {
-        id: "first_project",
-        name: "🚀 Primer Proyecto",
-        description: "Completaste tu primer proyecto",
-        icon: "ri-rocket-line",
-        color: "bg-emerald-100 text-primary",
-        requirement: 1,
-        type: "projects" as const,
-        unlocked: false,
-      },
-      {
-        id: "project_master",
-        name: "⭐ Maestro de Proyectos",
-        description: "Completaste 5 proyectos",
-        icon: "ri-star-line",
-        color: "bg-yellow-100 text-yellow-600",
-        requirement: 5,
-        type: "projects" as const,
-        unlocked: false,
-      },
-      {
-        id: "project_legend",
-        name: "🏆 Leyenda de Proyectos",
-        description: "Completaste 20 proyectos",
-        icon: "ri-trophy-line",
-        color: "bg-orange-100 text-orange-600",
-        requirement: 20,
-        type: "projects" as const,
-        unlocked: false,
-      },
-      {
-        id: "five_stars",
-        name: "⭐ 5 Estrellas",
-        description: "Rating promedio de 4.5 o más",
-        icon: "ri-star-fill",
-        color: "bg-yellow-100 text-yellow-600",
-        requirement: 4.5,
-        type: "reviews" as const,
-        unlocked: false,
-      },
-      {
-        id: "top_earner",
-        name: "💰 Top Earner",
-        description: "Ganaste más de $5,000",
-        icon: "ri-money-dollar-circle-line",
-        color: "bg-green-100 text-green-600",
-        requirement: 5000,
-        type: "revenue" as const,
-        unlocked: false,
-      },
-      {
-        id: "high_roller",
-        name: "💎 High Roller",
-        description: "Ganaste más de $20,000",
-        icon: "ri-gem-line",
-        color: "bg-indigo-100 text-indigo-600",
-        requirement: 20000,
-        type: "revenue" as const,
-        unlocked: false,
-      },
-    ]
-
-    const clientBadges = [
-      {
-        id: "first_hire",
-        name: "🤝 Primera Contratación",
-        description: "Contrataste tu primer freelancer",
-        icon: "ri-handshake-line",
-        color: "bg-blue-100 text-primary",
-        requirement: 1,
-        type: "projects" as const,
-        unlocked: false,
-      },
-      {
-        id: "project_sponsor",
-        name: "💼 Patrocinador de Proyectos",
-        description: "Creaste 5 proyectos",
-        icon: "ri-briefcase-line",
-        color: "bg-purple-100 text-purple-600",
-        requirement: 5,
-        type: "projects" as const,
-        unlocked: false,
-      },
-      {
-        id: "enterprise_client",
-        name: "🏢 Cliente Empresarial",
-        description: "Creaste más de 20 proyectos",
-        icon: "ri-building-line",
-        color: "bg-gray-100 text-gray-600",
-        requirement: 20,
-        type: "projects" as const,
-        unlocked: false,
-      },
-    ]
-
-    return userType === "freelancer"
-      ? [...commonBadges, ...freelancerBadges]
-      : [...commonBadges, ...clientBadges]
-  }
-
-  const checkUnlockedBadges = async (badgeList: Badge[]) => {
-    return badgeList.map((badge) => {
-      let unlocked = false
-
-      switch (badge.type) {
-        case "special":
-          unlocked = true // Badges especiales siempre desbloqueados
-          break
-        case "projects":
-          unlocked = userStats.projectsCompleted >= badge.requirement
-          break
-        case "reviews":
-          unlocked = userStats.averageRating >= badge.requirement
-          break
-        case "revenue":
-          unlocked = userStats.totalRevenue >= badge.requirement
-          break
-        case "experience":
-          unlocked = userStats.daysActive >= badge.requirement
-          break
-      }
-
-      return {
-        ...badge,
-        unlocked,
-        unlockedAt: unlocked ? new Date().toISOString() : undefined,
-      }
-    })
   }
 
   const getUnlockedBadges = () => badges.filter((badge) => badge.unlocked)
@@ -447,26 +180,44 @@ export default function BadgeSystem({
 
       {/* Modal de Logro */}
       {showAchievement && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full text-center">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full text-center animate-scale-in">
             <div className="mb-4">
-              <div
-                className={`w-20 h-20 ${showAchievement.color} rounded-full flex items-center justify-center mx-auto mb-4`}
-              >
-                <i className={`${showAchievement.icon} text-3xl`}></i>
+              <div className="relative">
+                <div
+                  className={`w-20 h-20 ${showAchievement.color} rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce`}
+                >
+                  <i className={`${showAchievement.icon} text-3xl`}></i>
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center animate-pulse">
+                  <i className="ri-star-fill text-white text-sm"></i>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {showAchievement.name}
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                ¡Badge Desbloqueado! 🎉
               </h3>
+              <h4 className="text-xl font-semibold text-primary mb-2">
+                {showAchievement.name}
+              </h4>
               <p className="text-gray-600 mb-4">
                 {showAchievement.description}
               </p>
               <div className="bg-green-50 text-green-800 px-4 py-2 rounded-lg inline-block">
-                ✅ Badge Desbloqueado
+                ✅ ¡Felicidades!
               </div>
             </div>
             <button
-              onClick={() => setShowAchievement(null)}
+              onClick={() => {
+                setShowAchievement(null)
+                // If there are more newly unlocked badges, show the next one
+                if (newlyUnlockedBadges.length > 1) {
+                  const remaining = newlyUnlockedBadges.slice(1)
+                  setNewlyUnlockedBadges(remaining)
+                  setShowAchievement(remaining[0])
+                } else {
+                  setNewlyUnlockedBadges([])
+                }
+              }}
               className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors cursor-pointer whitespace-nowrap"
             >
               ¡Genial!

@@ -13,8 +13,7 @@ export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showToast, setShowToast] = useState(false)
-  const [toastNotification, setToastNotification] =
-    useState<Notification | null>(null)
+  const [toastNotification, setToastNotification] = useState<Notification | null>(null)
 
   const { setValue } = useSessionStorage("last_tab")
 
@@ -26,14 +25,94 @@ export default function NotificationBell() {
     return () => clearInterval(authInterval)
   }, [])
 
+  // Smart polling for notifications (since Realtime replication is not available)
   useEffect(() => {
-    if (isLoggedIn) {
-      loadUnreadCount()
+    if (!isLoggedIn) return
 
-      // Actualizar conteo cada 10 segundos
-      const countInterval = setInterval(loadUnreadCount, 10000)
+    let pollInterval: NodeJS.Timeout | null = null
+    const lastCheckedCountRef = { current: 0 }
+    let isPageVisible = !document.hidden
 
-      return () => clearInterval(countInterval)
+    // Handle page visibility changes
+    const handleVisibilityChange = () => {
+      const wasVisible = isPageVisible
+      isPageVisible = !document.hidden
+
+      if (isPageVisible && !wasVisible) {
+        // Page became visible - immediately check and restart polling
+        if (pollInterval) {
+          clearInterval(pollInterval)
+        }
+        loadUnreadCount().then((count) => {
+          lastCheckedCountRef.current = count
+        })
+        pollInterval = setInterval(poll, 5000)
+      } else if (!isPageVisible && wasVisible) {
+        // Page became hidden - use longer interval
+        if (pollInterval) {
+          clearInterval(pollInterval)
+        }
+        pollInterval = setInterval(poll, 30000)
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    // Poll function
+    const poll = async () => {
+      if (!isPageVisible) return
+
+      try {
+        const session = await supabase.auth.getSession()
+        if (!session.data.session?.access_token) return
+
+        const response = await fetch(
+          "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/notifications-handler",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.data.session.access_token}`,
+            },
+            body: JSON.stringify({
+              action: "get-unread-count",
+            }),
+          },
+        )
+
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            const newCount = data.count || 0
+
+            // If count increased, we have new notifications
+            if (newCount > lastCheckedCountRef.current && lastCheckedCountRef.current > 0) {
+              // Load the most recent notification to show in toast
+              loadRecentNotifications()
+            }
+
+            setUnreadCount(newCount)
+            lastCheckedCountRef.current = newCount
+          }
+        }
+      } catch (error) {
+        console.error("Error polling notifications:", error)
+      }
+    }
+
+    // Initial load and start polling
+    loadUnreadCount().then((count) => {
+      lastCheckedCountRef.current = count
+    })
+
+    // Start polling with appropriate interval based on visibility
+    pollInterval = setInterval(poll, isPageVisible ? 5000 : 30000)
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval)
+      }
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
   }, [isLoggedIn])
 
@@ -49,10 +128,10 @@ export default function NotificationBell() {
     }
   }
 
-  const loadUnreadCount = async () => {
+  const loadUnreadCount = async (): Promise<number> => {
     try {
       const session = await supabase.auth.getSession()
-      if (!session.data.session?.access_token) return
+      if (!session.data.session?.access_token) return 0
 
       const response = await fetch(
         "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/notifications-handler",
@@ -65,25 +144,21 @@ export default function NotificationBell() {
           body: JSON.stringify({
             action: "get-unread-count",
           }),
-        }
+        },
       )
 
       if (response.ok) {
         const data = await response.json()
         if (data.success) {
           const newCount = data.count || 0
-
-          // Si hay nuevas notificaciones, cargar las recientes para mostrar toast
-          if (newCount > unreadCount && unreadCount !== 0) {
-            loadRecentNotifications()
-          }
-
           setUnreadCount(newCount)
+          return newCount
         }
       }
     } catch (error) {
       console.error("Error loading unread count:", error)
     }
+    return 0
   }
 
   const loadRecentNotifications = async () => {
@@ -103,7 +178,7 @@ export default function NotificationBell() {
             action: "get-notifications",
             filters: { read: false, limit: 5 },
           }),
-        }
+        },
       )
 
       if (response.ok) {
@@ -127,9 +202,28 @@ export default function NotificationBell() {
   const handleNotificationClick = (notification: Notification) => {
     setIsOpen(false)
 
+    // Map notification types to dashboard sections
+    const typeToSectionMap: Record<string, string> = {
+      message: "messages",
+      proposal: "proposals",
+      payment: "payments",
+      project_update: "projects",
+      review: "reviews",
+      system: "projects",
+      reminder: "projects",
+      milestone: "projects",
+      badge: "achievements",
+      achievement: "achievements",
+    }
+
+    const section = typeToSectionMap[notification.type] || "projects"
+    setValue("last_tab", section)
+
     if (notification.action_url) {
-      setValue("last_tab", `${notification.type}s`)
       window.location.href = notification.action_url
+    } else {
+      // Default to dashboard if no action_url
+      window.location.href = "/dashboard"
     }
   }
 
@@ -150,39 +244,39 @@ export default function NotificationBell() {
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative p-2 text-gray-600 hover:text-gray-900 focus:outline-none rounded-lg transition-colors cursor-pointer"
+          className="relative cursor-pointer rounded-lg p-2 text-gray-600 transition-colors hover:text-gray-900 focus:outline-none"
           aria-label="Notificaciones"
         >
           <i className="ri-notification-line text-xl"></i>
 
           {/* Badge de conteo */}
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+            <span className="absolute top-1 right-1 flex h-5 w-5 animate-pulse items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
 
           {/* Indicador de animación para nuevas notificaciones */}
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 bg-red-500 rounded-full w-5 h-5 animate-ping opacity-75"></span>
+            <span className="absolute top-1 right-1 h-5 w-5 animate-ping rounded-full bg-red-500 opacity-75"></span>
           )}
         </button>
       </div>
 
       {/* Toast Notification */}
       {showToast && toastNotification && (
-        <div className="fixed top-20 right-4 z-50 bg-white rounded-lg shadow-lg border border-gray-200 max-w-sm animate-slide-in-right">
+        <div className="animate-slide-in-right fixed top-20 right-4 z-50 max-w-sm rounded-lg border border-gray-200 bg-white shadow-lg">
           <div
-            className="p-4 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+            className="cursor-pointer rounded-lg p-4 transition-colors hover:bg-gray-50"
             onClick={handleToastClick}
           >
             <div className="flex items-start">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3 shrink-0">
+              <div className="bg-primary/10 mr-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
                 <i className="ri-notification-line text-primary text-sm"></i>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h4 className="text-sm font-medium text-gray-900 truncate">
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex items-center justify-between">
+                  <h4 className="truncate text-sm font-medium text-gray-900">
                     {toastNotification.title}
                   </h4>
                   <button
@@ -190,17 +284,13 @@ export default function NotificationBell() {
                       e.stopPropagation()
                       setShowToast(false)
                     }}
-                    className="text-gray-400 hover:text-gray-600 ml-2 cursor-pointer"
+                    className="ml-2 cursor-pointer text-gray-400 hover:text-gray-600"
                   >
                     <i className="ri-close-line text-sm"></i>
                   </button>
                 </div>
-                <p className="text-sm text-gray-600 line-clamp-2">
-                  {toastNotification.message}
-                </p>
-                <p className="text-xs text-primary mt-1">
-                  Clic para ver detalles
-                </p>
+                <p className="line-clamp-2 text-sm text-gray-600">{toastNotification.message}</p>
+                <p className="text-primary mt-1 text-xs">Clic para ver detalles</p>
               </div>
             </div>
           </div>

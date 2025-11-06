@@ -58,6 +58,19 @@ export default function ReviewModal({
     }
   }, [isOpen])
 
+  // Handle body overflow when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isOpen])
+
   const handleRatingChange = (category: keyof Ratings, value: number) => {
     setRatings((prev) => ({
       ...prev,

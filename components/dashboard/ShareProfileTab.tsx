@@ -107,12 +107,12 @@ export function ShareProfileTab() {
         <h3 className="mb-4 text-lg font-semibold text-gray-900">Tu URL de Perfil</h3>
 
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex-1 rounded-lg border bg-gray-50 p-3">
+          <div className="border-primary flex-1 rounded-lg border bg-gray-50 p-3">
             <code className="text-sm break-all text-gray-700">{profileUrl}</code>
           </div>
           <button
             onClick={copyToClipboard}
-            className={`rounded-lg px-4 py-3 font-medium whitespace-nowrap transition-all ${
+            className={`cursor-pointer rounded-lg px-4 py-3 font-medium whitespace-nowrap transition-all ${
               copied ? "bg-cyan-500 text-white" : "bg-primary text-white hover:bg-cyan-700"
             }`}
           >
@@ -143,7 +143,7 @@ export function ShareProfileTab() {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <button
             onClick={() => handleShare("linkedin")}
-            className="group flex flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-blue-500 hover:bg-blue-50"
+            className="group flex cursor-pointer flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-blue-500 hover:bg-blue-50"
           >
             <div className="bg-primary mb-3 flex h-12 w-12 items-center justify-center rounded-full transition-transform group-hover:scale-110">
               <i className="ri-linkedin-fill text-xl text-white"></i>
@@ -154,7 +154,7 @@ export function ShareProfileTab() {
 
           <button
             onClick={() => handleShare("twitter")}
-            className="group flex flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-blue-400 hover:bg-blue-50"
+            className="group flex cursor-pointer flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-blue-400 hover:bg-blue-50"
           >
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 transition-transform group-hover:scale-110">
               <i className="ri-twitter-fill text-xl text-white"></i>
@@ -165,7 +165,7 @@ export function ShareProfileTab() {
 
           <button
             onClick={() => handleShare("facebook")}
-            className="group flex flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-cyan-700 hover:bg-blue-50"
+            className="group flex cursor-pointer flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-cyan-700 hover:bg-blue-50"
           >
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-cyan-700 transition-transform group-hover:scale-110">
               <i className="ri-facebook-fill text-xl text-white"></i>
@@ -176,7 +176,7 @@ export function ShareProfileTab() {
 
           <button
             onClick={() => handleShare("whatsapp")}
-            className="group flex flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-green-500 hover:bg-green-50"
+            className="group flex cursor-pointer flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-green-500 hover:bg-green-50"
           >
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-500 transition-transform group-hover:scale-110">
               <i className="ri-whatsapp-fill text-xl text-white"></i>
@@ -232,7 +232,7 @@ export function ShareProfileTab() {
                     console.error("Error al descargar QR:", err)
                   }
                 }}
-                className="rounded-lg bg-emerald-600 px-4 py-2 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
+                className="cursor-pointer rounded-lg bg-emerald-600 px-4 py-2 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
               >
                 <i className="ri-download-line mr-2"></i>
                 Descargar QR
@@ -240,7 +240,7 @@ export function ShareProfileTab() {
 
               <button
                 onClick={() => window.print()}
-                className="rounded-lg border border-gray-300 px-4 py-2 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
+                className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
               >
                 <i className="ri-printer-line mr-2"></i>
                 Imprimir
