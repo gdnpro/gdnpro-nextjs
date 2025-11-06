@@ -1,27 +1,6 @@
 import { gdnStats } from "@/constants/currentData"
-import { useRouter } from "next/navigation"
 
 const Hero = () => {
-  const navigate = useRouter()
-
-  const scrollToPortfolio = () => {
-    const portfolioSection = document.getElementById("portfolio")
-    if (portfolioSection) {
-      portfolioSection.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
-  const scrollToContact = () => {
-    const contactSection = document.getElementById("contact")
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
-  const goToFreelancers = () => {
-    navigate.push("/freelancers")
-  }
-
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-16">
       {/* Background Image */}
@@ -75,29 +54,29 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col gap-4 sm:flex-row">
-              <button
-                onClick={scrollToPortfolio}
+              <a
+                href="#portfolio"
                 className="transform cursor-pointer rounded-lg bg-linear-to-r from-emerald-600 to-emerald-500 px-8 py-4 font-semibold whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-emerald-700 hover:to-emerald-600 hover:shadow-xl"
               >
                 Ver Portafolio
                 <i className="ri-arrow-right-line ml-2"></i>
-              </button>
+              </a>
 
-              <button
-                onClick={scrollToContact}
+              <a
+                href="#contact"
                 className="cursor-pointer rounded-lg border border-white/30 bg-white/10 px-8 py-4 font-semibold whitespace-nowrap text-white backdrop-blur-sm transition-all hover:bg-white/20"
               >
                 Contactar Ahora
                 <i className="ri-phone-line ml-2"></i>
-              </button>
+              </a>
 
-              <button
-                onClick={goToFreelancers}
+              <a
+                href="/freelancers"
                 className="transform cursor-pointer rounded-lg bg-linear-to-r from-cyan-600 to-cyan-500 px-8 py-4 font-semibold whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-cyan-700 hover:to-cyan-600 hover:shadow-xl"
               >
                 Ver Freelancers
                 <i className="ri-team-line ml-2"></i>
-              </button>
+              </a>
             </div>
 
             {/* Stats */}
@@ -125,9 +104,9 @@ const Hero = () => {
       {/* Animated scroll indicator */}
       <div className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 transform md:bottom-8">
         <div className="animate-bounce">
-          <button className="cursor-pointer" onClick={scrollToContact}>
+          <a className="cursor-pointer" href="#services">
             <i className="ri-arrow-down-line text-2xl text-white"></i>
-          </button>
+          </a>
         </div>
       </div>
     </section>

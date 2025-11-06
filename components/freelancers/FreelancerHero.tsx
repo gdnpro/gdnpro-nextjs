@@ -1,5 +1,4 @@
 "use client"
-import { useRouter } from "next/navigation"
 
 export default function FreelancerHero() {
   const scrollToSearch = () => {
@@ -8,7 +7,6 @@ export default function FreelancerHero() {
       element.scrollIntoView({ behavior: "smooth" })
     }
   }
-  const router = useRouter()
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
@@ -41,12 +39,12 @@ export default function FreelancerHero() {
           >
             Buscar Freelancers
           </button>
-          <button
-            onClick={() => router.push("auth/register")}
+          <a
+            href="/auth/register"
             className="cursor-pointer rounded-full border-2 border-white px-12 py-5 text-xl font-bold whitespace-nowrap text-white transition-all hover:scale-105 hover:bg-white hover:text-gray-900"
           >
             Únete Como Freelancer
-          </button>
+          </a>
         </div>
       </div>
 
