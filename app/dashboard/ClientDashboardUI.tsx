@@ -7,6 +7,7 @@ import ProjectManagement from "@/components/ProjectManagement"
 import { PendingReviews } from "@/components/dashboard/PendingReviews"
 import { ReviewsDisplay } from "@/components/dashboard/ReviewsDisplay"
 import { useNotifications } from "@/hooks/useNotifications"
+import { useBadges } from "@/hooks/useBadges"
 import { MainComponent } from "@/components/MainComponent"
 import type { Project } from "@/interfaces/Project"
 import type { Conversation } from "@/interfaces/Conversation"
@@ -64,6 +65,7 @@ export default function ClientDashboardUI() {
 
   const { setValue, getValue } = useSessionStorage("last_tab")
   const { notifyProposal, notifyNewMessage, createReminderNotification } = useNotifications()
+  const { checkAndUnlockBadges } = useBadges()
 
   const popularSkills = [
     "JavaScript",
@@ -109,6 +111,31 @@ export default function ClientDashboardUI() {
       loadPendingReviewsCount()
     }
   }, [user])
+
+  // Handle body overflow when modals open/close
+  useEffect(() => {
+    if (
+      showChat ||
+      showProposalsModal ||
+      showProjectManagement ||
+      showNewProjectModal ||
+      showEditProfileModal
+    ) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [
+    showChat,
+    showProposalsModal,
+    showProjectManagement,
+    showNewProjectModal,
+    showEditProfileModal,
+  ])
 
   const loadProjects = async () => {
     if (!user) return
@@ -345,6 +372,11 @@ export default function ClientDashboardUI() {
           await notifyNewMessage(data.message.id)
         }
 
+        // Check for badges after sending message
+        if (user?.id) {
+          await checkAndUnlockBadges(user.id, "client")
+        }
+
         if (data.flagged) {
           window.toast({
             title:
@@ -446,6 +478,11 @@ export default function ClientDashboardUI() {
       })
       loadProjects()
 
+      // Check for badges after creating project
+      if (user?.id) {
+        await checkAndUnlockBadges(user.id, "client")
+      }
+
       window.toast({
         title: "Proyecto creado satisfactoriamente",
         type: "success",
@@ -506,6 +543,11 @@ export default function ClientDashboardUI() {
       if (projectError) throw projectError
 
       await notifyProposal(proposalId, "proposal_accepted")
+
+      // Check for badges after accepting proposal
+      if (user?.id) {
+        await checkAndUnlockBadges(user.id, "client")
+      }
 
       window.toast({
         title: "¡Propuesta aceptada! El freelancer ha sido notificado",
@@ -687,7 +729,7 @@ export default function ClientDashboardUI() {
   ]
 
   return (
-    <Layout>
+    <>
       <MainComponent>
         {/* Header - RESPONSIVE */}
         <div className="mb-6 rounded-lg bg-white p-4 shadow sm:mb-8 sm:p-6">
@@ -1034,12 +1076,20 @@ export default function ClientDashboardUI() {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex min-w-0 flex-1 items-center">
-                            <div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mr-4 sm:h-12 sm:w-12">
-                              <i className="ri-user-line text-primary text-lg sm:text-xl"></i>
+                            <div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 sm:mr-4 sm:h-12 sm:w-12">
+                              {conversation.client?.avatar_url ? (
+                                <img
+                                  src={conversation.client.avatar_url}
+                                  alt={conversation.client.full_name}
+                                  className="h-full w-full object-cover object-top"
+                                />
+                              ) : (
+                                <i className="ri-user-line text-primary text-lg sm:text-xl"></i>
+                              )}
                             </div>
                             <div className="min-w-0 flex-1">
                               <h3 className="truncate text-sm font-semibold text-gray-900 sm:text-base">
-                                {conversation.client.full_name}
+                                {conversation.client?.full_name || conversation.client.full_name}
                               </h3>
                               {conversation.project && (
                                 <p className="truncate text-xs text-gray-600 sm:text-sm">
@@ -1666,6 +1716,6 @@ export default function ClientDashboardUI() {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   )
 }

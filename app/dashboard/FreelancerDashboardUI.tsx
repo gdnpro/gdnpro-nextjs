@@ -3,18 +3,18 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import PaymentsTab from "@/components/PaymentsTab"
-import { ShareProfileTab } from "@/components/ShareProfileTab"
+import { ShareProfileTab } from "@/components/dashboard/ShareProfileTab"
 import { PendingReviews } from "@/components/dashboard/PendingReviews"
 import { ReviewsDisplay } from "@/components/dashboard/ReviewsDisplay"
 import BadgeSystem from "@/components/dashboard/BadgeSystem"
 import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard"
 import { FreelancerProjectManagement } from "@/components/freelancers/FreelancerProjectManagement"
 import { useNotifications } from "@/hooks/useNotifications"
+import { useBadges } from "@/hooks/useBadges"
 import { MainComponent } from "@/components/MainComponent"
 import type { Project } from "@/interfaces/Project"
 import type { Conversation } from "@/interfaces/Conversation"
 import type { Transaction } from "@/interfaces/Transaction"
-import Layout from "@/components/Layout"
 import { useSessionStorage } from "@/hooks/useSessionStorage"
 import type { Proposal } from "@/interfaces/Proposal"
 import type { ChatMessage } from "@/interfaces/ChatMessage"
@@ -87,6 +87,7 @@ export default function FreelancerDashboardUI() {
   const [skillInput, setSkillInput] = useState("")
 
   const { notifyProposal, notifyNewMessage } = useNotifications()
+  const { checkAndUnlockBadges } = useBadges()
 
   const { setValue, getValue } = useSessionStorage("last_tab")
 
@@ -120,6 +121,33 @@ export default function FreelancerDashboardUI() {
       refreshAuth()
     }
   }, [user, loading, refreshAuth])
+
+  // Handle body overflow when modals open/close
+  useEffect(() => {
+    if (
+      showChat ||
+      showProposalModal ||
+      showProjectDetails ||
+      showProjectDetailsModal ||
+      showProjectManagement ||
+      showEditProfileModal
+    ) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [
+    showChat,
+    showProposalModal,
+    showProjectDetails,
+    showProjectDetailsModal,
+    showProjectManagement,
+    showEditProfileModal,
+  ])
 
   const loadData = async () => {
     try {
@@ -485,6 +513,11 @@ export default function FreelancerDashboardUI() {
         // NUEVO: Crear notificación automática de nuevo mensaje
         if (data.message?.id) {
           await notifyNewMessage(data.message.id)
+        }
+
+        // Check for badges after sending message
+        if (user?.id) {
+          await checkAndUnlockBadges(user.id, "freelancer")
         }
 
         if (data.flagged) {
@@ -999,7 +1032,7 @@ export default function FreelancerDashboardUI() {
   ]
 
   return (
-    <Layout>
+    <>
       <MainComponent>
         {/* Header - RESPONSIVE */}
         <div className="mb-6 rounded-lg bg-white p-4 shadow sm:mb-8 sm:p-6">
@@ -2713,6 +2746,6 @@ export default function FreelancerDashboardUI() {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   )
 }

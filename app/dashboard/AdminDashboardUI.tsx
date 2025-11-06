@@ -55,6 +55,19 @@ export default function AdminContacts() {
     }
   }, [user, authLoading, refreshAuth])
 
+  // Handle body overflow when modal opens/closes
+  useEffect(() => {
+    if (showModal || showReplyModal || showWhatsAppSetup) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [showModal, showReplyModal, showWhatsAppSetup])
+
   const loadContacts = async () => {
     try {
       // First validate user exists using getUser() (validates with server, won't hang)
@@ -334,7 +347,7 @@ export default function AdminContacts() {
   }
 
   return (
-    <Layout>
+    <>
       <div className="mx-auto max-w-7xl px-4 py-8 pt-24 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 rounded-lg bg-white p-6 shadow">
@@ -933,6 +946,6 @@ export default function AdminContacts() {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   )
 }
