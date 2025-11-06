@@ -303,7 +303,7 @@ export async function loginUserAction(
     }
   }
 
-  const { error } = await supabase.auth.signInWithPassword(fields)
+  const { data, error } = await supabase.auth.signInWithPassword(fields)
 
   if (error) {
     if (error?.message?.includes("Email not confirmed")) {
@@ -409,5 +409,6 @@ export async function loginUserAction(
     fields,
     databaseErrors: null,
     serverErrors: null,
+    redirectTo: `/dashboard`,
   }
 }

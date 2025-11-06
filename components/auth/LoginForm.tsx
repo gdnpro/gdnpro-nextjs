@@ -8,9 +8,14 @@ import { type FormState } from "@/validations/auth"
 import { FormError } from "./FormError"
 import { useRouter, useSearchParams } from "next/navigation"
 import { FormInfo } from "./FormInfo"
+import { useAuth } from "@/components/ui/AuthContext"
 
 const INITIAL_STATE: FormState = {
   success: false,
+  session: {
+    access_token: "",
+    refresh_token: "",
+  },
   message: undefined,
   loading: false,
   error: undefined,
@@ -24,6 +29,7 @@ const INITIAL_STATE: FormState = {
 
 export function LoginForm() {
   const supabase = supabaseBrowser()
+  const { refreshAuth } = useAuth()
   const [formState, formAction, pending] = useActionState(
     actions.auth.loginUserAction,
     INITIAL_STATE,
@@ -43,7 +49,9 @@ export function LoginForm() {
 
   useEffect(() => {
     if (formState.success) {
-      navigate.push("/dashboard")
+      refreshAuth().then(() => {
+        navigate.push(formState.redirectTo ?? "/dashboard")
+      })
     }
   }, [formState.success, navigate])
 
@@ -137,7 +145,7 @@ export function LoginForm() {
             </div>
 
             <FormError error={formState.error ?? null} handleResendEmail={handleResendEmail} />
-            {verified === "false" && (
+            {emailParam && email === emailParam && verified === "false" && (
               <FormInfo
                 info="Te enviamos un correo de verificación. Revisa tu bandeja antes de iniciar sesión."
                 handleResendEmail={handleResendEmail}

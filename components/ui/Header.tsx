@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import NotificationBell from "@/components/NotificationBell"
 import { useAuth } from "@/components/ui/AuthContext"
 import { supabaseBrowser } from "@/utils/supabase/client"
-import type { Profile } from "@/interfaces/Profile"
 
 const supabase = supabaseBrowser()
 
@@ -13,11 +12,17 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
-  const { user, loading } = useAuth()
+  const { profile: user, loading, refreshAuth } = useAuth()
   const navigate = useRouter()
 
   const userMenuRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!user && !loading) {
+      refreshAuth()
+    }
+  }, [user, loading, refreshAuth])
 
   useEffect(() => {
     if (isMenuOpen) {

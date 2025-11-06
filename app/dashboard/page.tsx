@@ -25,7 +25,6 @@ export default async function Page() {
 
   const role = data.user_type
 
-  // Redirecciones según rol
   switch (role) {
     case "freelancer":
       return <FreelancerDashboardUI />

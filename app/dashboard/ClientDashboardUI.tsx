@@ -23,7 +23,7 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 const supabase = supabaseBrowser()
 
 export default function ClientDashboardUI() {
-  const { user } = useAuth()
+  const { profile: user, loading, refreshAuth } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeTab, setActiveTab] = useState<string>()
@@ -88,6 +88,12 @@ export default function ClientDashboardUI() {
       setValue("last_tab", "projects")
     }
   }, [])
+
+  useEffect(() => {
+    if (!user && !loading) {
+      refreshAuth()
+    }
+  }, [user, loading, refreshAuth])
 
   useEffect(() => {
     if (user) {

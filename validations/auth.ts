@@ -25,6 +25,10 @@ export type RegisterFormSchemaType = z.infer<typeof RegisterFormSchema>
 
 export type FormState = {
   success?: boolean
+  session?: {
+    access_token: string
+    refresh_token: string
+  } | null
   message?: string
   loading?: boolean
   error?: string

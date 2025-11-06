@@ -3,7 +3,7 @@ import { useAuth } from "@/components/ui/AuthContext"
 import { removeAccents } from "@/libs/removeAccents"
 
 export function ShareProfileTab() {
-  const { user } = useAuth()
+  const { profile: user, loading, refreshAuth } = useAuth()
   const [profileUrl, setProfileUrl] = useState("")
   const [shareStats, setShareStats] = useState({
     totalShares: 0,
@@ -19,6 +19,12 @@ export function ShareProfileTab() {
       setProfileUrl(`${window.location.origin}/freelancer/${removeAccents(slug)}`)
     }
   }, [user])
+
+  useEffect(() => {
+    if (!user && !loading) {
+      refreshAuth()
+    }
+  }, [user, loading, refreshAuth])
 
   const handleShare = (platform: string) => {
     const shareText = `¡Conoce mi perfil profesional en GDN Pro! 💼 Especializado en ${user?.skills?.slice(0, 3).join(", ")}`

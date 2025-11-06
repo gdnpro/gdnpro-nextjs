@@ -23,7 +23,7 @@ interface ContactMessage {
 }
 
 export default function AdminContacts() {
-  const { user, profile, loading: authLoading } = useAuth()
+  const { profile: user, loading: authLoading, refreshAuth } = useAuth()
   const [contacts, setContacts] = useState<ContactMessage[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedContact, setSelectedContact] = useState<ContactMessage | null>(null)
@@ -48,6 +48,12 @@ export default function AdminContacts() {
       loadContacts()
     }
   }, [authLoading])
+
+  useEffect(() => {
+    if (!user && !authLoading) {
+      refreshAuth()
+    }
+  }, [user, authLoading, refreshAuth])
 
   const loadContacts = async () => {
     try {
@@ -231,7 +237,7 @@ export default function AdminContacts() {
             contactId: selectedContact.id,
             replyMessage: replyMessage.trim(),
             adminName: user?.full_name || "Administrador",
-            adminEmail: user?.email || profile?.email || "admin@empresa.com",
+            adminEmail: user?.email || user?.email || "admin@empresa.com",
           }),
         },
       )
@@ -343,7 +349,7 @@ export default function AdminContacts() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-500">
-                Bienvenido, {user?.full_name || profile?.email || "Administrador"}
+                Bienvenido, {user?.full_name || user?.email || "Administrador"}
               </div>
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
                 <i className="ri-admin-line text-primary"></i>

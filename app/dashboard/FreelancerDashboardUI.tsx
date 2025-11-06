@@ -25,7 +25,7 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 const supabase = supabaseBrowser()
 
 export default function FreelancerDashboardUI() {
-  const { user } = useAuth()
+  const { profile: user, loading, refreshAuth } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [proposals, setProposals] = useState<Proposal[]>([])
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -101,6 +101,12 @@ export default function FreelancerDashboardUI() {
       loadConversations()
     }
   }, [user, activeTab])
+
+  useEffect(() => {
+    if (!user && !loading) {
+      refreshAuth()
+    }
+  }, [user, loading, refreshAuth])
 
   const loadData = async () => {
     try {
