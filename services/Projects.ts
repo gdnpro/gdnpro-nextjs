@@ -33,9 +33,8 @@ export const projects = [
     id: 4,
     title: "Sistema de Gestión Hospitalaria",
     category: "web",
-    description:
-      "Plataforma web para gestión integral de pacientes, citas y historiales médicos.",
-    image: "/portafolio 4.jpg",
+    description: "Plataforma web para gestión integral de pacientes, citas y historiales médicos.",
+    image: "/portfolios/portafolio 4.jpg",
     technologies: ["Vue.js", "Laravel", "MySQL", "AWS"],
     link: "#",
   },
@@ -43,9 +42,8 @@ export const projects = [
     id: 5,
     title: "App Fintech Bancaria",
     category: "mobile",
-    description:
-      "Aplicación bancaria móvil con biometría y transferencias instantáneas.",
-    image: "/portafolio 5.jpg",
+    description: "Aplicación bancaria móvil con biometría y transferencias instantáneas.",
+    image: "/portfolios/portafolio 5.jpg",
     technologies: ["Flutter", "Django", "PostgreSQL", "Blockchain"],
     link: "#",
   },
@@ -55,7 +53,7 @@ export const projects = [
     category: "marketing",
     description:
       "Estrategia de crecimiento que llevó a una startup de 0 a 100k usuarios en 6 meses.",
-    image: "/portafolio 6.jpg",
+    image: "/portfolios/portafolio 6.jpg",
     technologies: ["Mixpanel", "Mailchimp", "A/B Testing", "CRO"],
     link: "#",
   },
