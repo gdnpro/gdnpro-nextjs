@@ -73,6 +73,19 @@ export default function FreelancerDashboardUI() {
   const [showProgressManagement, setShowProgressManagement] = useState(false)
   const [selectedProjectForProgress, setSelectedProjectForProgress] = useState<Project | null>(null)
 
+  // Estados para editar perfil
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
+  const [editProfileForm, setEditProfileForm] = useState({
+    full_name: "",
+    bio: "",
+    location: "",
+    hourly_rate: "",
+    experience_years: "",
+    skills: [] as string[],
+  })
+  const [updatingProfile, setUpdatingProfile] = useState(false)
+  const [skillInput, setSkillInput] = useState("")
+
   const { notifyProposal, notifyNewMessage } = useNotifications()
 
   const { setValue, getValue } = useSessionStorage("last_tab")
@@ -845,6 +858,146 @@ export default function FreelancerDashboardUI() {
     setValue("last_tab", flag)
   }
 
+  const openEditProfileModal = () => {
+    if (user) {
+      setEditProfileForm({
+        full_name: user.full_name || "",
+        bio: user.bio || "",
+        location: user.location || "",
+        hourly_rate: user.hourly_rate?.toString() || "",
+        experience_years: user.experience_years?.toString() || "",
+        skills: user.skills || [],
+      })
+      setShowEditProfileModal(true)
+    }
+  }
+
+  const addSkillToProfile = (skill: string) => {
+    if (skill && !editProfileForm.skills.includes(skill)) {
+      setEditProfileForm({
+        ...editProfileForm,
+        skills: [...editProfileForm.skills, skill],
+      })
+      setSkillInput("")
+    }
+  }
+
+  const removeSkillFromProfile = (skillToRemove: string) => {
+    setEditProfileForm({
+      ...editProfileForm,
+      skills: editProfileForm.skills.filter((skill) => skill !== skillToRemove),
+    })
+  }
+
+  const updateProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!user || updatingProfile) return
+
+    setUpdatingProfile(true)
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: editProfileForm.full_name.trim(),
+          bio: editProfileForm.bio.trim(),
+          location: editProfileForm.location.trim(),
+          hourly_rate: editProfileForm.hourly_rate ? Number(editProfileForm.hourly_rate) : null,
+          experience_years: editProfileForm.experience_years
+            ? Number(editProfileForm.experience_years)
+            : null,
+          skills: editProfileForm.skills,
+        })
+        .eq("user_id", user.id)
+
+      if (error) throw error
+
+      setShowEditProfileModal(false)
+      await refreshAuth()
+
+      window.toast({
+        title: "Perfil actualizado exitosamente",
+        type: "success",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      window.toast({
+        title: "Error al actualizar el perfil",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+    } finally {
+      setUpdatingProfile(false)
+    }
+  }
+
+  const tabsOptions = [
+    {
+      value: "projects",
+      label: "Proyectos Disponibles",
+      count: projects.length,
+    },
+    {
+      value: "my-projects",
+      label: "Mis Proyectos",
+      count: myProjects.length,
+    },
+    {
+      value: "proposals",
+      label: "Mis Propuestas",
+      count: proposals.length,
+    },
+    {
+      value: "messages",
+      label: "Mensajes",
+      count: conversations.length,
+    },
+    {
+      value: "reviews",
+      label: "Reseñas",
+      count: pendingReviewsCount,
+      hasBadge: true,
+      hasIcon: true,
+      icon: "ri-star-line",
+      onSelect: (e?: React.MouseEvent<HTMLButtonElement>) => {
+        if (e) {
+          e.preventDefault()
+          e.stopPropagation()
+        }
+        handleActiveTab("reviews")
+        loadPendingReviewsCount()
+      },
+    },
+    {
+      value: "achievements",
+      label: "Logros",
+      hasIcon: true,
+      icon: "ri-trophy-line",
+    },
+    {
+      value: "user",
+      label: "Mi Perfil",
+    },
+    {
+      value: "payments",
+      label: "Ingresos",
+      hasIcon: true,
+      icon: "ri-bank-card-line",
+      specialStyle: true,
+    },
+    {
+      value: "analytics",
+      label: "Analytics",
+      hasIcon: true,
+      icon: "ri-bar-chart-line",
+    },
+  ]
+
   return (
     <Layout>
       <MainComponent>
@@ -980,149 +1133,58 @@ export default function FreelancerDashboardUI() {
         <div className="rounded-lg bg-white shadow">
           <div className="overflow-x-auto overflow-y-hidden border-b border-gray-200">
             <nav className="-mb-px flex min-w-max">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleActiveTab("projects")
-                }}
-                className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "projects"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Proyectos Disponibles ({projects.length})
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleActiveTab("my-projects")
-                }}
-                className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "my-projects"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Mis Proyectos ({myProjects.length})
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleActiveTab("proposals")
-                }}
-                className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "proposals"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Mis Propuestas ({proposals.length})
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleActiveTab("messages")
-                }}
-                className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "messages"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Mensajes ({conversations.length})
-              </button>
-              {/* NUEVA PESTAÑA: Reseñas */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleActiveTab("reviews")
-                  loadPendingReviewsCount()
-                }}
-                className={`relative cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "reviews"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                <i className="ri-star-line mr-1"></i>
-                Reseñas
-                {pendingReviewsCount > 0 && (
-                  <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                    {pendingReviewsCount}
-                  </span>
-                )}
-              </button>
-              {/* NUEVA PESTAÑA: Logros */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleActiveTab("achievements")
-                }}
-                className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "achievements"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                <i className="ri-trophy-line mr-1"></i>
-                Logros
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleActiveTab("user")
-                }}
-                className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "user"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Mi Perfil
-              </button>
-              <button
-                onClick={() => handleActiveTab("payments")}
-                className={`flex cursor-pointer items-center rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:px-4 sm:py-3 sm:text-sm ${
-                  activeTab === "payments"
-                    ? "bg-primary/10 text-emerald-700"
-                    : "hover:text-primary text-gray-600 hover:bg-emerald-50"
-                }`}
-              >
-                <i className="ri-bank-card-line mr-1 sm:mr-2"></i>
-                Ingresos
-              </button>
-              {/* NUEVA PESTAÑA: Analytics */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleActiveTab("analytics")
-                }}
-                className={`cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "analytics"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                <i className="ri-bar-chart-line mr-1"></i>
-                Analytics
-              </button>
+              {tabsOptions.map((tab, idx) => {
+                const isActive = activeTab === tab.value
+                const isReviews = tab.value === "reviews"
+                const isPayments = tab.value === "payments"
+
+                if (isPayments) {
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleActiveTab(tab.value)}
+                      className={`flex cursor-pointer items-center rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:px-4 sm:py-3 sm:text-sm ${
+                        isActive
+                          ? "bg-primary/10 text-emerald-700"
+                          : "hover:text-primary text-gray-600 hover:bg-emerald-50"
+                      }`}
+                    >
+                      {tab.icon && <i className={`${tab.icon} mr-1 sm:mr-2`}></i>}
+                      {tab.label}
+                    </button>
+                  )
+                }
+
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      if (tab.onSelect) {
+                        tab.onSelect(e)
+                      } else {
+                        handleActiveTab(tab.value)
+                      }
+                    }}
+                    className={`relative cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
+                      isActive
+                        ? "border-primary text-primary"
+                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    }`}
+                  >
+                    {tab.icon && <i className={`${tab.icon} mr-1`}></i>}
+                    {tab.label}
+                    {tab.count !== undefined && tab.count > 0 && !isReviews && ` (${tab.count})`}
+                    {isReviews && tab.count !== undefined && tab.count > 0 && (
+                      <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                        {tab.count}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
             </nav>
           </div>
 
@@ -1685,6 +1747,16 @@ export default function FreelancerDashboardUI() {
                             </span>
                           )}
                         </div>
+
+                        <div className="mt-6 flex justify-end">
+                          <button
+                            onClick={openEditProfileModal}
+                            className="bg-primary cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700 sm:px-6 sm:text-base"
+                          >
+                            <i className="ri-edit-line mr-2"></i>
+                            Editar Perfil
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1716,6 +1788,7 @@ export default function FreelancerDashboardUI() {
                     </div>
                   </div>
                 </div>
+
                 <ShareProfileTab />
               </div>
             )}
@@ -2474,6 +2547,171 @@ export default function FreelancerDashboardUI() {
           sendingMessage={sendingMessage}
           sendMessage={() => sendMessage()}
         />
+      )}
+
+      {/* Modal Editar Perfil */}
+      {showEditProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+          <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-lg bg-white sm:max-w-2xl">
+            <div className="p-4 sm:p-6">
+              <div className="mb-4 flex items-center justify-between sm:mb-6">
+                <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">Editar Perfil</h2>
+                <button
+                  onClick={() => setShowEditProfileModal(false)}
+                  className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
+                >
+                  <i className="ri-close-line text-xl sm:text-2xl"></i>
+                </button>
+              </div>
+
+              <form onSubmit={updateProfile} className="space-y-4 sm:space-y-6">
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Nombre Completo
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editProfileForm.full_name}
+                    onChange={(e) =>
+                      setEditProfileForm({ ...editProfileForm, full_name: e.target.value })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    placeholder="Tu nombre completo"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Ubicación
+                  </label>
+                  <input
+                    type="text"
+                    value={editProfileForm.location}
+                    onChange={(e) =>
+                      setEditProfileForm({ ...editProfileForm, location: e.target.value })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    placeholder="Ej: Ciudad, País"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Biografía
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={editProfileForm.bio}
+                    onChange={(e) =>
+                      setEditProfileForm({ ...editProfileForm, bio: e.target.value })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    placeholder="Describe tu perfil profesional..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                      Tarifa por Hora (USD)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={editProfileForm.hourly_rate}
+                      onChange={(e) =>
+                        setEditProfileForm({ ...editProfileForm, hourly_rate: e.target.value })
+                      }
+                      className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                      placeholder="Ej: 25.00"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                      Años de Experiencia
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={editProfileForm.experience_years}
+                      onChange={(e) =>
+                        setEditProfileForm({ ...editProfileForm, experience_years: e.target.value })
+                      }
+                      className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                      placeholder="Ej: 5"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Habilidades
+                  </label>
+                  <div className="mb-3 flex flex-wrap gap-1 sm:gap-2">
+                    {editProfileForm.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs text-cyan-800 sm:px-3 sm:text-sm"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => removeSkillFromProfile(skill)}
+                          className="text-primary ml-1 cursor-pointer hover:text-cyan-800 sm:ml-2"
+                        >
+                          <i className="ri-close-line text-xs"></i>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex">
+                    <input
+                      type="text"
+                      value={skillInput}
+                      onChange={(e) => setSkillInput(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault()
+                          addSkillToProfile(skillInput.trim())
+                        }
+                      }}
+                      className="focus:ring-primary focus:border-primary flex-1 rounded-l-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                      placeholder="Añadir habilidad (presiona Enter)"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => addSkillToProfile(skillInput.trim())}
+                      className="bg-primary cursor-pointer rounded-r-md px-3 py-2 text-white transition-colors hover:bg-cyan-700 sm:px-4"
+                    >
+                      <i className="ri-add-line"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex flex-col justify-end space-y-2 pt-4 sm:flex-row sm:space-y-0 sm:space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditProfileModal(false)}
+                    disabled={updatingProfile}
+                    className="w-full cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 sm:w-auto sm:px-6 sm:text-base"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={updatingProfile}
+                    className="bg-primary w-full cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700 disabled:opacity-50 sm:w-auto sm:px-6 sm:text-base"
+                  >
+                    {updatingProfile ? "Guardando..." : "Guardar Cambios"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       )}
     </Layout>
   )

@@ -828,7 +828,7 @@ export default function AdminContacts() {
                       `Hola ${selectedContact.name},\n\nGracias por contactarnos sobre tu proyecto de ${selectedContact.service}.\n\nHemos revisado tu solicitud y nos gustaría programar una llamada para discutir los detalles.\n\n¿Cuándo sería un buen momento para ti?\n\nSaludos,\n${user?.full_name || "Tu Equipo"}`,
                     )
                   }}
-                  className="bg-primary rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
+                  className="bg-primary cursor-pointer rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                 >
                   <i className="ri-reply-line mr-2"></i>
                   Responder desde Dashboard

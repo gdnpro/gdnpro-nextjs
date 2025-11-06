@@ -54,6 +54,13 @@ export default function ClientDashboardUI() {
     deadline: "",
   })
   const [skillInput, setSkillInput] = useState("")
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
+  const [editProfileForm, setEditProfileForm] = useState({
+    full_name: "",
+    bio: "",
+    location: "",
+  })
+  const [updatingProfile, setUpdatingProfile] = useState(false)
 
   const { setValue, getValue } = useSessionStorage("last_tab")
   const { notifyProposal, notifyNewMessage, createReminderNotification } = useNotifications()
@@ -594,6 +601,91 @@ export default function ClientDashboardUI() {
     setValue("last_tab", flag)
   }
 
+  const openEditProfileModal = () => {
+    if (user) {
+      setEditProfileForm({
+        full_name: user.full_name || "",
+        bio: user.bio || "",
+        location: user.location || "",
+      })
+      setShowEditProfileModal(true)
+    }
+  }
+
+  const updateProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!user || updatingProfile) return
+
+    setUpdatingProfile(true)
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: editProfileForm.full_name.trim(),
+          bio: editProfileForm.bio.trim(),
+          location: editProfileForm.location.trim(),
+        })
+        .eq("user_id", user.id)
+
+      if (error) throw error
+
+      setShowEditProfileModal(false)
+      await refreshAuth()
+
+      window.toast({
+        title: "Perfil actualizado exitosamente",
+        type: "success",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      window.toast({
+        title: "Error al actualizar el perfil",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+    } finally {
+      setUpdatingProfile(false)
+    }
+  }
+
+  const tabsOptions = [
+    {
+      value: "projects",
+      label: "Mis Proyectos",
+      count: projects.length,
+    },
+    {
+      value: "messages",
+      label: "Mensajes",
+      count: conversations.length,
+    },
+    {
+      value: "reviews",
+      label: "Reseñas",
+      count: pendingReviewsCount,
+      hasBadge: true,
+      onSelect: () => {
+        handleActiveTab("reviews")
+        loadPendingReviewsCount()
+      },
+    },
+    {
+      value: "user",
+      label: "Mi Perfil",
+    },
+    {
+      value: "payments",
+      label: "Pagos",
+      hasIcon: true,
+    },
+  ]
+
   return (
     <Layout>
       <MainComponent>
@@ -682,67 +774,51 @@ export default function ClientDashboardUI() {
         <div className="rounded-lg bg-white shadow">
           <div className="overflow-x-auto overflow-y-hidden border-b border-gray-200">
             <nav className="-mb-px flex min-w-max">
-              <button
-                onClick={() => handleActiveTab("projects")}
-                className={`border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "projects"
-                    ? "text-primary border-cyan-500"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Mis Proyectos ({projects.length})
-              </button>
-              <button
-                onClick={() => handleActiveTab("messages")}
-                className={`border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "messages"
-                    ? "text-primary border-cyan-500"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Mensajes ({conversations.length})
-              </button>
-              {/* NUEVA PESTAÑA: Reseñas */}
-              <button
-                onClick={() => {
-                  handleActiveTab("reviews")
-                  loadPendingReviewsCount()
-                }}
-                className={`relative border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "reviews"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                <i className="ri-star-line mr-1"></i>
-                Reseñas
-                {pendingReviewsCount > 0 && (
-                  <span className="absolute top-[2px] right-[2px] flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                    {pendingReviewsCount}
-                  </span>
-                )}
-              </button>
-              <button
-                onClick={() => handleActiveTab("user")}
-                className={`border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
-                  activeTab === "user"
-                    ? "text-primary border-blue-500"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                Mi Perfil
-              </button>
-              <button
-                onClick={() => handleActiveTab("payments")}
-                className={`flex cursor-pointer items-center rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:px-4 sm:py-3 sm:text-sm ${
-                  activeTab === "payments"
-                    ? "bg-primary/10 text-cyan-700"
-                    : "hover:text-primary text-gray-600 hover:bg-cyan-50"
-                }`}
-              >
-                <i className="ri-bank-card-line mr-1 sm:mr-2"></i>
-                Pagos
-              </button>
+              {tabsOptions.map((tab, idx) => {
+                const isActive = activeTab === tab.value
+                const isReviews = tab.value === "reviews"
+                const isPayments = tab.value === "payments"
+
+                if (isPayments) {
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleActiveTab(tab.value)}
+                      className={`flex cursor-pointer items-center rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:px-4 sm:py-3 sm:text-sm ${
+                        isActive
+                          ? "bg-primary/10 text-cyan-700"
+                          : "hover:text-primary text-gray-600 hover:bg-cyan-50"
+                      }`}
+                    >
+                      <i className="ri-bank-card-line mr-1 sm:mr-2"></i>
+                      {tab.label}
+                    </button>
+                  )
+                }
+
+                return (
+                  <button
+                    key={idx}
+                    onClick={tab.onSelect || (() => handleActiveTab(tab.value))}
+                    className={`relative cursor-pointer border-b-2 px-3 py-3 text-xs font-medium whitespace-nowrap sm:px-6 sm:py-4 sm:text-sm ${
+                      isActive
+                        ? isReviews
+                          ? "border-primary text-primary"
+                          : "text-primary border-cyan-500"
+                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    }`}
+                  >
+                    {isReviews && <i className="ri-star-line mr-1"></i>}
+                    {tab.label}
+                    {tab.count !== undefined && tab.count > 0 && !isReviews && ` (${tab.count})`}
+                    {isReviews && tab.count !== undefined && tab.count > 0 && (
+                      <span className="absolute top-[2px] right-[2px] flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                        {tab.count}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
             </nav>
           </div>
 
@@ -1041,7 +1117,10 @@ export default function ClientDashboardUI() {
                   </p>
                 </div>
 
-                <button className="bg-primary w-full cursor-pointer rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-6 sm:text-base">
+                <button
+                  onClick={openEditProfileModal}
+                  className="bg-primary w-full cursor-pointer rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-6 sm:text-base"
+                >
                   Editar Perfil
                 </button>
               </div>
@@ -1501,6 +1580,91 @@ export default function ClientDashboardUI() {
             loadProjects() // Recargar proyectos para actualizar el progreso
           }}
         />
+      )}
+
+      {/* Modal Editar Perfil */}
+      {showEditProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+          <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-lg bg-white sm:max-w-2xl">
+            <div className="p-4 sm:p-6">
+              <div className="mb-4 flex items-center justify-between sm:mb-6">
+                <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">Editar Perfil</h2>
+                <button
+                  onClick={() => setShowEditProfileModal(false)}
+                  className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
+                >
+                  <i className="ri-close-line text-xl sm:text-2xl"></i>
+                </button>
+              </div>
+
+              <form onSubmit={updateProfile} className="space-y-4 sm:space-y-6">
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Nombre Completo
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editProfileForm.full_name}
+                    onChange={(e) =>
+                      setEditProfileForm({ ...editProfileForm, full_name: e.target.value })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    placeholder="Tu nombre completo"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Ubicación
+                  </label>
+                  <input
+                    type="text"
+                    value={editProfileForm.location}
+                    onChange={(e) =>
+                      setEditProfileForm({ ...editProfileForm, location: e.target.value })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    placeholder="Ej: Ciudad, País"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Biografía
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={editProfileForm.bio}
+                    onChange={(e) =>
+                      setEditProfileForm({ ...editProfileForm, bio: e.target.value })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    placeholder="Describe tu perfil profesional..."
+                  />
+                </div>
+
+                <div className="flex flex-col justify-end space-y-2 pt-4 sm:flex-row sm:space-y-0 sm:space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditProfileModal(false)}
+                    disabled={updatingProfile}
+                    className="w-full cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 sm:w-auto sm:px-6 sm:text-base"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={updatingProfile}
+                    className="bg-primary w-full cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700 disabled:opacity-50 sm:w-auto sm:px-6 sm:text-base"
+                  >
+                    {updatingProfile ? "Guardando..." : "Guardar Cambios"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       )}
     </Layout>
   )
