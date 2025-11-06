@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useAuth } from "@/components/AuthContext"
+import { useAuth } from "@/components/ui/AuthContext"
 import { removeAccents } from "@/libs/removeAccents"
 
 export function ShareProfileTab() {
@@ -16,9 +16,7 @@ export function ShareProfileTab() {
     if (user?.full_name) {
       const slug = user.full_name.toLowerCase().replace(/\s+/g, "-")
 
-      setProfileUrl(
-        `${window.location.origin}/freelancer/${removeAccents(slug)}`
-      )
+      setProfileUrl(`${window.location.origin}/freelancer/${removeAccents(slug)}`)
     }
   }, [user])
 
@@ -91,32 +89,25 @@ export function ShareProfileTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-linear-to-r from-cyan-500 to-primary rounded-xl p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">Comparte tu Perfil</h2>
+      <div className="to-primary rounded-xl bg-linear-to-r from-cyan-500 p-6 text-white">
+        <h2 className="mb-2 text-2xl font-bold">Comparte tu Perfil</h2>
         <p className="text-cyan-100">
-          Aumenta tu visibilidad compartiendo tu perfil profesional en redes
-          sociales
+          Aumenta tu visibilidad compartiendo tu perfil profesional en redes sociales
         </p>
       </div>
 
       {/* URL del perfil */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Tu URL de Perfil
-        </h3>
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">Tu URL de Perfil</h3>
 
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex-1 bg-gray-50 rounded-lg p-3 border">
-            <code className="text-sm text-gray-700 break-all">
-              {profileUrl}
-            </code>
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex-1 rounded-lg border bg-gray-50 p-3">
+            <code className="text-sm break-all text-gray-700">{profileUrl}</code>
           </div>
           <button
             onClick={copyToClipboard}
-            className={`px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${
-              copied
-                ? "bg-cyan-500 text-white"
-                : "bg-primary hover:bg-cyan-700 text-white"
+            className={`rounded-lg px-4 py-3 font-medium whitespace-nowrap transition-all ${
+              copied ? "bg-cyan-500 text-white" : "bg-primary text-white hover:bg-cyan-700"
             }`}
           >
             {copied ? (
@@ -135,25 +126,21 @@ export function ShareProfileTab() {
 
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <i className="ri-information-line"></i>
-          <span>
-            Esta es tu URL personalizada que puedes compartir en cualquier lugar
-          </span>
+          <span>Esta es tu URL personalizada que puedes compartir en cualquier lugar</span>
         </div>
       </div>
 
       {/* Botones de compartir */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Compartir en Redes Sociales
-        </h3>
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">Compartir en Redes Sociales</h3>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <button
             onClick={() => handleShare("linkedin")}
-            className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group"
+            className="group flex flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-blue-500 hover:bg-blue-50"
           >
-            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <i className="ri-linkedin-fill text-white text-xl"></i>
+            <div className="bg-primary mb-3 flex h-12 w-12 items-center justify-center rounded-full transition-transform group-hover:scale-110">
+              <i className="ri-linkedin-fill text-xl text-white"></i>
             </div>
             <span className="font-medium text-gray-900">LinkedIn</span>
             <span className="text-xs text-gray-500">Profesional</span>
@@ -161,10 +148,10 @@ export function ShareProfileTab() {
 
           <button
             onClick={() => handleShare("twitter")}
-            className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all group"
+            className="group flex flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-blue-400 hover:bg-blue-50"
           >
-            <div className="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <i className="ri-twitter-fill text-white text-xl"></i>
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-400 transition-transform group-hover:scale-110">
+              <i className="ri-twitter-fill text-xl text-white"></i>
             </div>
             <span className="font-medium text-gray-900">Twitter</span>
             <span className="text-xs text-gray-500">Rápido</span>
@@ -172,10 +159,10 @@ export function ShareProfileTab() {
 
           <button
             onClick={() => handleShare("facebook")}
-            className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-cyan-700 hover:bg-blue-50 transition-all group"
+            className="group flex flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-cyan-700 hover:bg-blue-50"
           >
-            <div className="w-12 h-12 bg-cyan-700 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <i className="ri-facebook-fill text-white text-xl"></i>
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-cyan-700 transition-transform group-hover:scale-110">
+              <i className="ri-facebook-fill text-xl text-white"></i>
             </div>
             <span className="font-medium text-gray-900">Facebook</span>
             <span className="text-xs text-gray-500">Personal</span>
@@ -183,10 +170,10 @@ export function ShareProfileTab() {
 
           <button
             onClick={() => handleShare("whatsapp")}
-            className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group"
+            className="group flex flex-col items-center rounded-lg border border-gray-200 p-4 transition-all hover:border-green-500 hover:bg-green-50"
           >
-            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <i className="ri-whatsapp-fill text-white text-xl"></i>
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-500 transition-transform group-hover:scale-110">
+              <i className="ri-whatsapp-fill text-xl text-white"></i>
             </div>
             <span className="font-medium text-gray-900">WhatsApp</span>
             <span className="text-xs text-gray-500">Directo</span>
@@ -195,24 +182,23 @@ export function ShareProfileTab() {
       </div>
 
       {/* Código QR */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Código QR</h3>
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">Código QR</h3>
 
-        <div className="flex flex-col md:flex-row items-center gap-6">
+        <div className="flex flex-col items-center gap-6 md:flex-row">
           <div className="shrink-0">
             <img
               src={generateQRCode()}
               alt="QR Code del perfil"
-              className="w-48 h-48 border border-gray-200 rounded-lg"
+              className="h-48 w-48 rounded-lg border border-gray-200"
             />
           </div>
 
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 mb-2">Comparte tu QR</h4>
-            <p className="text-gray-600 mb-4">
-              Usa este código QR en tus tarjetas de presentación, CV, o
-              cualquier material impreso. Los clientes pueden escanearlo para
-              acceder directamente a tu perfil.
+            <h4 className="mb-2 font-semibold text-gray-900">Comparte tu QR</h4>
+            <p className="mb-4 text-gray-600">
+              Usa este código QR en tus tarjetas de presentación, CV, o cualquier material impreso.
+              Los clientes pueden escanearlo para acceder directamente a tu perfil.
             </p>
 
             <div className="flex gap-3">
@@ -240,7 +226,7 @@ export function ShareProfileTab() {
                     console.error("Error al descargar QR:", err)
                   }
                 }}
-                className="bg-emerald-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap"
+                className="rounded-lg bg-emerald-600 px-4 py-2 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
               >
                 <i className="ri-download-line mr-2"></i>
                 Descargar QR
@@ -248,7 +234,7 @@ export function ShareProfileTab() {
 
               <button
                 onClick={() => window.print()}
-                className="border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap"
+                className="rounded-lg border border-gray-300 px-4 py-2 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
               >
                 <i className="ri-printer-line mr-2"></i>
                 Imprimir
@@ -259,51 +245,41 @@ export function ShareProfileTab() {
       </div>
 
       {/* Estadísticas */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Estadísticas de Compartir
-        </h3>
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">Estadísticas de Compartir</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4 bg-emerald-50 rounded-lg">
-            <div className="text-2xl font-bold text-emerald-600 mb-1">
-              {shareStats.totalShares}
-            </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="rounded-lg bg-emerald-50 p-4 text-center">
+            <div className="mb-1 text-2xl font-bold text-emerald-600">{shareStats.totalShares}</div>
             <div className="text-sm text-gray-600">Veces Compartido</div>
           </div>
 
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-primary mb-1">
-              {shareStats.clicks}
-            </div>
+          <div className="rounded-lg bg-blue-50 p-4 text-center">
+            <div className="text-primary mb-1 text-2xl font-bold">{shareStats.clicks}</div>
             <div className="text-sm text-gray-600">Clicks Recibidos</div>
           </div>
 
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600 mb-1">
-              {shareStats.conversions}
-            </div>
+          <div className="rounded-lg bg-purple-50 p-4 text-center">
+            <div className="mb-1 text-2xl font-bold text-purple-600">{shareStats.conversions}</div>
             <div className="text-sm text-gray-600">Contactos Generados</div>
           </div>
         </div>
       </div>
 
       {/* Tips para compartir */}
-      <div className="bg-linear-to-r from-blue-50 to-emerald-50 rounded-xl p-6 border border-blue-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          <i className="ri-lightbulb-line text-yellow-500 mr-2"></i>
+      <div className="rounded-xl border border-blue-200 bg-linear-to-r from-blue-50 to-emerald-50 p-6">
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">
+          <i className="ri-lightbulb-line mr-2 text-yellow-500"></i>
           Tips para Maximizar tu Alcance
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center mr-3 mt-1">
-              <i className="ri-check-line text-white text-sm"></i>
+            <div className="mt-1 mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500">
+              <i className="ri-check-line text-sm text-white"></i>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">
-                Actualiza regularmente
-              </h4>
+              <h4 className="font-medium text-gray-900">Actualiza regularmente</h4>
               <p className="text-sm text-gray-600">
                 Mantén tu perfil actualizado con nuevos proyectos y habilidades
               </p>
@@ -311,44 +287,32 @@ export function ShareProfileTab() {
           </div>
 
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center mr-3 mt-1">
-              <i className="ri-check-line text-white text-sm"></i>
+            <div className="mt-1 mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500">
+              <i className="ri-check-line text-sm text-white"></i>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">
-                Comparte contenido valioso
-              </h4>
-              <p className="text-sm text-gray-600">
-                Acompaña tu perfil con tips y casos de éxito
-              </p>
+              <h4 className="font-medium text-gray-900">Comparte contenido valioso</h4>
+              <p className="text-sm text-gray-600">Acompaña tu perfil con tips y casos de éxito</p>
             </div>
           </div>
 
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center mr-3 mt-1">
-              <i className="ri-check-line text-white text-sm"></i>
+            <div className="mt-1 mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500">
+              <i className="ri-check-line text-sm text-white"></i>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">
-                Usa hashtags relevantes
-              </h4>
-              <p className="text-sm text-gray-600">
-                Incluye hashtags de tu industria al compartir
-              </p>
+              <h4 className="font-medium text-gray-900">Usa hashtags relevantes</h4>
+              <p className="text-sm text-gray-600">Incluye hashtags de tu industria al compartir</p>
             </div>
           </div>
 
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center mr-3 mt-1">
-              <i className="ri-check-line text-white text-sm"></i>
+            <div className="mt-1 mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500">
+              <i className="ri-check-line text-sm text-white"></i>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900">
-                Interactúa con tu audiencia
-              </h4>
-              <p className="text-sm text-gray-600">
-                Responde comentarios y mensajes rápidamente
-              </p>
+              <h4 className="font-medium text-gray-900">Interactúa con tu audiencia</h4>
+              <p className="text-sm text-gray-600">Responde comentarios y mensajes rápidamente</p>
             </div>
           </div>
         </div>

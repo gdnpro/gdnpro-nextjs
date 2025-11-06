@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import NotificationBell from "@/components/NotificationBell"
-import { useAuth } from "@/components/AuthContext"
+import { useAuth } from "@/components/ui/AuthContext"
 import { supabaseBrowser } from "@/utils/supabase/client"
 import type { Profile } from "@/interfaces/Profile"
 

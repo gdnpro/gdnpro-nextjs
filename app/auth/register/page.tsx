@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { categorizedSkills } from "@/constants/currentData"
-import { useAuth } from "@/components/AuthContext"
+import { useAuth } from "@/components/ui/AuthContext"
 import Link from "next/link"
 import { supabaseBrowser } from "@/utils/supabase/client"
 
@@ -12,9 +12,7 @@ const supabase = supabaseBrowser()
 export default function Register() {
   const { user } = useAuth()
   const [step, setStep] = useState(1)
-  const [userType, setUserType] = useState<"freelancer" | "client">(
-    "freelancer"
-  )
+  const [userType, setUserType] = useState<"freelancer" | "client">("freelancer")
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -46,9 +44,7 @@ export default function Register() {
   }, [user])
 
   const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     setFormData({
       ...formData,
@@ -168,7 +164,7 @@ export default function Register() {
               action: "confirm_email",
               userId: authData.user.id,
             }),
-          }
+          },
         )
 
         if (confirmResponse.ok) {
@@ -209,7 +205,7 @@ export default function Register() {
             {
               method: "POST",
               body: formDataUpload,
-            }
+            },
           )
 
           if (!uploadResponse.ok) {
@@ -254,9 +250,7 @@ export default function Register() {
 
       console.log("💾 Creating profile:", profileData)
 
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .insert([profileData])
+      const { error: profileError } = await supabase.from("profiles").insert([profileData])
 
       if (profileError) {
         console.error("❌ Error creating profile:", profileError)
@@ -316,25 +310,16 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <Link href="/">
-            <img
-              src="/logo.png"
-              alt="GDN PRO"
-              className="h-12 w-auto mx-auto mb-6"
-            />
+            <img src="/logo.png" alt="GDN PRO" className="mx-auto mb-6 h-12 w-auto" />
           </Link>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Crear Cuenta
-          </h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Crear Cuenta</h2>
           <p className="mt-2 text-sm text-gray-600">
             ¿Ya tienes cuenta?{" "}
-            <Link
-              href="/auth/login"
-              className="font-medium text-primary hover:text-cyan-500"
-            >
+            <Link href="/auth/login" className="text-primary font-medium hover:text-cyan-500">
               Inicia sesión aquí
             </Link>
           </p>
@@ -342,9 +327,9 @@ export default function Register() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
+            <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-600">
               {error}
             </div>
           )}
@@ -353,49 +338,40 @@ export default function Register() {
           {step === 1 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                <h3 className="mb-4 text-lg font-medium text-gray-900">
                   ¿Cómo quieres usar GDN Pro?
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <button
                     type="button"
                     onClick={() => setUserType("freelancer")}
-                    className={`p-6 border-2 rounded-lg text-left hover:border-cyan-500 transition-colors cursor-pointer ${
-                      userType === "freelancer"
-                        ? "border-cyan-500 bg-cyan-50"
-                        : "border-gray-300"
+                    className={`cursor-pointer rounded-lg border-2 p-6 text-left transition-colors hover:border-cyan-500 ${
+                      userType === "freelancer" ? "border-cyan-500 bg-cyan-50" : "border-gray-300"
                     }`}
                   >
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                    <div className="mb-3 flex items-center">
+                      <div className="bg-primary/10 mr-3 flex h-10 w-10 items-center justify-center rounded-full">
                         <i className="ri-user-line text-primary"></i>
                       </div>
-                      <h4 className="font-semibold text-gray-900">
-                        Soy Freelancer
-                      </h4>
+                      <h4 className="font-semibold text-gray-900">Soy Freelancer</h4>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Quiero ofrecer mis servicios y encontrar proyectos
-                      interesantes
+                      Quiero ofrecer mis servicios y encontrar proyectos interesantes
                     </p>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setUserType("client")}
-                    className={`p-6 border-2 rounded-lg text-left hover:border-cyan-500 transition-colors cursor-pointer ${
-                      userType === "client"
-                        ? "border-cyan-500 bg-cyan-50"
-                        : "border-gray-300"
+                    className={`cursor-pointer rounded-lg border-2 p-6 text-left transition-colors hover:border-cyan-500 ${
+                      userType === "client" ? "border-cyan-500 bg-cyan-50" : "border-gray-300"
                     }`}
                   >
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                    <div className="mb-3 flex items-center">
+                      <div className="bg-primary/10 mr-3 flex h-10 w-10 items-center justify-center rounded-full">
                         <i className="ri-briefcase-line text-primary"></i>
                       </div>
-                      <h4 className="font-semibold text-gray-900">
-                        Soy Cliente
-                      </h4>
+                      <h4 className="font-semibold text-gray-900">Soy Cliente</h4>
                     </div>
                     <p className="text-sm text-gray-600">
                       Necesito contratar freelancers para mis proyectos
@@ -407,7 +383,7 @@ export default function Register() {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 whitespace-nowrap"
+                className="bg-primary flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium whitespace-nowrap text-white shadow-sm hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-none"
               >
                 Continuar
               </button>
@@ -420,7 +396,7 @@ export default function Register() {
               {/* Foto de Perfil - Solo para Freelancers */}
               {userType === "freelancer" && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
                     Foto de Perfil
                   </label>
                   <div className="flex items-center space-x-6">
@@ -429,18 +405,18 @@ export default function Register() {
                         <img
                           src={imagePreview}
                           alt="Preview"
-                          className="h-20 w-20 object-cover object-top rounded-full border-2 border-gray-300"
+                          className="h-20 w-20 rounded-full border-2 border-gray-300 object-cover object-top"
                         />
                       ) : (
-                        <div className="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
-                          <i className="ri-user-line text-gray-400 text-2xl"></i>
+                        <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-gray-300 bg-gray-200">
+                          <i className="ri-user-line text-2xl text-gray-400"></i>
                         </div>
                       )}
                     </div>
                     <div className="flex-1">
                       {!imagePreview ? (
                         <label className="cursor-pointer">
-                          <span className="bg-primary hover:bg-cyan-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
+                          <span className="bg-primary cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700">
                             Subir Foto
                           </span>
                           <input
@@ -453,7 +429,7 @@ export default function Register() {
                       ) : (
                         <div className="flex space-x-2">
                           <label className="cursor-pointer">
-                            <span className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
+                            <span className="cursor-pointer rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700">
                               Cambiar
                             </span>
                             <input
@@ -466,26 +442,21 @@ export default function Register() {
                           <button
                             type="button"
                             onClick={removeImage}
-                            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
+                            className="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
                           >
                             Eliminar
                           </button>
                         </div>
                       )}
-                      <p className="text-xs text-gray-500 mt-1">
-                        JPG, PNG o GIF. Máximo 5MB.
-                      </p>
+                      <p className="mt-1 text-xs text-gray-500">JPG, PNG o GIF. Máximo 5MB.</p>
                     </div>
                   </div>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label
-                    htmlFor="fullName"
-                    className="block text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
                     Nombre Completo
                   </label>
                   <input
@@ -495,17 +466,12 @@ export default function Register() {
                     required
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-5
-
-0 focus:border-cyan-500 sm:text-sm"
+                    className="focus:ring-emerald-5 0 mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:outline-none sm:text-sm"
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                     Email
                   </label>
                   <input
@@ -515,15 +481,12 @@ export default function Register() {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="location"
-                    className="block text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="location" className="block text-sm font-medium text-gray-700">
                     Ubicación
                   </label>
                   <input
@@ -533,16 +496,13 @@ export default function Register() {
                     required
                     value={formData.location}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                     placeholder="Ciudad, País"
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                     Contraseña
                   </label>
                   <input
@@ -552,7 +512,7 @@ export default function Register() {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                   />
                 </div>
 
@@ -570,16 +530,13 @@ export default function Register() {
                     required
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label
-                  htmlFor="bio"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
                   {userType === "freelancer"
                     ? "Descripción profesional"
                     : "Descripción de tu empresa"}
@@ -590,7 +547,7 @@ export default function Register() {
                   rows={3}
                   value={formData.bio}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                   placeholder={
                     userType === "freelancer"
                       ? "Cuéntanos sobre tu experiencia y especialidades..."
@@ -602,44 +559,41 @@ export default function Register() {
               {userType === "freelancer" && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Habilidades
                     </label>
-                    <div className="flex flex-wrap gap-2 mb-3">
+                    <div className="mb-3 flex flex-wrap gap-2">
                       {formData.skills.map((skill, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary/10 text-emerald-800"
+                          className="bg-primary/10 inline-flex items-center rounded-full px-3 py-1 text-sm text-emerald-800"
                         >
                           {skill}
                           <button
                             type="button"
                             onClick={() => removeSkill(skill)}
-                            className="ml-2 text-primary hover:text-cyan-800 cursor-pointer"
+                            className="text-primary ml-2 cursor-pointer hover:text-cyan-800"
                           >
                             <i className="ri-close-line text-xs"></i>
                           </button>
                         </span>
                       ))}
                     </div>
-                    <div className="flex gap-2 mb-3">
+                    <div className="mb-3 flex gap-2">
                       <input
                         type="text"
                         value={skillInput}
                         onChange={(e) => setSkillInput(e.target.value)}
                         onKeyPress={(e) =>
-                          e.key === "Enter" &&
-                          (e.preventDefault(), addSkill(skillInput))
+                          e.key === "Enter" && (e.preventDefault(), addSkill(skillInput))
                         }
                         placeholder="Añadir habilidad"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-emerald-5
-
-0 focus:border-cyan-500 sm:text-sm"
+                        className="focus:ring-emerald-5 0 flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-cyan-500 focus:outline-none sm:text-sm"
                       />
                       <button
                         type="button"
                         onClick={() => addSkill(skillInput)}
-                        className="px-4 py-2 bg-primary text-white rounded-md hover:bg-cyan-700 whitespace-nowrap"
+                        className="bg-primary rounded-md px-4 py-2 whitespace-nowrap text-white hover:bg-cyan-700"
                       >
                         Añadir
                       </button>
@@ -647,23 +601,16 @@ export default function Register() {
 
                     <div className="space-y-4">
                       {categorizedSkills.map((group) => (
-                        <div
-                          key={group.category}
-                          className="border border-gray-200 rounded-lg"
-                        >
+                        <div key={group.category} className="rounded-lg border border-gray-200">
                           <button
                             type="button"
                             onClick={() =>
                               setOpenCategory(
-                                openCategory === group.category
-                                  ? null
-                                  : group.category
+                                openCategory === group.category ? null : group.category,
                               )
                             }
-                            className={`w-full flex justify-between items-center px-4 py-2 text-left font-medium rounded-t-lg ${
-                              formData.skills.some((s) =>
-                                group.skills.includes(s)
-                              )
+                            className={`flex w-full items-center justify-between rounded-t-lg px-4 py-2 text-left font-medium ${
+                              formData.skills.some((s) => group.skills.includes(s))
                                 ? "bg-cyan-100 text-cyan-800"
                                 : "bg-gray-100 text-gray-800 hover:bg-gray-200"
                             }`}
@@ -677,13 +624,13 @@ export default function Register() {
                           </button>
 
                           {openCategory === group.category && (
-                            <div className="p-3 flex flex-wrap gap-2 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+                            <div className="flex flex-wrap gap-2 rounded-b-lg border-t border-gray-200 bg-gray-50 p-3">
                               {group.skills.map((skill) => (
                                 <button
                                   key={skill}
                                   type="button"
                                   onClick={() => addSkill(skill)}
-                                  className="px-3 py-1 text-xs bg-white border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer"
+                                  className="cursor-pointer rounded-full border border-gray-300 bg-white px-3 py-1 text-xs text-gray-700 hover:bg-gray-100"
                                 >
                                   + {skill}
                                 </button>
@@ -695,7 +642,7 @@ export default function Register() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div>
                       <label
                         htmlFor="hourlyRate"
@@ -711,7 +658,7 @@ export default function Register() {
                         max="500"
                         value={formData.hourlyRate}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                       />
                     </div>
 
@@ -727,7 +674,7 @@ export default function Register() {
                         id="experienceYears"
                         value={formData.experienceYears}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm pr-8"
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 pr-8 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                       >
                         <option value="">Seleccionar</option>
                         <option value="0">Menos de 1 año</option>
@@ -745,7 +692,7 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 whitespace-nowrap"
+                  className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-none"
                 >
                   Atrás
                 </button>
@@ -753,11 +700,11 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="bg-primary rounded-md border border-transparent px-6 py-2 text-sm font-medium whitespace-nowrap text-white shadow-sm hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? (
                     <div className="flex items-center">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                       Creando cuenta...
                     </div>
                   ) : (

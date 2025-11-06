@@ -73,38 +73,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         // Use getUser() which validates with server and doesn't hang on corrupted localStorage
         // This is more reliable than getSession() when cache might be corrupted
-        let user: User | null = null
+        let sessionResult = null
 
         try {
-          const getUserPromise = supabase.auth.getUser()
-          const timeoutPromise = new Promise<{ data: { user: null }; error: Error }>(
-            (_, reject) => {
-              setTimeout(() => reject(new Error("Get user timeout")), 8000)
-            },
+          const getSessionPromise = supabase.auth.getSession()
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Get session timeout")), 8000),
           )
 
-          const result = await Promise.race([getUserPromise, timeoutPromise])
-          const userData = result as { data: { user: User | null }; error: any }
-
-          if (userData.error) {
-            console.error("Error getting user:", userData.error)
-            user = null
-            // If there's an error, clear potentially corrupted session
-            try {
-              await supabase.auth.signOut()
-            } catch {}
-          } else {
-            user = userData.data.user
-          }
-        } catch (error: any) {
-          // If getUser times out or fails, treat as no user
-          console.warn("getUser() failed or timed out:", error.message)
-          user = null
-          // Clear potentially corrupted session
-          try {
-            await supabase.auth.signOut()
-          } catch {}
+          sessionResult = await Promise.race([getSessionPromise, timeoutPromise])
+        } catch (err) {
+          console.warn("getSession() failed or timed out:", err)
+          sessionResult = { data: { session: null } }
         }
+
+        const user = sessionResult.data.session?.user ?? null
 
         clearTimeout(timeoutId)
 
