@@ -352,6 +352,7 @@ export async function loginUserAction(
         success: false,
         error: "Necesitas confirmar tu email",
         loading: false,
+        flag: "Email not confirmed",
         fields: validatedFields.data,
         databaseErrors: null,
         serverErrors: null,

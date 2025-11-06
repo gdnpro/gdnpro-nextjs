@@ -144,7 +144,11 @@ export function LoginForm() {
               </div>
             </div>
 
-            <FormError error={formState.error ?? null} handleResendEmail={handleResendEmail} />
+            <FormError
+              error={formState.error ?? null}
+              flag={formState.flag ?? null}
+              handleResendEmail={handleResendEmail}
+            />
             {emailParam && email === emailParam && verified === "false" && (
               <FormInfo
                 info="Te enviamos un correo de verificación. Revisa tu bandeja antes de iniciar sesión."
