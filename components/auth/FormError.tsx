@@ -4,7 +4,7 @@ export function FormError({
   handleResendEmail,
 }: {
   error: string | null
-  flag: string | null
+  flag?: string | null
   handleResendEmail?: () => void
 }) {
   if (!error) return null
