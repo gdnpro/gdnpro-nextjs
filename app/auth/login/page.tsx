@@ -1,9 +1,12 @@
 "use client"
 
 import { LoginForm } from "@/components/auth/LoginForm"
-
-export const dynamic = "force-dynamic"
+import { Suspense } from "react"
 
 export default function LoginPage() {
-  return <LoginForm />
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
+  )
 }
