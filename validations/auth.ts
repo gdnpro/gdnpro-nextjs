@@ -32,6 +32,7 @@ export type FormState = {
   message?: string
   loading?: boolean
   error?: string
+  flag?: string
   fields?: {
     avatar_url?: File | null
     full_name?: string
