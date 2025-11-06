@@ -167,18 +167,92 @@ export const useBadges = () => {
   }, [])
 
   // Load user stats
-  const loadUserStats = useCallback(async (
-    userId: string,
-    userType: "freelancer" | "client"
-  ): Promise<UserStats> => {
-    try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single()
+  const loadUserStats = useCallback(
+    async (userId: string, userType: "freelancer" | "client"): Promise<UserStats> => {
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single()
 
-      if (!profile) {
+        if (!profile) {
+          return {
+            projectsCompleted: 0,
+            averageRating: 0,
+            totalRevenue: 0,
+            experiencePoints: 0,
+            daysActive: 0,
+          }
+        }
+
+        // Calculate completed projects
+        const { count: projectsCount } = await supabase
+          .from("projects")
+          .select("*", { count: "exact", head: true })
+          .eq(userType === "freelancer" ? "freelancer_id" : "client_id", userId)
+          .eq("status", "completed")
+
+        // Calculate average rating
+        const { data: reviews, error: reviewsError } = await supabase
+          .from("reviews")
+          .select("overall_rating")
+          .eq("reviewee_id", userId)
+          .eq("reviewee_type", userType)
+
+        // Handle errors gracefully (e.g., if reviews table doesn't exist or has different structure)
+        if (reviewsError) {
+          console.warn("Error loading reviews for badge calculation:", reviewsError)
+        }
+
+        const averageRating =
+          reviews && reviews.length > 0
+            ? reviews.reduce(
+                (sum: number, review: { overall_rating: number }) =>
+                  sum + (review.overall_rating || 0),
+                0,
+              ) / reviews.length
+            : 0
+
+        // Calculate total revenue (for freelancers)
+        let totalRevenue = 0
+        if (userType === "freelancer") {
+          const { data: transactions } = await supabase
+            .from("transactions")
+            .select("amount")
+            .eq("freelancer_id", userId)
+            .eq("status", "completed")
+
+          totalRevenue = transactions
+            ? transactions.reduce(
+                (sum: number, transaction: { amount: number }) => sum + transaction.amount,
+                0,
+              )
+            : 0
+        }
+
+        // Calculate days active
+        const createdAt = new Date(profile.created_at)
+        const now = new Date()
+        const daysActive = Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
+
+        // Calculate XP
+        const experiencePoints = calculateExperiencePoints({
+          projectsCompleted: projectsCount || 0,
+          averageRating,
+          totalRevenue,
+          daysActive,
+        })
+
+        return {
+          projectsCompleted: projectsCount || 0,
+          averageRating,
+          totalRevenue,
+          experiencePoints,
+          daysActive,
+        }
+      } catch (error) {
+        console.error("Error loading user stats:", error)
         return {
           projectsCompleted: 0,
           averageRating: 0,
@@ -187,82 +261,9 @@ export const useBadges = () => {
           daysActive: 0,
         }
       }
-
-      // Calculate completed projects
-      const { count: projectsCount } = await supabase
-        .from("projects")
-        .select("*", { count: "exact", head: true })
-        .eq(userType === "freelancer" ? "freelancer_id" : "client_id", userId)
-        .eq("status", "completed")
-
-      // Calculate average rating
-      const { data: reviews, error: reviewsError } = await supabase
-        .from("reviews")
-        .select("overall_rating")
-        .eq("reviewee_id", userId)
-        .eq("reviewee_type", userType)
-
-      // Handle errors gracefully (e.g., if reviews table doesn't exist or has different structure)
-      if (reviewsError) {
-        console.warn("Error loading reviews for badge calculation:", reviewsError)
-      }
-
-      const averageRating =
-        reviews && reviews.length > 0
-          ? reviews.reduce((sum: number, review: { overall_rating: number }) => sum + (review.overall_rating || 0), 0) /
-            reviews.length
-          : 0
-
-      // Calculate total revenue (for freelancers)
-      let totalRevenue = 0
-      if (userType === "freelancer") {
-        const { data: transactions } = await supabase
-          .from("transactions")
-          .select("amount")
-          .eq("freelancer_id", userId)
-          .eq("status", "completed")
-
-        totalRevenue = transactions
-          ? transactions.reduce(
-              (sum: number, transaction: { amount: number }) => sum + transaction.amount,
-              0
-            )
-          : 0
-      }
-
-      // Calculate days active
-      const createdAt = new Date(profile.created_at)
-      const now = new Date()
-      const daysActive = Math.floor(
-        (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)
-      )
-
-      // Calculate XP
-      const experiencePoints = calculateExperiencePoints({
-        projectsCompleted: projectsCount || 0,
-        averageRating,
-        totalRevenue,
-        daysActive,
-      })
-
-      return {
-        projectsCompleted: projectsCount || 0,
-        averageRating,
-        totalRevenue,
-        experiencePoints,
-        daysActive,
-      }
-    } catch (error) {
-      console.error("Error loading user stats:", error)
-      return {
-        projectsCompleted: 0,
-        averageRating: 0,
-        totalRevenue: 0,
-        experiencePoints: 0,
-        daysActive: 0,
-      }
-    }
-  }, [])
+    },
+    [],
+  )
 
   // Calculate experience points
   const calculateExperiencePoints = (stats: {
@@ -299,7 +300,7 @@ export const useBadges = () => {
         return []
       }
 
-      return data?.map((row) => row.badge_id) || []
+      return data?.map((row: { badge_id: string }) => row.badge_id) || []
     } catch (error: any) {
       // Handle table not found errors gracefully
       if (error?.code === "42P01" || error?.message?.includes("does not exist")) {
@@ -323,8 +324,13 @@ export const useBadges = () => {
         .maybeSingle()
 
       // Handle table not found
-      if (checkError && (checkError.code === "42P01" || checkError.message?.includes("does not exist"))) {
-        console.warn("user_badges table does not exist yet. Badge unlock will not be persisted. Please run the migration.")
+      if (
+        checkError &&
+        (checkError.code === "42P01" || checkError.message?.includes("does not exist"))
+      ) {
+        console.warn(
+          "user_badges table does not exist yet. Badge unlock will not be persisted. Please run the migration.",
+        )
         return true // Return true so notification is still sent, but badge won't be persisted
       }
 
@@ -343,7 +349,9 @@ export const useBadges = () => {
       if (error) {
         // Handle table not found
         if (error.code === "42P01" || error.message?.includes("does not exist")) {
-          console.warn("user_badges table does not exist yet. Badge unlock will not be persisted. Please run the migration.")
+          console.warn(
+            "user_badges table does not exist yet. Badge unlock will not be persisted. Please run the migration.",
+          )
           return true // Return true so notification is still sent
         }
         console.error("Error unlocking badge:", error)
@@ -354,7 +362,9 @@ export const useBadges = () => {
     } catch (error: any) {
       // Handle table not found errors gracefully
       if (error?.code === "42P01" || error?.message?.includes("does not exist")) {
-        console.warn("user_badges table does not exist yet. Badge unlock will not be persisted. Please run the migration.")
+        console.warn(
+          "user_badges table does not exist yet. Badge unlock will not be persisted. Please run the migration.",
+        )
         return true // Return true so notification is still sent
       }
       console.error("Error unlocking badge:", error)
@@ -441,15 +451,19 @@ export const useBadges = () => {
         setCheckingBadges(false)
       }
     },
-    [checkingBadges, loadUserStats, getBadgeDefinitions, getUnlockedBadgesFromDB, unlockBadge, createNotification]
+    [
+      checkingBadges,
+      loadUserStats,
+      getBadgeDefinitions,
+      getUnlockedBadgesFromDB,
+      unlockBadge,
+      createNotification,
+    ],
   )
 
   // Get all badges with their unlock status
   const getBadgesWithStatus = useCallback(
-    async (
-      userId: string,
-      userType: "freelancer" | "client"
-    ): Promise<Badge[]> => {
+    async (userId: string, userType: "freelancer" | "client"): Promise<Badge[]> => {
       try {
         const stats = await loadUserStats(userId, userType)
         const badgeDefinitions = getBadgeDefinitions(userType)
@@ -457,10 +471,10 @@ export const useBadges = () => {
 
         return badgeDefinitions.map((badge) => {
           const isUnlocked = unlockedBadgeIds.includes(badge.id)
-          
+
           // Also check if it should be unlocked based on current stats
           let shouldBeUnlocked = isUnlocked
-          
+
           if (!isUnlocked) {
             switch (badge.type) {
               case "special":
@@ -484,7 +498,11 @@ export const useBadges = () => {
           return {
             ...badge,
             unlocked: shouldBeUnlocked,
-            unlockedAt: isUnlocked ? undefined : (shouldBeUnlocked ? new Date().toISOString() : undefined),
+            unlockedAt: isUnlocked
+              ? undefined
+              : shouldBeUnlocked
+                ? new Date().toISOString()
+                : undefined,
           }
         })
       } catch (error) {
@@ -492,7 +510,7 @@ export const useBadges = () => {
         return []
       }
     },
-    [loadUserStats, getBadgeDefinitions, getUnlockedBadgesFromDB]
+    [loadUserStats, getBadgeDefinitions, getUnlockedBadgesFromDB],
   )
 
   return {
@@ -503,4 +521,3 @@ export const useBadges = () => {
     getBadgeDefinitions,
   }
 }
-
