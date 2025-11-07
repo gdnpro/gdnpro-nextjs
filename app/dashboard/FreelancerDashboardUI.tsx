@@ -259,7 +259,9 @@ export default function FreelancerDashboardUI() {
               projectsFromTransactions = allTransactions.map((transaction: Transaction) => ({
                 id: `transaction-${transaction.id}`,
                 title: transaction.project_title || "Proyecto Contratado",
-                description: transaction.project_description || "Proyecto contratado directamente por el cliente",
+                description:
+                  transaction.project_description ||
+                  "Proyecto contratado directamente por el cliente",
                 budget: Number(transaction.amount),
                 status: "in_progress", // Solo mostramos transacciones pagadas, así que siempre están en progreso
                 payment_status: "paid", // Solo mostramos transacciones con estado 'paid'

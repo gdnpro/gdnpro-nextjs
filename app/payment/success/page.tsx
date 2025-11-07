@@ -79,6 +79,74 @@ function SuccessPaymentContent() {
       }
 
       console.log("✅ Payment verified:", data)
+
+      // Ensure transaction is saved/updated with success status
+      if (data.success) {
+        // Get user profile to get the correct client_id
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .single()
+
+        // Check if transaction exists
+        const { data: existingTransaction } = await supabase
+          .from("transactions")
+          .select("*")
+          .eq("stripe_session_id", sessionId)
+          .single()
+
+        if (existingTransaction) {
+          // Update existing transaction with paid status
+          const { error: updateError } = await supabase
+            .from("transactions")
+            .update({
+              status: "paid",
+              paid_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .eq("stripe_session_id", sessionId)
+
+          if (updateError) {
+            console.error("Error updating transaction:", updateError)
+          } else {
+            console.log("✅ Transaction updated with paid status")
+            // Reload the transaction to get updated data
+            const { data: updatedTransaction } = await supabase
+              .from("transactions")
+              .select("*")
+              .eq("stripe_session_id", sessionId)
+              .single()
+            if (updatedTransaction && data.transaction) {
+              data.transaction = { ...data.transaction, ...updatedTransaction }
+            }
+          }
+        } else if (data.transaction) {
+          // Create new transaction record if it doesn't exist
+          const transactionData = {
+            stripe_session_id: sessionId,
+            freelancer_id: data.transaction.freelancer_id || "",
+            client_id: data.transaction.client_id || profile?.id || "",
+            amount: data.transaction.amount || 0,
+            currency: data.transaction.currency || "usd",
+            status: "paid" as const,
+            project_title: data.transaction.project_title || "",
+            project_description: data.transaction.project_description || "",
+            paid_at: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }
+
+          const { error: insertError } = await supabase.from("transactions").insert(transactionData)
+
+          if (insertError) {
+            console.error("Error creating transaction:", insertError)
+          } else {
+            console.log("✅ Transaction created with paid status")
+          }
+        }
+      }
+
       setPaymentData(data)
     } catch (error: unknown) {
       console.error("❌ Error verifying payment:", error)

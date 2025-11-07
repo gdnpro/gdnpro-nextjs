@@ -361,8 +361,10 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
   }
 
   const filteredTransactions = transactions.filter((transaction) => {
-    if (filter === "all") return true
-    return transaction.status === filter
+    if (filter === "all") return true // Show all transactions including pending
+    // Handle transactions without status as pending
+    const status = transaction.status || "pending"
+    return status === filter
   })
 
   const filteredProjects = projects.filter((project) => {
@@ -373,8 +375,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
     return false
   })
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
+  const getStatusIcon = (status: string | undefined) => {
+    const normalizedStatus = status || "pending"
+    switch (normalizedStatus) {
       case "paid":
         return <i className="ri-check-circle-fill text-green-500"></i>
       case "pending":
@@ -384,12 +387,13 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       case "refunded":
         return <i className="ri-refund-line text-blue-500"></i>
       default:
-        return <i className="ri-question-line text-gray-500"></i>
+        return <i className="ri-time-line text-yellow-500"></i> // Default to pending icon
     }
   }
 
-  const getStatusText = (status: string) => {
-    switch (status) {
+  const getStatusText = (status: string | undefined) => {
+    const normalizedStatus = status || "pending"
+    switch (normalizedStatus) {
       case "paid":
         return "Completado"
       case "pending":
@@ -399,12 +403,13 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       case "refunded":
         return "Reembolsado"
       default:
-        return status
+        return "Pendiente" // Default to pending
     }
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
+  const getStatusColor = (status: string | undefined) => {
+    const normalizedStatus = status || "pending"
+    switch (normalizedStatus) {
       case "paid":
         return "bg-green-100 text-green-800"
       case "pending":
@@ -414,7 +419,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       case "refunded":
         return "bg-primary/10 text-blue-800"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-yellow-100 text-yellow-800" // Default to pending color
     }
   }
 
@@ -558,7 +563,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
           >
             Pendientes (
             {projects.filter((p) => p.payment_status === "pending" || !p.payment_status).length +
-              transactions.filter((t) => t.status === "pending").length}
+              transactions.filter((t) => !t.status || t.status === "pending").length}
             )
           </button>
         </div>
