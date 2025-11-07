@@ -250,39 +250,67 @@ export default function FreelancerDashboardUI() {
 
             if (response.ok) {
               const data = await response.json()
-              // FIXED: Solo incluir transacciones PAGADAS (completadas y exitosas)
-              const allTransactions = (data.transactions || []).filter(
-                (t: Transaction) => t.status === "paid",
-              )
+              // INCLUDE ALL transactions (paid AND pending) - admins will manage payment status
+              const allTransactions = data.transactions || []
 
-              // Crear "proyectos virtuales" solo desde transacciones PAGADAS para mostrar en "Mis Proyectos"
-              projectsFromTransactions = allTransactions.map((transaction: Transaction) => ({
-                id: `transaction-${transaction.id}`,
-                title: transaction.project_title || "Proyecto Contratado",
-                description:
-                  transaction.project_description ||
-                  "Proyecto contratado directamente por el cliente",
-                budget: Number(transaction.amount),
-                status: "in_progress", // Solo mostramos transacciones pagadas, así que siempre están en progreso
-                payment_status: "paid", // Solo mostramos transacciones con estado 'paid'
-                created_at:
-                  transaction.created_at || transaction.paid_at || new Date().toISOString(),
-                duration: "Según acuerdo con cliente",
-                requirements: "Proyecto contratado directamente - revisar detalles en chat",
-                // Información del cliente - usar placeholder por ahora (se puede cargar después usando client_id)
-                client: {
-                  id: "",
+              // Load client information for all transactions
+              const clientIds = allTransactions
+                .map((t: Transaction) => t.client_id)
+                .filter((id: string) => id)
+
+              // Fetch all client profiles at once (only if there are client IDs)
+              let clientsMap = new Map()
+              if (clientIds.length > 0) {
+                const { data: clientsData } = await supabase
+                  .from("profiles")
+                  .select("id, full_name, email, rating, avatar_url")
+                  .in("id", clientIds)
+
+                // Create a map for quick lookup
+                clientsMap = new Map(
+                  (clientsData || []).map((client) => [client.id, client]),
+                )
+              }
+
+              // Crear "proyectos virtuales" desde TODAS las transacciones para mostrar en "Mis Proyectos"
+              projectsFromTransactions = allTransactions.map((transaction: Transaction) => {
+                // Get client information from the map
+                const clientInfo = clientsMap.get(transaction.client_id) || {
+                  id: transaction.client_id || "",
                   full_name: "Cliente",
                   email: "",
                   rating: 5.0,
                   avatar_url: "",
-                },
-                // Marcar como proyecto de transacción para diferenciar
-                _isFromTransaction: true,
-                _transactionId: transaction.id,
-                _stripeSessionId: transaction.stripe_session_id,
-                _clientId: transaction.client_id, // Guardar ID para cargar datos después si es necesario
-              }))
+                }
+
+                return {
+                  id: `transaction-${transaction.id}`,
+                  title: transaction.project_title || "Proyecto Contratado",
+                  description:
+                    transaction.project_description ||
+                    "Proyecto contratado directamente por el cliente",
+                  budget: Number(transaction.amount),
+                  status: "in_progress", // Proyectos de transacciones siempre están en progreso
+                  payment_status: transaction.status || "pending", // Usar el estado real de la transacción
+                  created_at:
+                    transaction.created_at || transaction.paid_at || new Date().toISOString(),
+                  duration: "Según acuerdo con cliente",
+                  requirements: "Proyecto contratado directamente - revisar detalles en chat",
+                  // Información del cliente cargada correctamente
+                  client: {
+                    id: clientInfo.id,
+                    full_name: clientInfo.full_name || "Cliente",
+                    email: clientInfo.email || "",
+                    rating: clientInfo.rating || 5.0,
+                    avatar_url: clientInfo.avatar_url || "",
+                  },
+                  // Marcar como proyecto de transacción para diferenciar
+                  _isFromTransaction: true,
+                  _transactionId: transaction.id,
+                  _stripeSessionId: transaction.stripe_session_id,
+                  _clientId: transaction.client_id,
+                }
+              })
             }
           } catch (error) {
             console.error("⚠️ Error cargando transacciones para proyectos:", error)
@@ -708,8 +736,36 @@ export default function FreelancerDashboardUI() {
   const viewProjectDetailsInMyProjects = async (project: Project) => {
     try {
       if (project._isFromTransaction) {
-        // Para proyectos de transacción, usar la información que ya tenemos
-        setSelectedProjectForDetails(project)
+        // Para proyectos de transacción, cargar información completa del cliente si no está disponible
+        let projectWithClient = { ...project }
+
+        // Si el cliente no tiene información completa, cargarla
+        if (!project.client?.id || project.client?.full_name === "Cliente") {
+          const clientId = (project as any)._clientId || project.client?.id
+
+          if (clientId) {
+            const { data: clientData, error: clientError } = await supabase
+              .from("profiles")
+              .select("id, full_name, email, rating, avatar_url")
+              .eq("id", clientId)
+              .single()
+
+            if (!clientError && clientData) {
+              projectWithClient = {
+                ...project,
+                client: {
+                  id: clientData.id,
+                  full_name: clientData.full_name || "Cliente",
+                  email: clientData.email || "",
+                  rating: clientData.rating || 5.0,
+                  avatar_url: clientData.avatar_url || "",
+                },
+              }
+            }
+          }
+        }
+
+        setSelectedProjectForDetails(projectWithClient)
         setShowProjectDetailsModal(true)
       } else {
         // Para proyectos normales, cargar información completa
@@ -762,8 +818,36 @@ export default function FreelancerDashboardUI() {
   const openProgressManagement = async (project: Project) => {
     try {
       if (project._isFromTransaction) {
-        // Para proyectos de transacción, usar datos que ya tenemos
-        setSelectedProjectForProgress(project)
+        // Para proyectos de transacción, cargar información completa del cliente si no está disponible
+        let projectWithClient = { ...project }
+
+        // Si el cliente no tiene información completa, cargarla
+        if (!project.client?.id || project.client?.full_name === "Cliente") {
+          const clientId = (project as any)._clientId || project.client?.id
+
+          if (clientId) {
+            const { data: clientData, error: clientError } = await supabase
+              .from("profiles")
+              .select("id, full_name, email, rating, avatar_url")
+              .eq("id", clientId)
+              .single()
+
+            if (!clientError && clientData) {
+              projectWithClient = {
+                ...project,
+                client: {
+                  id: clientData.id,
+                  full_name: clientData.full_name || "Cliente",
+                  email: clientData.email || "",
+                  rating: clientData.rating || 5.0,
+                  avatar_url: clientData.avatar_url || "",
+                },
+              }
+            }
+          }
+        }
+
+        setSelectedProjectForProgress(projectWithClient)
         setShowProgressManagement(true)
       } else {
         // Para proyectos normales, cargar datos completos desde Supabase
@@ -811,7 +895,11 @@ export default function FreelancerDashboardUI() {
   }
 
   // RESTAURADO: Función para manejar contacto con cliente
-  const handleContactClient = async (clientId: string, clientName: string) => {
+  const handleContactClient = async (
+    clientId: string,
+    clientName: string,
+    projectId?: string | null,
+  ) => {
     if (!user) {
       window.toast({
         title: "Necesitas iniciar sesión para chatear",
@@ -836,6 +924,45 @@ export default function FreelancerDashboardUI() {
         return
       }
 
+      // First, try to find existing conversation
+      const findResponse = await fetch(
+        "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.data.session.access_token}`,
+          },
+          body: JSON.stringify({
+            action: "get-conversations",
+            userId: user.id,
+            userType: "freelancer",
+          }),
+        },
+      )
+
+      let existingConversation: Conversation | null = null
+      if (findResponse.ok) {
+        const findData = await findResponse.json()
+        if (findData.success && findData.conversations) {
+          // Find conversation with this client
+          existingConversation =
+            findData.conversations.find((conv: Conversation) => {
+              return (
+                conv.client_id === clientId &&
+                (projectId ? conv.project_id === projectId : true)
+              )
+            }) || null
+        }
+      }
+
+      // If conversation exists, open it
+      if (existingConversation) {
+        await openChat(existingConversation)
+        return
+      }
+
+      // Otherwise, create a new conversation
       const response = await fetch(
         "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
         {
@@ -848,7 +975,7 @@ export default function FreelancerDashboardUI() {
             action: "create-conversation",
             freelancerId: user.id,
             clientId: clientId,
-            projectId: null,
+            projectId: projectId || null,
           }),
         },
       )
@@ -864,19 +991,10 @@ export default function FreelancerDashboardUI() {
         // Recargar conversaciones y abrir el chat
         await loadConversations()
 
-        // Encontrar la conversación recién creada y abrirla
-        const newConversation: Conversation = {
-          id: data.conversation.id,
-          client_id: clientId,
-          freelancer_id: user.id,
-          project_id: null,
-          updated_at: new Date().toISOString(),
-          client: {
-            full_name: clientName,
-          },
-        }
+        // Use the conversation returned from the API
+        const newConversation: Conversation = data.conversation
 
-        openChat(newConversation)
+        await openChat(newConversation)
       } else {
         throw new Error(data.error || "Error al crear conversación")
       }
@@ -1305,19 +1423,22 @@ export default function FreelancerDashboardUI() {
                                   <div className="flex items-center space-x-2">
                                     <span
                                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                        project.payment_status === "paid"
+                                        project.payment_status === "paid" ||
+                                        project.payment_status === "success"
                                           ? "bg-green-100 text-green-800"
                                           : "bg-yellow-100 text-yellow-800"
                                       }`}
                                     >
                                       <i
                                         className={`mr-1 ${
-                                          project.payment_status === "paid"
+                                          project.payment_status === "paid" ||
+                                          project.payment_status === "success"
                                             ? "ri-check-line"
                                             : "ri-time-line"
                                         }`}
                                       ></i>
-                                      {project.payment_status === "paid"
+                                      {project.payment_status === "paid" ||
+                                      project.payment_status === "success"
                                         ? "Pagado"
                                         : "Pago Pendiente"}
                                     </span>
@@ -1413,11 +1534,18 @@ export default function FreelancerDashboardUI() {
                             )}
                             {project.client?.id && (
                               <button
-                                onClick={() => startChat(project.id, project.client?.id!)}
+                                onClick={() => {
+                                  const clientId = project.client?.id
+                                  const clientName = project.client?.full_name || "Cliente"
+                                  // For transaction projects, pass null as projectId since there's no real project record
+                                  // For regular projects, use the actual project ID
+                                  const projectId = project._isFromTransaction ? null : project.id
+                                  handleContactClient(clientId!, clientName, projectId)
+                                }}
                                 className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                               >
                                 <i className="ri-chat-3-line mr-2"></i>
-                                Chat Cliente
+                                Contactar Cliente
                               </button>
                             )}
                           </div>
@@ -2400,7 +2528,9 @@ export default function FreelancerDashboardUI() {
                       setShowProposalDetails(false)
                       const client = proposalProjectDetails.client
                       if (client) {
-                        handleContactClient(client.id, client.full_name)
+                        // For proposal projects, use the actual project ID from the proposal
+                        const projectId = proposalProjectDetails.project_id || null
+                        handleContactClient(client.id, client.full_name, projectId)
                       }
                     }}
                     className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
@@ -2620,7 +2750,8 @@ export default function FreelancerDashboardUI() {
                       <div>
                         <h4 className="mb-2 text-sm font-semibold text-gray-900">Estado de Pago</h4>
                         <p className="text-gray-700">
-                          {selectedProjectForDetails.payment_status === "paid"
+                          {selectedProjectForDetails.payment_status === "paid" ||
+                          selectedProjectForDetails.payment_status === "success"
                             ? "Pagado"
                             : "Pendiente"}
                         </p>
@@ -2658,12 +2789,19 @@ export default function FreelancerDashboardUI() {
                 <button
                   onClick={() => {
                     setShowProjectDetailsModal(false)
-                    startChat(selectedProjectForDetails.id, selectedProjectForDetails.client!.id)
+                    const clientId = selectedProjectForDetails.client!.id
+                    const clientName = selectedProjectForDetails.client!.full_name || "Cliente"
+                    // For transaction projects, pass null as projectId since there's no real project record
+                    // For regular projects, use the actual project ID
+                    const projectId = selectedProjectForDetails._isFromTransaction
+                      ? null
+                      : selectedProjectForDetails.id
+                    handleContactClient(clientId, clientName, projectId)
                   }}
                   className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
                 >
                   <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
-                  <span>Chat Cliente</span>
+                  <span>Contactar Cliente</span>
                 </button>
               )}
             </div>

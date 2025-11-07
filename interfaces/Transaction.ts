@@ -15,4 +15,3 @@ export interface Transaction {
   updated_at?: string
   paid_at?: string
 }
-

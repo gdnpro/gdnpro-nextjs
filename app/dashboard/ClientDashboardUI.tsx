@@ -62,6 +62,8 @@ export default function ClientDashboardUI() {
     location: "",
   })
   const [updatingProfile, setUpdatingProfile] = useState(false)
+  const [showTransactionDetails, setShowTransactionDetails] = useState(false)
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
 
   const { setValue, getValue } = useSessionStorage("last_tab")
   const { notifyProposal, notifyNewMessage, createReminderNotification } = useNotifications()
@@ -186,34 +188,68 @@ export default function ClientDashboardUI() {
               (t: Transaction) => t.status === "paid" || t.status === "pending",
             )
 
+            // Load freelancer information for all transactions
+            const freelancerIds = allTransactions
+              .map((t: Transaction) => t.freelancer_id)
+              .filter((id: string) => id)
+
+            // Fetch all freelancer profiles at once (only if there are freelancer IDs)
+            let freelancersMap = new Map()
+            if (freelancerIds.length > 0) {
+              const { data: freelancersData } = await supabase
+                .from("profiles")
+                .select("id, full_name, email, rating, avatar_url")
+                .in("id", freelancerIds)
+
+              // Create a map for quick lookup
+              freelancersMap = new Map(
+                (freelancersData || []).map((freelancer) => [freelancer.id, freelancer]),
+              )
+            }
+
             // Crear "proyectos virtuales" desde TODAS las transacciones para mostrar en "Mis Proyectos"
-            projectsFromTransactions = allTransactions.map((transaction: Transaction) => ({
-              id: `transaction-${transaction.id}`,
-              title: transaction.project_title || "Proyecto Contratado",
-              description: "Proyecto contratado directamente al freelancer",
-              budget_min: Number(transaction.amount),
-              budget_max: Number(transaction.amount),
-              budget: Number(transaction.amount), // Para mostrar precio único
-              status: transaction.status === "paid" ? "in_progress" : "pending_payment",
-              payment_status: transaction.status, // 'paid' o 'pending'
-              created_at: transaction.created_at || transaction.paid_at || new Date().toISOString(),
-              project_type: "Contrato Directo",
-              required_skills: [], // Proyectos pagados no tienen habilidades específicas
-              deadline: null,
-              proposals: [], // Proyectos pagados no tienen propuestas
-              // Información del freelancer - usar placeholder por ahora (se puede cargar después usando freelancer_id)
-              freelancer: {
+            projectsFromTransactions = allTransactions.map((transaction: Transaction) => {
+              // Get freelancer information from the map
+              const freelancerInfo = freelancersMap.get(transaction.freelancer_id) || {
+                id: transaction.freelancer_id || "",
                 full_name: "Freelancer",
-                rating: 5.0,
                 email: "",
+                rating: 5.0,
                 avatar_url: "",
-              },
-              // Marcar como proyecto de transacción para diferenciar
-              _isFromTransaction: true,
-              _transactionId: transaction.id,
-              _stripeSessionId: transaction.stripe_session_id,
-              _freelancerId: transaction.freelancer_id, // Guardar ID para cargar datos después si es necesario
-            }))
+              }
+
+              return {
+                id: `transaction-${transaction.id}`,
+                title: transaction.project_title || "Proyecto Contratado",
+                description:
+                  transaction.project_description ||
+                  "Proyecto contratado directamente al freelancer",
+                budget_min: Number(transaction.amount),
+                budget_max: Number(transaction.amount),
+                budget: Number(transaction.amount), // Para mostrar precio único
+                status: transaction.status === "paid" ? "in_progress" : "pending_payment",
+                payment_status: transaction.status, // 'paid' o 'pending'
+                created_at:
+                  transaction.created_at || transaction.paid_at || new Date().toISOString(),
+                project_type: "Contrato Directo",
+                required_skills: [], // Proyectos pagados no tienen habilidades específicas
+                deadline: null,
+                proposals: [], // Proyectos pagados no tienen propuestas
+                // Información del freelancer cargada correctamente
+                freelancer: {
+                  id: freelancerInfo.id,
+                  full_name: freelancerInfo.full_name || "Freelancer",
+                  email: freelancerInfo.email || "",
+                  rating: freelancerInfo.rating || 5.0,
+                  avatar_url: freelancerInfo.avatar_url || "",
+                },
+                // Marcar como proyecto de transacción para diferenciar
+                _isFromTransaction: true,
+                _transactionId: transaction.id,
+                _stripeSessionId: transaction.stripe_session_id,
+                _freelancerId: transaction.freelancer_id,
+              }
+            })
           }
         } catch (error) {
           console.error("⚠️ Error cargando transacciones para proyectos:", error)
@@ -408,6 +444,177 @@ export default function ClientDashboardUI() {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       sendMessage()
+    }
+  }
+
+  const handleContactFreelancer = async (
+    freelancerId: string,
+    freelancerName: string,
+    projectId?: string | null,
+  ) => {
+    if (!user) return
+
+    try {
+      const session = await supabase.auth.getSession()
+      if (!session.data.session?.access_token) {
+        window.toast({
+          title: "Necesitas iniciar sesión para chatear",
+          type: "error",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
+        return
+      }
+
+      // First, try to find existing conversation
+      const findResponse = await fetch(
+        "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.data.session.access_token}`,
+          },
+          body: JSON.stringify({
+            action: "get-conversations",
+            userId: user.id,
+            userType: "client",
+          }),
+        },
+      )
+
+      let existingConversation: Conversation | null = null
+      if (findResponse.ok) {
+        const findData = await findResponse.json()
+        if (findData.success && findData.conversations) {
+          // Find conversation with this freelancer
+          existingConversation =
+            findData.conversations.find((conv: Conversation) => {
+              return (
+                conv.freelancer_id === freelancerId &&
+                (projectId ? conv.project_id === projectId : true)
+              )
+            }) || null
+        }
+      }
+
+      // If conversation exists, open it
+      if (existingConversation) {
+        await openChat(existingConversation)
+        return
+      }
+
+      // Otherwise, create a new conversation
+      const response = await fetch(
+        "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.data.session.access_token}`,
+          },
+          body: JSON.stringify({
+            action: "create-conversation",
+            freelancerId: freelancerId,
+            clientId: user.id,
+            projectId: projectId || null,
+          }),
+        },
+      )
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Error ${response.status}: ${errorText}`)
+      }
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Recargar conversaciones y abrir el chat
+        await loadConversations()
+
+        // Use the conversation returned from the API
+        const newConversation: Conversation = data.conversation
+
+        await openChat(newConversation)
+      } else {
+        throw new Error(data.error || "Error al crear conversación")
+      }
+    } catch (error: unknown) {
+      window.toast({
+        title: "Error al iniciar el chat",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+      console.error("Error creating chat:", error)
+    }
+  }
+
+  const handleViewTransaction = async (project: Project) => {
+    if (!project._isFromTransaction || !project._transactionId) {
+      return
+    }
+
+    try {
+      const session = await supabase.auth.getSession()
+      if (!session.data.session?.access_token) {
+        window.toast({
+          title: "Necesitas iniciar sesión para ver los detalles",
+          type: "error",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
+        return
+      }
+
+      const response = await fetch(
+        "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/stripe-payments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.data.session.access_token}`,
+          },
+          body: JSON.stringify({
+            action: "get-transactions",
+          }),
+        },
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        const transaction = (data.transactions || []).find(
+          (t: Transaction) => t.id === project._transactionId,
+        )
+
+        if (transaction) {
+          setSelectedTransaction(transaction)
+          setShowTransactionDetails(true)
+        } else {
+          window.toast({
+            title: "No se encontró la transacción",
+            type: "error",
+            location: "bottom-center",
+            dismissible: true,
+            icon: true,
+          })
+        }
+      } else {
+        throw new Error(`Error ${response.status}`)
+      }
+    } catch (error: unknown) {
+      window.toast({
+        title: "Error al cargar los detalles de la transacción",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+      console.error("Error loading transaction:", error)
     }
   }
 
@@ -1045,6 +1252,20 @@ export default function ClientDashboardUI() {
                     viewProjectProposals={() => viewProjectProposals(project)}
                     loadProjects={() => loadProjects()}
                     handleActiveTab={(flag) => handleActiveTab(flag)}
+                    handleContactFreelancer={
+                      project._isFromTransaction && project.freelancer?.id
+                        ? () => {
+                            const freelancerId = project.freelancer!.id!
+                            const freelancerName = project.freelancer!.full_name || "Freelancer"
+                            // For transaction projects, pass null as projectId (not a valid UUID)
+                            const projectId = project._isFromTransaction ? null : project.id
+                            handleContactFreelancer(freelancerId, freelancerName, projectId)
+                          }
+                        : undefined
+                    }
+                    handleViewTransaction={
+                      project._isFromTransaction ? () => handleViewTransaction(project) : undefined
+                    }
                   />
                 ))}
               </div>
@@ -1257,6 +1478,162 @@ export default function ClientDashboardUI() {
           sendingMessage={sendingMessage}
           sendMessage={() => sendMessage()}
         />
+      )}
+
+      {/* Transaction Details Modal */}
+      {showTransactionDetails && selectedTransaction && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4"
+          onClick={() => {
+            setShowTransactionDetails(false)
+            setSelectedTransaction(null)
+          }}
+        >
+          <div
+            className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-4xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modern Header with Gradient */}
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-money-dollar-circle-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                        Detalles de la Transacción
+                      </h2>
+                      <h3 className="mt-2 text-sm text-cyan-100 sm:text-base">
+                        {selectedTransaction.project_title || "Proyecto Contratado"}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowTransactionDetails(false)
+                    setSelectedTransaction(null)
+                  }}
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
+                >
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
+              <div className="space-y-6">
+                {/* Transaction Info Cards */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 p-6 ring-1 ring-cyan-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
+                        <i className="ri-money-dollar-circle-fill text-xl"></i>
+                      </div>
+                      <div className="text-sm font-medium text-cyan-700">Monto</div>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-900">
+                      ${selectedTransaction.amount} {selectedTransaction.currency.toUpperCase()}
+                    </p>
+                  </div>
+
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 p-6 ring-1 ring-emerald-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/10">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/30">
+                        <i className="ri-checkbox-circle-fill text-xl"></i>
+                      </div>
+                      <div className="text-sm font-medium text-emerald-700">Estado</div>
+                    </div>
+                    <p
+                      className={`text-2xl font-bold ${
+                        selectedTransaction.status === "paid"
+                          ? "text-emerald-700"
+                          : "text-yellow-700"
+                      }`}
+                    >
+                      {selectedTransaction.status === "paid" ? "Pagado" : "Pendiente"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Transaction Details */}
+                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+                  <h3 className="mb-4 text-xl font-bold text-gray-900">Información de la Transacción</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between border-b border-gray-200 pb-3">
+                      <div className="flex items-center gap-3">
+                        <i className="ri-file-text-line text-cyan-600"></i>
+                        <span className="font-medium text-gray-700">Título del Proyecto</span>
+                      </div>
+                      <span className="text-right font-semibold text-gray-900">
+                        {selectedTransaction.project_title || "N/A"}
+                      </span>
+                    </div>
+
+                    {selectedTransaction.project_description && (
+                      <div className="flex items-start justify-between border-b border-gray-200 pb-3">
+                        <div className="flex items-center gap-3">
+                          <i className="ri-file-list-3-line text-cyan-600"></i>
+                          <span className="font-medium text-gray-700">Descripción</span>
+                        </div>
+                        <span className="text-right text-sm text-gray-600 max-w-md">
+                          {selectedTransaction.project_description}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex items-start justify-between border-b border-gray-200 pb-3">
+                      <div className="flex items-center gap-3">
+                        <i className="ri-calendar-line text-cyan-600"></i>
+                        <span className="font-medium text-gray-700">Fecha de Creación</span>
+                      </div>
+                      <span className="text-right text-sm text-gray-600">
+                        {selectedTransaction.created_at
+                          ? new Date(selectedTransaction.created_at).toLocaleDateString("es-ES", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })
+                          : "N/A"}
+                      </span>
+                    </div>
+
+                    {selectedTransaction.paid_at && (
+                      <div className="flex items-start justify-between border-b border-gray-200 pb-3">
+                        <div className="flex items-center gap-3">
+                          <i className="ri-checkbox-circle-line text-cyan-600"></i>
+                          <span className="font-medium text-gray-700">Fecha de Pago</span>
+                        </div>
+                        <span className="text-right text-sm text-gray-600">
+                          {new Date(selectedTransaction.paid_at).toLocaleDateString("es-ES", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+                    )}
+
+                    {selectedTransaction.stripe_session_id && (
+                      <div className="flex items-start justify-between pb-3">
+                        <div className="flex items-center gap-3">
+                          <i className="ri-bank-card-line text-cyan-600"></i>
+                          <span className="font-medium text-gray-700">ID de Sesión Stripe</span>
+                        </div>
+                        <span className="text-right text-xs font-mono text-gray-600 break-all max-w-md">
+                          {selectedTransaction.stripe_session_id}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Proposals Modal - RESPONSIVE */}

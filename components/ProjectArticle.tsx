@@ -13,6 +13,8 @@ interface Props {
   viewProjectProposals: (project: Project) => void
   loadProjects: () => void
   handleActiveTab: (flag: string) => void
+  handleContactFreelancer?: () => void
+  handleViewTransaction?: () => void
 }
 
 export const ProjectArticle = ({
@@ -21,6 +23,8 @@ export const ProjectArticle = ({
   loadProjects,
   handleActiveTab,
   viewProjectProposals,
+  handleContactFreelancer,
+  handleViewTransaction,
 }: Props) => {
   const { checkAndUnlockBadges } = useBadges()
   const { notifyProjectUpdate } = useNotifications()
@@ -300,20 +304,24 @@ export const ProjectArticle = ({
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
           {project._isFromTransaction ? (
             <>
-              <button
-                onClick={() => handleActiveTab("messages")}
-                className="bg-primary w-full cursor-pointer rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-4 sm:text-sm"
-              >
-                <i className="ri-chat-3-line mr-1"></i>
-                Chatear con Freelancer
-              </button>
-              <button
-                onClick={() => handleActiveTab("payments")}
-                className="bg-primary w-full cursor-pointer rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-4 sm:text-sm"
-              >
-                <i className="ri-eye-line mr-1"></i>
-                Ver Pago
-              </button>
+              {handleContactFreelancer && (
+                <button
+                  onClick={handleContactFreelancer}
+                  className="bg-primary w-full cursor-pointer rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-4 sm:text-sm"
+                >
+                  <i className="ri-chat-3-line mr-1"></i>
+                  Chatear con Freelancer
+                </button>
+              )}
+              {handleViewTransaction && (
+                <button
+                  onClick={handleViewTransaction}
+                  className="bg-primary w-full cursor-pointer rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-4 sm:text-sm"
+                >
+                  <i className="ri-eye-line mr-1"></i>
+                  Ver Pago
+                </button>
+              )}
             </>
           ) : (
             <>
