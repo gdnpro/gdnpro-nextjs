@@ -250,19 +250,19 @@ export default function FreelancerDashboardUI() {
 
             if (response.ok) {
               const data = await response.json()
-              // CORREGIDO: Incluir transacciones PAGADAS Y PENDIENTES
+              // FIXED: Solo incluir transacciones PAGADAS (completadas y exitosas)
               const allTransactions = (data.transactions || []).filter(
-                (t: Transaction) => t.status === "paid" || t.status === "pending",
+                (t: Transaction) => t.status === "paid",
               )
 
-              // Crear "proyectos virtuales" desde TODAS las transacciones para mostrar en "Mis Proyectos"
+              // Crear "proyectos virtuales" solo desde transacciones PAGADAS para mostrar en "Mis Proyectos"
               projectsFromTransactions = allTransactions.map((transaction: Transaction) => ({
                 id: `transaction-${transaction.id}`,
                 title: transaction.project_title || "Proyecto Contratado",
-                description: "Proyecto contratado directamente por el cliente",
+                description: transaction.project_description || "Proyecto contratado directamente por el cliente",
                 budget: Number(transaction.amount),
-                status: transaction.status === "paid" ? "in_progress" : "pending_payment",
-                payment_status: transaction.status, // 'paid' o 'pending'
+                status: "in_progress", // Solo mostramos transacciones pagadas, así que siempre están en progreso
+                payment_status: "paid", // Solo mostramos transacciones con estado 'paid'
                 created_at:
                   transaction.created_at || transaction.paid_at || new Date().toISOString(),
                 duration: "Según acuerdo con cliente",

@@ -3,7 +3,12 @@
 import { supabaseBrowser } from "@/utils/supabase/client"
 import type { Project } from "@/interfaces/Project"
 import type { Transaction } from "@/interfaces/Transaction"
+import type { Conversation } from "@/interfaces/Conversation"
+import type { ChatMessage } from "@/interfaces/ChatMessage"
+import type { Profile } from "@/interfaces/Profile"
 import { useState, useEffect } from "react"
+import { ConversationModal } from "@/components/ConversationModal"
+import { useAuth } from "@/contexts/AuthContext"
 
 const supabase = supabaseBrowser()
 
@@ -12,6 +17,7 @@ interface PaymentsTabProps {
 }
 
 export default function PaymentsTab({ userType }: PaymentsTabProps) {
+  const { profile: user } = useAuth()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
@@ -19,6 +25,14 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
   const [filter, setFilter] = useState("all")
   const [showProjectDetails, setShowProjectDetails] = useState(false)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+
+  // Chat states
+  const [showChat, setShowChat] = useState(false)
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
+  const [newMessage, setNewMessage] = useState("")
+  const [chatLoading, setChatLoading] = useState(false)
+  const [sendingMessage, setSendingMessage] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -77,7 +91,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
             `
             *,
             freelancer:profiles!projects_freelancer_id_fkey(
-              id, full_name, email, rating, skills
+              id, full_name, email, rating, skills, avatar_url
             )
           `,
           )
@@ -91,7 +105,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
             `
             *,
             client:profiles!projects_client_id_fkey(
-              id, full_name, email, rating
+              id, full_name, email, rating, avatar_url
             )
           `,
           )
@@ -120,6 +134,232 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
     setShowProjectDetails(true)
   }
 
+  // Find or create conversation with a client/freelancer
+  const handleContactUser = async (contactId: string, contactName: string, projectId?: string) => {
+    if (!user) {
+      window.toast({
+        title: "Necesitas iniciar sesión para chatear",
+        type: "warning",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+      return
+    }
+
+    try {
+      const session = await supabase.auth.getSession()
+      if (!session.data.session?.access_token) {
+        window.toast({
+          title: "Necesitas iniciar sesión para chatear",
+          type: "warning",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
+        return
+      }
+
+      // First, try to find existing conversation
+      const findResponse = await fetch(
+        "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.data.session.access_token}`,
+          },
+          body: JSON.stringify({
+            action: "get-conversations",
+            userId: user.id,
+            userType: userType,
+          }),
+        },
+      )
+
+      let existingConversation: Conversation | null = null
+      if (findResponse.ok) {
+        const findData = await findResponse.json()
+        if (findData.success && findData.conversations) {
+          // Find conversation with this contact
+          existingConversation =
+            findData.conversations.find((conv: Conversation) => {
+              if (userType === "freelancer") {
+                return (
+                  conv.client_id === contactId && (projectId ? conv.project_id === projectId : true)
+                )
+              } else {
+                return (
+                  conv.freelancer_id === contactId &&
+                  (projectId ? conv.project_id === projectId : true)
+                )
+              }
+            }) || null
+        }
+      }
+
+      // If conversation exists, open it
+      if (existingConversation) {
+        await openChat(existingConversation)
+        return
+      }
+
+      // Otherwise, create a new conversation
+      const createResponse = await fetch(
+        "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.data.session.access_token}`,
+          },
+          body: JSON.stringify({
+            action: "create-conversation",
+            freelancerId: userType === "freelancer" ? user.id : contactId,
+            clientId: userType === "client" ? user.id : contactId,
+            projectId: projectId || null,
+          }),
+        },
+      )
+
+      if (!createResponse.ok) {
+        const errorText = await createResponse.text()
+        throw new Error(`Error ${createResponse.status}: ${errorText}`)
+      }
+
+      const createData = await createResponse.json()
+
+      if (createData.success) {
+        // Use the conversation returned from the API
+        const newConversation: Conversation = createData.conversation
+
+        await openChat(newConversation)
+      } else {
+        throw new Error(createData.error || "Error al crear conversación")
+      }
+    } catch (error: unknown) {
+      window.toast({
+        title: "Error al iniciar el chat",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+      console.error("Error creating chat:", error)
+    }
+  }
+
+  const openChat = async (conversation: Conversation) => {
+    setSelectedConversation(conversation)
+    setShowChat(true)
+    setChatLoading(true)
+
+    try {
+      await loadMessages(conversation.id)
+    } catch (error) {
+      console.error("Error opening chat:", error)
+    } finally {
+      setChatLoading(false)
+    }
+  }
+
+  const loadMessages = async (conversationId: string) => {
+    try {
+      const session = await supabase.auth.getSession()
+      if (!session.data.session?.access_token) {
+        throw new Error("No hay sesión activa")
+      }
+
+      const response = await fetch(
+        "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.data.session.access_token}`,
+          },
+          body: JSON.stringify({
+            action: "get-messages",
+            conversationId,
+          }),
+        },
+      )
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`)
+      }
+
+      const data = await response.json()
+      if (data.success) {
+        setChatMessages(data.messages)
+      }
+    } catch (error) {
+      console.error("Error loading messages:", error)
+    }
+  }
+
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !selectedConversation || sendingMessage) {
+      return
+    }
+
+    setSendingMessage(true)
+
+    try {
+      const session = await supabase.auth.getSession()
+      if (!session.data.session?.access_token) {
+        throw new Error("No hay sesión activa")
+      }
+
+      const response = await fetch(
+        "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/chat-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.data.session.access_token}`,
+          },
+          body: JSON.stringify({
+            action: "send-message",
+            conversationId: selectedConversation.id,
+            messageText: newMessage.trim(),
+          }),
+        },
+      )
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Error ${response.status}: ${errorText}`)
+      }
+
+      const data = await response.json()
+      if (data.success) {
+        setNewMessage("")
+        await loadMessages(selectedConversation.id)
+      } else {
+        throw new Error(data.error || "Error desconocido al enviar mensaje")
+      }
+    } catch (error: unknown) {
+      window.toast({
+        title: "Error enviando mensaje",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+      console.error("Error sending message:", error)
+    } finally {
+      setSendingMessage(false)
+    }
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
+  }
+
   const filteredTransactions = transactions.filter((transaction) => {
     if (filter === "all") return true
     return transaction.status === filter
@@ -127,7 +367,8 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
   const filteredProjects = projects.filter((project) => {
     if (filter === "all") return true
-    if (filter === "paid") return project.payment_status === "paid"
+    if (filter === "paid")
+      return project.payment_status === "paid" || project.payment_status === "success"
     if (filter === "pending") return project.payment_status === "pending" || !project.payment_status
     return false
   })
@@ -303,8 +544,8 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
             }`}
           >
             Pagados (
-            {projects.filter((p) => p.payment_status === "paid").length +
-              transactions.filter((t) => t.status === "paid").length}
+            {projects.filter((p) => p.payment_status === "paid" || p.payment_status === "success")
+              .length + transactions.filter((t) => t.status === "paid").length}
             )
           </button>
           <button
@@ -373,19 +614,22 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
                       <span
                         className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          project.payment_status === "paid"
+                          project.payment_status === "paid" || project.payment_status === "success"
                             ? "bg-green-100 text-green-800"
                             : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
                         <span className="mr-1">
-                          {project.payment_status === "paid" ? (
+                          {project.payment_status === "paid" ||
+                          project.payment_status === "success" ? (
                             <i className="ri-check-circle-fill"></i>
                           ) : (
                             <i className="ri-time-line"></i>
                           )}
                         </span>
-                        {project.payment_status === "paid" ? "Pagado" : "Pendiente"}
+                        {project.payment_status === "paid" || project.payment_status === "success"
+                          ? "Pagado"
+                          : "Pendiente"}
                       </span>
                     </div>
 
@@ -463,85 +707,263 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
       {/* Modal de Detalles del Proyecto */}
       {showProjectDetails && selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white">
-            <div className="p-6">
-              <div className="mb-6 flex items-start justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{selectedProject.title}</h2>
-                  <div className="mt-2 flex items-center space-x-4">
-                    <span
-                      className={`rounded-full px-3 py-1 text-sm font-medium ${
-                        selectedProject.status === "in_progress"
-                          ? "bg-primary/10 text-blue-800"
-                          : selectedProject.status === "completed"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
+          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-4xl">
+            {/* Modern Header with Gradient */}
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-briefcase-4-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                        {selectedProject.title}
+                      </h2>
+                      <div className="mt-3 flex items-center gap-4">
+                        <span
+                          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                            selectedProject.status === "in_progress"
+                              ? "bg-blue-500/90 text-white"
+                              : selectedProject.status === "completed"
+                                ? "bg-emerald-500/90 text-white"
+                                : "bg-cyan-500/90 text-white"
+                          }`}
+                        >
+                          <i
+                            className={`mr-1 ${
+                              selectedProject.status === "in_progress"
+                                ? "ri-time-line"
+                                : selectedProject.status === "completed"
+                                  ? "ri-check-line"
+                                  : "ri-briefcase-line"
+                            }`}
+                          ></i>
+                          {selectedProject.status === "in_progress"
+                            ? "En Progreso"
+                            : selectedProject.status === "completed"
+                              ? "Completado"
+                              : "Abierto"}
+                        </span>
+                        <span
+                          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                            selectedProject.payment_status === "paid" ||
+                            selectedProject.payment_status === "success"
+                              ? "bg-green-500/90 text-white"
+                              : "bg-yellow-500/90 text-white"
+                          }`}
+                        >
+                          <i
+                            className={`mr-1 ${
+                              selectedProject.payment_status === "paid" ||
+                              selectedProject.payment_status === "success"
+                                ? "ri-check-line"
+                                : "ri-time-line"
+                            }`}
+                          ></i>
+                          {selectedProject.payment_status === "paid" ||
+                          selectedProject.payment_status === "success"
+                            ? "Pagado"
+                            : "Pago Pendiente"}
+                        </span>
+                        <span className="text-lg font-bold text-white">
+                          $
+                          {selectedProject.budget ||
+                            `${selectedProject.budget_min}-${selectedProject.budget_max}`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowProjectDetails(false)
+                    setSelectedProject(null)
+                  }}
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
+                >
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
+              <div className="space-y-6">
+                {/* Key Metrics Cards */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 p-6 ring-1 ring-cyan-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-lg shadow-cyan-500/30">
+                        <i className="ri-money-dollar-circle-fill text-xl"></i>
+                      </div>
+                      <div className="text-sm font-medium text-cyan-700">Presupuesto</div>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-900">
+                      $
+                      {selectedProject.budget ||
+                        `${selectedProject.budget_min || 0}-${selectedProject.budget_max || 0}`}
+                    </p>
+                  </div>
+
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-6 ring-1 ring-blue-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/30">
+                        <i className="ri-file-list-3-line text-xl"></i>
+                      </div>
+                      <div className="text-sm font-medium text-blue-700">Estado</div>
+                    </div>
+                    <p className="text-xl font-bold text-gray-900">
                       {selectedProject.status === "in_progress"
                         ? "En Progreso"
                         : selectedProject.status === "completed"
                           ? "Completado"
-                          : "Completado"}
-                    </span>
-                    <span
-                      className={`rounded-full px-3 py-1 text-sm font-medium ${
-                        selectedProject.payment_status === "paid"
-                          ? "bg-primary/10 text-emerald-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      <i className="ri-secure-payment-line mr-1"></i>
-                      {selectedProject.payment_status === "paid" ? "Pagado" : "Pendiente"}
-                    </span>
+                          : "Abierto"}
+                    </p>
+                  </div>
+
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 p-6 ring-1 ring-purple-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30">
+                        <i className="ri-calendar-check-fill text-xl"></i>
+                      </div>
+                      <div className="text-sm font-medium text-purple-700">Fecha de Inicio</div>
+                    </div>
+                    <p className="text-xl font-bold text-gray-900">
+                      {new Date(selectedProject.created_at).toLocaleDateString("es-ES", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {new Date(selectedProject.created_at).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                      })}
+                    </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setShowProjectDetails(false)}
-                  className="cursor-pointer text-gray-400 hover:text-gray-600"
-                >
-                  <i className="ri-close-line text-2xl"></i>
-                </button>
-              </div>
 
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                {/* Información del Proyecto */}
-                <div className="space-y-6 lg:col-span-2">
-                  <div>
-                    <h3 className="mb-3 text-lg font-semibold text-gray-900">
-                      Descripción del Proyecto
+                {/* Información del Cliente/Freelancer */}
+                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                      <i className="ri-user-3-line text-lg"></i>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      Información del {userType === "client" ? "Freelancer" : "Cliente"}
                     </h3>
-                    <p className="leading-relaxed text-gray-700">{selectedProject.description}</p>
                   </div>
-
-                  {selectedProject.duration && (
-                    <div>
-                      <h3 className="mb-3 text-lg font-semibold text-gray-900">
-                        Duración Estimada
-                      </h3>
-                      <p className="text-gray-700">{selectedProject.duration}</p>
+                  <div className="flex items-center space-x-4">
+                    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 ring-2 ring-cyan-200">
+                      {userType === "client" && selectedProject.freelancer ? (
+                        (selectedProject.freelancer as any).avatar_url ? (
+                          <img
+                            src={(selectedProject.freelancer as any).avatar_url}
+                            alt={selectedProject.freelancer.full_name}
+                            className="h-full w-full object-cover object-top"
+                          />
+                        ) : (
+                          <i className="ri-user-line text-xl text-cyan-600"></i>
+                        )
+                      ) : selectedProject.client ? (
+                        selectedProject.client.avatar_url ? (
+                          <img
+                            src={selectedProject.client.avatar_url}
+                            alt={selectedProject.client.full_name}
+                            className="h-full w-full object-cover object-top"
+                          />
+                        ) : (
+                          <i className="ri-user-line text-xl text-cyan-600"></i>
+                        )
+                      ) : (
+                        <i className="ri-user-line text-xl text-cyan-600"></i>
+                      )}
                     </div>
-                  )}
-
-                  {selectedProject.requirements && (
                     <div>
-                      <h3 className="mb-3 text-lg font-semibold text-gray-900">
-                        Requisitos Especiales
-                      </h3>
-                      <p className="text-gray-700">{selectedProject.requirements}</p>
+                      <h4 className="font-semibold text-gray-900">
+                        {userType === "client"
+                          ? selectedProject.freelancer?.full_name
+                          : selectedProject.client?.full_name}
+                      </h4>
+                      <p className="text-gray-600">
+                        {userType === "client"
+                          ? selectedProject.freelancer?.email
+                          : selectedProject.client?.email}
+                      </p>
+                      {((userType === "client" && selectedProject.freelancer?.rating) ||
+                        (userType === "freelancer" && selectedProject.client?.rating)) && (
+                        <div className="mt-1 flex items-center gap-1 text-sm text-cyan-600">
+                          <i className="ri-star-fill text-yellow-300"></i>
+                          <span className="font-medium">
+                            {(userType === "client"
+                              ? selectedProject.freelancer?.rating
+                              : selectedProject.client?.rating
+                            )?.toFixed(1)}
+                          </span>
+                          <span className="text-gray-500">
+                            · {userType === "client" ? "Freelancer" : "Cliente"} verificado
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
+                </div>
 
-                  {/* Mostrar habilidades si las hay */}
-                  {((userType === "client" && selectedProject.freelancer?.skills) ||
-                    (userType === "freelancer" && selectedProject.freelancer?.skills)) && (
-                    <div>
-                      <h3 className="mb-3 text-lg font-semibold text-gray-900">
-                        Habilidades del Freelancer
-                      </h3>
+                {/* Descripción del Proyecto */}
+                <div>
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg">
+                      <i className="ri-file-text-line text-lg"></i>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">Descripción del Proyecto</h3>
+                  </div>
+                  <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+                    <p className="leading-relaxed whitespace-pre-wrap text-gray-700">
+                      {selectedProject.description || "Sin descripción disponible"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Duración y Requisitos */}
+                {(selectedProject.duration || selectedProject.requirements) && (
+                  <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+                    <div className="mb-4 flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-lg">
+                        <i className="ri-information-line text-lg"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900">Información Adicional</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {selectedProject.duration && (
+                        <div>
+                          <h4 className="mb-2 text-sm font-semibold text-gray-900">Duración</h4>
+                          <p className="text-gray-700">{selectedProject.duration}</p>
+                        </div>
+                      )}
+                      {selectedProject.requirements && (
+                        <div>
+                          <h4 className="mb-2 text-sm font-semibold text-gray-900">Requisitos</h4>
+                          <p className="text-gray-700">{selectedProject.requirements}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Habilidades del Freelancer */}
+                {userType === "client" &&
+                  selectedProject.freelancer?.skills &&
+                  selectedProject.freelancer.skills.length > 0 && (
+                    <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+                      <div className="mb-4 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg">
+                          <i className="ri-code-s-slash-line text-lg"></i>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900">Habilidades</h3>
+                      </div>
                       <div className="flex flex-wrap gap-2">
-                        {(selectedProject.freelancer?.skills || []).map((skill, index) => (
+                        {selectedProject.freelancer.skills.map((skill, index) => (
                           <span
                             key={index}
                             className="bg-primary/10 rounded-full px-3 py-1 text-sm font-medium text-emerald-800"
@@ -552,93 +974,62 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       </div>
                     </div>
                   )}
-                </div>
-
-                {/* Panel lateral */}
-                <div className="space-y-6">
-                  {/* Información del Presupuesto */}
-                  <div className="rounded-lg bg-emerald-50 p-4">
-                    <h3 className="mb-3 text-lg font-semibold text-gray-900">Presupuesto</h3>
-                    <div className="text-primary text-2xl font-bold">
-                      $
-                      {selectedProject.budget ||
-                        `${selectedProject.budget_min} - ${selectedProject.budget_max}`}
-                    </div>
-                    <p className="mt-1 text-sm text-gray-600">Precio del proyecto</p>
-                  </div>
-
-                  {/* Información del Cliente/Freelancer */}
-                  <div className="rounded-lg bg-blue-50 p-4">
-                    <h3 className="mb-3 text-lg font-semibold text-gray-900">
-                      {userType === "client" ? "Freelancer" : "Cliente"}
-                    </h3>
-                    <div className="mb-3 flex items-center">
-                      <div className="bg-primary/10 mr-3 flex h-12 w-12 items-center justify-center rounded-full">
-                        <i className="ri-user-line text-primary text-xl"></i>
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-gray-900">
-                          {userType === "client"
-                            ? selectedProject.freelancer?.full_name
-                            : selectedProject.client?.full_name}
-                        </h4>
-                        <div className="flex items-center text-sm text-gray-600">
-                          {((userType === "client" && selectedProject.freelancer?.rating) ||
-                            (userType === "freelancer" && selectedProject.client?.rating)) && (
-                            <>
-                              <i className="ri-star-fill mr-1 text-yellow-500"></i>
-                              <span>
-                                {(userType === "client"
-                                  ? selectedProject.freelancer?.rating
-                                  : selectedProject.client?.rating
-                                )?.toFixed(1)}
-                              </span>
-                            </>
-                          )}
-                          <span className="mx-2">•</span>
-                          <span>
-                            {userType === "client"
-                              ? selectedProject.freelancer?.email
-                              : selectedProject.client?.email}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Fechas importantes */}
-                  <div className="rounded-lg bg-gray-50 p-4">
-                    <h3 className="mb-3 text-lg font-semibold text-gray-900">Fechas</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Iniciado:</span>
-                        <span className="font-medium">
-                          {formatDate(selectedProject.created_at)}
-                        </span>
-                      </div>
-                      {selectedProject.status === "completed" && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Estado:</span>
-                          <span className="font-medium text-green-600">Completado</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
               </div>
-
-              {/* Botones de Acción */}
-              <div className="mt-6 flex justify-end space-x-3">
+            </div>
+            {/* Botones de Acción */}
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+              {/* Show Contact button when there's a client/freelancer to contact */}
+              {((userType === "freelancer" && selectedProject.client?.id) ||
+                (userType === "client" && (selectedProject.freelancer as any)?.id)) && (
                 <button
-                  onClick={() => setShowProjectDetails(false)}
-                  className="cursor-pointer rounded-lg border border-gray-300 px-6 py-2 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
+                  onClick={() => {
+                    setShowProjectDetails(false)
+                    const contactId =
+                      userType === "freelancer"
+                        ? selectedProject.client!.id
+                        : (selectedProject.freelancer as any)!.id
+                    const contactName =
+                      userType === "freelancer"
+                        ? selectedProject.client!.full_name
+                        : selectedProject.freelancer!.full_name
+                    handleContactUser(contactId, contactName, selectedProject.id)
+                  }}
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
                 >
-                  Cerrar
+                  <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
+                  <span>Contactar {userType === "freelancer" ? "Cliente" : "Freelancer"}</span>
                 </button>
-              </div>
+              )}
+              <button
+                onClick={() => {
+                  setShowProjectDetails(false)
+                  setSelectedProject(null)
+                }}
+                className="cursor-pointer rounded-xl border border-gray-300 bg-white px-6 py-4 font-semibold text-gray-700 transition-all hover:bg-gray-50"
+              >
+                Cerrar
+              </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Conversation Modal */}
+      {showChat && selectedConversation && user && (
+        <ConversationModal
+          selectedConversation={selectedConversation}
+          setShowChat={setShowChat}
+          setChatMessages={setChatMessages}
+          setSelectedConversation={setSelectedConversation}
+          setNewMessage={setNewMessage}
+          chatLoading={chatLoading}
+          chatMessages={chatMessages}
+          user={user}
+          newMessage={newMessage}
+          handleKeyPress={handleKeyPress}
+          sendingMessage={sendingMessage}
+          sendMessage={sendMessage}
+        />
       )}
     </div>
   )

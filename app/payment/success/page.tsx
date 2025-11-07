@@ -39,6 +39,23 @@ function SuccessPaymentContent() {
         throw new Error("Sesión de usuario no encontrada")
       }
 
+      // First, fetch the transaction to get contract data
+      const { data: transaction } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("stripe_session_id", sessionId)
+        .single()
+
+      // Prepare contractData from transaction if available
+      const contractData = transaction
+        ? {
+            projectTitle: transaction.project_title || "",
+            projectDescription: transaction.project_description || "",
+            duration: "1-2 semanas", // Default duration
+            requirements: "",
+          }
+        : undefined
+
       const response = await fetch(
         "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/stripe-payments",
         {
@@ -50,6 +67,7 @@ function SuccessPaymentContent() {
           body: JSON.stringify({
             action: "verify-payment",
             sessionId: sessionId,
+            ...(contractData && { contractData }),
           }),
         },
       )
