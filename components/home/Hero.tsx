@@ -14,7 +14,7 @@ const Hero = () => {
         }}
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-linear-to-r from-blue-900/90 via-blue-800/80 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-blue-800/80 to-transparent"></div>
       </div>
 
       {/* Content */}
@@ -25,7 +25,7 @@ const Hero = () => {
             <div className="space-y-6">
               <h1 className="text-5xl leading-tight font-bold lg:text-6xl">
                 Transformamos
-                <span className="block bg-linear-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
                   Ideas en Realidad
                 </span>
               </h1>
@@ -56,7 +56,7 @@ const Hero = () => {
             <div className="flex flex-col gap-4 sm:flex-row">
               <a
                 href="#portfolio"
-                className="transform cursor-pointer rounded-lg bg-linear-to-r from-emerald-600 to-emerald-500 px-8 py-4 font-semibold whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-emerald-700 hover:to-emerald-600 hover:shadow-xl"
+                className="transform cursor-pointer rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 px-8 py-4 font-semibold whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-emerald-700 hover:to-emerald-600 hover:shadow-xl"
               >
                 Ver Portafolio
                 <i className="ri-arrow-right-line ml-2"></i>
@@ -72,7 +72,7 @@ const Hero = () => {
 
               <a
                 href="/freelancers"
-                className="transform cursor-pointer rounded-lg bg-linear-to-r from-cyan-600 to-cyan-500 px-8 py-4 font-semibold whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-cyan-700 hover:to-cyan-600 hover:shadow-xl"
+                className="transform cursor-pointer rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 px-8 py-4 font-semibold whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-cyan-700 hover:to-cyan-600 hover:shadow-xl"
               >
                 Ver Freelancers
                 <i className="ri-team-line ml-2"></i>
@@ -80,16 +80,25 @@ const Hero = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 border-t border-white/20 pt-8">
-              <div className="text-center">
+            <div className="grid grid-cols-3 gap-6 border-t border-white/20 pt-8">
+              <div className="group text-center transition-all hover:scale-105">
+                <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
+                  <i className="ri-briefcase-line text-lg text-white"></i>
+                </div>
                 <div className="text-3xl font-bold text-white">+{gdnStats.completedProjects}</div>
                 <div className="text-sm text-blue-200">Proyectos</div>
               </div>
-              <div className="text-center">
+              <div className="group text-center transition-all hover:scale-105">
+                <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
+                  <i className="ri-team-line text-lg text-white"></i>
+                </div>
                 <div className="text-3xl font-bold text-white">+{gdnStats.satisfiedClients}</div>
                 <div className="text-sm text-blue-200">Clientes</div>
               </div>
-              <div className="text-center">
+              <div className="group text-center transition-all hover:scale-105">
+                <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
+                  <i className="ri-star-fill text-lg text-yellow-300"></i>
+                </div>
                 <div className="text-3xl font-bold text-white">5★</div>
                 <div className="text-sm text-blue-200">Calificación</div>
               </div>

@@ -372,7 +372,7 @@ export default function AdminContacts() {
         </div>
 
         {/* Configuración WhatsApp */}
-        <div className="mb-8 rounded-lg border border-green-200 bg-linear-to-r from-green-50 to-emerald-50 p-6">
+        <div className="mb-8 rounded-lg border border-cyan-200 bg-gradient-to-r from-cyan-50 to-teal-50 p-6">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center md:gap-0">
             <div className="flex items-start space-x-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-green-100">
@@ -466,7 +466,7 @@ export default function AdminContacts() {
         </div>
 
         {/* Instrucciones de Acceso */}
-        <div className="mb-8 rounded-lg border border-blue-200 bg-linear-to-r from-blue-50 to-indigo-50 p-6">
+        <div className="mb-8 rounded-lg border border-cyan-200 bg-gradient-to-r from-cyan-50 to-teal-50 p-6">
           <div className="flex items-start space-x-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-100">
               <i className="ri-information-line text-primary text-xl"></i>
@@ -695,33 +695,51 @@ export default function AdminContacts() {
 
       {/* Modal de Detalles */}
       {showModal && selectedContact && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white">
-            <div className="p-6">
-              <div className="mb-6 flex items-start justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">📧 Mensaje de Contacto</h2>
-                  <span
-                    className={`mt-2 inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusColor(selectedContact.status)}`}
-                  >
-                    {getStatusText(selectedContact.status)}
-                  </span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md">
+          <div className="max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5">
+            {/* Modern Header with Gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-mail-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold leading-tight sm:text-3xl">Mensaje de Contacto</h2>
+                      <span
+                        className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                          selectedContact.status === "new"
+                            ? "bg-yellow-500/90 text-white"
+                            : selectedContact.status === "read"
+                              ? "bg-blue-500/90 text-white"
+                              : "bg-green-500/90 text-white"
+                        }`}
+                      >
+                        {getStatusText(selectedContact.status)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <button
                   onClick={() => {
                     setShowModal(false)
                     setSelectedContact(null)
                   }}
-                  className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
                 >
-                  <i className="ri-close-line text-2xl"></i>
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
+            </div>
+            <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
 
               <div className="space-y-6">
                 {/* Información del Contacto */}
-                <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
-                  <h3 className="mb-4 flex items-center font-semibold text-blue-900">
+                <div className="rounded-lg border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
+                  <h3 className="mb-4 flex items-center font-semibold text-cyan-900">
                     <i className="ri-user-line mr-2"></i>
                     Información del Contacto
                   </h3>
@@ -754,27 +772,27 @@ export default function AdminContacts() {
                 </div>
 
                 {/* Detalles del Proyecto */}
-                <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6">
-                  <h3 className="mb-4 flex items-center font-semibold text-emerald-900">
+                <div className="rounded-lg border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
+                  <h3 className="mb-4 flex items-center font-semibold text-cyan-900">
                     <i className="ri-briefcase-line mr-2"></i>
                     Detalles del Proyecto Solicitado
                   </h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div className="rounded-lg bg-white p-4">
                       <p className="text-sm font-medium text-gray-600">Servicio Requerido</p>
-                      <p className="text-lg font-semibold text-emerald-700">
+                      <p className="text-lg font-semibold text-cyan-700">
                         {selectedContact.service}
                       </p>
                     </div>
                     <div className="rounded-lg bg-white p-4">
                       <p className="text-sm font-medium text-gray-600">Presupuesto Estimado</p>
-                      <p className="text-lg font-semibold text-emerald-700">
+                      <p className="text-lg font-semibold text-cyan-700">
                         {selectedContact.budget}
                       </p>
                     </div>
                     <div className="rounded-lg bg-white p-4">
                       <p className="text-sm font-medium text-gray-600">Timeline Esperado</p>
-                      <p className="text-lg font-semibold text-emerald-700">
+                      <p className="text-lg font-semibold text-cyan-700">
                         {selectedContact.timeline}
                       </p>
                     </div>
@@ -810,16 +828,16 @@ export default function AdminContacts() {
               </div>
 
               {/* Acciones */}
-              <div className="mt-8 flex flex-col justify-end space-y-3 border-t border-gray-200 pt-6 sm:flex-row sm:space-y-0 sm:space-x-3">
+              <div className="sticky bottom-0 mt-8 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
                 <button
                   onClick={() => {
                     setShowModal(false)
                     setSelectedContact(null)
                   }}
-                  className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
                 >
-                  <i className="ri-close-line mr-2"></i>
-                  Cerrar
+                  <i className="ri-close-line"></i>
+                  <span>Cerrar</span>
                 </button>
 
                 {selectedContact.status !== "responded" && (
@@ -827,10 +845,10 @@ export default function AdminContacts() {
                     onClick={() => {
                       updateContactStatus(selectedContact.id, "responded")
                     }}
-                    className="cursor-pointer rounded-lg bg-green-600 px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-green-700"
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 px-6 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-green-500/40"
                   >
-                    <i className="ri-check-line mr-2"></i>
-                    Marcar como Respondido
+                    <i className="ri-check-line"></i>
+                    <span>Marcar como Respondido</span>
                   </button>
                 )}
 
@@ -841,10 +859,10 @@ export default function AdminContacts() {
                       `Hola ${selectedContact.name},\n\nGracias por contactarnos sobre tu proyecto de ${selectedContact.service}.\n\nHemos revisado tu solicitud y nos gustaría programar una llamada para discutir los detalles.\n\n¿Cuándo sería un buen momento para ti?\n\nSaludos,\n${user?.full_name || "Tu Equipo"}`,
                     )
                   }}
-                  className="bg-primary cursor-pointer rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
                 >
-                  <i className="ri-reply-line mr-2"></i>
-                  Responder desde Dashboard
+                  <i className="ri-reply-line"></i>
+                  <span>Responder desde Dashboard</span>
                 </button>
               </div>
             </div>
@@ -855,37 +873,49 @@ export default function AdminContacts() {
       {/* Modal de Respuesta */}
       {showReplyModal && selectedContact && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black/60 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md"
           style={{ zIndex: 70 }}
         >
-          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white">
-            <div className="p-6">
-              <div className="mb-6 flex items-start justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    📧 Responder a {selectedContact.name}
-                  </h2>
-                  <p className="mt-1 text-gray-600">
-                    El email se enviará desde tu correo: {user?.email}
-                  </p>
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5">
+            {/* Modern Header with Gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-reply-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold leading-tight sm:text-3xl">
+                        Responder a {selectedContact.name}
+                      </h2>
+                      <p className="mt-2 text-sm text-cyan-100">
+                        El email se enviará desde tu correo: {user?.email}
+                      </p>
+                    </div>
+                  </div>
                 </div>
                 <button
                   onClick={() => {
                     setShowReplyModal(false)
                     setReplyMessage("")
                   }}
-                  className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
                 >
-                  <i className="ri-close-line text-2xl"></i>
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
+            </div>
+            <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
 
               {/* Información del destinatario */}
-              <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+              <div className="mb-6 rounded-lg border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-4">
                 <div className="flex items-center">
-                  <i className="ri-mail-line text-primary mr-3 text-xl"></i>
+                  <i className="ri-mail-line mr-3 text-xl text-cyan-600"></i>
                   <div>
-                    <p className="font-semibold text-blue-900">Para: {selectedContact.email}</p>
+                    <p className="font-semibold text-cyan-900">Para: {selectedContact.email}</p>
                     <p className="text-sm text-cyan-700">
                       Asunto: Re: {selectedContact.service} - Respuesta a tu consulta
                     </p>
@@ -902,7 +932,7 @@ export default function AdminContacts() {
                   value={replyMessage}
                   onChange={(e) => setReplyMessage(e.target.value)}
                   rows={12}
-                  className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                  className="w-full resize-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                   placeholder="Escribe tu respuesta aquí..."
                 />
                 <p className="text-gray-5 mt-2 text-xs">
@@ -911,33 +941,33 @@ export default function AdminContacts() {
               </div>
 
               {/* Acciones */}
-              <div className="flex flex-col justify-end space-y-3 border-t border-gray-200 pt-4 sm:flex-row sm:space-y-0 sm:space-x-3">
+              <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
                 <button
                   onClick={() => {
                     setShowReplyModal(false)
                     setReplyMessage("")
                   }}
-                  className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-50"
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md disabled:opacity-50 disabled:hover:translate-y-0"
                   disabled={sendingReply}
                 >
-                  <i className="ri-close-line mr-2"></i>
-                  Cancelar
+                  <i className="ri-close-line"></i>
+                  <span>Cancelar</span>
                 </button>
 
                 <button
                   onClick={sendReply}
                   disabled={sendingReply || !replyMessage.trim()}
-                  className="bg-primary cursor-pointer rounded-lg px-6 py-3 font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
                 >
                   {sendingReply ? (
                     <>
-                      <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
-                      Enviando...
+                      <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                      <span>Enviando...</span>
                     </>
                   ) : (
                     <>
-                      <i className="ri-send-plane-line mr-2"></i>
-                      Enviar Respuesta
+                      <i className="ri-send-plane-fill text-lg transition-transform group-hover:translate-x-1"></i>
+                      <span>Enviar Respuesta</span>
                     </>
                   )}
                 </button>

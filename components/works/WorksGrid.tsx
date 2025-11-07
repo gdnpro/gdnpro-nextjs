@@ -87,12 +87,16 @@ export default function WorksGrid({
 
   if (loading) {
     return (
-      <section className="bg-gray-50 py-20">
+      <section className="bg-gradient-to-br from-gray-50 via-white to-cyan-50/30 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
-              <i className="ri-loader-4-line text-primary mb-4 animate-spin text-4xl"></i>
-              <p className="text-gray-600">Cargando proyectos...</p>
+              <div className="mb-4 flex justify-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 shadow-lg shadow-cyan-500/30">
+                  <i className="ri-loader-4-line text-primary animate-spin text-3xl text-white"></i>
+                </div>
+              </div>
+              <p className="text-lg font-medium text-gray-600">Cargando proyectos...</p>
             </div>
           </div>
         </div>
@@ -102,12 +106,16 @@ export default function WorksGrid({
 
   if (filteredProjects.length === 0) {
     return (
-      <section className="bg-gray-50 py-20">
+      <section className="bg-gradient-to-br from-gray-50 via-white to-cyan-50/30 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="py-12 text-center">
-            <i className="ri-briefcase-line mb-4 text-6xl text-gray-300"></i>
-            <h3 className="mb-2 text-xl font-medium text-gray-900">No se encontraron proyectos</h3>
-            <p className="text-sm text-gray-500">Intenta ajustar tus filtros de búsqueda</p>
+            <div className="mb-6 flex justify-center">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200">
+                <i className="ri-briefcase-line text-4xl text-gray-400"></i>
+              </div>
+            </div>
+            <h3 className="mb-2 text-2xl font-semibold text-gray-900">No se encontraron proyectos</h3>
+            <p className="text-gray-500">Intenta ajustar tus filtros de búsqueda</p>
           </div>
         </div>
       </section>
@@ -115,9 +123,14 @@ export default function WorksGrid({
   }
 
   return (
-    <section className="bg-gray-50 py-20">
+    <section className="bg-gradient-to-br from-gray-50 via-white to-cyan-50/30 py-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-8">
+        <div className="mb-10">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 shadow-lg shadow-cyan-500/30">
+              <i className="ri-briefcase-4-line text-2xl text-white"></i>
+            </div>
+            <div>
           <h2 className="mb-2 text-3xl font-bold text-gray-900 sm:text-4xl">
             Proyectos Disponibles
           </h2>
@@ -125,6 +138,8 @@ export default function WorksGrid({
             {filteredProjects.length} proyecto{filteredProjects.length !== 1 ? "s" : ""} encontrado
             {filteredProjects.length !== 1 ? "s" : ""}
           </p>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-6">

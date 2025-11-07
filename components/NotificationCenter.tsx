@@ -95,7 +95,7 @@ export default function NotificationCenter({
                 action: "get-notifications",
                 filters,
               }),
-            }
+            },
           )
 
           if (response.ok) {
@@ -106,17 +106,17 @@ export default function NotificationCenter({
                 const newNotifications = data.notifications || []
                 // Merge and deduplicate, keeping the latest version
                 const notificationMap = new Map<string, Notification>()
-                
+
                 // Add existing notifications first
                 prev.forEach((n) => {
                   if (n.id) notificationMap.set(n.id, n)
                 })
-                
+
                 // Add/update with new notifications (newer ones take precedence)
                 newNotifications.forEach((n: Notification) => {
                   if (n.id) notificationMap.set(n.id, n)
                 })
-                
+
                 // Convert back to array and sort by created_at descending
                 return Array.from(notificationMap.values()).sort((a, b) => {
                   const timeA = new Date(a.created_at || 0).getTime()
@@ -124,7 +124,7 @@ export default function NotificationCenter({
                   return timeB - timeA
                 })
               })
-              
+
               setUnreadCount(data.unreadCount || 0)
             }
           }
@@ -377,54 +377,65 @@ export default function NotificationCenter({
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-16">
-      <div className="mx-4 flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="bg-primary/10 mr-3 flex h-10 w-10 items-center justify-center rounded-full">
-              <i className="ri-notification-line text-primary text-xl"></i>
+      <div className="mx-4 flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5">
+        {/* Modern Header with Gradient */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                <i className="ri-notification-line text-2xl"></i>
+              </div>
+              <div>
+                <h2 className="text-2xl leading-tight font-bold sm:text-3xl">Notificaciones</h2>
+                <p className="mt-1 text-sm text-cyan-100">
+                  {unreadCount > 0 ? `${unreadCount} sin leer` : "Todo al día"}
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Notificaciones</h2>
-              <p className="text-sm text-gray-500">
-                {unreadCount > 0 ? `${unreadCount} sin leer` : "Todo al día"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            {unreadCount > 0 && (
+            <div className="flex items-center gap-2">
+              {unreadCount > 0 && (
+                <button
+                  onClick={markAllAsRead}
+                  className="group flex cursor-pointer items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/20"
+                >
+                  <i className="ri-check-double-line text-base"></i>
+                  <span>Marcar todas</span>
+                </button>
+              )}
               <button
-                onClick={markAllAsRead}
-                className="text-primary cursor-pointer text-sm font-medium hover:text-cyan-700"
+                onClick={onClose}
+                className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                aria-label="Cerrar"
               >
-                Marcar todas como leídas
+                <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
               </button>
-            )}
-            <button
-              onClick={onClose}
-              className="cursor-pointer rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            >
-              <i className="ri-close-line text-xl"></i>
-            </button>
+            </div>
           </div>
         </div>
 
         {/* Filtros */}
-        <div className="border-b border-gray-100 px-6 py-4">
-          <div className="flex space-x-1 overflow-x-auto">
+        <div className="border-b border-gray-200 bg-gradient-to-b from-gray-50 to-white px-6 py-4">
+          <div className="flex gap-2 overflow-x-auto">
             {filterOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setActiveFilter(option.value)}
-                className={`cursor-pointer rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`group flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${
                   activeFilter === option.value
-                    ? "bg-primary/10 text-cyan-700"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30"
+                    : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50 hover:ring-gray-300"
                 }`}
               >
-                {option.label}
+                <span>{option.label}</span>
                 {option.count > 0 && (
-                  <span className="ml-1 rounded-full bg-gray-200 px-1.5 py-0.5 text-xs text-gray-600">
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                      activeFilter === option.value
+                        ? "bg-white/20 text-white"
+                        : "bg-gradient-to-r from-cyan-500 to-teal-500 text-white"
+                    }`}
+                  >
                     {option.count}
                   </span>
                 )}
@@ -441,8 +452,12 @@ export default function NotificationCenter({
             </div>
           ) : notifications.length === 0 ? (
             <div className="py-12 text-center">
-              <i className="ri-notification-off-line mb-4 text-4xl text-gray-400"></i>
-              <h3 className="mb-2 text-lg font-medium text-gray-900">No hay notificaciones</h3>
+              <div className="mb-4 flex justify-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200">
+                  <i className="ri-notification-off-line text-3xl text-gray-400"></i>
+                </div>
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">No hay notificaciones</h3>
               <p className="text-gray-500">
                 {activeFilter === "unread"
                   ? "Todas las notificaciones están leídas"
@@ -454,67 +469,86 @@ export default function NotificationCenter({
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`cursor-pointer border-l-4 p-4 hover:bg-gray-50 ${priorityColors[notification.priority!]} ${
-                    !notification.read ? "bg-cyan-50/30" : ""
-                  }`}
+                  className={`group relative cursor-pointer border-l-4 p-4 transition-all hover:bg-gradient-to-r hover:from-cyan-50/50 hover:to-teal-50/50 ${
+                    priorityColors[notification.priority!]
+                  } ${!notification.read ? "bg-gradient-to-r from-cyan-50/30 to-teal-50/30" : ""}`}
                   onClick={() => handleNotificationClick(notification)}
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex min-w-0 flex-1 items-start">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex min-w-0 flex-1 items-start gap-3">
                       <div
-                        className={`mr-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${typeColors[notification.type]}`}
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-lg transition-transform group-hover:scale-110 ${
+                          notification.type === "message"
+                            ? "bg-gradient-to-br from-cyan-500 to-teal-500 text-white"
+                            : notification.type === "proposal"
+                              ? "bg-gradient-to-br from-blue-500 to-indigo-500 text-white"
+                              : notification.type === "payment"
+                                ? "bg-gradient-to-br from-emerald-500 to-green-500 text-white"
+                                : notification.type === "project_update"
+                                  ? "bg-gradient-to-br from-purple-500 to-pink-500 text-white"
+                                  : notification.type === "review"
+                                    ? "bg-gradient-to-br from-yellow-500 to-amber-500 text-white"
+                                    : notification.type === "badge" ||
+                                        notification.type === "achievement"
+                                      ? "bg-gradient-to-br from-amber-500 to-orange-500 text-white"
+                                      : "bg-gradient-to-br from-gray-500 to-gray-600 text-white"
+                        }`}
                       >
-                        <i className={`${typeIcons[notification.type]} text-sm`}></i>
+                        <i className={`${typeIcons[notification.type]} text-base`}></i>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="mb-1 flex items-center">
+                        <div className="mb-2 flex items-center gap-2">
                           <h4
-                            className={`truncate text-sm font-medium ${
+                            className={`truncate text-sm font-semibold ${
                               !notification.read ? "text-gray-900" : "text-gray-700"
                             }`}
                           >
                             {notification.title}
                           </h4>
                           {!notification.read && (
-                            <div className="ml-2 h-2 w-2 shrink-0 rounded-full bg-cyan-500"></div>
+                            <div className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 ring-2 ring-cyan-200"></div>
                           )}
                         </div>
-                        <p className="text-sm leading-relaxed text-gray-600">
+                        <p className="mb-3 text-sm leading-relaxed text-gray-600">
                           {notification.message}
                         </p>
-                        <div className="mt-2 flex items-center text-xs text-gray-500">
-                          <span className="capitalize">{notification.type.replace("_", " ")}</span>
-                          <span className="mx-2">•</span>
-                          <span>{formatTime(notification.created_at!)}</span>
-                          {notification.priority === "high" ||
-                          notification.priority === "urgent" ? (
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          <span className="rounded-full bg-gradient-to-r from-gray-100 to-gray-200 px-2.5 py-1 font-medium text-gray-700 capitalize">
+                            {notification.type.replace("_", " ")}
+                          </span>
+                          <span className="text-gray-400">•</span>
+                          <span className="font-medium text-gray-500">
+                            {formatTime(notification.created_at!)}
+                          </span>
+                          {(notification.priority === "high" ||
+                            notification.priority === "urgent") && (
                             <>
-                              <span className="mx-2">•</span>
+                              <span className="text-gray-400">•</span>
                               <span
-                                className={`font-medium ${
+                                className={`rounded-full px-2.5 py-1 font-semibold ${
                                   notification.priority === "urgent"
-                                    ? "text-red-600"
-                                    : "text-orange-600"
+                                    ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
+                                    : "bg-gradient-to-r from-orange-500 to-orange-600 text-white"
                                 }`}
                               >
                                 {notification.priority === "urgent" ? "Urgente" : "Alta prioridad"}
                               </span>
                             </>
-                          ) : null}
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className="ml-2 flex items-center space-x-2">
+                    <div className="flex shrink-0 items-center gap-1">
                       {!notification.read && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
                             markAsRead(notification.id!)
                           }}
-                          className="text-primary cursor-pointer rounded p-1 hover:text-cyan-700"
+                          className="group/btn flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-md transition-all hover:scale-110 hover:shadow-lg"
                           title="Marcar como leída"
                         >
-                          <i className="ri-check-line text-sm"></i>
+                          <i className="ri-check-line text-sm transition-transform group-hover/btn:scale-125"></i>
                         </button>
                       )}
                       <button
@@ -522,10 +556,10 @@ export default function NotificationCenter({
                           e.stopPropagation()
                           deleteNotification(notification.id!)
                         }}
-                        className="cursor-pointer rounded p-1 text-gray-400 hover:text-red-500"
+                        className="group/btn flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-white text-gray-400 ring-1 ring-gray-200 transition-all hover:scale-110 hover:bg-red-50 hover:text-red-500 hover:ring-red-200"
                         title="Eliminar notificación"
                       >
-                        <i className="ri-delete-bin-line text-sm"></i>
+                        <i className="ri-delete-bin-line text-sm transition-transform group-hover/btn:scale-125"></i>
                       </button>
                     </div>
                   </div>
@@ -537,13 +571,13 @@ export default function NotificationCenter({
 
         {/* Footer */}
         {notifications.length > 0 && (
-          <div className="border-t border-gray-200 p-4 text-center">
+          <div className="border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 text-center">
             <button
               onClick={loadNotifications}
-              className="text-primary cursor-pointer text-sm font-medium hover:text-cyan-700"
+              className="group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
-              <i className="ri-refresh-line mr-1"></i>
-              Actualizar notificaciones
+              <i className="ri-refresh-line text-base transition-transform group-hover:rotate-180"></i>
+              <span>Actualizar notificaciones</span>
             </button>
           </div>
         )}

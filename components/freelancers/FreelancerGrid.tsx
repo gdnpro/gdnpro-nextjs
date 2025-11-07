@@ -59,7 +59,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     if (searchFilters && Object.values(searchFilters).some((v) => v)) {
       // If filters are active, we'll filter client-side
       // Otherwise reload from server
-      if (!searchFilters.search && !searchFilters.category && !searchFilters.experience && !searchFilters.budget && !searchFilters.availability) {
+      if (
+        !searchFilters.search &&
+        !searchFilters.category &&
+        !searchFilters.experience &&
+        !searchFilters.budget &&
+        !searchFilters.availability
+      ) {
         loadFreelancers(true)
       }
     }
@@ -238,7 +244,9 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
       // Check if there are more items to load
       const totalItems = count ?? 0
-      const loadedItems = reset ? enhancedFreelancers.length : freelancers.length + enhancedFreelancers.length
+      const loadedItems = reset
+        ? enhancedFreelancers.length
+        : freelancers.length + enhancedFreelancers.length
       setHasMore(loadedItems < totalItems && enhancedFreelancers.length === ITEMS_PER_PAGE)
 
       if (!reset) {
@@ -599,10 +607,15 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
   if (loading) {
     return (
-      <section className="bg-gray-50 py-20">
+      <section className="bg-gradient-to-b from-cyan-50 to-gray-50 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex h-64 items-center justify-center">
-            <div className="border-primary h-12 w-12 animate-spin rounded-full border-b-2" />
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/30 border-t-white"></div>
+              </div>
+              <p className="mt-4 text-gray-600">Cargando freelancers...</p>
+            </div>
           </div>
         </div>
       </section>
@@ -611,9 +624,12 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
   if (filteredFreelancers.length === 0) {
     return (
-      <section className="bg-gray-50 py-20">
+      <section className="bg-gradient-to-b from-cyan-50 to-gray-50 py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center">
+            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-400 to-gray-500 text-white shadow-lg">
+              <i className="ri-user-search-line text-3xl"></i>
+            </div>
             <h3 className="mb-4 text-2xl font-bold text-gray-900">No se encontraron freelancers</h3>
             <p className="text-gray-600">
               {searchFilters &&
@@ -631,13 +647,18 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   }
 
   return (
-    <section className="bg-gray-50 py-20">
+    <section className="bg-gradient-to-b from-cyan-50 to-gray-50 py-20">
       <div className="mx-auto max-w-7xl px-6">
         {/* Header + Sorting */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-2xl font-bold text-gray-900">Freelancers Destacados</h3>
-            <p className="text-gray-600">
+            <div className="mb-2 flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
+                <i className="ri-team-line text-xl"></i>
+              </div>
+              <h3 className="text-3xl font-bold text-gray-900">Freelancers Destacados</h3>
+            </div>
+            <p className="mt-2 text-gray-600">
               Mostrando {displayedFreelancers.length} de {filteredFreelancers.length} freelancers
               {searchFilters &&
                 (searchFilters.search ||
@@ -648,12 +669,15 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-            <span className="text-gray-600">Ordenar por:</span>
+            <span className="flex items-center gap-2 font-medium text-gray-700">
+              <i className="ri-sort-desc text-cyan-500"></i>
+              Ordenar por:
+            </span>
             <div className="relative w-full sm:w-auto">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full cursor-pointer appearance-none rounded-lg border border-gray-300 px-4 py-2 pr-8 focus:border-transparent focus:ring-2 focus:ring-blue-500 sm:w-auto"
+                className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white px-4 py-2.5 pr-8 font-medium transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:w-auto"
               >
                 <option value="rating">Mejor calificados</option>
                 <option value="price-low">Precio: menor a mayor</option>
@@ -661,7 +685,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 <option value="projects">Más proyectos</option>
                 <option value="response">Respuesta más rápida</option>
               </select>
-              <i className="ri-arrow-down-s-line pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 transform text-gray-400" />
+              <i className="ri-arrow-down-s-line pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform text-cyan-500" />
             </div>
           </div>
         </div>
@@ -671,7 +695,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
           {displayedFreelancers.map((freelancer) => (
             <div
               key={freelancer.id}
-              className="rounded-2xl bg-white shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl"
+              className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10"
             >
               <div className="flex h-full flex-col justify-between p-4">
                 {/* Header */}
@@ -739,8 +763,9 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     {freelancer.skills?.slice(0, 3).map((skill, idx) => (
                       <span
                         key={idx}
-                        className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-cyan-700"
+                        className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-3 py-1 text-sm font-medium text-cyan-700 ring-1 ring-cyan-200 transition-all hover:scale-105 hover:shadow-md"
                       >
+                        <i className="ri-checkbox-circle-line text-xs"></i>
                         {skill}
                       </span>
                     ))}
@@ -777,14 +802,16 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 <div className="flex gap-3">
                   <button
                     onClick={() => handleContactFreelancer(freelancer)}
-                    className="bg-primary flex-1 cursor-pointer rounded-xl py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 py-3 font-semibold text-white shadow-md shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/40"
                   >
+                    <i className="ri-chat-3-line transition-transform group-hover:scale-110"></i>
                     Contactar
                   </button>
                   <button
                     onClick={() => handleViewProfile(freelancer)}
-                    className="border-primary text-primary flex-1 cursor-pointer rounded-xl border py-3 font-semibold whitespace-nowrap transition-all hover:bg-blue-50"
+                    className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-cyan-500 bg-white py-3 font-semibold text-cyan-600 transition-all hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-md"
                   >
+                    <i className="ri-user-line"></i>
                     Ver Perfil
                   </button>
                 </div>
@@ -792,12 +819,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 <div className="mt-3">
                   <button
                     onClick={() => handleHireFreelancer(freelancer)}
-                    className="bg-primary flex w-full cursor-pointer items-center justify-center rounded-xl py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
+                    className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/40"
                   >
-                    <i className="ri-secure-payment-line mr-2" />
+                    <i className="ri-secure-payment-line text-lg transition-transform group-hover:scale-110" />
                     Contratar Ahora - ${freelancer.hourly_rate * 10}
                   </button>
-                  <p className="mt-1 text-center text-xs text-gray-500">
+                  <p className="mt-2 text-center text-xs text-gray-500">
+                    <i className="ri-shield-check-line mr-1 text-emerald-500"></i>
                     Pago seguro con Stripe • Estimación 10 horas
                   </p>
                 </div>
@@ -827,119 +855,199 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
       {/* -------------------------- Profile Modal -------------------------- */}
       {showProfile && selectedFreelancer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white">
-            <div className="p-6">
-              {/* Header */}
-              <div className="mb-6 flex items-start justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">Perfil del Freelancer</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md">
+          <div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5">
+            {/* Modern Header with Gradient */}
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-8 text-white">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-user-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-3xl leading-tight font-bold sm:text-4xl">
+                        Perfil del Freelancer
+                      </h2>
+                    </div>
+                  </div>
+                </div>
                 <button
                   onClick={() => setShowProfile(false)}
-                  className="cursor-pointer text-gray-400 hover:text-gray-600"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
                 >
-                  <i className="ri-close-line text-2xl" />
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
+            </div>
 
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-8 pb-24">
               {/* Main Info */}
-              <div className="mb-6 flex items-center">
-                <img
-                  src={selectedFreelancer.avatar_url}
-                  alt={selectedFreelancer.full_name}
-                  className="mr-6 h-24 w-24 rounded-full object-cover object-top"
-                />
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900">
+              <div className="mb-8 flex items-center gap-6 rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+                <div className="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 ring-2 ring-cyan-200">
+                  {selectedFreelancer.avatar_url ? (
+                    <img
+                      src={selectedFreelancer.avatar_url}
+                      alt={selectedFreelancer.full_name}
+                      className="h-full w-full object-cover object-top"
+                    />
+                  ) : (
+                    <i className="ri-user-line text-4xl text-white"></i>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="mb-2 text-2xl font-bold text-gray-900">
                     {selectedFreelancer.full_name}
                   </h3>
-                  <p className="text-primary text-lg font-semibold">
-                    {selectedFreelancer.skills?.[0]
-                      ? `${selectedFreelancer.skills[0]} Specialist`
-                      : "Freelancer"}
-                  </p>
-                  <p className="text-gray-600">{selectedFreelancer.location}</p>
-                  <div className="mt-2 flex items-center">
-                    <span className="mr-1 text-yellow-500">{selectedFreelancer.rating}★</span>
+                  <div className="mb-2 flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-500 text-white">
+                      <i className="ri-star-fill text-sm"></i>
+                    </div>
+                    <p className="text-lg font-semibold text-cyan-700">
+                      {selectedFreelancer.skills?.[0]
+                        ? `${selectedFreelancer.skills[0]} Specialist`
+                        : "Freelancer"}
+                    </p>
+                  </div>
+                  <div className="mb-2 flex items-center gap-2 text-gray-600">
+                    <i className="ri-map-pin-line text-cyan-500"></i>
+                    {selectedFreelancer.location}
+                  </div>
+                  <div className="mb-2 flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <i
+                          key={i}
+                          className={`ri-star-fill ${
+                            i < Math.floor(selectedFreelancer.rating)
+                              ? "text-yellow-400"
+                              : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="font-semibold text-gray-900">{selectedFreelancer.rating}</span>
                     <span className="text-gray-600">
                       ({selectedFreelancer.total_reviews} reseñas)
                     </span>
                   </div>
-                  <p className="mt-1 text-gray-500">
+                  <p className="text-sm text-gray-500">
+                    <i className="ri-time-line mr-1 text-cyan-500"></i>
                     {selectedFreelancer.experience_years} años de experiencia
                   </p>
                 </div>
               </div>
 
               {/* Summary stats */}
-              <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-                <div className="rounded-lg bg-gray-50 p-4 text-center">
-                  <div className="text-2xl font-bold text-gray-900">
+              <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 p-6 ring-1 ring-cyan-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-lg shadow-cyan-500/30">
+                      <i className="ri-money-dollar-circle-fill text-xl"></i>
+                    </div>
+                    <div className="text-sm font-medium text-cyan-700">Tarifa por hora</div>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
                     ${selectedFreelancer.hourly_rate}
-                  </div>
-                  <div className="text-gray-600">Por hora</div>
+                  </p>
                 </div>
-                <div className="rounded-lg bg-gray-50 p-4 text-center">
-                  <div className="text-2xl font-bold text-gray-900">
+                <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 p-6 ring-1 ring-cyan-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
+                      <i className="ri-briefcase-line text-xl"></i>
+                    </div>
+                    <div className="text-sm font-medium text-cyan-700">Proyectos</div>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
                     {selectedFreelancer.completed_projects}
-                  </div>
-                  <div className="text-gray-600">Proyectos</div>
+                  </p>
                 </div>
-                <div className="rounded-lg bg-gray-50 p-4 text-center">
-                  <div className="text-2xl font-bold text-gray-900">
-                    {selectedFreelancer.response_time}
+                <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 p-6 ring-1 ring-cyan-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
+                      <i className="ri-time-line text-xl"></i>
+                    </div>
+                    <div className="text-sm font-medium text-cyan-700">Respuesta</div>
                   </div>
-                  <div className="text-gray-600">Respuesta</div>
+                  <p className="text-xl font-bold text-gray-900">
+                    {selectedFreelancer.response_time}
+                  </p>
                 </div>
               </div>
 
               {/* Sections */}
-              <div className="mb-6">
-                <h4 className="mb-3 text-lg font-semibold text-gray-900">Acerca de</h4>
-                <p className="leading-relaxed text-gray-700">{selectedFreelancer.bio}</p>
+              <div className="mb-8">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                    <i className="ri-file-text-line text-lg"></i>
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900">Acerca de</h4>
+                </div>
+                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+                  <p className="leading-relaxed text-gray-700">{selectedFreelancer.bio}</p>
+                </div>
               </div>
 
-              <div className="mb-6">
-                <h4 className="mb-3 text-lg font-semibold text-gray-900">Habilidades</h4>
-                <div className="flex flex-wrap gap-2">
+              <div className="mb-8">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                    <i className="ri-tools-fill text-lg"></i>
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900">Habilidades</h4>
+                </div>
+                <div className="flex flex-wrap gap-3">
                   {selectedFreelancer.skills?.map((skill, idx) => (
                     <span
                       key={idx}
-                      className="rounded-full bg-blue-100 px-3 py-2 text-sm font-medium text-cyan-700"
+                      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
                     >
-                      {skill}
+                      <i className="ri-checkbox-circle-line text-base"></i>
+                      <span className="whitespace-nowrap">{skill}</span>
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="mb-6">
-                <h4 className="mb-3 text-lg font-semibold text-gray-900">
-                  Información de Contacto
-                </h4>
-                <p className="text-gray-600">Email: {selectedFreelancer.email}</p>
+              <div className="mb-8">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                    <i className="ri-mail-line text-lg"></i>
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900">Información de Contacto</h4>
+                </div>
+                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+                  <p className="text-gray-700">
+                    <span className="font-semibold">Email:</span> {selectedFreelancer.email}
+                  </p>
+                </div>
               </div>
+            </div>
 
-              {/* Action buttons */}
-              <div className="flex gap-4">
+            {/* Action buttons */}
+            <div className="shrink-0 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 shadow-lg">
+              <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <button
                   onClick={() => {
                     setShowProfile(false)
                     handleContactFreelancer(selectedFreelancer)
                   }}
-                  className="bg-primary flex-1 cursor-pointer rounded-xl py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
                 >
-                  <i className="ri-chat-3-line mr-2" />
-                  Contactar Ahora
+                  <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
+                  <span>Contactar Ahora</span>
                 </button>
                 <button
                   onClick={() => {
                     setShowProfile(false)
                     handleHireFreelancer(selectedFreelancer)
                   }}
-                  className="flex-1 cursor-pointer rounded-xl bg-emerald-600 py-3 font-semibold whitespace-nowrap text-white transition-all hover:bg-cyan-700"
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/40"
                 >
-                  <i className="ri-secure-payment-line mr-2" />
-                  Contratar Ahora
+                  <i className="ri-secure-payment-line text-xl transition-transform group-hover:scale-110"></i>
+                  <span>Contratar Ahora</span>
                 </button>
               </div>
             </div>
@@ -1083,7 +1191,7 @@ export const FreelancerGridList = ({
                   className="h-16 w-16 rounded-full border-2 border-gray-100 object-cover object-top"
                 />
               ) : (
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-emerald-400 to-emerald-600">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600">
                   <span className="text-lg font-semibold text-white">
                     {freelancer.full_name.charAt(0).toUpperCase()}
                   </span>

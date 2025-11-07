@@ -294,49 +294,64 @@ export default function ProjectManagement({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                {project.title}
-              </h2>
-              <div className="flex items-center mt-2 space-x-4">
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    project.status === "completed"
-                      ? "bg-green-100 text-green-800"
-                      : project.status === "in_progress"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-yellow-100 text-yellow-800"
-                  }`}
-                >
-                  {project.status === "completed"
-                    ? "Completado"
-                    : project.status === "in_progress"
-                      ? "En Progreso"
-                      : "Abierto"}
-                </span>
-                <div className="flex items-center text-sm text-gray-600">
-                  <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                    <div
-                      className="bg-emerald-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${project.progress_percentage}%` }}
-                    ></div>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <div
+        className="max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modern Header with Gradient */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 p-6 text-white sm:p-8">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+          <div className="relative z-10 flex items-start justify-between">
+            <div className="flex-1 pr-4">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm ring-1 ring-white/30">
+                  <i className="ri-settings-3-line text-2xl"></i>
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold leading-tight sm:text-3xl">{project.title}</h2>
+                  <div className="mt-3 flex items-center gap-4">
+                    <span
+                      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                        project.status === "completed"
+                          ? "bg-emerald-500/90 text-white"
+                          : project.status === "in_progress"
+                            ? "bg-blue-500/90 text-white"
+                            : "bg-yellow-500/90 text-white"
+                      }`}
+                    >
+                      {project.status === "completed"
+                        ? "Completado"
+                        : project.status === "in_progress"
+                          ? "En Progreso"
+                          : "Abierto"}
+                    </span>
+                    <div className="flex items-center gap-2 text-sm text-emerald-100">
+                      <div className="h-2 w-20 overflow-hidden rounded-full bg-white/20">
+                        <div
+                          className="h-full rounded-full bg-white transition-all duration-500"
+                          style={{ width: `${project.progress_percentage}%` }}
+                        ></div>
+                      </div>
+                      <span className="font-semibold">{project.progress_percentage}%</span>
+                    </div>
                   </div>
-                  <span>{project.progress_percentage}%</span>
                 </div>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 cursor-pointer p-2"
+              className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-110 ring-1 ring-white/20 cursor-pointer"
+              aria-label="Cerrar"
             >
-              <i className="ri-close-line text-2xl"></i>
+              <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
             </button>
           </div>
+        </div>
+        <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(92vh - 200px)" }}>
 
           {/* Tabs */}
           <div className="border-b border-gray-200 mb-6">
@@ -704,9 +719,36 @@ export default function ProjectManagement({
 
       {/* Modal Nuevo Hito */}
       {showNewMilestone && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold mb-4">Crear Nuevo Hito</h3>
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md"
+          onClick={() => setShowNewMilestone(false)}
+        >
+          <div
+            className="max-h-[92vh] w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modern Header with Gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 p-6 text-white">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm ring-1 ring-white/30">
+                      <i className="ri-flag-line text-lg"></i>
+                    </div>
+                    <h3 className="text-xl font-bold">Crear Nuevo Hito</h3>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowNewMilestone(false)}
+                  className="group flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-110 ring-1 ring-white/20 cursor-pointer"
+                  aria-label="Cerrar"
+                >
+                  <i className="ri-close-line text-sm transition-transform group-hover:rotate-90"></i>
+                </button>
+              </div>
+            </div>
+            <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(92vh - 150px)" }}>
             <div className="space-y-4">
               <input
                 type="text"
@@ -747,19 +789,22 @@ export default function ProjectManagement({
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
-            <div className="flex justify-end space-x-3 mt-6">
-              <button
-                onClick={() => setShowNewMilestone(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 cursor-pointer whitespace-nowrap"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={createMilestone}
-                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-cyan-700 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                Crear Hito
-              </button>
+              <div className="sticky bottom-0 flex gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6">
+                <button
+                  onClick={() => setShowNewMilestone(false)}
+                  className="group flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-2.5 font-semibold text-gray-700 transition-all hover:border-gray-400 hover:bg-gray-50 hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <i className="ri-close-line text-sm"></i>
+                  <span>Cancelar</span>
+                </button>
+                <button
+                  onClick={createMilestone}
+                  className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 hover:scale-[1.02] cursor-pointer"
+                >
+                  <i className="ri-flag-fill text-sm transition-transform group-hover:scale-110"></i>
+                  <span>Crear Hito</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -767,9 +812,36 @@ export default function ProjectManagement({
 
       {/* Modal Subir Entregable */}
       {showDeliverable && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold mb-4">Subir Entregable</h3>
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md"
+          onClick={() => setShowDeliverable(false)}
+        >
+          <div
+            className="max-h-[92vh] w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modern Header with Gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-amber-500 to-yellow-500 p-6 text-white">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm ring-1 ring-white/30">
+                      <i className="ri-upload-cloud-line text-lg"></i>
+                    </div>
+                    <h3 className="text-xl font-bold">Subir Entregable</h3>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowDeliverable(false)}
+                  className="group flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-110 ring-1 ring-white/20 cursor-pointer"
+                  aria-label="Cerrar"
+                >
+                  <i className="ri-close-line text-sm transition-transform group-hover:rotate-90"></i>
+                </button>
+              </div>
+            </div>
+            <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(92vh - 150px)" }}>
             <div className="space-y-4">
               <input
                 type="text"
@@ -803,19 +875,22 @@ export default function ProjectManagement({
                 <p className="text-xs text-gray-400 mt-1">Máximo 10MB</p>
               </div>
             </div>
-            <div className="flex justify-end space-x-3 mt-6">
-              <button
-                onClick={() => setShowDeliverable(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 cursor-pointer whitespace-nowrap"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={submitDeliverable}
-                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-cyan-700 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                Subir Entregable
-              </button>
+              <div className="sticky bottom-0 flex gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6">
+                <button
+                  onClick={() => setShowDeliverable(false)}
+                  className="group flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-2.5 font-semibold text-gray-700 transition-all hover:border-gray-400 hover:bg-gray-50 hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <i className="ri-close-line text-sm"></i>
+                  <span>Cancelar</span>
+                </button>
+                <button
+                  onClick={submitDeliverable}
+                  className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-yellow-500 px-4 py-2.5 font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 hover:scale-[1.02] cursor-pointer"
+                >
+                  <i className="ri-upload-cloud-fill text-sm transition-transform group-hover:scale-110"></i>
+                  <span>Subir Entregable</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -97,44 +97,47 @@ export const ConversationModal = ({
   }, [selectedConversation?.id, user?.id, setChatMessages])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
-      <div className="flex h-[90vh] w-full max-w-full flex-col rounded-xl bg-white sm:h-[80vh] sm:max-w-2xl sm:rounded-2xl">
-        {/* Header del Chat */}
-        <div className="bg-primary flex items-center justify-between rounded-t-xl p-3 text-white sm:rounded-t-2xl sm:p-4">
-          <div className="flex min-w-0 flex-1 items-center">
-            <div className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-cyan-300/50 sm:mr-3 sm:h-10 sm:w-10">
-              {selectedConversation.client?.avatar_url ? (
-                <img
-                  src={selectedConversation.client.avatar_url}
-                  alt={selectedConversation.client.full_name}
-                  className="h-full w-full object-cover object-top"
-                />
-              ) : (
-                <i className="ri-user-line text-primary"></i>
-              )}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
+      <div className="flex h-[90vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[80vh] sm:max-w-2xl">
+        {/* Modern Header with linear */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+          <div className="relative z-10 flex min-w-0 flex-1 items-center justify-between">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/20 ring-2 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                {selectedConversation.client?.avatar_url ? (
+                  <img
+                    src={selectedConversation.client.avatar_url}
+                    alt={selectedConversation.client.full_name}
+                    className="h-full w-full object-cover object-top"
+                  />
+                ) : (
+                  <i className="ri-user-3-line text-xl text-white"></i>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="truncate text-base font-bold sm:text-lg">
+                  {selectedConversation.client.full_name}
+                </h3>
+                {selectedConversation.project && (
+                  <p className="truncate text-xs text-cyan-100 sm:text-sm">
+                    {selectedConversation.project.title}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="min-w-0">
-              <h3 className="truncate text-sm font-semibold sm:text-base">
-                {selectedConversation.client.full_name}
-              </h3>
-              {selectedConversation.project && (
-                <p className="truncate text-xs text-blue-100 sm:text-sm">
-                  {selectedConversation.project.title}
-                </p>
-              )}
-            </div>
+            <button
+              onClick={() => {
+                setShowChat(false)
+                setChatMessages([])
+                setSelectedConversation(null)
+                setNewMessage("")
+              }}
+              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 sm:h-12 sm:w-12"
+            >
+              <i className="ri-close-line text-lg transition-transform group-hover:rotate-90 sm:text-xl"></i>
+            </button>
           </div>
-          <button
-            onClick={() => {
-              setShowChat(false)
-              setChatMessages([])
-              setSelectedConversation(null)
-              setNewMessage("")
-            }}
-            className="shrink-0 cursor-pointer rounded p-1 hover:bg-cyan-700 sm:p-2"
-          >
-            <i className="ri-close-line text-lg sm:text-xl"></i>
-          </button>
         </div>
 
         {/* Área de Mensajes */}
@@ -209,7 +212,7 @@ export const ConversationModal = ({
             <button
               onClick={sendMessage}
               disabled={!newMessage.trim() || chatLoading || sendingMessage}
-              className="bg-primary flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-white transition-colors hover:bg-cyan-700 disabled:bg-gray-300 sm:h-12 sm:w-12"
+              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30 transition-all hover:scale-110 hover:shadow-xl hover:shadow-cyan-500/40 disabled:bg-gray-300 disabled:shadow-none disabled:hover:scale-100 sm:h-12 sm:w-12"
             >
               {sendingMessage ? (
                 <div className="h-3 w-3 animate-spin rounded-full border-b-2 border-white sm:h-4 sm:w-4"></div>

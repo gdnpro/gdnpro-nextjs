@@ -205,142 +205,208 @@ export default function CTA() {
 
       {/* MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm sm:px-6">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 px-4 backdrop-blur-md sm:px-6"
+          onClick={closeModal}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="relative grid max-h-[90vh] w-full max-w-4xl grid-cols-1 gap-8 overflow-y-auto rounded-2xl bg-white p-6 text-gray-900 shadow-2xl sm:p-8 lg:grid-cols-2"
+            className="relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-white text-gray-900 shadow-2xl ring-1 ring-black/5"
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Botón cerrar */}
-            <button
-              onClick={closeModal}
-              className="absolute right-4 z-10 cursor-pointer text-3xl font-bold text-gray-500 hover:text-gray-800"
-            >
-              &times;
-            </button>
-
-            {/* Columna izquierda - Info y Calendario */}
-            <div className="flex flex-col justify-between">
-              <div>
-                <h3 className="mb-3 text-2xl font-bold text-gray-800 sm:text-3xl">
-                  Agenda tu cita gratuita
-                </h3>
-                <p className="mb-6 text-sm text-gray-600 sm:text-base">
-                  Completa los datos para confirmar tu reunión. Nuestro equipo te contactará para
-                  coordinar los detalles.
-                </p>
-              </div>
-
-              {/* Calendario */}
-              <div>
-                <h4 className="mb-2 text-lg font-semibold text-gray-800">Selecciona una fecha</h4>
-                <div className="mb-4 grid grid-cols-7 gap-2">
-                  {calendarDays?.map(({ day, date, isOccupied, isWeekend }) => (
-                    <button
-                      key={date}
-                      onClick={() => !isWeekend && !isOccupied && setSelectedDate(date)}
-                      className={`rounded-lg p-2 text-sm font-semibold transition-all ${
-                        isWeekend
-                          ? "cursor-not-allowed bg-gray-300 text-gray-500"
-                          : isOccupied
-                            ? "cursor-not-allowed bg-red-500 text-white"
-                            : selectedDate === date
-                              ? "bg-cyan-600 text-white shadow-lg"
-                              : "bg-gray-200 hover:bg-gray-300"
-                      }`}
-                      disabled={isWeekend || isOccupied}
-                    >
-                      {day}
-                    </button>
-                  ))}
+            {/* Modern Header with Gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-8 text-white">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-calendar-check-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h3 className="text-3xl leading-tight font-bold sm:text-4xl">
+                        Agenda tu cita gratuita
+                      </h3>
+                      <p className="mt-2 text-sm text-cyan-100">
+                        Completa los datos para confirmar tu reunión
+                      </p>
+                    </div>
+                  </div>
                 </div>
-
-                {/* Hora */}
-                <h4 className="mb-2 text-lg font-semibold text-gray-800">Selecciona la hora</h4>
-                <select
-                  value={selectedTime}
-                  onChange={handleTimeSelect}
-                  className="w-full rounded-xl border border-gray-300 p-3 transition focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+                <button
+                  onClick={closeModal}
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
                 >
-                  <option value="">Elige una hora</option>
-                  {workingHours.map((hour) => (
-                    <option key={hour} value={hour}>
-                      {hour}
-                    </option>
-                  ))}
-                </select>
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
+                </button>
               </div>
             </div>
 
-            <div className="flex flex-col justify-between">
-              <div>
-                {/* 💬 Tema */}
-                <textarea
-                  className="w-full resize-none rounded-xl border border-gray-300 p-3 transition focus:ring-2 focus:ring-cyan-500 focus:outline-none"
-                  rows={4}
-                  placeholder="Cuéntanos brevemente de qué te gustaría hablar..."
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                />
+            {/* Content */}
+            <div className="overflow-y-auto p-6 sm:p-8" style={{ maxHeight: "calc(92vh - 200px)" }}>
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                {/* Columna izquierda - Calendario */}
+                <div className="flex flex-col justify-between space-y-6">
+                  {/* Calendario */}
+                  <div>
+                    <div className="mb-4 flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                        <i className="ri-calendar-line text-lg"></i>
+                      </div>
+                      <h4 className="text-xl font-bold text-gray-900">Selecciona una fecha</h4>
+                    </div>
+                    <div className="mb-6 grid grid-cols-7 gap-2 rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 shadow-sm">
+                      {calendarDays?.map(({ day, date, isOccupied, isWeekend }) => (
+                        <button
+                          key={date}
+                          onClick={() => !isWeekend && !isOccupied && setSelectedDate(date)}
+                          className={`group cursor-pointer rounded-xl p-2 text-sm font-semibold transition-all ${
+                            isWeekend
+                              ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                              : isOccupied
+                                ? "cursor-not-allowed bg-red-100 text-red-400"
+                                : selectedDate === date
+                                  ? "scale-110 bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30"
+                                  : "bg-gray-100 text-gray-700 hover:scale-105 hover:bg-gray-200"
+                          }`}
+                          disabled={isWeekend || isOccupied}
+                        >
+                          {day}
+                        </button>
+                      ))}
+                    </div>
 
-                {/* Nombre */}
-                <input
-                  type="text"
-                  value={clientName}
-                  onChange={(e) => setClientName(e.target.value)}
-                  placeholder="Tu nombre completo"
-                  className="mt-4 w-full rounded-xl border border-gray-300 p-3 transition focus:ring-2 focus:ring-cyan-500 focus:outline-none"
-                />
-
-                {/* Plataforma */}
-                <h4 className="mt-6 mb-2 text-center text-lg font-semibold text-gray-800">
-                  ¿Cómo prefieres reunirte?
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => setSelectedPlatform("Zoom")}
-                    className={`flex flex-col items-center justify-center rounded-2xl border p-5 transition-all ${
-                      selectedPlatform === "Zoom"
-                        ? "border-cyan-600 bg-cyan-600 text-white shadow-lg"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }`}
-                  >
-                    <i className="ri-camera-line mb-2 text-3xl"></i>
-                    <span className="font-semibold">ZOOM</span>
-                  </button>
-                  <button
-                    onClick={() => setSelectedPlatform("WhatsApp")}
-                    className={`flex flex-col items-center justify-center rounded-2xl border p-5 transition-all ${
-                      selectedPlatform === "WhatsApp"
-                        ? "border-cyan-600 bg-cyan-600 text-white shadow-lg"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }`}
-                  >
-                    <i className="ri-whatsapp-line mb-2 text-3xl"></i>
-                    <span className="font-semibold">WHATSAPP</span>
-                  </button>
+                    {/* Hora */}
+                    <div>
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                          <i className="ri-time-line text-lg"></i>
+                        </div>
+                        <h4 className="text-xl font-bold text-gray-900">Selecciona la hora</h4>
+                      </div>
+                      <select
+                        value={selectedTime}
+                        onChange={handleTimeSelect}
+                        className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
+                      >
+                        <option value="">Elige una hora</option>
+                        {workingHours.map((hour) => (
+                          <option key={hour} value={hour}>
+                            {hour}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Contacto */}
-                <input
-                  type="text"
-                  value={clientContact}
-                  onChange={(e) => setClientContact(e.target.value)}
-                  placeholder={
-                    selectedPlatform === "WhatsApp" ? "Número de WhatsApp" : "Correo electrónico"
-                  }
-                  className="mt-4 w-full rounded-xl border border-gray-300 p-3 transition focus:ring-2 focus:ring-cyan-500 focus:outline-none"
-                />
-              </div>
+                <div className="flex flex-col justify-between space-y-6">
+                  <div className="space-y-6">
+                    {/* Tema */}
+                    <div>
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                          <i className="ri-message-3-line text-lg"></i>
+                        </div>
+                        <h4 className="text-xl font-bold text-gray-900">Tema de la reunión</h4>
+                      </div>
+                      <textarea
+                        className="w-full resize-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
+                        rows={4}
+                        placeholder="Cuéntanos brevemente de qué te gustaría hablar..."
+                        value={topic}
+                        onChange={(e) => setTopic(e.target.value)}
+                      />
+                    </div>
 
-              {/* Botón final */}
-              <button
-                onClick={handleSchedule}
-                className="mt-6 w-full cursor-pointer rounded-xl bg-cyan-600 py-3 text-lg font-bold text-white shadow-lg transition-all hover:bg-cyan-700"
-              >
-                Agendar cita
-              </button>
+                    {/* Nombre */}
+                    <div>
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                          <i className="ri-user-line text-lg"></i>
+                        </div>
+                        <h4 className="text-xl font-bold text-gray-900">Tu nombre</h4>
+                      </div>
+                      <input
+                        type="text"
+                        value={clientName}
+                        onChange={(e) => setClientName(e.target.value)}
+                        placeholder="Tu nombre completo"
+                        className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Plataforma */}
+                    <div>
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                          <i className="ri-video-line text-lg"></i>
+                        </div>
+                        <h4 className="text-xl font-bold text-gray-900">
+                          ¿Cómo prefieres reunirte?
+                        </h4>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <button
+                          onClick={() => setSelectedPlatform("Zoom")}
+                          className={`group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all ${
+                            selectedPlatform === "Zoom"
+                              ? "scale-105 border-cyan-500 bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30"
+                              : "border-gray-200 bg-gray-50 hover:scale-105 hover:border-gray-300 hover:bg-gray-100"
+                          }`}
+                        >
+                          <i className="ri-camera-line mb-2 text-3xl transition-transform group-hover:scale-110"></i>
+                          <span className="font-bold">ZOOM</span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedPlatform("WhatsApp")}
+                          className={`group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all ${
+                            selectedPlatform === "WhatsApp"
+                              ? "scale-105 border-cyan-500 bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30"
+                              : "border-gray-200 bg-gray-50 hover:scale-105 hover:border-gray-300 hover:bg-gray-100"
+                          }`}
+                        >
+                          <i className="ri-whatsapp-line mb-2 text-3xl transition-transform group-hover:scale-110"></i>
+                          <span className="font-bold">WHATSAPP</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Contacto */}
+                    <div>
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
+                          <i className="ri-mail-line text-lg"></i>
+                        </div>
+                        <h4 className="text-xl font-bold text-gray-900">Información de contacto</h4>
+                      </div>
+                      <input
+                        type="text"
+                        value={clientContact}
+                        onChange={(e) => setClientContact(e.target.value)}
+                        placeholder={
+                          selectedPlatform === "WhatsApp"
+                            ? "Número de WhatsApp"
+                            : "Correo electrónico"
+                        }
+                        className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Botón final */}
+                  <button
+                    onClick={handleSchedule}
+                    className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 py-4 text-lg font-bold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                  >
+                    <i className="ri-calendar-check-line text-xl transition-transform group-hover:scale-110"></i>
+                    <span>Agendar cita</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>

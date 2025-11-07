@@ -14,6 +14,7 @@ import WorksStats from "@/components/works/WorksStats"
 import WorksSearch from "@/components/works/WorksSearch"
 import WorksGrid from "@/components/works/WorksGrid"
 import WorksProposalModal from "@/components/works/WorksProposalModal"
+import WorksProjectDetailsModal from "@/components/works/WorksProjectDetailsModal"
 
 const supabase = supabaseBrowser()
 
@@ -25,6 +26,7 @@ export default function Works() {
   const [loading, setLoading] = useState(true)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [showProposalModal, setShowProposalModal] = useState(false)
+  const [showProjectDetailsModal, setShowProjectDetailsModal] = useState(false)
   const [showChat, setShowChat] = useState(false)
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
@@ -386,8 +388,7 @@ export default function Works() {
         if (checkData.success && checkData.conversations) {
           // Find existing conversation with this client and project
           conversation = checkData.conversations.find(
-            (conv: Conversation) =>
-              conv.client_id === clientId && conv.project_id === projectId,
+            (conv: Conversation) => conv.client_id === clientId && conv.project_id === projectId,
           )
         }
       }
@@ -472,7 +473,7 @@ export default function Works() {
 
   const viewProjectDetails = (project: Project) => {
     setSelectedProject(project)
-    // You can implement a modal or navigate to a details page here
+    setShowProjectDetailsModal(true)
   }
 
   const handleFiltersChange = (filters: typeof searchFilters) => {
@@ -517,6 +518,16 @@ export default function Works() {
         isOpen={showProposalModal}
         onClose={() => setShowProposalModal(false)}
         onSubmit={submitProposal}
+      />
+      <WorksProjectDetailsModal
+        project={selectedProject}
+        isOpen={showProjectDetailsModal}
+        onClose={() => {
+          setShowProjectDetailsModal(false)
+          setSelectedProject(null)
+        }}
+        onSendProposal={sendProposal}
+        onStartChat={startChat}
       />
       {showChat && selectedConversation && (
         <ConversationModal

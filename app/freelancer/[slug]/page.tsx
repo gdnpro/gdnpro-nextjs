@@ -186,7 +186,7 @@ export default function FreelancerProfilePage() {
                       className="h-24 w-24 rounded-full border-4 border-gray-100 object-cover object-top"
                     />
                   ) : (
-                    <div className="to-primary flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br from-cyan-400">
+                    <div className="to-primary flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400">
                       <span className="text-2xl font-bold text-white">
                         {freelancer.full_name.charAt(0).toUpperCase()}
                       </span>
@@ -376,7 +376,7 @@ export default function FreelancerProfilePage() {
                         key={item}
                         className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
                       >
-                        <div className="h-48 bg-linear-to-br from-cyan-400 to-primary flex items-center justify-center">
+                        <div className="h-48 bg-gradient-to-br from-cyan-400 to-primary flex items-center justify-center">
                           <i className="ri-image-line text-white text-4xl"></i>
                         </div>
                         <div className="p-4">

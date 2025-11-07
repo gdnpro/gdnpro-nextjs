@@ -800,7 +800,7 @@ export default function ClientDashboardUI() {
           <div className="rounded-lg bg-white p-3 shadow sm:p-6">
             <div className="flex items-center">
               <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 sm:mr-4 sm:h-12 sm:w-12">
-                <i className="ri-chat-3-line text-sm text-purple-600 sm:text-xl"></i>
+                <i className="ri-chat-3-line text-sm text-cyan-600 sm:text-xl"></i>
               </div>
               <div>
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">
@@ -941,7 +941,7 @@ export default function ClientDashboardUI() {
                           console.error("Error en matching:", error)
                         }
                       }}
-                      className="to-primary w-full cursor-pointer rounded-lg bg-linear-to-r from-purple-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white shadow-lg transition-all hover:from-purple-700 hover:to-cyan-700 sm:w-auto sm:px-6 sm:py-3 sm:text-base"
+                      className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-cyan-600 to-teal-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white shadow-lg transition-all hover:from-cyan-700 hover:to-teal-700 sm:w-auto sm:px-6 sm:py-3 sm:text-base"
                     >
                       <i className="ri-magic-line mr-2"></i>
                       🤖 Matching Inteligente
@@ -957,16 +957,16 @@ export default function ClientDashboardUI() {
                 </div>
 
                 {/* NUEVO: Panel de Matches Inteligentes */}
-                <div className="mb-6 rounded-xl border border-purple-200 bg-linear-to-br from-purple-50 to-blue-50 p-4 sm:p-6">
+                <div className="mb-6 rounded-xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-4 sm:p-6">
                   <div className="mb-4 flex items-center">
-                    <div className="to-primary mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-r from-purple-600">
+                    <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-cyan-600 to-teal-600">
                       <i className="ri-magic-line text-xl text-white"></i>
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-gray-900">
                         🤖 Motor de Matching Inteligente
                       </h3>
-                      <p className="text-sm text-purple-700">
+                      <p className="text-sm text-cyan-700">
                         Encuentra freelancers perfectos usando inteligencia artificial
                       </p>
                     </div>
@@ -996,7 +996,7 @@ export default function ClientDashboardUI() {
                     </div>
 
                     <div className="rounded-lg bg-white p-4 shadow-sm">
-                      <div className="mb-2 flex items-center text-purple-600">
+                      <div className="mb-2 flex items-center text-cyan-600">
                         <i className="ri-award-line mr-2 text-xl"></i>
                         <span className="font-semibold">Predicción Éxito</span>
                       </div>
@@ -1261,26 +1261,45 @@ export default function ClientDashboardUI() {
 
       {/* Proposals Modal - RESPONSIVE */}
       {showProposalsModal && selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-xl bg-white sm:max-h-[90vh] sm:max-w-4xl sm:rounded-2xl">
-            <div className="p-4 sm:p-6">
-              <div className="mb-4 flex items-start justify-between sm:mb-6">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">
-                    Propuestas Recibidas
-                  </h2>
-                  <h3 className="text-sm text-gray-600 sm:text-lg">{selectedProject.title}</h3>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4"
+          onClick={() => setShowProposalsModal(false)}
+        >
+          <div
+            className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:max-w-5xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modern Header with Gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-mail-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                        Propuestas Recibidas
+                      </h2>
+                      <h3 className="mt-2 text-sm text-cyan-100 sm:text-base">
+                        {selectedProject.title}
+                      </h3>
+                    </div>
+                  </div>
                 </div>
                 <button
                   onClick={() => setShowProposalsModal(false)}
-                  className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
                 >
-                  <i className="ri-close-line text-xl sm:text-2xl"></i>
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
-
+            </div>
+            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(95vh - 200px)" }}>
               {/* NUEVO: Mostrar mensaje inicial del cliente */}
-              <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4 sm:p-6">
+              <div className="mb-6 rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-4 shadow-sm sm:p-6">
                 <div className="flex items-start">
                   <div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mr-4 sm:h-12 sm:w-12">
                     <i className="ri-message-3-line text-primary text-lg sm:text-xl"></i>
@@ -1412,21 +1431,43 @@ export default function ClientDashboardUI() {
 
       {/* Modal Nuevo Proyecto - RESPONSIVE */}
       {showNewProjectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-lg bg-white sm:max-w-2xl">
-            <div className="p-4 sm:p-6">
-              <div className="mb-4 flex items-center justify-between sm:mb-6">
-                <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">
-                  Crear Nuevo Proyecto
-                </h2>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4"
+          onClick={() => setShowNewProjectModal(false)}
+        >
+          <div
+            className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-w-3xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modern Header with Gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-add-circle-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                        Crear Nuevo Proyecto
+                      </h2>
+                      <p className="mt-2 text-sm text-cyan-100">
+                        Completa el formulario para crear tu proyecto
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <button
                   onClick={() => setShowNewProjectModal(false)}
-                  className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
                 >
-                  <i className="ri-close-line text-xl sm:text-2xl"></i>
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
-
+            </div>
+            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(95vh - 200px)" }}>
               <form onSubmit={createProject} className="space-y-4 sm:space-y-6">
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
@@ -1598,19 +1639,21 @@ export default function ClientDashboardUI() {
                   />
                 </div>
 
-                <div className="flex flex-col justify-end space-y-2 pt-4 sm:flex-row sm:space-y-0 sm:space-x-3">
+                <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
                   <button
                     type="button"
                     onClick={() => setShowNewProjectModal(false)}
-                    className="w-full cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto sm:px-6 sm:text-base"
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
                   >
-                    Cancelar
+                    <i className="ri-close-line"></i>
+                    <span>Cancelar</span>
                   </button>
                   <button
                     type="submit"
-                    className="bg-primary w-full cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-6 sm:text-base"
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
                   >
-                    Crear Proyecto
+                    <i className="ri-add-circle-fill text-lg transition-transform group-hover:scale-110"></i>
+                    <span>Crear Proyecto</span>
                   </button>
                 </div>
               </form>
@@ -1634,19 +1677,43 @@ export default function ClientDashboardUI() {
 
       {/* Modal Editar Perfil */}
       {showEditProfileModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-y-auto rounded-lg bg-white sm:max-w-2xl">
-            <div className="p-4 sm:p-6">
-              <div className="mb-4 flex items-center justify-between sm:mb-6">
-                <h2 className="text-lg font-bold text-gray-900 sm:text-2xl">Editar Perfil</h2>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4"
+          onClick={() => setShowEditProfileModal(false)}
+        >
+          <div
+            className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-w-3xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modern Header with Gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-user-settings-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                        Editar Perfil
+                      </h2>
+                      <p className="mt-2 text-sm text-cyan-100">
+                        Actualiza tu información personal
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <button
                   onClick={() => setShowEditProfileModal(false)}
-                  className="cursor-pointer p-1 text-gray-400 hover:text-gray-600"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
                 >
-                  <i className="ri-close-line text-xl sm:text-2xl"></i>
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
-
+            </div>
+            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(95vh - 200px)" }}>
               <form onSubmit={updateProfile} className="space-y-4 sm:space-y-6">
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
@@ -1694,21 +1761,32 @@ export default function ClientDashboardUI() {
                   />
                 </div>
 
-                <div className="flex flex-col justify-end space-y-2 pt-4 sm:flex-row sm:space-y-0 sm:space-x-3">
+                <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
                   <button
                     type="button"
                     onClick={() => setShowEditProfileModal(false)}
                     disabled={updatingProfile}
-                    className="w-full cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 sm:w-auto sm:px-6 sm:text-base"
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md disabled:opacity-50 disabled:hover:translate-y-0"
                   >
-                    Cancelar
+                    <i className="ri-close-line"></i>
+                    <span>Cancelar</span>
                   </button>
                   <button
                     type="submit"
                     disabled={updatingProfile}
-                    className="bg-primary w-full cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700 disabled:opacity-50 sm:w-auto sm:px-6 sm:text-base"
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
                   >
-                    {updatingProfile ? "Guardando..." : "Guardar Cambios"}
+                    {updatingProfile ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                        <span>Guardando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="ri-save-line text-lg transition-transform group-hover:scale-110"></i>
+                        <span>Guardar Cambios</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

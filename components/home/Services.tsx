@@ -13,82 +13,65 @@ export default function Services() {
   }
 
   return (
-    <section id="services" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Nuestros Servicios
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Ofrecemos soluciones completas para impulsar tu negocio en el mundo
-            digital
+    <section id="services" className="bg-gray-50 py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mb-16 text-center">
+          <h2 className="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">Nuestros Servicios</h2>
+          <p className="mx-auto max-w-3xl text-xl text-gray-600">
+            Ofrecemos soluciones completas para impulsar tu negocio en el mundo digital
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {services.map((service, index) => (
             <article
               key={index}
-              className="bg-white flex rounded-2xl p-8 justify-between flex-col shadow-lg hover:shadow-xl transition-all  hover:-translate-y-2"
+              className="flex flex-col justify-between rounded-2xl bg-white p-8 shadow-lg transition-all hover:-translate-y-2 hover:shadow-xl"
             >
               <div>
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                  <i className={`${service.icon} text-primary text-3xl`}></i>
+                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
+                  <i className={`${service.icon} text-3xl`}></i>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {service.description}
-                </p>
+                <h3 className="mb-4 text-xl font-bold text-gray-900">{service.title}</h3>
+                <p className="mb-6 leading-relaxed text-gray-600">{service.description}</p>
               </div>
 
-              <ul className="space-y-2 flex-1 mb-6">
+              <ul className="mb-6 flex-1 space-y-2">
                 {service.features.map((feature, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-center text-sm text-gray-600"
-                  >
-                    <i className="ri-check-line text-primary mr-2"></i>
+                  <li key={idx} className="flex items-center text-sm text-gray-600">
+                    <i className="ri-checkbox-circle-line mr-2 text-cyan-500"></i>
                     {feature}
                   </li>
                 ))}
               </ul>
 
-              <footer className="border-t pt-6">
-                <div className="text-xl font-bold text-primary mb-4">
-                  {service.price}
-                </div>
+              <footer className="border-t border-gray-200 pt-6">
+                <div className="text-primary mb-4 text-xl font-bold">{service.price}</div>
                 <button
-                  onClick={
-                    service.title === "Red de Freelancers"
-                      ? Unirteahora
-                      : scrollToContact
-                  }
-                  className="w-full bg-primary hover:bg-cyan-700 text-white py-3 rounded-xl font-semibold transition-all whitespace-nowrap cursor-pointer"
+                  onClick={service.title === "Red de Freelancers" ? Unirteahora : scrollToContact}
+                  className="group w-full cursor-pointer rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 py-3 font-semibold whitespace-nowrap text-white shadow-md shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/40"
                 >
-                  {service.title === "Red de Freelancers"
-                    ? "Unirte Ahora"
-                    : "Solicitar Cotización"}
+                  {service.title === "Red de Freelancers" ? "Unirte Ahora" : "Solicitar Cotización"}
                 </button>
               </footer>
             </article>
           ))}
         </div>
 
-        <div className="text-center mt-16">
-          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+        <div className="mt-16 text-center">
+          <div className="rounded-2xl bg-white p-8 shadow-lg md:p-12">
+            <h3 className="mb-4 text-2xl font-bold text-gray-900 md:text-3xl">
               ¿Necesitas una solución personalizada?
             </h3>
-            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Cada proyecto es único. Conversemos sobre tus necesidades
-              específicas y creemos la solución perfecta para ti.
+            <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-600">
+              Cada proyecto es único. Conversemos sobre tus necesidades específicas y creemos la
+              solución perfecta para ti.
             </p>
             <button
               onClick={scrollToContact}
-              className="bg-primary hover:bg-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all  whitespace-nowrap cursor-pointer"
+              className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-8 py-4 text-lg font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
+              <i className="ri-calendar-check-line text-xl transition-transform group-hover:scale-110"></i>
               Consulta Gratuita
             </button>
           </div>

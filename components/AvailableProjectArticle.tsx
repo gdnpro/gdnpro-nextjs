@@ -19,100 +19,108 @@ export const AvailableProjectArticle = ({
   return (
     <div
       key={project.id}
-      className="bg-gray-50 rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow"
+      className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10 sm:p-8"
     >
-      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
+      <div className="flex flex-col space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-y-0">
         <div className="flex-1">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
-            <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-0">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h4 className="text-xl font-bold text-gray-900 sm:text-2xl">
               {project.title}
             </h4>
-            <div className="flex items-center space-x-4">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-500 to-green-500 px-3 py-1 text-xs font-semibold text-white shadow-md">
+                <i className="ri-check-line mr-1"></i>
                 {project.status === "open" ? "Abierto" : project.status}
               </span>
-              <span className="text-lg sm:text-xl font-bold text-primary">
-                ${project.budget_min || project.budget || 0} - $
-                {project.budget_max || project.budget || 0}
-              </span>
+              <div className="rounded-xl bg-gradient-to-br from-cyan-50 to-teal-50 px-4 py-2 ring-1 ring-cyan-200">
+                <span className="text-primary text-lg font-bold sm:text-xl">
+                  ${project.budget_min || project.budget || 0} - $
+                  {project.budget_max || project.budget || 0}
+                </span>
+              </div>
             </div>
           </div>
 
-          <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">
+          <p className="mb-6 text-sm leading-relaxed text-gray-600 sm:text-base">
             {project.description.length > 200
               ? `${project.description.substring(0, 200)}...`
               : project.description}
           </p>
 
-          <div className="flex flex-wrap items-center gap-2 mb-4">
+          <div className="mb-6 flex flex-wrap items-center gap-2">
             {project.required_skills?.slice(0, 3).map((skill, index) => (
               <span
                 key={index}
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-cyan-800"
+                className="group/skill relative overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-1.5 text-xs font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
               >
-                {skill}
+                <span className="relative z-10 flex items-center gap-1.5">
+                  <i className="ri-checkbox-circle-line text-xs"></i>
+                  <span>{skill}</span>
+                </span>
               </span>
             ))}
             {project.required_skills && project.required_skills.length > 3 && (
-              <span className="text-xs text-gray-500">
+              <span className="rounded-full bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700">
                 +{project.required_skills.length - 3} más
               </span>
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
-              <div className="flex items-center">
-                <i className="ri-user-line mr-1"></i>
-                <span>{project.client?.full_name}</span>
-                <span className="ml-1 text-yellow-500">
-                  {project.client?.rating!! > 0
-                    ? `${project.client?.rating} ★`
-                    : ""}
-                </span>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-100 to-teal-100">
+                  <i className="ri-user-line text-cyan-600"></i>
+                </div>
+                <span className="font-medium text-gray-700">{project.client?.full_name}</span>
+                {project.client?.rating && project.client.rating > 0 && (
+                  <span className="flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-semibold text-yellow-700">
+                    <i className="ri-star-fill text-yellow-500"></i>
+                    {project.client.rating}
+                  </span>
+                )}
               </div>
-              <div className="flex items-center">
-                <i className="ri-calendar-line mr-1"></i>
-                <span>
-                  {new Date(project.created_at).toLocaleDateString("es-ES")}
-                </span>
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100">
+                  <i className="ri-calendar-line text-blue-600"></i>
+                </div>
+                <span>{new Date(project.created_at).toLocaleDateString("es-ES")}</span>
               </div>
               {project.deadline && (
-                <div className="flex items-center">
-                  <i className="ri-time-line mr-1"></i>
-                  <span>
-                    Hasta{" "}
-                    {new Date(project.deadline).toLocaleDateString("es-ES")}
-                  </span>
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-100 to-pink-100">
+                    <i className="ri-time-line text-purple-600"></i>
+                  </div>
+                  <span>Hasta {new Date(project.deadline).toLocaleDateString("es-ES")}</span>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row lg:flex-col space-y-2 sm:space-y-0 sm:space-x-2 lg:space-x-0 lg:space-y-2 lg:ml-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-2 lg:ml-6 lg:flex-col lg:gap-3">
           <button
             onClick={() => viewProjectDetails(project)}
-            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+            className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold whitespace-nowrap text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
           >
-            <i className="ri-eye-line mr-2"></i>
+            <i className="ri-eye-line text-base transition-transform group-hover:scale-110"></i>
             Ver Detalles
           </button>
           {!proposals.find((p) => p.project?.id === project.id) && (
             <button
               onClick={() => sendProposal(project.id)}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 text-sm font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
-              <i className="ri-send-plane-line mr-2"></i>
+              <i className="ri-send-plane-fill text-base transition-transform group-hover:translate-x-1"></i>
               Enviar Propuesta
             </button>
           )}
           {project.client?.id && (
             <button
               onClick={() => startChat(project.id, project.client?.id!)}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm font-medium whitespace-nowrap cursor-pointer"
+              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 text-sm font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
-              <i className="ri-chat-3-line mr-2"></i>
+              <i className="ri-chat-3-line text-base transition-transform group-hover:scale-110"></i>
               Chat Cliente
             </button>
           )}

@@ -472,7 +472,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
       {/* Métricas principales */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div className="to-primary from-primary rounded-xl bg-linear-to-br p-6 text-white shadow-lg">
+        <div className="to-primary from-primary rounded-xl bg-gradient-to-br p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-blue-100">
@@ -492,7 +492,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           </div>
         </div>
 
-        <div className="rounded-xl bg-linear-to-br from-emerald-500 to-emerald-600 p-6 text-white shadow-lg">
+        <div className="rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-emerald-100">Este Mes</p>
@@ -510,7 +510,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           </div>
         </div>
 
-        <div className="rounded-xl bg-linear-to-br from-purple-500 to-purple-600 p-6 text-white shadow-lg">
+        <div className="rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-purple-100">Proyectos Completados</p>
@@ -526,7 +526,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           </div>
         </div>
 
-        <div className="rounded-xl bg-linear-to-br from-amber-500 to-amber-600 p-6 text-white shadow-lg">
+        <div className="rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-amber-100">Rating Promedio</p>
@@ -569,7 +569,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
                   <div className="flex-1">
                     <div className="relative h-3 overflow-hidden rounded-full bg-gray-200">
                       <div
-                        className="to-primary from-primary h-full rounded-full bg-linear-to-r transition-all duration-1000"
+                        className="to-primary from-primary h-full rounded-full bg-gradient-to-r transition-all duration-1000"
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
@@ -604,7 +604,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
                 return (
                   <div key={index} className="flex items-center space-x-4">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-amber-400 to-amber-500 text-sm font-bold text-white">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-500 text-sm font-bold text-white">
                       {index + 1}
                     </div>
                     <div className="flex-1">
@@ -614,7 +614,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
                       </div>
                       <div className="relative h-2 overflow-hidden rounded-full bg-gray-200">
                         <div
-                          className="h-full rounded-full bg-linear-to-r from-amber-400 to-amber-500 transition-all duration-1000"
+                          className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-1000"
                           style={{ width: `${percentage}%` }}
                         ></div>
                       </div>
@@ -634,7 +634,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
       {/* Predicciones y recomendaciones */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-indigo-200 bg-linear-to-br from-indigo-50 to-blue-50 p-6">
+        <div className="rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-blue-50 p-6">
           <h3 className="mb-4 flex items-center text-lg font-semibold text-indigo-900">
             <i className="ri-crystal-ball-line mr-2"></i>
             Predicciones IA
@@ -665,7 +665,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           </div>
         </div>
 
-        <div className="rounded-xl border border-emerald-200 bg-linear-to-br from-emerald-50 to-green-50 p-6">
+        <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 p-6">
           <h3 className="mb-4 flex items-center text-lg font-semibold text-emerald-900">
             <i className="ri-lightbulb-line mr-2"></i>
             Recomendaciones IA

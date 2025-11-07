@@ -95,7 +95,7 @@ export function ShareProfileTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="to-primary rounded-xl bg-linear-to-r from-cyan-500 p-6 text-white">
+      <div className="to-primary rounded-xl bg-gradient-to-r from-cyan-500 p-6 text-white">
         <h2 className="mb-2 text-2xl font-bold">Comparte tu Perfil</h2>
         <p className="text-cyan-100">
           Aumenta tu visibilidad compartiendo tu perfil profesional en redes sociales
@@ -273,7 +273,7 @@ export function ShareProfileTab() {
       </div>
 
       {/* Tips para compartir */}
-      <div className="rounded-xl border border-blue-200 bg-linear-to-r from-blue-50 to-emerald-50 p-6">
+      <div className="rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-emerald-50 p-6">
         <h3 className="mb-4 text-lg font-semibold text-gray-900">
           <i className="ri-lightbulb-line mr-2 text-yellow-500"></i>
           Tips para Maximizar tu Alcance
