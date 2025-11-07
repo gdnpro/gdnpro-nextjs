@@ -43,10 +43,12 @@ export interface Project {
     created_at: string
   }>
   freelancer?: {
+    id?: string
     full_name: string
     email: string
     rating: number
-    skills: string[] 
+    skills?: string[]
+    avatar_url?: string
   }
   _isFromTransaction?: boolean
   _transactionId?: string

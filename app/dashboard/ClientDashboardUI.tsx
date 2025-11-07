@@ -203,7 +203,7 @@ export default function ClientDashboardUI() {
 
               // Create a map for quick lookup
               freelancersMap = new Map(
-                (freelancersData || []).map((freelancer) => [freelancer.id, freelancer]),
+                (freelancersData || []).map((freelancer: any) => [freelancer.id, freelancer]),
               )
             }
 
@@ -1255,11 +1255,13 @@ export default function ClientDashboardUI() {
                     handleContactFreelancer={
                       project._isFromTransaction && project.freelancer?.id
                         ? () => {
-                            const freelancerId = project.freelancer!.id!
-                            const freelancerName = project.freelancer!.full_name || "Freelancer"
+                            const freelancerId = project.freelancer?.id
+                            const freelancerName = project.freelancer?.full_name || "Freelancer"
                             // For transaction projects, pass null as projectId (not a valid UUID)
                             const projectId = project._isFromTransaction ? null : project.id
-                            handleContactFreelancer(freelancerId, freelancerName, projectId)
+                            if (freelancerId) {
+                              handleContactFreelancer(freelancerId, freelancerName, projectId)
+                            }
                           }
                         : undefined
                     }
@@ -1561,7 +1563,9 @@ export default function ClientDashboardUI() {
 
                 {/* Transaction Details */}
                 <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-                  <h3 className="mb-4 text-xl font-bold text-gray-900">Información de la Transacción</h3>
+                  <h3 className="mb-4 text-xl font-bold text-gray-900">
+                    Información de la Transacción
+                  </h3>
                   <div className="space-y-4">
                     <div className="flex items-start justify-between border-b border-gray-200 pb-3">
                       <div className="flex items-center gap-3">
@@ -1579,7 +1583,7 @@ export default function ClientDashboardUI() {
                           <i className="ri-file-list-3-line text-cyan-600"></i>
                           <span className="font-medium text-gray-700">Descripción</span>
                         </div>
-                        <span className="text-right text-sm text-gray-600 max-w-md">
+                        <span className="max-w-md text-right text-sm text-gray-600">
                           {selectedTransaction.project_description}
                         </span>
                       </div>
@@ -1623,7 +1627,7 @@ export default function ClientDashboardUI() {
                           <i className="ri-bank-card-line text-cyan-600"></i>
                           <span className="font-medium text-gray-700">ID de Sesión Stripe</span>
                         </div>
-                        <span className="text-right text-xs font-mono text-gray-600 break-all max-w-md">
+                        <span className="max-w-md text-right font-mono text-xs break-all text-gray-600">
                           {selectedTransaction.stripe_session_id}
                         </span>
                       </div>
