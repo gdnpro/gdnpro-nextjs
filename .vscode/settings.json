@@ -7,10 +7,20 @@
   "tailwindCSS.lint.invalidTailwindDirective": "ignore",
   "tailwindCSS.lint.invalidVariant": "ignore",
   "tailwindCSS.lint.recommendedVariantOrder": "ignore",
+  "tailwindCSS.lint.unknownAtRules": "ignore",
+  "tailwindCSS.lint.unknownClassNames": "ignore",
   "css.lint.unknownAtRules": "ignore",
   "css.validate": false,
   "tailwindCSS.suggestions": true,
   "tailwindCSS.hovers": true,
-  "tailwindCSS.colorDecorators": true
+  "tailwindCSS.colorDecorators": true,
+  "tailwindCSS.experimental.configFile": null,
+  "tailwindCSS.validate": false,
+  "editor.quickSuggestions": {
+    "strings": false
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
 }
 

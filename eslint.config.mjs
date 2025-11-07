@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     'import/no-named-as-default-member': 'off',
     // Disable Tailwind CSS class name warnings
     '@typescript-eslint/no-unused-vars': 'off',
+    // Disable all class name validation warnings
+    'no-warning-comments': 'off',
   }, 
   },
   // Override default ignores of eslint-config-next.

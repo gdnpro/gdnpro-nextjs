@@ -192,7 +192,7 @@ export default function WorksProjectDetailsModal({
               <h3 className="text-xl font-bold text-gray-900">Descripción del Proyecto</h3>
             </div>
             <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-              <p className="whitespace-pre-wrap leading-relaxed text-gray-700">
+              <p className="leading-relaxed whitespace-pre-wrap text-gray-700">
                 {project.description}
               </p>
             </div>
@@ -208,7 +208,7 @@ export default function WorksProjectDetailsModal({
                 <h3 className="text-xl font-bold text-gray-900">Requisitos</h3>
               </div>
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-                <p className="whitespace-pre-wrap leading-relaxed text-gray-700">
+                <p className="leading-relaxed whitespace-pre-wrap text-gray-700">
                   {project.requirements}
                 </p>
               </div>
@@ -226,7 +226,7 @@ export default function WorksProjectDetailsModal({
               </div>
               <div className="flex flex-wrap gap-3">
                 {project.required_skills.map((skill, index) => {
-                  const skillText = typeof skill === 'string' ? skill : skill.name || skill
+                  const skillText = typeof skill === "string" ? skill : skill || skill
                   return (
                     <span
                       key={index}
@@ -292,7 +292,7 @@ export default function WorksProjectDetailsModal({
             </button>
             <button
               onClick={handleSendProposal}
-              className="group bg-gradient-to-r flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+              className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
               <i className="ri-send-plane-fill text-xl transition-transform group-hover:translate-x-1"></i>
               <span>Enviar Propuesta</span>
