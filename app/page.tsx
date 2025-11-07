@@ -8,7 +8,6 @@ import Team from "@/components/home/Team"
 import Testimonials from "@/components/home/Testimonials"
 import CTA from "@/components/home/CTA"
 import Contact from "@/components/Contact"
-import Layout from "@/components/Layout"
 import { useEffect } from "react"
 
 export default function Home() {
@@ -17,7 +16,7 @@ export default function Home() {
   }, [])
 
   return (
-    <Layout>
+    <>
       <Hero />
       <About />
       <Services />
@@ -26,6 +25,6 @@ export default function Home() {
       <Testimonials />
       <CTA />
       <Contact />
-    </Layout>
+    </>
   )
 }

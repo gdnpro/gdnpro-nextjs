@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Layout from "@/components/Layout"
 import { useAuth } from "@/contexts/AuthContext"
 import WhatsAppSetup from "@/components/WhatsAppSetup"
 import { supabaseBrowser } from "@/utils/supabase/client"
@@ -707,7 +706,9 @@ export default function AdminContacts() {
                       <i className="ri-mail-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold leading-tight sm:text-3xl">Mensaje de Contacto</h2>
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                        Mensaje de Contacto
+                      </h2>
                       <span
                         className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
                           selectedContact.status === "new"
@@ -735,7 +736,6 @@ export default function AdminContacts() {
               </div>
             </div>
             <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
-
               <div className="space-y-6">
                 {/* Información del Contacto */}
                 <div className="rounded-lg border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
@@ -887,7 +887,7 @@ export default function AdminContacts() {
                       <i className="ri-reply-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold leading-tight sm:text-3xl">
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
                         Responder a {selectedContact.name}
                       </h2>
                       <p className="mt-2 text-sm text-cyan-100">
@@ -909,7 +909,6 @@ export default function AdminContacts() {
               </div>
             </div>
             <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
-
               {/* Información del destinatario */}
               <div className="mb-6 rounded-lg border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-4">
                 <div className="flex items-center">

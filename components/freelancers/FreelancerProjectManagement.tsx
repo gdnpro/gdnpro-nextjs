@@ -4,6 +4,9 @@ import { supabaseBrowser } from "@/utils/supabase/client"
 import type { Project } from "@/interfaces/Project"
 import type { ProjectUpdates } from "@/interfaces/ProjectUpdates"
 import { useState, useEffect } from "react"
+import { InputDialog } from "@/components/ui/InputDialog"
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
+import { useConfirm } from "@/hooks/useConfirm"
 
 const supabase = supabaseBrowser()
 
@@ -22,6 +25,8 @@ export function FreelancerProjectManagement({
   const [loading, setLoading] = useState(false)
   const [updating, setUpdating] = useState(false)
   const [newProgressNote, setNewProgressNote] = useState("")
+  const [showProgressDialog, setShowProgressDialog] = useState(false)
+  const { confirm, isOpen, config, handleConfirm, handleCancel } = useConfirm()
 
   const getProfileId = async () => {
     const { data: userData } = await supabase.auth.getUser()
@@ -65,7 +70,7 @@ export function FreelancerProjectManagement({
           project_milestones(
             id, title, description, due_date, status, amount, created_at
           )
-        `
+        `,
         )
         .eq("id", project.id)
         .single()
@@ -149,7 +154,7 @@ export function FreelancerProjectManagement({
     const totalMilestones = projectData.total_milestones || 1
     const newProgressPercentage = Math.min(
       100,
-      Math.round((newCompletedMilestones / totalMilestones) * 100)
+      Math.round((newCompletedMilestones / totalMilestones) * 100),
     )
 
     await updateProjectProgress({
@@ -173,11 +178,14 @@ export function FreelancerProjectManagement({
     setNewProgressNote("")
   }
 
-  const updateProgressPercentage = async () => {
-    const percentage = prompt("Actualizar porcentaje de progreso (0-100):")
-    if (percentage && !isNaN(Number(percentage))) {
-      const value = Math.max(0, Math.min(100, Number(percentage)))
-      await updateProjectProgress({ progress_percentage: value })
+  const updateProgressPercentage = () => {
+    setShowProgressDialog(true)
+  }
+
+  const handleProgressPercentageSubmit = async (value: string) => {
+    if (value && !isNaN(Number(value))) {
+      const percentage = Math.max(0, Math.min(100, Number(value)))
+      await updateProjectProgress({ progress_percentage: percentage })
     }
   }
 
@@ -194,32 +202,32 @@ export function FreelancerProjectManagement({
       return
     }
 
-    if (
-      confirm(
-        "¿Estás seguro de que quieres marcar este proyecto como completado?"
-      )
-    ) {
-      await updateProjectProgress({
-        status: "completed",
-        progress_percentage: 100,
-        completed_at: new Date().toISOString(),
-        freelancer_id: profileId,
-      }).then(() => {
-        window.toast({
-          title: "¡Proyecto completado!",
-          type: "success",
-          location: "bottom-center",
-          dismissible: true,
-          icon: true,
-        })
+    const confirmed = await confirm(
+      "Confirmar Completación",
+      "¿Estás seguro de que quieres marcar este proyecto como completado?",
+    )
+    if (!confirmed) return
+
+    await updateProjectProgress({
+      status: "completed",
+      progress_percentage: 100,
+      completed_at: new Date().toISOString(),
+      freelancer_id: profileId,
+    }).then(() => {
+      window.toast({
+        title: "¡Proyecto completado!",
+        type: "success",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
       })
-    }
+    })
   }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-600"></div>
       </div>
     )
   }
@@ -227,7 +235,7 @@ export function FreelancerProjectManagement({
   return (
     <div className="space-y-6">
       {/* Información General del Proyecto */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
@@ -251,7 +259,7 @@ export function FreelancerProjectManagement({
             <div className="flex items-center justify-between">
               <span className="font-medium text-gray-700">Estado:</span>
               <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${
                   projectData.status === "completed"
                     ? "bg-emerald-500/90 text-white"
                     : projectData.status === "in_progress"
@@ -310,15 +318,15 @@ export function FreelancerProjectManagement({
           </div>
           <div className="space-y-4">
             <div>
-              <div className="flex justify-between text-sm mb-2">
+              <div className="mb-2 flex justify-between text-sm">
                 <span className="font-medium text-gray-700">Progreso General</span>
                 <span className="font-bold text-cyan-600">
                   {projectData.progress_percentage || 0}%
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200">
                 <div
-                  className="bg-gradient-to-r from-cyan-500 to-teal-500 h-3 rounded-full transition-all shadow-lg shadow-cyan-500/30"
+                  className="h-3 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 shadow-lg shadow-cyan-500/30 transition-all"
                   style={{ width: `${projectData.progress_percentage || 0}%` }}
                 ></div>
               </div>
@@ -326,16 +334,14 @@ export function FreelancerProjectManagement({
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 p-4 ring-1 ring-emerald-100">
                 <span className="text-xs font-medium text-emerald-700">Hitos Completados</span>
-                <div className="text-2xl font-bold text-emerald-600 mt-1">
-                  {projectData.completed_milestones || 0} /{" "}
-                  {projectData.total_milestones || 0}
+                <div className="mt-1 text-2xl font-bold text-emerald-600">
+                  {projectData.completed_milestones || 0} / {projectData.total_milestones || 0}
                 </div>
               </div>
               <div className="rounded-xl bg-gradient-to-br from-cyan-50 to-teal-50 p-4 ring-1 ring-cyan-100">
                 <span className="text-xs font-medium text-cyan-700">Entregables</span>
-                <div className="text-2xl font-bold text-cyan-600 mt-1">
-                  {projectData.approved_deliverables || 0} /{" "}
-                  {projectData.total_deliverables || 0}
+                <div className="mt-1 text-2xl font-bold text-cyan-600">
+                  {projectData.approved_deliverables || 0} / {projectData.total_deliverables || 0}
                 </div>
               </div>
             </div>
@@ -356,41 +362,36 @@ export function FreelancerProjectManagement({
         </p>
         {projectData.requirements && (
           <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4">
-            <span className="font-semibold text-sm text-gray-900">Requisitos:</span>
-            <p className="text-sm text-gray-700 mt-2 leading-relaxed">
-              {projectData.requirements}
-            </p>
+            <span className="text-sm font-semibold text-gray-900">Requisitos:</span>
+            <p className="mt-2 text-sm leading-relaxed text-gray-700">{projectData.requirements}</p>
           </div>
         )}
       </div>
 
       {/* Habilidades Requeridas */}
-      {projectData.required_skills &&
-        projectData.required_skills.length > 0 && (
-          <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 text-white shadow-lg">
-                <i className="ri-tools-fill text-lg"></i>
-              </div>
-              <h5 className="text-xl font-bold text-gray-900">Habilidades Requeridas</h5>
+      {projectData.required_skills && projectData.required_skills.length > 0 && (
+        <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 text-white shadow-lg">
+              <i className="ri-tools-fill text-lg"></i>
             </div>
-            <div className="flex flex-wrap gap-3">
-              {projectData.required_skills.map(
-                (skill: string, index: number) => (
-                  <span
-                    key={index}
-                    className="group relative overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
-                  >
-                    <span className="relative z-10 flex items-center gap-2">
-                      <i className="ri-checkbox-circle-line"></i>
-                      <span>{skill}</span>
-                    </span>
-                  </span>
-                )
-              )}
-            </div>
+            <h5 className="text-xl font-bold text-gray-900">Habilidades Requeridas</h5>
           </div>
-        )}
+          <div className="flex flex-wrap gap-3">
+            {projectData.required_skills.map((skill: string, index: number) => (
+              <span
+                key={index}
+                className="group relative overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  <i className="ri-checkbox-circle-line"></i>
+                  <span>{skill}</span>
+                </span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Información del Cliente */}
       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
@@ -416,9 +417,7 @@ export function FreelancerProjectManagement({
             <h4 className="font-semibold text-gray-900">
               {projectData.client?.full_name || "Cliente"}
             </h4>
-            <p className="text-gray-600">
-              {projectData.client?.email || "No disponible"}
-            </p>
+            <p className="text-gray-600">{projectData.client?.email || "No disponible"}</p>
             {projectData.client?.rating && (
               <div className="mt-1 flex items-center gap-1 text-sm text-cyan-600">
                 <i className="ri-star-fill text-yellow-300"></i>
@@ -431,64 +430,63 @@ export function FreelancerProjectManagement({
       </div>
 
       {/* Hitos del Proyecto */}
-      {projectData.project_milestones &&
-        projectData.project_milestones.length > 0 && (
-          <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-lg">
-                <i className="ri-flag-line text-lg"></i>
-              </div>
-              <h5 className="text-xl font-bold text-gray-900">Hitos del Proyecto</h5>
+      {projectData.project_milestones && projectData.project_milestones.length > 0 && (
+        <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-lg">
+              <i className="ri-flag-line text-lg"></i>
             </div>
-            <div className="space-y-3">
-              {projectData.project_milestones.map((milestone) => (
-                <div key={milestone.id} className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h6 className="font-semibold text-gray-900">
-                        {milestone.title}
-                      </h6>
-                      {milestone.description && (
-                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                          {milestone.description}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
-                        {milestone.due_date && (
-                          <span className="flex items-center gap-1">
-                            <i className="ri-calendar-line"></i>
-                            {new Date(milestone.due_date).toLocaleDateString("es-ES")}
-                          </span>
-                        )}
-                        {milestone.amount && (
-                          <span className="flex items-center gap-1 font-semibold text-cyan-600">
-                            <i className="ri-money-dollar-circle-line"></i>
-                            ${milestone.amount}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        milestone.status === "completed"
-                          ? "bg-emerald-500/90 text-white"
-                          : milestone.status === "in_progress"
-                            ? "bg-blue-500/90 text-white"
-                            : "bg-gray-500/90 text-white"
-                      }`}
-                    >
-                      {milestone.status === "completed"
-                        ? "Completado"
-                        : milestone.status === "in_progress"
-                          ? "En Progreso"
-                          : "Pendiente"}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <h5 className="text-xl font-bold text-gray-900">Hitos del Proyecto</h5>
           </div>
-        )}
+          <div className="space-y-3">
+            {projectData.project_milestones.map((milestone) => (
+              <div
+                key={milestone.id}
+                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h6 className="font-semibold text-gray-900">{milestone.title}</h6>
+                    {milestone.description && (
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                        {milestone.description}
+                      </p>
+                    )}
+                    <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
+                      {milestone.due_date && (
+                        <span className="flex items-center gap-1">
+                          <i className="ri-calendar-line"></i>
+                          {new Date(milestone.due_date).toLocaleDateString("es-ES")}
+                        </span>
+                      )}
+                      {milestone.amount && (
+                        <span className="flex items-center gap-1 font-semibold text-cyan-600">
+                          <i className="ri-money-dollar-circle-line"></i>${milestone.amount}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                      milestone.status === "completed"
+                        ? "bg-emerald-500/90 text-white"
+                        : milestone.status === "in_progress"
+                          ? "bg-blue-500/90 text-white"
+                          : "bg-gray-500/90 text-white"
+                    }`}
+                  >
+                    {milestone.status === "completed"
+                      ? "Completado"
+                      : milestone.status === "in_progress"
+                        ? "En Progreso"
+                        : "Pendiente"}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Acciones de Progreso */}
       {!projectData._isFromTransaction && (
@@ -499,38 +497,38 @@ export function FreelancerProjectManagement({
             </div>
             <h5 className="text-xl font-bold text-emerald-800">Acciones de Progreso</h5>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
             <button
               onClick={completeProjectMilestone}
               disabled={
-                updating ||
-                projectData.completed_milestones! >=
-                  projectData.total_milestones!
+                updating || projectData.completed_milestones! >= projectData.total_milestones!
               }
-              className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/40 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:scale-100"
+              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
             >
               <i className="ri-checkbox-circle-line text-lg transition-transform group-hover:scale-110"></i>
               <span>Completar Hito</span>
             </button>
-            <button
-              onClick={updateProgressPercentage}
-              disabled={updating}
-              className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 cursor-pointer disabled:opacity-50"
-            >
-              <i className="ri-percent-line text-lg transition-transform group-hover:scale-110"></i>
-              <span>Actualizar %</span>
-            </button>
+            {projectData.status !== "completed" && (
+              <button
+                onClick={updateProgressPercentage}
+                disabled={updating}
+                className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50"
+              >
+                <i className="ri-percent-line text-lg transition-transform group-hover:scale-110"></i>
+                <span>Actualizar</span>
+              </button>
+            )}
             <button
               onClick={markProjectAsCompleted}
               disabled={updating || projectData.status === "completed"}
-              className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 px-4 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-green-500/40 cursor-pointer disabled:opacity-50"
+              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 px-4 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-green-500/40 disabled:opacity-50"
             >
               <i className="ri-check-double-line text-lg transition-transform group-hover:scale-110"></i>
               <span>Marcar Completado</span>
             </button>
             <button
               onClick={onClose}
-              className="group flex items-center justify-center gap-2 rounded-xl border-2 border-gray-400 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-lg cursor-pointer"
+              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-400 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-lg"
             >
               <i className="ri-close-line text-lg transition-transform group-hover:rotate-90"></i>
               <span>Cerrar</span>
@@ -554,13 +552,13 @@ export function FreelancerProjectManagement({
               value={newProgressNote}
               onChange={(e) => setNewProgressNote(e.target.value)}
               placeholder="Describe el progreso realizado..."
-              className="flex-1 rounded-xl border border-blue-300 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              className="flex-1 rounded-xl border border-blue-300 bg-white px-4 py-3 text-sm transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               onKeyPress={(e) => e.key === "Enter" && addProgressNote()}
             />
             <button
               onClick={addProgressNote}
               disabled={updating || !newProgressNote.trim()}
-              className="group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 cursor-pointer disabled:opacity-50"
+              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50"
             >
               <i className="ri-add-line text-lg transition-transform group-hover:scale-110"></i>
               <span>Agregar</span>
@@ -578,8 +576,8 @@ export function FreelancerProjectManagement({
             </div>
             <h5 className="text-xl font-bold text-gray-900">Historial de Notas</h5>
           </div>
-          <div className="rounded-xl border border-gray-200 bg-white p-4 max-h-40 overflow-y-auto shadow-sm">
-            <pre className="text-sm text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">
+          <div className="max-h-40 overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+            <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-700">
               {projectData.progress_notes}
             </pre>
           </div>
@@ -594,7 +592,7 @@ export function FreelancerProjectManagement({
           </div>
           <h5 className="text-xl font-bold text-yellow-800">Estado de Pago</h5>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="rounded-xl bg-white p-4 ring-1 ring-gray-200">
             <span className="text-xs font-medium text-gray-700">Estado de Pago</span>
             <div className="mt-2">
@@ -625,31 +623,64 @@ export function FreelancerProjectManagement({
                     : "bg-gray-500/90 text-white"
                 }`}
               >
-                {projectData.auto_release_enabled
-                  ? "Habilitada"
-                  : "Deshabilitada"}
+                {projectData.auto_release_enabled ? "Habilitada" : "Deshabilitada"}
               </span>
             </div>
           </div>
           <div className="rounded-xl bg-white p-4 ring-1 ring-gray-200">
             <span className="text-xs font-medium text-gray-700">Tipo</span>
             <p className="mt-2 text-sm font-semibold text-gray-900">
-              {projectData._isFromTransaction
-                ? "Contratación Directa"
-                : "Proyecto por Propuesta"}
+              {projectData._isFromTransaction ? "Contratación Directa" : "Proyecto por Propuesta"}
             </p>
           </div>
         </div>
       </div>
 
       {/* Última Actualización */}
-      <div className="text-center text-sm text-gray-500 pt-4 border-t border-gray-200">
+      <div className="border-t border-gray-200 pt-4 text-center text-sm text-gray-500">
         <i className="ri-time-line mr-1"></i>
         Última actualización:{" "}
         {projectData.last_progress_update
           ? new Date(projectData.last_progress_update).toLocaleString("es-ES")
           : "Nunca actualizado"}
       </div>
+
+      {/* Input Dialog para actualizar porcentaje de progreso */}
+      <InputDialog
+        isOpen={showProgressDialog}
+        onClose={() => setShowProgressDialog(false)}
+        onSubmit={handleProgressPercentageSubmit}
+        title="Actualizar Progreso"
+        label="Porcentaje de progreso (0-100)"
+        placeholder="Ingresa un valor entre 0 y 100"
+        type="number"
+        defaultValue={String(projectData.progress_percentage || 0)}
+        min={0}
+        max={100}
+        required
+        icon="ri-percent-line"
+        validate={(value) => {
+          const num = Number(value)
+          if (isNaN(num)) {
+            return { isValid: false, error: "Por favor ingresa un número válido" }
+          }
+          if (num < 0 || num > 100) {
+            return { isValid: false, error: "El valor debe estar entre 0 y 100" }
+          }
+          return { isValid: true }
+        }}
+      />
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={isOpen}
+        onClose={handleCancel}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        title={config.title}
+        description={config.description}
+        manageOverflow={false}
+      />
 
       {/* Mensaje para proyectos de transacción */}
       {projectData._isFromTransaction && (
@@ -659,14 +690,14 @@ export function FreelancerProjectManagement({
               <i className="ri-information-line text-lg"></i>
             </div>
             <div>
-              <h5 className="text-lg font-bold text-blue-800 mb-2">
+              <h5 className="mb-2 text-lg font-bold text-blue-800">
                 Proyecto de Contratación Directa
               </h5>
-              <p className="text-sm text-cyan-700 leading-relaxed">
-                Este proyecto fue contratado directamente por el cliente. Para
-                actualizar el progreso y coordinar entregables, utiliza el chat
-                interno para comunicarte directamente con el cliente. Los
-                cambios de estado se manejan mediante la comunicación directa.
+              <p className="text-sm leading-relaxed text-cyan-700">
+                Este proyecto fue contratado directamente por el cliente. Para actualizar el
+                progreso y coordinar entregables, utiliza el chat interno para comunicarte
+                directamente con el cliente. Los cambios de estado se manejan mediante la
+                comunicación directa.
               </p>
             </div>
           </div>

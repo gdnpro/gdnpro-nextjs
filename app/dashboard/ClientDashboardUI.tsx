@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
-import PaymentsTab from "@/components/PaymentsTab"
-import ProjectManagement from "@/components/ProjectManagement"
+import PaymentsTab from "@/components/dashboard/PaymentsTab"
+import ProjectManagement from "@/components/dashboard/ProjectManagement"
 import { PendingReviews } from "@/components/dashboard/PendingReviews"
 import { ReviewsDisplay } from "@/components/dashboard/ReviewsDisplay"
 import { useNotifications } from "@/hooks/useNotifications"
@@ -14,11 +14,10 @@ import type { Conversation } from "@/interfaces/Conversation"
 import type { Proposal } from "@/interfaces/Proposal"
 import type { ChatMessage } from "@/interfaces/ChatMessage"
 import type { Transaction } from "@/interfaces/Transaction"
-import Layout from "@/components/Layout"
 import { useSessionStorage } from "@/hooks/useSessionStorage"
 import { ConversationModal } from "@/components/ConversationModal"
-import { ProjectArticle } from "@/components/ProjectArticle"
-import { ProposalArticle } from "@/components/ProposalArticle"
+import { ProjectArticle } from "@/components/dashboard/ProjectArticle"
+import { ProposalArticle } from "@/components/dashboard/ProposalArticle"
 import { supabaseBrowser } from "@/utils/supabase/client"
 
 const supabase = supabaseBrowser()
@@ -64,6 +63,19 @@ export default function ClientDashboardUI() {
   const [updatingProfile, setUpdatingProfile] = useState(false)
   const [showTransactionDetails, setShowTransactionDetails] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+  const [showEditProjectModal, setShowEditProjectModal] = useState(false)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
+  const [editProjectForm, setEditProjectForm] = useState({
+    title: "",
+    description: "",
+    budget_min: "",
+    budget_max: "",
+    project_type: "fixed",
+    required_skills: [] as string[],
+    deadline: "",
+  })
+  const [editSkillInput, setEditSkillInput] = useState("")
+  const [updatingProject, setUpdatingProject] = useState(false)
 
   const { setValue, getValue } = useSessionStorage("last_tab")
   const { notifyProposal, notifyNewMessage, createReminderNotification } = useNotifications()
@@ -121,7 +133,8 @@ export default function ClientDashboardUI() {
       showProposalsModal ||
       showProjectManagement ||
       showNewProjectModal ||
-      showEditProfileModal
+      showEditProfileModal ||
+      showEditProjectModal
     ) {
       document.body.style.overflow = "hidden"
     } else {
@@ -137,6 +150,7 @@ export default function ClientDashboardUI() {
     showProjectManagement,
     showNewProjectModal,
     showEditProfileModal,
+    showEditProjectModal,
   ])
 
   const loadProjects = async () => {
@@ -903,6 +917,132 @@ export default function ClientDashboardUI() {
     }
   }
 
+  const openEditProjectModal = (project: Project) => {
+    if (project._isFromTransaction) return // Can't edit transaction projects
+
+    setEditingProject(project)
+    setEditProjectForm({
+      title: project.title || "",
+      description: project.description || "",
+      budget_min: project.budget_min?.toString() || "",
+      budget_max: project.budget_max?.toString() || "",
+      project_type: project.project_type || "fixed",
+      required_skills: project.required_skills || [],
+      deadline: project.deadline || "",
+    })
+    setEditSkillInput("")
+    setShowEditProjectModal(true)
+  }
+
+  const updateProject = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingProject || updatingProject) return
+
+    setUpdatingProject(true)
+
+    try {
+      const { error } = await supabase
+        .from("projects")
+        .update({
+          title: editProjectForm.title.trim(),
+          description: editProjectForm.description.trim(),
+          budget_min: parseInt(editProjectForm.budget_min),
+          budget_max: parseInt(editProjectForm.budget_max),
+          project_type: editProjectForm.project_type,
+          required_skills: editProjectForm.required_skills,
+          deadline: editProjectForm.deadline || null,
+        })
+        .eq("id", editingProject.id)
+
+      if (error) throw error
+
+      setShowEditProjectModal(false)
+      setEditingProject(null)
+      loadProjects()
+
+      window.toast({
+        title: "Proyecto actualizado exitosamente",
+        type: "success",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+    } catch (error) {
+      console.error("Error updating project:", error)
+      window.toast({
+        title: "Error al actualizar el proyecto",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+    } finally {
+      setUpdatingProject(false)
+    }
+  }
+
+  const deleteProject = async (project: Project) => {
+    if (project._isFromTransaction) return // Can't delete transaction projects
+
+    try {
+      // Check if there are accepted proposals or if a freelancer is assigned
+      const hasAcceptedProposals = project.proposals?.some((p) => p.status === "accepted") || false
+      const hasFreelancerAssigned = !!project.freelancer?.id
+
+      if ((hasAcceptedProposals || hasFreelancerAssigned) && project.status !== "completed") {
+        window.toast({
+          title: "No puedes eliminar un proyecto con propuestas aceptadas o freelancer asignado",
+          type: "error",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
+        return
+      }
+
+      // Delete the project
+      const { error } = await supabase.from("projects").delete().eq("id", project.id)
+
+      if (error) throw error
+
+      loadProjects()
+
+      window.toast({
+        title: "Proyecto eliminado exitosamente",
+        type: "success",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+    } catch (error) {
+      console.error("Error deleting project:", error)
+      window.toast({
+        title: "Error al eliminar el proyecto",
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
+    }
+  }
+
+  const addEditSkill = (skill: string) => {
+    if (skill && !editProjectForm.required_skills.includes(skill)) {
+      setEditProjectForm({
+        ...editProjectForm,
+        required_skills: [...editProjectForm.required_skills, skill],
+      })
+      setEditSkillInput("")
+    }
+  }
+
+  const removeEditSkill = (skillToRemove: string) => {
+    setEditProjectForm({
+      ...editProjectForm,
+      required_skills: editProjectForm.required_skills.filter((skill) => skill !== skillToRemove),
+    })
+  }
+
   const tabsOptions = [
     {
       value: "projects",
@@ -1268,6 +1408,8 @@ export default function ClientDashboardUI() {
                     handleViewTransaction={
                       project._isFromTransaction ? () => handleViewTransaction(project) : undefined
                     }
+                    handleEditProject={() => openEditProjectModal(project)}
+                    handleDeleteProject={() => deleteProject(project)}
                   />
                 ))}
               </div>
@@ -1701,7 +1843,7 @@ export default function ClientDashboardUI() {
                           <p className="mb-1 text-xs font-medium text-gray-600 sm:text-sm">
                             Descripción Completa:
                           </p>
-                          <p className="text-sm leading-relaxed text-gray-900 sm:text-base">
+                          <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-900 sm:text-base">
                             {selectedProject.description}
                           </p>
                         </div>
@@ -1821,11 +1963,11 @@ export default function ClientDashboardUI() {
           onClick={() => setShowNewProjectModal(false)}
         >
           <div
-            className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-w-3xl"
+            className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-3xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between">
                 <div className="flex-1 pr-4">
@@ -2162,6 +2304,261 @@ export default function ClientDashboardUI() {
                     className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
                   >
                     {updatingProfile ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                        <span>Guardando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="ri-save-line text-lg transition-transform group-hover:scale-110"></i>
+                        <span>Guardar Cambios</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Editar Proyecto */}
+      {showEditProjectModal && editingProject && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4"
+          onClick={() => {
+            setShowEditProjectModal(false)
+            setEditingProject(null)
+          }}
+        >
+          <div
+            className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-3xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modern Header with Gradient */}
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-edit-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                        Editar Proyecto
+                      </h2>
+                      <p className="mt-2 text-sm text-cyan-100">
+                        Actualiza la información de tu proyecto
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowEditProjectModal(false)
+                    setEditingProject(null)
+                  }}
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
+                >
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
+              <form onSubmit={updateProject} className="space-y-4 sm:space-y-6">
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Título del Proyecto
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editProjectForm.title}
+                    onChange={(e) =>
+                      setEditProjectForm({ ...editProjectForm, title: e.target.value })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    placeholder="Ej: Desarrollo de sitio web corporativo"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Descripción
+                  </label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={editProjectForm.description}
+                    onChange={(e) =>
+                      setEditProjectForm({
+                        ...editProjectForm,
+                        description: e.target.value,
+                      })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    placeholder="Describe tu proyecto en detalle..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                      Presupuesto Mínimo (USD)
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      value={editProjectForm.budget_min}
+                      onChange={(e) =>
+                        setEditProjectForm({
+                          ...editProjectForm,
+                          budget_min: e.target.value,
+                        })
+                      }
+                      className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                      Presupuesto Máximo (USD)
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      value={editProjectForm.budget_max}
+                      onChange={(e) =>
+                        setEditProjectForm({
+                          ...editProjectForm,
+                          budget_max: e.target.value,
+                        })
+                      }
+                      className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Tipo de Proyecto
+                  </label>
+                  <select
+                    value={editProjectForm.project_type}
+                    onChange={(e) =>
+                      setEditProjectForm({
+                        ...editProjectForm,
+                        project_type: e.target.value,
+                      })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 pr-8 text-sm focus:outline-none sm:text-base"
+                  >
+                    <option value="fixed">Precio Fijo</option>
+                    <option value="hourly">Por Hora</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Habilidades Requeridas
+                  </label>
+                  <div className="mb-3 flex flex-wrap gap-1 sm:gap-2">
+                    {editProjectForm.required_skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs text-cyan-800 sm:px-3 sm:text-sm"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => removeEditSkill(skill)}
+                          className="text-primary ml-1 cursor-pointer hover:text-cyan-800 sm:ml-2"
+                        >
+                          <i className="ri-close-line text-xs"></i>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex">
+                    <input
+                      type="text"
+                      value={editSkillInput}
+                      onChange={(e) => setEditSkillInput(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault()
+                          addEditSkill(editSkillInput.trim())
+                        }
+                      }}
+                      className="focus:ring-primary focus:border-primary flex-1 rounded-l-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                      placeholder="Añadir habilidad (presiona Enter)"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => addEditSkill(editSkillInput.trim())}
+                      className="bg-primary cursor-pointer rounded-r-md px-3 py-2 text-white transition-colors hover:bg-cyan-700 sm:px-4"
+                    >
+                      <i className="ri-add-line"></i>
+                    </button>
+                  </div>
+                  <div className="mt-2">
+                    <p className="text-xs text-gray-600 sm:text-sm">Habilidades populares:</p>
+                    <div className="mt-1 flex flex-wrap gap-1 sm:gap-2">
+                      {popularSkills.map((skill) => (
+                        <button
+                          key={skill}
+                          type="button"
+                          onClick={() => addEditSkill(skill)}
+                          className="cursor-pointer rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700 hover:bg-gray-200"
+                        >
+                          {skill}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
+                    Fecha límite (opcional)
+                  </label>
+                  <input
+                    type="date"
+                    value={editProjectForm.deadline}
+                    onChange={(e) =>
+                      setEditProjectForm({
+                        ...editProjectForm,
+                        deadline: e.target.value,
+                      })
+                    }
+                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
+                    min={new Date().toISOString().split("T")[0]}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowEditProjectModal(false)
+                      setEditingProject(null)
+                    }}
+                    disabled={updatingProject}
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md disabled:opacity-50 disabled:hover:translate-y-0"
+                  >
+                    <i className="ri-close-line"></i>
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={updatingProject}
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
+                  >
+                    {updatingProject ? (
                       <>
                         <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                         <span>Guardando...</span>

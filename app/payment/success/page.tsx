@@ -147,8 +147,6 @@ function SuccessPaymentContent() {
         )
       }
 
-      console.log("✅ Payment verified:", data)
-
       // Ensure transaction is saved/updated with success status
       if (data.success) {
         // Get user profile to get the correct client_id
@@ -179,7 +177,6 @@ function SuccessPaymentContent() {
           if (updateError) {
             console.error("Error updating transaction:", updateError)
           } else {
-            console.log("✅ Transaction updated with paid status")
             // Reload the transaction to get updated data
             const { data: updatedTransaction } = await supabase
               .from("transactions")
@@ -224,8 +221,6 @@ function SuccessPaymentContent() {
           if (insertError) {
             console.error("Error creating transaction:", insertError)
           } else {
-            console.log("✅ Transaction created with paid status")
-
             // Load freelancer info if available
             if (data.transaction.freelancer_id) {
               const { data: freelancer } = await supabase

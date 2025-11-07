@@ -81,8 +81,6 @@ function CheckoutContent() {
         throw new Error("El monto máximo es $10,000 USD")
       }
 
-      console.log("💳 Starting payment process...")
-
       // Obtener token de autenticación
       const {
         data: { session },
@@ -124,8 +122,6 @@ function CheckoutContent() {
       if (!response.ok) {
         throw new Error(data.error || "Error al crear la sesión de pago")
       }
-
-      console.log("✅ Payment session created, redirecting...")
 
       // Redirigir a Stripe Checkout
       window.location.href = data.checkout_url

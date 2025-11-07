@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { removeAccents } from "@/libs/removeAccents"
-import Layout from "@/components/Layout"
 import type { Profile } from "@/interfaces/Profile"
 import type { Conversation } from "@/interfaces/Conversation"
 import type { ChatMessage } from "@/interfaces/ChatMessage"
@@ -437,7 +436,7 @@ export default function FreelancerProfilePage() {
   }
 
   return (
-    <Layout>
+    <>
       <div className="pt-20 pb-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header del perfil */}
@@ -848,6 +847,6 @@ export default function FreelancerProfilePage() {
           sendMessage={sendMessage}
         />
       )}
-    </Layout>
+    </>
   )
 }

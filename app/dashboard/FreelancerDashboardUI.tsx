@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useAuth } from "@/contexts/AuthContext"
-import PaymentsTab from "@/components/PaymentsTab"
+import PaymentsTab from "@/components/dashboard/PaymentsTab"
 import { ShareProfileTab } from "@/components/dashboard/ShareProfileTab"
 import { PendingReviews } from "@/components/dashboard/PendingReviews"
 import { ReviewsDisplay } from "@/components/dashboard/ReviewsDisplay"
@@ -122,42 +122,132 @@ export default function FreelancerDashboardUI() {
     }
   }, [user, loading, refreshAuth])
 
-  // Handle body overflow when modals open/close
-  useEffect(() => {
-    if (
-      showChat ||
-      showProposalModal ||
-      showProjectDetails ||
-      showProjectDetailsModal ||
-      showProjectManagement ||
-      showEditProfileModal ||
-      showProposalDetails ||
-      showProgressManagement
-    ) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-    }
+  // Track modal state in ref for cleanup function
+  const modalStateRef = useRef({
+    showChat,
+    selectedConversation,
+    showProposalModal,
+    selectedProject,
+    showProjectDetails,
+    selectedProjectDetails,
+    showProjectDetailsModal,
+    selectedProjectForDetails,
+    showProjectManagement,
+    selectedProjectForManagement,
+    showEditProfileModal,
+    showProposalDetails,
+    selectedProposalForDetails,
+    proposalProjectDetails,
+    showProgressManagement,
+    selectedProjectForProgress,
+  })
 
-    return () => {
-      document.body.style.overflow = ""
+  // Update ref whenever state changes
+  useEffect(() => {
+    modalStateRef.current = {
+      showChat,
+      selectedConversation,
+      showProposalModal,
+      selectedProject,
+      showProjectDetails,
+      selectedProjectDetails,
+      showProjectDetailsModal,
+      selectedProjectForDetails,
+      showProjectManagement,
+      selectedProjectForManagement,
+      showEditProfileModal,
+      showProposalDetails,
+      selectedProposalForDetails,
+      proposalProjectDetails,
+      showProgressManagement,
+      selectedProjectForProgress,
     }
   }, [
     showChat,
+    selectedConversation,
     showProposalModal,
+    selectedProject,
     showProjectDetails,
+    selectedProjectDetails,
     showProjectDetailsModal,
+    selectedProjectForDetails,
     showProjectManagement,
+    selectedProjectForManagement,
     showEditProfileModal,
     showProposalDetails,
+    selectedProposalForDetails,
+    proposalProjectDetails,
     showProgressManagement,
+    selectedProjectForProgress,
+  ])
+
+  useEffect(() => {
+    const isAnyModalOpen =
+      (showChat && selectedConversation !== null) ||
+      (showProposalModal && selectedProject !== null) ||
+      (showProjectDetails && selectedProjectDetails !== null) ||
+      (showProjectDetailsModal && selectedProjectForDetails !== null) ||
+      (showProjectManagement && selectedProjectForManagement !== null) ||
+      showEditProfileModal ||
+      (showProposalDetails &&
+        selectedProposalForDetails !== null &&
+        proposalProjectDetails !== null) ||
+      (showProgressManagement && !!selectedProjectForProgress)
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden"
+      document.body.style.overflowX = "hidden"
+      document.body.style.overflowY = "hidden"
+    } else {
+      document.body.style.overflow = ""
+      document.body.style.overflowX = ""
+      document.body.style.overflowY = ""
+    }
+
+    return () => {
+      const state = modalStateRef.current
+      const stillOpen =
+        (state.showChat && state.selectedConversation !== null) ||
+        (state.showProposalModal && state.selectedProject !== null) ||
+        (state.showProjectDetails && state.selectedProjectDetails !== null) ||
+        (state.showProjectDetailsModal && state.selectedProjectForDetails !== null) ||
+        (state.showProjectManagement && state.selectedProjectForManagement !== null) ||
+        state.showEditProfileModal ||
+        (state.showProposalDetails &&
+          state.selectedProposalForDetails !== null &&
+          state.proposalProjectDetails !== null) ||
+        (state.showProgressManagement && !!state.selectedProjectForProgress)
+
+      if (!stillOpen) {
+        document.body.style.overflow = ""
+        document.body.style.overflowX = ""
+        document.body.style.overflowY = ""
+      }
+    }
+  }, [
+    showChat,
+    selectedConversation,
+    showProposalModal,
+    selectedProject,
+    showProjectDetails,
+    selectedProjectDetails,
+    showProjectDetailsModal,
+    selectedProjectForDetails,
+    showProjectManagement,
+    selectedProjectForManagement,
+    showEditProfileModal,
+    showProposalDetails,
+    selectedProposalForDetails,
+    proposalProjectDetails,
+    showProgressManagement,
+    selectedProjectForProgress,
   ])
 
   const loadData = async () => {
     try {
       if (!user) return
 
-      // ARREGLADO: Cargar proyectos disponibles EXCLUYENDO los que ya tienen propuestas aceptadas
+      // FIXED: Load available projects excluding projects with accepted proposals
       const { data: projectsData } = await supabase
         .from("projects")
         .select(
@@ -168,10 +258,10 @@ export default function FreelancerDashboardUI() {
         `,
         )
         .eq("status", "open")
-        .neq("proposals.status", "accepted") // EXCLUIR proyectos con propuestas aceptadas
+        .neq("proposals.status", "accepted") // Exclude projects with accepted proposals
         .order("created_at", { ascending: false })
 
-      // También cargar proyectos que NO tienen propuestas en absoluto
+      // Also load projects that have no proposals at all
       const { data: projectsWithoutProposals } = await supabase
         .from("projects")
         .select(
@@ -181,10 +271,9 @@ export default function FreelancerDashboardUI() {
         `,
         )
         .eq("status", "open")
-        .is("freelancer_id", null) // Sin freelancer asignado
+        .is("freelancer_id", null)
         .order("created_at", { ascending: false })
 
-      // Obtener IDs de proyectos que SÍ tienen propuestas aceptadas
       const { data: acceptedProposals } = await supabase
         .from("proposals")
         .select("project_id")
@@ -192,25 +281,24 @@ export default function FreelancerDashboardUI() {
 
       const acceptedProjectIds = acceptedProposals?.map((p: Proposal) => p.project_id) || []
 
-      // Filtrar proyectos sin propuestas que NO tengan propuestas aceptadas
+      // Filter projects without proposals that do not have accepted proposals
       const filteredProjectsWithoutProposals =
         projectsWithoutProposals?.filter(
           (project: Project) => !acceptedProjectIds.includes(project.id),
         ) || []
 
-      // Combinar ambos conjuntos de proyectos
+      // Combine both sets of projects
       const allAvailableProjects = [...(projectsData || []), ...filteredProjectsWithoutProposals]
 
-      // Eliminar duplicados por ID
+      // Remove duplicates by ID
       const uniqueProjects = allAvailableProjects.filter(
         (project, index, self) => index === self.findIndex((p) => p.id === project.id),
       )
 
       if (uniqueProjects) setProjects(uniqueProjects)
 
-      // ARREGLADO: Cargar MIS proyectos - INCLUYENDO TODOS los proyectos con transacciones
+      // FIXED: Load MY projects - INCLUDING ALL projects with transactions
       if (user?.id) {
-        // 1. Proyectos directamente asignados
         const { data: assignedProjects } = await supabase
           .from("projects")
           .select(
@@ -228,7 +316,7 @@ export default function FreelancerDashboardUI() {
           .eq("freelancer_id", user.id)
           .order("created_at", { ascending: false })
 
-        // 2. Obtener TODAS las transacciones (pagadas Y pendientes) donde soy el freelancer
+        // 2. Load ALL transactions (paid AND pending) where I am the freelancer
         const session = await supabase.auth.getSession()
         let projectsFromTransactions = []
 
@@ -250,15 +338,15 @@ export default function FreelancerDashboardUI() {
 
             if (response.ok) {
               const data = await response.json()
-              // INCLUDE ALL transactions (paid AND pending) - admins will manage payment status
+              // INCLUDE ALL transactions (paid AND pending) - admins will manage payment statuses
               const allTransactions = data.transactions || []
 
-              // Load client information for all transactions
+              // Load client information for all transactions (only if there are client IDs)
               const clientIds = allTransactions
                 .map((t: Transaction) => t.client_id)
                 .filter((id: string) => id)
 
-              // Fetch all client profiles at once (only if there are client IDs)
+              // Fetch all client profiles at once
               let clientsMap = new Map<
                 string,
                 { id: string; full_name: string; email: string; rating: number; avatar_url: string }
@@ -269,7 +357,7 @@ export default function FreelancerDashboardUI() {
                   .select("id, full_name, email, rating, avatar_url")
                   .in("id", clientIds)
 
-                // Create a map for quick lookup
+                // Create a map for quick lookups
                 clientsMap = new Map(
                   (clientsData || []).map(
                     (client: {
@@ -283,7 +371,7 @@ export default function FreelancerDashboardUI() {
                 )
               }
 
-              // Crear "proyectos virtuales" desde TODAS las transacciones para mostrar en "Mis Proyectos"
+              // Create "virtual projects" from ALL transactions to display in "My Projects"
               projectsFromTransactions = allTransactions.map((transaction: Transaction) => {
                 // Get client information from the map
                 const clientInfo = clientsMap.get(transaction.client_id) || {
@@ -2069,14 +2157,62 @@ export default function FreelancerDashboardUI() {
 
       {/* Modal de Gestión de Proyectos */}
       {showProjectManagement && selectedProjectForManagement && (
-        <FreelancerProjectManagement
-          project={selectedProjectForManagement}
-          onClose={() => {
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4"
+          onClick={() => {
             setShowProjectManagement(false)
             setSelectedProjectForManagement(null)
-            loadData() // Recargar datos para actualizar el progreso
           }}
-        />
+        >
+          <div
+            className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-6xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modern Header with Gradient */}
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+              <div className="relative z-10 flex items-start justify-between">
+                <div className="flex-1 pr-4">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <i className="ri-settings-3-line text-2xl"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                        Gestión de Proyecto
+                      </h2>
+                      <h3 className="mt-2 text-sm text-cyan-100 sm:text-base">
+                        {selectedProjectForManagement.title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowProjectManagement(false)
+                    setSelectedProjectForManagement(null)
+                    loadData() // Recargar datos para actualizar el progreso
+                  }}
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  aria-label="Cerrar"
+                >
+                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
+                </button>
+              </div>
+            </div>
+            {/* Modal Content */}
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
+              <FreelancerProjectManagement
+                project={selectedProjectForManagement}
+                onClose={() => {
+                  setShowProjectManagement(false)
+                  setSelectedProjectForManagement(null)
+                  loadData() // Recargar datos para actualizar el progreso
+                }}
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Modal de Detalles de Proyecto (Proyectos Disponibles) */}
