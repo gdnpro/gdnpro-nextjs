@@ -1266,11 +1266,11 @@ export default function ClientDashboardUI() {
           onClick={() => setShowProposalsModal(false)}
         >
           <div
-            className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:max-w-5xl"
+            className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-5xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between">
                 <div className="flex-1 pr-4">
@@ -1297,7 +1297,7 @@ export default function ClientDashboardUI() {
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(95vh - 200px)" }}>
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
               {/* NUEVO: Mostrar mensaje inicial del cliente */}
               <div className="mb-6 rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-4 shadow-sm sm:p-6">
                 <div className="flex items-start">
@@ -1354,14 +1354,17 @@ export default function ClientDashboardUI() {
                                 Habilidades Requeridas:
                               </p>
                               <div className="flex flex-wrap gap-1 sm:gap-2">
-                                {selectedProject.required_skills.map((skill, index) => (
-                                  <span
-                                    key={index}
-                                    className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-cyan-800 sm:px-3 sm:text-sm"
-                                  >
-                                    {skill}
-                                  </span>
-                                ))}
+                                {selectedProject.required_skills.map((skill, index) => {
+                                  const skillName = typeof skill === "string" ? skill : skill?.name || skill
+                                  return (
+                                    <span
+                                      key={index}
+                                      className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-cyan-800 sm:px-3 sm:text-sm whitespace-nowrap"
+                                    >
+                                      {skillName}
+                                    </span>
+                                  )
+                                })}
                               </div>
                             </div>
                           )}
@@ -1467,7 +1470,7 @@ export default function ClientDashboardUI() {
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(95vh - 200px)" }}>
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
               <form onSubmit={createProject} className="space-y-4 sm:space-y-6">
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
@@ -1639,7 +1642,7 @@ export default function ClientDashboardUI() {
                   />
                 </div>
 
-                <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
+                <div className="flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
                   <button
                     type="button"
                     onClick={() => setShowNewProjectModal(false)}

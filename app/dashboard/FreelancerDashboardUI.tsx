@@ -1942,9 +1942,9 @@ export default function FreelancerDashboardUI() {
       {/* Modal de Detalles de Proyecto (Proyectos Disponibles) */}
       {showProjectDetails && selectedProjectDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:max-w-4xl">
+          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-4xl">
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between">
                 <div className="flex-1 pr-4">
@@ -1994,7 +1994,7 @@ export default function FreelancerDashboardUI() {
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
               <div className="space-y-6">
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -2112,17 +2112,20 @@ export default function FreelancerDashboardUI() {
                         <h3 className="text-xl font-bold text-gray-900">Habilidades Requeridas</h3>
                       </div>
                       <div className="flex flex-wrap gap-3">
-                        {selectedProjectDetails.required_skills.map((skill, index) => (
-                          <span
-                            key={index}
-                            className="group relative overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
-                          >
-                            <span className="relative z-10 flex items-center gap-2">
-                              <i className="ri-checkbox-circle-line"></i>
-                              <span>{skill}</span>
+                        {selectedProjectDetails.required_skills.map((skill, index) => {
+                          const skillName = typeof skill === "string" ? skill : skill?.name || skill
+                          return (
+                            <span
+                              key={index}
+                              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30 whitespace-nowrap"
+                            >
+                              <span className="relative z-10 flex items-center gap-2">
+                                <i className="ri-checkbox-circle-line"></i>
+                                <span>{skillName}</span>
+                              </span>
                             </span>
-                          </span>
-                        ))}
+                          )
+                        })}
                       </div>
                     </div>
                   )}
@@ -2160,37 +2163,36 @@ export default function FreelancerDashboardUI() {
                     )}
                   </div>
                 </div>
-
-                {/* Botones de Acción */}
-                <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
-                  {!proposals.find((p) => p.project?.id === selectedProjectDetails.id) &&
-                    proposals &&
-                    selectedProjectDetails && (
-                      <button
-                        onClick={() => {
-                          setShowProjectDetails(false)
-                          sendProposal(selectedProjectDetails.id)
-                        }}
-                        className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
-                      >
-                        <i className="ri-send-plane-fill text-xl transition-transform group-hover:translate-x-1"></i>
-                        <span>Enviar Propuesta</span>
-                      </button>
-                    )}
-                  {selectedProjectDetails.client?.id && (
-                    <button
-                      onClick={() => {
-                        setShowProjectDetails(false)
-                        startChat(selectedProjectDetails.id, selectedProjectDetails.client!.id)
-                      }}
-                      className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
-                    >
-                      <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
-                      <span>Chat con Cliente</span>
-                    </button>
-                  )}
-                </div>
               </div>
+            </div>
+            {/* Botones de Acción */}
+            <div className="shrink-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+              {!proposals.find((p) => p.project?.id === selectedProjectDetails.id) &&
+                proposals &&
+                selectedProjectDetails && (
+                  <button
+                    onClick={() => {
+                      setShowProjectDetails(false)
+                      sendProposal(selectedProjectDetails.id)
+                    }}
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                  >
+                    <i className="ri-send-plane-fill text-xl transition-transform group-hover:translate-x-1"></i>
+                    <span>Enviar Propuesta</span>
+                  </button>
+                )}
+              {selectedProjectDetails.client?.id && (
+                <button
+                  onClick={() => {
+                    setShowProjectDetails(false)
+                    startChat(selectedProjectDetails.id, selectedProjectDetails.client!.id)
+                  }}
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
+                >
+                  <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
+                  <span>Chat con Cliente</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -2199,9 +2201,9 @@ export default function FreelancerDashboardUI() {
       {/* RESTAURADO: Modal de detalles de propuesta */}
       {showProposalDetails && selectedProposalForDetails && proposalProjectDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:max-w-4xl">
+          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-4xl">
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between">
                 <div className="flex-1 pr-4">
@@ -2259,7 +2261,7 @@ export default function FreelancerDashboardUI() {
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
               <div className="space-y-6">
                 {/* Mi Propuesta */}
                 <div className="rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6 shadow-sm">
@@ -2376,9 +2378,11 @@ export default function FreelancerDashboardUI() {
                   </div>
                 </div>
 
-                {/* Botones de Acción */}
-                {selectedProposalForDetails.status === "accepted" && (
-                  <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
+              </div>
+            </div>
+            {/* Botones de Acción */}
+            {selectedProposalForDetails.status === "accepted" && (
+              <div className="shrink-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
                     <button
                       onClick={() => {
                         setShowProposalDetails(false)
@@ -2404,10 +2408,8 @@ export default function FreelancerDashboardUI() {
                         <span>Contactar Cliente</span>
                       </button>
                     )}
-                  </div>
-                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}
@@ -2415,9 +2417,9 @@ export default function FreelancerDashboardUI() {
       {/* RESTAURADO: Modal de detalles de proyecto en "Mis Proyectos" */}
       {showProjectDetailsModal && selectedProjectForDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:max-w-4xl">
+          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-4xl">
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between">
                 <div className="flex-1 pr-4">
@@ -2487,7 +2489,7 @@ export default function FreelancerDashboardUI() {
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
+            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
               <div className="space-y-6">
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -2626,47 +2628,47 @@ export default function FreelancerDashboardUI() {
                   </div>
                 )}
 
-                {/* Botones de Acción */}
-                <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
-                  {!selectedProjectForDetails._isFromTransaction && (
-                    <button
-                      onClick={() => {
-                        setShowProjectDetailsModal(false)
-                        openProjectManagement(selectedProjectForDetails)
-                      }}
-                      className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
-                    >
-                      <i className="ri-settings-3-line text-xl transition-transform group-hover:rotate-90"></i>
-                      <span>Gestionar Proyecto</span>
-                    </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      setShowProjectDetailsModal(false)
-                      openProgressManagement(selectedProjectForDetails)
-                    }}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
-                  >
-                    <i className="ri-bar-chart-line text-xl transition-transform group-hover:scale-110"></i>
-                    <span>Gestionar Progreso</span>
-                  </button>
-                  {selectedProjectForDetails.client?.id && (
-                    <button
-                      onClick={() => {
-                        setShowProjectDetailsModal(false)
-                        startChat(
-                          selectedProjectForDetails.id,
-                          selectedProjectForDetails.client!.id,
-                        )
-                      }}
-                      className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
-                    >
-                      <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
-                      <span>Chat Cliente</span>
-                    </button>
-                  )}
-                </div>
               </div>
+            </div>
+            {/* Botones de Acción */}
+            <div className="shrink-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+              {!selectedProjectForDetails._isFromTransaction && (
+                <button
+                  onClick={() => {
+                    setShowProjectDetailsModal(false)
+                    openProjectManagement(selectedProjectForDetails)
+                  }}
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                >
+                  <i className="ri-settings-3-line text-xl transition-transform group-hover:rotate-90"></i>
+                  <span>Gestionar Proyecto</span>
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  setShowProjectDetailsModal(false)
+                  openProgressManagement(selectedProjectForDetails)
+                }}
+                className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+              >
+                <i className="ri-bar-chart-line text-xl transition-transform group-hover:scale-110"></i>
+                <span>Gestionar Progreso</span>
+              </button>
+              {selectedProjectForDetails.client?.id && (
+                <button
+                  onClick={() => {
+                    setShowProjectDetailsModal(false)
+                    startChat(
+                      selectedProjectForDetails.id,
+                      selectedProjectForDetails.client!.id,
+                    )
+                  }}
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
+                >
+                  <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
+                  <span>Chat Cliente</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
