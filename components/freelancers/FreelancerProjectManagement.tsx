@@ -546,7 +546,7 @@ export function FreelancerProjectManagement({
             </div>
             <h5 className="text-xl font-bold text-blue-800">Agregar Nota de Progreso</h5>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-3 md:flex-row">
             <input
               type="text"
               value={newProgressNote}
