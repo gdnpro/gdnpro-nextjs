@@ -125,6 +125,34 @@ export async function registerUserAction(
     }
   }
 
+  const { data: existingProfile, error: checkError } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("email", fields.email)
+    .maybeSingle()
+
+  if (checkError && checkError.code !== "PGRST116") {
+    return {
+      success: false,
+      error: "Error al verificar el email",
+      loading: false,
+      fields: validatedFields.data,
+      serverErrors: null,
+      databaseErrors: checkError,
+    }
+  }
+
+  if (existingProfile) {
+    return {
+      success: false,
+      error: `El email ${fields.email} ya está registrado. Por favor, utiliza otro email o inicia sesión.`,
+      loading: false,
+      fields: validatedFields.data,
+      serverErrors: null,
+      databaseErrors: null,
+    }
+  }
+
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email: fields.email,
     password: fields.password,
@@ -139,6 +167,28 @@ export async function registerUserAction(
 
   if (authError) {
     await supabase.auth.signOut()
+
+    if (authError.message.includes("Email already in use")) {
+      return {
+        success: false,
+        error: "El email ya está en uso",
+        loading: false,
+        fields: validatedFields.data,
+        serverErrors: null,
+        databaseErrors: authError,
+      }
+    }
+
+    if (authError.message.includes("email rate limit exceeded")) {
+      return {
+        success: false,
+        error: "Demasiadas solicitudes de registro. Intenta más tarde.",
+        loading: false,
+        fields: validatedFields.data,
+        serverErrors: null,
+        databaseErrors: authError,
+      }
+    }
 
     return {
       success: false,
@@ -228,6 +278,8 @@ export async function registerUserAction(
         databaseErrors: profileError,
       }
     }
+
+    await supabase.auth.signOut()
 
     return {
       success: true,
@@ -392,7 +444,7 @@ export async function loginUserAction(
         serverErrors: null,
       }
     }
-    console.log(error)
+
     return {
       success: false,
       error: "Error desconocido al iniciar sesión",
