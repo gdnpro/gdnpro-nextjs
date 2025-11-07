@@ -96,8 +96,8 @@ export function InputDialog({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md">
-      <div className="animate-in fade-in zoom-in-95 w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md sm:p-6">
+      <div className="animate-in fade-in zoom-in-95 w-full max-w-md overflow-hidden rounded-2xl sm:rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 duration-300">
         {/* Modern Header with Gradient */}
         <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
@@ -156,18 +156,18 @@ export function InputDialog({
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 border-t border-gray-200 bg-gray-50 p-6">
+        <div className="flex flex-col sm:flex-row gap-3 border-t border-gray-200 bg-gray-50 p-4 sm:p-6">
           <button
             onClick={onClose}
-            className="flex-1 cursor-pointer rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:shadow-md"
+            className="flex-1 cursor-pointer rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 active:bg-gray-100 hover:shadow-md active:shadow-sm min-h-[44px] touch-manipulation"
           >
-            Cancelar
+            <span className="text-sm sm:text-base">Cancelar</span>
           </button>
           <button
             onClick={handleSubmit}
-            className="flex-1 cursor-pointer rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+            className="flex-1 cursor-pointer rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:scale-[1.02] active:scale-100 hover:shadow-xl hover:shadow-cyan-500/40 active:shadow-lg min-h-[44px] touch-manipulation"
           >
-            Confirmar
+            <span className="text-sm sm:text-base">Confirmar</span>
           </button>
         </div>
       </div>

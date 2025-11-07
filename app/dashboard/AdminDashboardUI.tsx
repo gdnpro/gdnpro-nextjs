@@ -694,19 +694,19 @@ export default function AdminContacts() {
 
       {/* Modal de Detalles */}
       {showModal && selectedContact && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md">
-          <div className="max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
+          <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:max-w-4xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-mail-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
                         Mensaje de Contacto
                       </h2>
                       <span
@@ -728,15 +728,15 @@ export default function AdminContacts() {
                     setShowModal(false)
                     setSelectedContact(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
-              <div className="space-y-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 min-h-0">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Información del Contacto */}
                 <div className="rounded-lg border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
                   <h3 className="mb-4 flex items-center font-semibold text-cyan-900">
@@ -873,17 +873,17 @@ export default function AdminContacts() {
       {/* Modal de Respuesta */}
       {showReplyModal && selectedContact && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4"
           style={{ zIndex: 70 }}
         >
           <div className="max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5">
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-reply-line text-2xl"></i>
                     </div>
                     <div>
@@ -901,7 +901,7 @@ export default function AdminContacts() {
                     setShowReplyModal(false)
                     setReplyMessage("")
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>

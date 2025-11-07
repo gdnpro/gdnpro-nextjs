@@ -5,9 +5,68 @@
   --color-secondary: #cffafe;
 }
 
-body, html {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+body,
+html {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   scroll-behavior: smooth;
+  /* Prevent text size adjustment on orientation change */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Improve touch targets - ensure minimum 44x44px for accessibility */
+/* Note: Individual components should use min-h-[44px] classes for flexibility */
+button:not([class*="min-h"]):not([class*="min-w"]),
+a.button:not([class*="min-h"]):not([class*="min-w"]),
+input[type="button"]:not([class*="min-h"]):not([class*="min-w"]),
+input[type="submit"]:not([class*="min-h"]):not([class*="min-w"]) {
+  min-height: 44px;
+}
+
+/* Better touch performance on mobile */
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+/* Prevent zoom on input focus (iOS) */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="password"],
+input[type="url"],
+select,
+textarea {
+  font-size: 16px;
+}
+
+/* Safe area support for iOS devices - handled by individual components */
+/* Main container should account for safe areas */
+main {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Prevent horizontal scroll on mobile */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 @keyframes slide-up {

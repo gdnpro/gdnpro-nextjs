@@ -97,12 +97,12 @@ export const ConversationModal = ({
   }, [selectedConversation?.id, user?.id, setChatMessages])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-      <div className="flex h-[90vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[80vh] sm:max-w-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
+      <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-[80vh] sm:max-w-2xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
         {/* Modern Header with linear */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6">
+        <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 shrink-0">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-          <div className="relative z-10 flex min-w-0 flex-1 items-center justify-between">
+          <div className="relative z-10 flex min-w-0 flex-1 items-center justify-between gap-3">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/20 ring-2 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
                 {selectedConversation.client?.avatar_url ? (
@@ -133,7 +133,8 @@ export const ConversationModal = ({
                 setSelectedConversation(null)
                 setNewMessage("")
               }}
-              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 sm:h-12 sm:w-12"
+              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:bg-white/30 active:scale-95 sm:h-12 sm:w-12 touch-manipulation"
+              aria-label="Cerrar chat"
             >
               <i className="ri-close-line text-lg transition-transform group-hover:rotate-90 sm:text-xl"></i>
             </button>
@@ -141,7 +142,7 @@ export const ConversationModal = ({
         </div>
 
         {/* Área de Mensajes */}
-        <div className="flex-1 overflow-y-auto bg-gray-50 p-3 sm:p-4">
+        <div className="flex-1 overflow-y-auto bg-gray-50 p-3 sm:p-4 min-h-0">
           {chatLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="border-primary h-6 w-6 animate-spin rounded-full border-b-2 sm:h-8 sm:w-8"></div>
@@ -159,7 +160,7 @@ export const ConversationModal = ({
                   }`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-3 py-2 sm:max-w-xs sm:px-4 lg:max-w-md ${
+                    className={`max-w-[85%] sm:max-w-xs lg:max-w-md rounded-2xl px-3 py-2 sm:px-4 ${
                       message.sender_id === user?.id
                         ? "bg-primary text-white"
                         : message.sender_id === null
@@ -167,7 +168,7 @@ export const ConversationModal = ({
                           : "border border-gray-200 bg-white text-gray-900"
                     }`}
                   >
-                    <p className="text-xs sm:text-sm">{message.message_text}</p>
+                    <p className="text-sm sm:text-base break-words whitespace-pre-wrap">{message.message_text}</p>
                     <p
                       className={`mt-1 text-xs ${
                         message.sender_id === user?.id ? "text-cyan-300/50" : "text-gray-500"
@@ -198,8 +199,8 @@ export const ConversationModal = ({
         </div>
 
         {/* Input para Escribir */}
-        <div className="rounded-b-xl border-t border-gray-200 bg-white p-3 sm:rounded-b-2xl sm:p-4">
-          <div className="flex items-center space-x-2 sm:space-x-3">
+        <div className="border-t border-gray-200 bg-white p-3 sm:p-4 shrink-0 sm:rounded-b-2xl">
+          <div className="flex items-center gap-2 sm:gap-3">
             <input
               type="text"
               value={newMessage}
@@ -207,21 +208,23 @@ export const ConversationModal = ({
               onKeyUp={handleKeyPress}
               placeholder="Escribe tu mensaje..."
               disabled={chatLoading || sendingMessage}
-              className="focus:ring-primary flex-1 rounded-full border border-gray-300 px-3 py-2 text-xs focus:border-transparent focus:ring-2 focus:outline-none disabled:bg-gray-100 sm:px-4 sm:py-3 sm:text-sm"
+              className="focus:ring-primary flex-1 rounded-full border border-gray-300 px-3 py-2.5 text-base focus:border-transparent focus:ring-2 focus:outline-none disabled:bg-gray-100 sm:px-4 sm:py-3 sm:text-sm min-h-[44px]"
+              autoComplete="off"
             />
             <button
               onClick={sendMessage}
               disabled={!newMessage.trim() || chatLoading || sendingMessage}
-              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30 transition-all hover:scale-110 hover:shadow-xl hover:shadow-cyan-500/40 disabled:bg-gray-300 disabled:shadow-none disabled:hover:scale-100 sm:h-12 sm:w-12"
+              className="group flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30 transition-all hover:scale-110 active:scale-95 hover:shadow-xl hover:shadow-cyan-500/40 disabled:bg-gray-300 disabled:shadow-none disabled:hover:scale-100 disabled:active:scale-100 sm:h-12 sm:w-12 touch-manipulation"
+              aria-label="Enviar mensaje"
             >
               {sendingMessage ? (
-                <div className="h-3 w-3 animate-spin rounded-full border-b-2 border-white sm:h-4 sm:w-4"></div>
+                <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
               ) : (
-                <i className="ri-send-plane-line text-sm sm:text-base"></i>
+                <i className="ri-send-plane-line text-base sm:text-lg"></i>
               )}
             </button>
           </div>
-          <p className="mt-2 flex items-center text-xs text-gray-500">
+          <p className="mt-2 flex items-center text-xs text-gray-500 hidden sm:flex">
             <i className="ri-shield-check-line mr-1"></i>
             Chat seguro monitoreado por GDN Pro
           </p>

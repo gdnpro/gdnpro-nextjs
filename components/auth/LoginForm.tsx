@@ -119,7 +119,7 @@ export function LoginForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-3 sm:py-2 placeholder-gray-400 focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none text-base sm:text-sm min-h-[44px]"
                   placeholder="tu@email.com"
                 />
               </div>
@@ -138,7 +138,7 @@ export function LoginForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-3 sm:py-2 placeholder-gray-400 focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none text-base sm:text-sm min-h-[44px]"
                   placeholder="••••••••"
                 />
               </div>
@@ -160,7 +160,7 @@ export function LoginForm() {
               <button
                 type="submit"
                 disabled={pending}
-                className="bg-primary flex w-full cursor-pointer justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium whitespace-nowrap text-white shadow-sm transition-colors hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="bg-primary flex w-full cursor-pointer justify-center rounded-md border border-transparent px-4 py-3 sm:py-2 text-base sm:text-sm font-medium whitespace-nowrap text-white shadow-sm transition-colors hover:bg-cyan-700 active:bg-cyan-800 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] touch-manipulation"
               >
                 {pending ? (
                   <div className="flex items-center">

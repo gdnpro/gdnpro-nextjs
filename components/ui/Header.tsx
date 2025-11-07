@@ -66,41 +66,48 @@ export default function Header() {
 
     // Show "Works" for freelancers, "Freelancers" for clients and non-logged users
     if (user?.user_type === "freelancer") {
-      return [...baseItems, { label: "Trabajos", url: "/works" }, { label: "Contacto", url: "/#contact" }]
+      return [
+        ...baseItems,
+        { label: "Trabajos", url: "/works" },
+        { label: "Contacto", url: "/#contact" },
+      ]
     } else {
-      return [...baseItems, { label: "Freelancers", url: "/freelancers" }, { label: "Contacto", url: "/#contact" }]
+      return [
+        ...baseItems,
+        { label: "Freelancers", url: "/freelancers" },
+        { label: "Contacto", url: "/#contact" },
+      ]
     }
   }
 
   const menuItems = getMenuItems()
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 bg-white/95 px-4 shadow-sm backdrop-blur-sm sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="flex h-16 items-center justify-between gap-8">
-          <a href="/" className={`${user ? "hidden md:block" : "block"} cursor-pointer`}>
-            <img src="/logo.png" alt="GDN PRO" className="h-10 w-auto" />
+    <header className="fixed top-0 right-0 left-0 z-50 bg-white/95 shadow-sm backdrop-blur-sm">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between gap-3 sm:gap-4 md:gap-8">
+          {/* Mobile Menu Button - First on mobile */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="hover:text-primary flex size-10 touch-manipulation items-center justify-center text-gray-700 transition-colors"
+              aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+            >
+              <i
+                className={`text-2xl transition-transform ${
+                  isMenuOpen ? "ri-close-line rotate-90" : "ri-menu-line"
+                }`}
+              ></i>
+            </button>
+          </div>
+
+          {/* Logo - Second on mobile, first on desktop */}
+          <a href="/" className="flex-shrink-0 cursor-pointer">
+            <img src="/logo.png" alt="GDN PRO" className="h-8 w-auto sm:h-10" />
           </a>
 
-          {!loading && user && (
-            <div className="flex items-center space-x-3 md:hidden">
-              <NotificationBell />
-              <div className="bg-primary/10 mr-3 flex size-8 items-center justify-center overflow-hidden rounded-full sm:mr-4">
-                {user?.avatar_url ? (
-                  <img
-                    src={user.avatar_url}
-                    alt={user.full_name}
-                    className="size-full rounded-full object-cover object-top"
-                  />
-                ) : (
-                  <i className="ri-user-line text-primary text-xl sm:text-2xl"></i>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Desktop Menu */}
-          <ul className="hidden items-center gap-x-8 md:flex">
+          {/* Desktop Menu - Center on desktop */}
+          <ul className="hidden items-center gap-x-8 md:flex md:flex-1 md:justify-center">
             {menuItems.map((item, index) => (
               <li
                 key={index}
@@ -111,7 +118,27 @@ export default function Header() {
             ))}
           </ul>
 
-          {/* Right section desktop */}
+          {/* Mobile: NotificationBell and Profile - Third and Fourth on mobile */}
+          {!loading && user && (
+            <div className="flex items-center gap-2">
+              <div className="md:hidden">
+                <NotificationBell />
+              </div>
+              <div className="bg-primary/10 flex size-9 items-center justify-center overflow-hidden rounded-full sm:size-10 md:hidden">
+                {user?.avatar_url ? (
+                  <img
+                    src={user.avatar_url}
+                    alt={user.full_name}
+                    className="size-full rounded-full object-cover object-top"
+                  />
+                ) : (
+                  <i className="ri-user-line text-primary text-xl"></i>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Desktop: Right section */}
           {!loading && user ? (
             <div className="relative hidden md:block">
               <div className="flex items-center space-x-3">
@@ -179,64 +206,61 @@ export default function Header() {
               </a>
             </div>
           )}
-
-          {/* Mobile Menu */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="hover:text-primary text-gray-700"
-            >
-              <i
-                className={`text-2xl transition-transform ${
-                  isMenuOpen ? "ri-close-line rotate-90" : "ri-menu-line"
-                }`}
-              ></i>
-            </button>
-          </div>
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden" ref={mobileMenuRef}>
-            <div className="space-y-1 px-2 pt-2 pb-3">
+          <div className="border-t border-gray-200 md:hidden" ref={mobileMenuRef}>
+            <div className="space-y-1 px-2 pt-2 pb-4">
               <ul>
                 {menuItems.map((item, index) => (
-                  <li
-                    key={index}
-                    className="hover:text-primary block w-full rounded-lg px-3 py-3 text-left font-medium text-gray-700 transition-all hover:bg-gray-50"
-                  >
-                    <a href={item.url}>{item.label}</a>
+                  <li key={index} className="block w-full">
+                    <a
+                      href={item.url}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="hover:text-primary block w-full rounded-lg px-4 py-3 text-left font-medium text-gray-700 transition-all hover:bg-gray-50 active:bg-gray-100"
+                    >
+                      {item.label}
+                    </a>
                   </li>
                 ))}
               </ul>
 
               {user && (
-                <div className="mt-3 space-y-2 border-t pt-3">
+                <div className="mt-3 space-y-1 border-t border-gray-200 pt-3">
                   <a
                     href="/dashboard"
-                    className="block w-full px-3 py-3 text-left text-gray-700 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block w-full rounded-lg px-4 py-3 text-left font-medium text-gray-700 transition-colors hover:bg-gray-50 active:bg-gray-100"
                   >
+                    <i className="ri-dashboard-line mr-2"></i>
                     Dashboard
                   </a>
                   <button
-                    onClick={handleLogout}
-                    className="block w-full px-3 py-3 text-left text-red-600 hover:bg-red-50"
+                    onClick={() => {
+                      handleLogout()
+                      setIsMenuOpen(false)
+                    }}
+                    className="block w-full rounded-lg px-4 py-3 text-left font-medium text-red-600 transition-colors hover:bg-red-50 active:bg-red-100"
                   >
+                    <i className="ri-logout-box-line mr-2"></i>
                     Cerrar Sesión
                   </button>
                 </div>
               )}
 
               {!user && (
-                <div className="mt-3 space-y-2 border-t pt-3">
+                <div className="mt-3 space-y-2 border-t border-gray-200 pt-3">
                   <a
                     href="/auth/login"
-                    className="block w-full px-3 py-3 text-left text-gray-700 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block w-full rounded-lg px-4 py-3 text-center font-medium text-gray-700 transition-colors hover:bg-gray-50 active:bg-gray-100"
                   >
                     Iniciar Sesión
                   </a>
                   <a
                     href="/auth/register"
-                    className="bg-primary block w-full rounded-lg px-3 py-3 text-left font-medium text-white hover:bg-cyan-700"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="bg-primary block w-full rounded-lg px-4 py-3 text-center font-medium text-white transition-colors hover:bg-cyan-700 active:bg-cyan-800"
                   >
                     Registrarse
                   </a>

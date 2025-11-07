@@ -308,17 +308,17 @@ export default function LiveChat() {
   return (
     <>
       {/* Botón del Chat */}
-      <div className="fixed bottom-4 md:bottom-6 md:right-6 right-4 z-50">
+      <div className="fixed bottom-4 right-4 z-40 sm:bottom-6 sm:right-6">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-primary hover:bg-cyan-700 text-white rounded-full size-14 md:size-16 flex items-center justify-center shadow-lg transition-all  cursor-pointer group"
-          aria-label="Abrir chat"
+          className="bg-primary hover:bg-cyan-700 active:bg-cyan-800 text-white rounded-full size-14 sm:size-16 flex items-center justify-center shadow-lg transition-all cursor-pointer group touch-manipulation"
+          aria-label={isOpen ? "Cerrar chat" : "Abrir chat"}
         >
           {isOpen ? (
-            <i className="ri-close-line text-2xl"></i>
+            <i className="ri-close-line text-2xl sm:text-3xl"></i>
           ) : (
             <>
-              <i className="ri-message-3-line text-2xl group-hover:scale-110 transition-transform"></i>
+              <i className="ri-message-3-line text-2xl sm:text-3xl group-hover:scale-110 transition-transform"></i>
               {isWaitingForResponse && (
                 <span className="absolute top-1 right-1 bg-green-500 w-4 h-4 rounded-full animate-pulse"></span>
               )}
@@ -329,16 +329,16 @@ export default function LiveChat() {
 
       {/* Ventana del Chat */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[500px] bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-50 animate-slide-up">
+        <div className="fixed inset-0 z-50 flex flex-col bg-white sm:inset-auto sm:bottom-24 sm:right-6 sm:w-96 sm:h-[500px] sm:rounded-lg sm:shadow-2xl sm:border sm:border-gray-200 animate-slide-up">
           {/* Header */}
-          <div className="bg-primary text-white p-4 rounded-t-lg flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-cyan-700/30 rounded-full flex items-center justify-center mr-3">
+          <div className="bg-primary text-white p-4 sm:rounded-t-lg flex items-center justify-between shrink-0">
+            <div className="flex items-center min-w-0 flex-1">
+              <div className="w-10 h-10 bg-cyan-700/30 rounded-full flex items-center justify-center mr-3 shrink-0">
                 <i className="ri-customer-service-2-line text-lg"></i>
               </div>
-              <div>
-                <h3 className="font-semibold">Liah - Asistente Virtual</h3>
-                <p className="text-blue-100 text-sm">
+              <div className="min-w-0 flex-1">
+                <h3 className="font-semibold text-sm sm:text-base truncate">Liah - Asistente Virtual</h3>
+                <p className="text-blue-100 text-xs sm:text-sm truncate">
                   {isWaitingForResponse
                     ? "⚡ Esperando respuesta..."
                     : "🟢 En línea"}
@@ -348,50 +348,52 @@ export default function LiveChat() {
 
             <button
               onClick={() => setIsOpen(false)}
-              className="text-blue-100 hover:text-white cursor-pointer"
+              className="text-blue-100 hover:text-white active:text-white cursor-pointer ml-2 shrink-0 flex items-center justify-center size-8 sm:size-10 rounded-lg hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation"
+              aria-label="Cerrar chat"
             >
-              <i className="ri-close-line text-xl"></i>
+              <i className="ri-close-line text-xl sm:text-2xl"></i>
             </button>
           </div>
 
           {/* Configuración de Nombre */}
           {!isNameSet && (
-            <div className="p-6 flex-1 flex flex-col justify-center">
+            <div className="p-4 sm:p-6 flex-1 flex flex-col justify-center overflow-y-auto">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <i className="ri-user-smile-line text-2xl text-primary"></i>
                 </div>
-                <h4 className="text-lg font-semibold text-gray-800 mb-2">
+                <h4 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
                   ¡Hola! Soy Liah 👋
                 </h4>
-                <p className="text-gray-600 text-sm">
+                <p className="text-gray-600 text-sm sm:text-base px-4">
                   Para brindarte una mejor atención, ¿podrías decirme tu nombre?
                 </p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4 px-2 sm:px-0">
                 <input
                   type="text"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Escribe tu nombre..."
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-colors text-sm"
+                  className="w-full p-3 sm:p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-colors text-base sm:text-sm"
                   disabled={isLoading}
+                  autoComplete="name"
                 />
 
                 <button
                   onClick={startConversation}
                   disabled={!clientName.trim() || isLoading}
-                  className="w-full bg-primary hover:bg-cyan-700 disabled:bg-gray-300 text-white py-3 rounded-lg font-medium transition-colors cursor-pointer disabled:cursor-not-allowed whitespace-nowrap"
+                  className="w-full bg-primary hover:bg-cyan-700 active:bg-cyan-800 disabled:bg-gray-300 text-white py-3 sm:py-4 rounded-lg font-medium transition-colors cursor-pointer disabled:cursor-not-allowed touch-manipulation min-h-[44px]"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Iniciando chat...
+                      <span className="text-sm sm:text-base">Iniciando chat...</span>
                     </div>
                   ) : (
-                    "Iniciar Chat"
+                    <span className="text-sm sm:text-base">Iniciar Chat</span>
                   )}
                 </button>
               </div>
@@ -401,20 +403,20 @@ export default function LiveChat() {
           {/* Área de Mensajes */}
           {isNameSet && (
             <>
-              <div className="flex-1 p-4 overflow-y-auto space-y-3">
+              <div className="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 min-h-0">
                 {messages.map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.sender_type === "client" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[80%] p-3 rounded-lg text-sm ${
+                      className={`max-w-[85%] sm:max-w-[80%] p-3 rounded-lg text-sm sm:text-base ${
                         message.sender_type === "client"
                           ? "bg-primary text-white rounded-br-none"
                           : "bg-gray-100 text-gray-800 rounded-bl-none"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap">{message.message}</p>
+                      <p className="whitespace-pre-wrap break-words">{message.message}</p>
                       <p
                         className={`text-xs mt-1 ${
                           message.sender_type === "client"
@@ -456,31 +458,33 @@ export default function LiveChat() {
               </div>
 
               {/* Input de Mensaje */}
-              <div className="p-4 border-t border-gray-200">
-                <div className="flex space-x-2">
+              <div className="p-3 sm:p-4 border-t border-gray-200 shrink-0 bg-white">
+                <div className="flex gap-2">
                   <input
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Escribe tu mensaje..."
-                    className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors focus:ring-primary text-sm"
+                    className="flex-1 p-3 sm:p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors focus:ring-primary text-base sm:text-sm min-h-[44px]"
                     disabled={isLoading}
+                    autoComplete="off"
                   />
                   <button
                     onClick={sendMessage}
                     disabled={!newMessage.trim() || isLoading}
-                    className="bg-primary hover:bg-cyan-700 disabled:bg-gray-300 text-white px-4 py-3 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed whitespace-nowrap"
+                    className="bg-primary hover:bg-cyan-700 active:bg-cyan-800 disabled:bg-gray-300 text-white px-4 sm:px-5 py-3 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation"
+                    aria-label="Enviar mensaje"
                   >
                     {isLoading ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     ) : (
-                      <i className="ri-send-plane-line"></i>
+                      <i className="ri-send-plane-line text-lg sm:text-xl"></i>
                     )}
                   </button>
                 </div>
 
-                <p className="text-xs text-gray-500 mt-2 text-center">
+                <p className="text-xs text-gray-500 mt-2 text-center hidden sm:block">
                   💬 Conectado con WhatsApp Business - Respuestas en tiempo real
                 </p>
               </div>

@@ -49,33 +49,33 @@ export default function WorksProposalModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4"
       onClick={handleClose}
     >
       <div
-        className="animate-in fade-in zoom-in-95 max-h-[92vh] w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 duration-300"
+        className="animate-in fade-in zoom-in-95 flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:max-w-3xl sm:rounded-3xl sm:ring-1 sm:ring-black/5 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modern Header with lienar */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-8 text-white">
+        <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 sm:p-6 md:p-8 text-white">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-          <div className="relative z-10 flex items-start justify-between">
-            <div className="flex-1 pr-4">
+          <div className="relative z-10 flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0 pr-4">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                  <i className="ri-send-plane-line text-2xl"></i>
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                  <i className="ri-send-plane-line text-xl sm:text-2xl"></i>
                 </div>
-                <div>
-                  <h2 className="text-3xl leading-tight font-bold sm:text-4xl">Enviar Propuesta</h2>
-                  <p className="mt-2 text-sm text-cyan-100">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-bold truncate">Enviar Propuesta</h2>
+                  <p className="mt-2 text-xs sm:text-sm text-cyan-100">
                     Completa el formulario para enviar tu propuesta
                   </p>
                 </div>
               </div>
-              <div className="mt-4 rounded-xl bg-white/10 p-4 ring-1 ring-white/20 backdrop-blur-sm">
-                <h3 className="mb-2 font-semibold text-white">{project.title}</h3>
-                <p className="mb-3 line-clamp-2 text-sm text-cyan-100">{project.description}</p>
-                <div className="flex flex-wrap items-center gap-4 text-xs text-cyan-100">
+              <div className="mt-4 rounded-xl bg-white/10 p-3 sm:p-4 ring-1 ring-white/20 backdrop-blur-sm">
+                <h3 className="mb-2 font-semibold text-white text-sm sm:text-base truncate">{project.title}</h3>
+                <p className="mb-3 line-clamp-2 text-xs sm:text-sm text-cyan-100">{project.description}</p>
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-cyan-100">
                   <span className="flex items-center gap-1">
                     <i className="ri-money-dollar-circle-line"></i>${project.budget_min || 0} - $
                     {project.budget_max || 0}
@@ -91,7 +91,7 @@ export default function WorksProposalModal({
             </div>
             <button
               onClick={handleClose}
-              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+              className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
               aria-label="Cerrar"
             >
               <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -100,12 +100,12 @@ export default function WorksProposalModal({
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto p-8" style={{ maxHeight: "calc(92vh - 200px)" }}>
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 min-h-0">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
-              <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
-                <div className="bg-gradient-to-br flex h-8 w-8 items-center justify-center rounded-lg from-cyan-500 to-cyan-600 text-white shadow-lg">
-                  <i className="ri-money-dollar-circle-fill text-sm"></i>
+              <label className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
+                <div className="bg-gradient-to-br flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg from-cyan-500 to-cyan-600 text-white shadow-lg">
+                  <i className="ri-money-dollar-circle-fill text-xs sm:text-sm"></i>
                 </div>
                 Presupuesto Propuesto ($)
               </label>
@@ -113,16 +113,16 @@ export default function WorksProposalModal({
                 type="number"
                 value={formData.budget}
                 onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                className="focus:ring-primary bg-gradient-to-br w-full rounded-xl border border-gray-300 from-gray-50 to-white px-4 py-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                className="focus:ring-primary bg-gradient-to-br w-full rounded-xl border border-gray-300 from-gray-50 to-white px-4 py-3 text-base sm:text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none min-h-[44px]"
                 placeholder="Ej: 500"
                 required
               />
             </div>
 
             <div>
-              <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
-                <div className="bg-gradient-to-br flex h-8 w-8 items-center justify-center rounded-lg from-purple-500 to-pink-500 text-white shadow-lg">
-                  <i className="ri-time-line text-sm"></i>
+              <label className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
+                <div className="bg-gradient-to-br flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg from-purple-500 to-pink-500 text-white shadow-lg">
+                  <i className="ri-time-line text-xs sm:text-sm"></i>
                 </div>
                 Tiempo de Entrega (días)
               </label>
@@ -130,16 +130,16 @@ export default function WorksProposalModal({
                 type="number"
                 value={formData.delivery_time}
                 onChange={(e) => setFormData({ ...formData, delivery_time: e.target.value })}
-                className="focus:ring-primary bg-gradient-to-br w-full rounded-xl border border-gray-300 from-gray-50 to-white px-4 py-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                className="focus:ring-primary bg-gradient-to-br w-full rounded-xl border border-gray-300 from-gray-50 to-white px-4 py-3 text-base sm:text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none min-h-[44px]"
                 placeholder="Ej: 30"
                 required
               />
             </div>
 
             <div>
-              <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
-                <div className="bg-gradient-to-br flex h-8 w-8 items-center justify-center rounded-lg from-blue-500 to-indigo-500 text-white shadow-lg">
-                  <i className="ri-message-3-line text-sm"></i>
+              <label className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
+                <div className="bg-gradient-to-br flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg from-blue-500 to-indigo-500 text-white shadow-lg">
+                  <i className="ri-message-3-line text-xs sm:text-sm"></i>
                 </div>
                 Mensaje
               </label>
@@ -147,27 +147,27 @@ export default function WorksProposalModal({
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 rows={5}
-                className="focus:ring-primary bg-gradient-to-br w-full resize-none rounded-xl border border-gray-300 from-gray-50 to-white px-4 py-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                className="focus:ring-primary bg-gradient-to-br w-full resize-none rounded-xl border border-gray-300 from-gray-50 to-white px-4 py-3 text-base sm:text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                 placeholder="Explica por qué eres el mejor candidato para este proyecto..."
                 required
               />
             </div>
 
-            <div className="bg-gradient-to-b sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
+            <div className="flex flex-col gap-3 border-t border-gray-200 bg-white p-4 sm:p-6 sm:flex-row sm:gap-4 shrink-0">
               <button
                 type="button"
                 onClick={handleClose}
-                className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
+                className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 sm:px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 active:translate-y-0 hover:border-gray-400 hover:bg-gray-50 active:bg-gray-100 hover:shadow-md active:shadow-sm min-h-[44px] touch-manipulation"
               >
-                <i className="ri-close-line"></i>
-                <span>Cancelar</span>
+                <i className="ri-close-line text-base sm:text-lg"></i>
+                <span className="text-sm sm:text-base">Cancelar</span>
               </button>
               <button
                 type="submit"
-                className="group bg-gradient-to-r flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                className="group bg-gradient-to-r flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl from-cyan-500 to-teal-500 px-4 sm:px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0 hover:scale-[1.02] active:scale-100 hover:shadow-xl hover:shadow-cyan-500/40 min-h-[44px] touch-manipulation"
               >
-                <i className="ri-send-plane-fill text-lg transition-transform group-hover:translate-x-1"></i>
-                <span>Enviar Propuesta</span>
+                <i className="ri-send-plane-fill text-base sm:text-lg transition-transform group-hover:translate-x-1"></i>
+                <span className="text-sm sm:text-base">Enviar Propuesta</span>
               </button>
             </div>
           </form>

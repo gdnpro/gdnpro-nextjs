@@ -226,8 +226,9 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full transition-colors px-4 py-3 focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                    className="w-full transition-colors px-4 py-3 focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-base sm:text-sm min-h-[44px]"
                     placeholder="Tu nombre completo"
+                    autoComplete="name"
                   />
                 </div>
 
@@ -245,8 +246,9 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 transition-colors border focus:outline-none border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 transition-colors border focus:outline-none border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-base sm:text-sm min-h-[44px]"
                     placeholder="tu@email.com"
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -266,8 +268,9 @@ export default function Contact() {
                     name="company"
                     value={formData.company}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 transition-colors focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 transition-colors focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-base sm:text-sm min-h-[44px]"
                     placeholder="Nombre de tu empresa"
+                    autoComplete="organization"
                   />
                 </div>
 
@@ -284,8 +287,9 @@ export default function Contact() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 transition-colors focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                    className="w-full px-4 py-3 transition-colors focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-base sm:text-sm min-h-[44px]"
                     placeholder="+000 000 0000"
+                    autoComplete="tel"
                   />
                 </div>
               </div>
@@ -304,7 +308,7 @@ export default function Contact() {
                   value={formData.service}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 transition-colors focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm pr-8"
+                  className="w-full px-4 py-3 transition-colors focus:outline-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-base sm:text-sm pr-8 min-h-[44px]"
                 >
                   <option value="">Selecciona un servicio</option>
                   <option value="Desarrollo Web">Desarrollo Web</option>
@@ -332,7 +336,7 @@ export default function Contact() {
                     value={formData.budget}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 transition-colors focus:outline-none py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm pr-8"
+                    className="w-full px-4 transition-colors focus:outline-none py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-base sm:text-sm pr-8 min-h-[44px]"
                   >
                     <option value="">Selecciona un rango</option>
                     <option value="Menos de $1,000">Menos de $1,000</option>
@@ -357,7 +361,7 @@ export default function Contact() {
                     value={formData.timeline}
                     onChange={handleInputChange}
                     required
-                    className="w-full transition-colors focus:outline-none px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm pr-8"
+                    className="w-full transition-colors focus:outline-none px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-base sm:text-sm pr-8 min-h-[44px]"
                   >
                     <option value="">Selecciona un timeline</option>
                     <option value="1-2 semanas">1-2 semanas</option>
@@ -386,7 +390,7 @@ export default function Contact() {
                   required
                   rows={5}
                   maxLength={500}
-                  className="w-full transition-colors focus:outline-none px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm resize-none"
+                  className="w-full transition-colors focus:outline-none px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-base sm:text-sm resize-none"
                   placeholder="Cuéntanos sobre tu proyecto, objetivos, funcionalidades requeridas, etc."
                 />
                 <div className="flex justify-between items-center mt-2">
@@ -405,7 +409,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSubmitting || formData.message.length > 500}
-                className="w-full bg-primary text-white py-3 px-6 rounded-lg hover:bg-cyan-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                className="w-full bg-primary text-white py-3 sm:py-3.5 px-6 rounded-lg hover:bg-cyan-700 active:bg-cyan-800 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap min-h-[44px] touch-manipulation"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">

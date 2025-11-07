@@ -70,11 +70,11 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-4 backdrop-blur-md sm:p-6"
       onClick={handleCancel}
     >
       <div
-        className="animate-in fade-in zoom-in-95 w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 duration-300"
+        className="animate-in fade-in zoom-in-95 w-full max-w-md overflow-hidden rounded-2xl sm:rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modern Header with Gradient */}
@@ -107,18 +107,18 @@ export function ConfirmDialog({
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 border-t border-gray-200 bg-gray-50 p-6">
+        <div className="flex flex-col sm:flex-row gap-3 border-t border-gray-200 bg-gray-50 p-4 sm:p-6">
           <button
             onClick={handleCancel}
-            className="flex-1 cursor-pointer rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:shadow-md"
+            className="flex-1 cursor-pointer rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 active:bg-gray-100 hover:shadow-md active:shadow-sm min-h-[44px] touch-manipulation"
           >
-            Cancelar
+            <span className="text-sm sm:text-base">Cancelar</span>
           </button>
           <button
             onClick={handleConfirm}
-            className="flex-1 cursor-pointer rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-4 py-3 font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-orange-500/40"
+            className="flex-1 cursor-pointer rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-4 py-3 font-semibold text-white shadow-lg shadow-orange-500/30 transition-all hover:scale-[1.02] active:scale-100 hover:shadow-xl hover:shadow-orange-500/40 active:shadow-lg min-h-[44px] touch-manipulation"
           >
-            Confirmar
+            <span className="text-sm sm:text-base">Confirmar</span>
           </button>
         </div>
       </div>

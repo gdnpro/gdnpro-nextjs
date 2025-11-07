@@ -2087,18 +2087,18 @@ export default function FreelancerDashboardUI() {
       {/* NUEVO: Modal de Gestión de Progreso para Propuestas Aceptadas */}
       {showProgressManagement && selectedProjectForProgress && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:max-w-6xl">
+          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-6xl">
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-bar-chart-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
                         Gestión de Progreso
                       </h2>
                       <p className="mt-2 text-sm text-cyan-100">
@@ -2131,7 +2131,7 @@ export default function FreelancerDashboardUI() {
                     setShowProgressManagement(false)
                     setSelectedProjectForProgress(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -2158,27 +2158,27 @@ export default function FreelancerDashboardUI() {
       {/* Modal de Gestión de Proyectos */}
       {showProjectManagement && selectedProjectForManagement && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4"
           onClick={() => {
             setShowProjectManagement(false)
             setSelectedProjectForManagement(null)
           }}
         >
           <div
-            className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-6xl"
+            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-6xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-settings-3-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
                         Gestión de Proyecto
                       </h2>
                       <h3 className="mt-2 text-sm text-cyan-100 sm:text-base">
@@ -2193,7 +2193,7 @@ export default function FreelancerDashboardUI() {
                     setSelectedProjectForManagement(null)
                     loadData() // Recargar datos para actualizar el progreso
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -2218,18 +2218,18 @@ export default function FreelancerDashboardUI() {
       {/* Modal de Detalles de Proyecto (Proyectos Disponibles) */}
       {showProjectDetails && selectedProjectDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-4xl">
+          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-4xl">
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-briefcase-4-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
                         {selectedProjectDetails.title}
                       </h2>
                       <div className="mt-3 flex items-center gap-4">
@@ -2263,7 +2263,7 @@ export default function FreelancerDashboardUI() {
                     setShowProjectDetails(false)
                     setSelectedProjectDetails(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -2477,18 +2477,18 @@ export default function FreelancerDashboardUI() {
       {/* RESTAURADO: Modal de detalles de propuesta */}
       {showProposalDetails && selectedProposalForDetails && proposalProjectDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-4xl">
+          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-4xl">
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-file-list-3-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
                         Detalles de la Propuesta
                       </h2>
                       <p className="mt-2 text-sm text-cyan-100">{proposalProjectDetails.title}</p>
@@ -2530,7 +2530,7 @@ export default function FreelancerDashboardUI() {
                     setSelectedProposalForDetails(null)
                     setProposalProjectDetails(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -2697,18 +2697,18 @@ export default function FreelancerDashboardUI() {
       {/* RESTAURADO: Modal de detalles de proyecto en "Mis Proyectos" */}
       {showProjectDetailsModal && selectedProjectForDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:max-w-4xl">
+          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-4xl">
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-briefcase-4-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
                         {selectedProjectForDetails.title}
                       </h2>
                       <div className="mt-3 flex items-center gap-4">
@@ -2762,7 +2762,7 @@ export default function FreelancerDashboardUI() {
                     setShowProjectDetailsModal(false)
                     setSelectedProjectForDetails(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -2961,18 +2961,18 @@ export default function FreelancerDashboardUI() {
       {/* Modal de Envío de Propuesta */}
       {showProposalModal && selectedProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:max-w-2xl">
+          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-2xl">
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-send-plane-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
                         Enviar Propuesta
                       </h2>
                       <p className="mt-2 text-sm text-cyan-100">{selectedProject.title}</p>
@@ -2989,7 +2989,7 @@ export default function FreelancerDashboardUI() {
                       message: "",
                     })
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -3117,18 +3117,18 @@ export default function FreelancerDashboardUI() {
       {/* Modal Editar Perfil */}
       {showEditProfileModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-w-2xl">
+          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-2xl">
             {/* Modern Header with Gradient */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between">
-                <div className="flex-1 pr-4">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
                       <i className="ri-user-settings-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
                         Editar Perfil
                       </h2>
                       <p className="mt-2 text-sm text-cyan-100">
@@ -3139,7 +3139,7 @@ export default function FreelancerDashboardUI() {
                 </div>
                 <button
                   onClick={() => setShowEditProfileModal(false)}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
