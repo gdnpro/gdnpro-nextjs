@@ -1355,11 +1355,12 @@ export default function ClientDashboardUI() {
                               </p>
                               <div className="flex flex-wrap gap-1 sm:gap-2">
                                 {selectedProject.required_skills.map((skill, index) => {
-                                  const skillName = typeof skill === "string" ? skill : skill?.name || skill
+                                  const skillName =
+                                    typeof skill === "string" ? skill : skill || skill
                                   return (
                                     <span
                                       key={index}
-                                      className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-cyan-800 sm:px-3 sm:text-sm whitespace-nowrap"
+                                      className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium whitespace-nowrap text-cyan-800 sm:px-3 sm:text-sm"
                                     >
                                       {skillName}
                                     </span>
