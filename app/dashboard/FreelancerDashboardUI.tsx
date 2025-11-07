@@ -259,7 +259,10 @@ export default function FreelancerDashboardUI() {
                 .filter((id: string) => id)
 
               // Fetch all client profiles at once (only if there are client IDs)
-              let clientsMap = new Map()
+              let clientsMap = new Map<
+                string,
+                { id: string; full_name: string; email: string; rating: number; avatar_url: string }
+              >()
               if (clientIds.length > 0) {
                 const { data: clientsData } = await supabase
                   .from("profiles")
@@ -268,7 +271,15 @@ export default function FreelancerDashboardUI() {
 
                 // Create a map for quick lookup
                 clientsMap = new Map(
-                  (clientsData || []).map((client) => [client.id, client]),
+                  (clientsData || []).map(
+                    (client: {
+                      id: string
+                      full_name: string
+                      email: string
+                      rating: number
+                      avatar_url: string
+                    }) => [client.id, client],
+                  ),
                 )
               }
 
@@ -949,8 +960,7 @@ export default function FreelancerDashboardUI() {
           existingConversation =
             findData.conversations.find((conv: Conversation) => {
               return (
-                conv.client_id === clientId &&
-                (projectId ? conv.project_id === projectId : true)
+                conv.client_id === clientId && (projectId ? conv.project_id === projectId : true)
               )
             }) || null
         }
@@ -2529,7 +2539,10 @@ export default function FreelancerDashboardUI() {
                       const client = proposalProjectDetails.client
                       if (client) {
                         // For proposal projects, use the actual project ID from the proposal
-                        const projectId = proposalProjectDetails.project_id || null
+                        const projectId =
+                          selectedProposalForDetails?.project_id ||
+                          proposalProjectDetails.id ||
+                          null
                         handleContactClient(client.id, client.full_name, projectId)
                       }
                     }}
