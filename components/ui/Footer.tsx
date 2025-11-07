@@ -1,187 +1,390 @@
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
+  // Schema.org structured data for SEO
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "GDN Pro",
+    url: "https://gdnpro.com",
+    logo: "https://gdnpro.com/logo.png",
+    description:
+      "Transformamos ideas en realidad digital. Expertos en desarrollo web, apps móviles y marketing digital.",
+    email: "contact@gdnpro.com",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Newark",
+      addressRegion: "DE",
+      addressCountry: "US",
+    },
+    sameAs: [
+      "https://linkedin.com/company/gdnpro",
+      "https://twitter.com/gdnpro",
+      "https://instagram.com/gdnpro",
+      "https://github.com/gdnpro",
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      email: "contact@gdnpro.com",
+    },
+  }
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "GDN Pro",
+    url: "https://gdnpro.com",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://gdnpro.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+  }
+
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 mb-8">
-          <div className="space-y-4">
-            <div className="w-fit">
-              <img src="/logo.png" alt="GDN PRO" className="h-10 sm:h-12 w-auto" />
+    <footer
+      className="relative overflow-hidden bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950 text-white"
+      itemScope
+      itemType="https://schema.org/WPFooter"
+    >
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="bg-primary absolute top-0 left-1/4 h-96 w-96 rounded-full blur-3xl"></div>
+        <div className="bg-primary absolute right-1/4 bottom-0 h-96 w-96 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+        <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-12 lg:gap-16">
+          {/* Brand Section */}
+          <div
+            className="space-y-6 md:col-span-4 lg:col-span-5"
+            itemScope
+            itemType="https://schema.org/Organization"
+          >
+            <div className="group w-fit">
+              <a href="/" aria-label="GDN Pro - Inicio" itemProp="url">
+                <img
+                  src="/logo.png"
+                  alt="GDN Pro - Desarrollo Web, Apps Móviles y Marketing Digital"
+                  className="h-12 w-auto transition-transform duration-300 group-hover:scale-105 sm:h-14"
+                  itemProp="logo"
+                  width="auto"
+                  height="56"
+                />
+              </a>
             </div>
-            <p className="text-gray-300 text-sm sm:text-base leading-relaxed max-w-sm">
-              Transformamos ideas en realidad digital. Expertos en desarrollo
-              web, apps móviles y marketing digital.
+            <p
+              className="max-w-md text-base leading-relaxed text-gray-300 sm:text-lg"
+              itemProp="description"
+            >
+              Transformamos ideas en realidad digital. Expertos en desarrollo web, apps móviles y
+              marketing digital. Soluciones tecnológicas de clase mundial para empresas que buscan
+              destacar en el mercado digital.
             </p>
 
-            {/* Redes sociales 
-            <div className="flex space-x-4 pt-2">
+            {/* Contact Information for SEO */}
+            <div
+              className="space-y-2 text-sm text-gray-400"
+              itemScope
+              itemType="https://schema.org/ContactPoint"
+            >
+              <div className="flex items-center gap-2">
+                <i className="ri-mail-line text-primary"></i>
+                <a
+                  href="mailto:contact@gdnpro.com"
+                  className="transition-colors hover:text-white"
+                  itemProp="email"
+                >
+                  contact@gdnpro.com
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <i className="ri-map-pin-line text-primary"></i>
+                <span itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
+                  <span itemProp="addressLocality">Newark</span>,{" "}
+                  <span itemProp="addressRegion">DE</span>,{" "}
+                  <span itemProp="addressCountry">US</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Social Media Links */}
+            <nav aria-label="Redes sociales de GDN Pro" className="flex items-center gap-4 pt-2">
               <a
-                href="#"
-                className="w-10 h-10 bg-primary hover:bg-cyan-700 rounded-full flex items-center justify-center transition-all  cursor-pointer"
+                href="https://linkedin.com/company/gdnpro"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                aria-label="Síguenos en LinkedIn - GDN Pro"
+                className="group hover:bg-primary hover:border-primary/50 relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:scale-110"
+                itemProp="sameAs"
               >
-                <i className="ri-linkedin-line"></i>
+                <i className="ri-linkedin-line text-lg text-gray-400 transition-colors group-hover:text-white"></i>
               </a>
               <a
-                href="#"
-                className="w-10 h-10 bg-primary hover:bg-cyan-700 rounded-full flex items-center justify-center transition-all  cursor-pointer"
+                href="https://twitter.com/gdnpro"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                aria-label="Síguenos en Twitter - GDN Pro"
+                className="group hover:bg-primary hover:border-primary/50 relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:scale-110"
+                itemProp="sameAs"
               >
-                <i className="ri-twitter-line"></i>
+                <i className="ri-twitter-line text-lg text-gray-400 transition-colors group-hover:text-white"></i>
               </a>
               <a
-                href="#"
-                className="w-10 h-10 bg-primary hover:bg-cyan-700 rounded-full flex items-center justify-center transition-all  cursor-pointer"
+                href="https://instagram.com/gdnpro"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                aria-label="Síguenos en Instagram - GDN Pro"
+                className="group hover:bg-primary hover:border-primary/50 relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:scale-110"
+                itemProp="sameAs"
               >
-                <i className="ri-instagram-line"></i>
+                <i className="ri-instagram-line text-lg text-gray-400 transition-colors group-hover:text-white"></i>
               </a>
               <a
-                href="#"
-                className="w-10 h-10 bg-primary hover:bg-cyan-700 rounded-full flex items-center justify-center transition-all  cursor-pointer"
+                href="https://github.com/gdnpro"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                aria-label="Visita nuestro GitHub - GDN Pro"
+                className="group hover:bg-primary hover:border-primary/50 relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:scale-110"
+                itemProp="sameAs"
               >
-                <i className="ri-github-line"></i>
+                <i className="ri-github-line text-lg text-gray-400 transition-colors group-hover:text-white"></i>
               </a>
-            </div>*/}
+            </nav>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 sm:gap-8 md:gap-12">
+          {/* Links Section */}
+          <nav
+            className="grid grid-cols-2 gap-8 md:col-span-4 lg:col-span-4 lg:gap-12"
+            aria-label="Navegación del sitio"
+          >
             <div>
-              <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Servicios</h3>
-              <ul className="space-y-2 sm:space-y-3">
+              <h2 className="relative mb-6 inline-block text-lg font-bold text-white sm:text-xl">
+                Servicios
+                <span className="bg-primary absolute -bottom-2 left-0 h-0.5 w-8 rounded-full"></span>
+              </h2>
+              <ul className="space-y-3.5" role="list">
                 <li>
                   <a
                     href="/#services"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Servicios de Desarrollo Web - GDN Pro"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Desarrollo Web
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Desarrollo Web
+                    </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#services"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Desarrollo de Aplicaciones Móviles - GDN Pro"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Desarrollo Móvil
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Desarrollo Móvil
+                    </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#services"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Servicios de Marketing Digital - GDN Pro"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Marketing Digital
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Marketing Digital
+                    </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/freelancers"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Red de Freelancers - GDN Pro"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Red de Freelancers
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Red de Freelancers
+                    </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#contact"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Consultoría Tecnológica - GDN Pro"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Consultoría
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Consultoría
+                    </span>
                   </a>
                 </li>
               </ul>
             </div>
 
-            {/* Empresa */}
             <div>
-              <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Empresa</h3>
-              <ul className="space-y-2 sm:space-y-3">
+              <h2 className="relative mb-6 inline-block text-lg font-bold text-white sm:text-xl">
+                Empresa
+                <span className="bg-primary absolute -bottom-2 left-0 h-0.5 w-8 rounded-full"></span>
+              </h2>
+              <ul className="space-y-3.5" role="list">
                 <li>
                   <a
                     href="/#about"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Sobre GDN Pro - Nuestra Historia"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Sobre Nosotros
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Sobre Nosotros
+                    </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#portfolio"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Portafolio de Proyectos - GDN Pro"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Portafolio
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Portafolio
+                    </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#team"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Nuestro Equipo de Expertos - GDN Pro"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Nuestro Equipo
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Nuestro Equipo
+                    </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#testimonials"
-                    className="text-gray-300 hover:text-white active:text-white transition-colors cursor-pointer text-sm sm:text-base block py-1"
+                    title="Testimonios de Clientes - GDN Pro"
+                    className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
-                    Testimonios
+                    <span className="flex items-center gap-2">
+                      <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
+                      Testimonios
+                    </span>
                   </a>
                 </li>
               </ul>
             </div>
-          </div>
+          </nav>
 
-          <div className="md:col-span-1">
-            <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Newsletter</h3>
-            <p className="text-gray-300 mb-4 text-sm sm:text-base">
-              Suscríbete para recibir las últimas noticias y ofertas especiales.
+          {/* Newsletter Section */}
+          <div className="md:col-span-4 lg:col-span-3">
+            <h2 className="relative mb-3 inline-block text-lg font-bold text-white sm:text-xl">
+              Newsletter
+              <span className="bg-primary absolute -bottom-2 left-0 h-0.5 w-8 rounded-full"></span>
+            </h2>
+            <p className="mb-6 text-sm leading-relaxed text-gray-300 sm:text-base">
+              Suscríbete para recibir las últimas noticias sobre desarrollo web, aplicaciones
+              móviles, marketing digital y ofertas especiales de GDN Pro.
             </p>
-            <div className="space-y-3">
-              <input
-                id="email-footer"
-                type="email"
-                placeholder="Tu email"
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:ring-2 focus:ring-primary text-white focus:outline-none placeholder-gray-400 text-base sm:text-sm min-h-[44px]"
-                autoComplete="email"
-              />
-              <button className="w-full bg-primary hover:bg-cyan-700 active:bg-cyan-800 text-white py-3 rounded-xl font-semibold transition-all whitespace-nowrap cursor-pointer min-h-[44px] touch-manipulation">
+            <form
+              className="space-y-3"
+              onSubmit={(e) => e.preventDefault()}
+              aria-label="Formulario de suscripción al newsletter"
+            >
+              <div className="relative">
+                <label htmlFor="email-footer" className="sr-only">
+                  Dirección de correo electrónico para suscripción
+                </label>
+                <input
+                  id="email-footer"
+                  name="email"
+                  type="email"
+                  placeholder="Tu email"
+                  required
+                  className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-xl border border-gray-700/50 bg-gray-800/50 px-4 py-3.5 text-sm text-white placeholder-gray-500 backdrop-blur-sm transition-all duration-200 hover:border-gray-600 focus:ring-2 focus:outline-none"
+                  autoComplete="email"
+                  aria-label="Email para newsletter de GDN Pro"
+                  aria-required="true"
+                />
+              </div>
+              <button
+                type="submit"
+                className="from-primary hover:to-primary hover:shadow-primary/20 min-h-[44px] w-full cursor-pointer touch-manipulation rounded-xl bg-gradient-to-r to-cyan-600 py-3.5 font-semibold whitespace-nowrap text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-cyan-600 active:scale-[0.98] active:from-cyan-700 active:to-cyan-800"
+                aria-label="Suscribirse al newsletter de GDN Pro"
+              >
                 Suscribirse
               </button>
-            </div>
+            </form>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-gray-800 mt-8 sm:mt-12 pt-6 sm:pt-8">
-          <div className="flex flex-col gap-4 sm:gap-6 items-center text-center">
-            <div className="text-gray-400 text-xs sm:text-sm">
-              © {currentYear} GDN Pro. Todos los derechos reservados.
+        <div className="mt-12 border-t border-gray-800/50 pt-8 sm:pt-10">
+          <div className="flex flex-col items-center gap-6 text-center sm:gap-8">
+            <div className="text-sm text-gray-400 sm:text-base">
+              © {currentYear}{" "}
+              <span className="font-medium text-white" itemProp="name">
+                GDN Pro
+              </span>
+              . Todos los derechos reservados.
             </div>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 items-center justify-center">
+            <nav
+              aria-label="Enlaces legales"
+              className="flex flex-col flex-wrap items-center justify-center gap-4 sm:flex-row sm:gap-6"
+            >
               <a
                 href="/privacy"
-                className="text-gray-400 text-xs sm:text-sm hover:text-white active:text-white transition-colors cursor-pointer py-1"
+                title="Política de Privacidad - GDN Pro"
+                className="cursor-pointer px-2 py-1.5 text-sm text-gray-400 underline-offset-4 transition-colors duration-200 hover:text-white hover:underline active:text-white sm:text-base"
               >
                 Política de Privacidad
               </a>
-              <span className="text-gray-400 hidden sm:block text-sm cursor-default">
+              <span
+                className="hidden cursor-default text-sm text-gray-600 sm:block"
+                aria-hidden="true"
+              >
                 •
               </span>
               <a
                 href="/terms"
-                className="text-gray-400 text-xs sm:text-sm hover:text-white active:text-white transition-colors cursor-pointer py-1"
+                title="Términos de Servicio - GDN Pro"
+                className="cursor-pointer px-2 py-1.5 text-sm text-gray-400 underline-offset-4 transition-colors duration-200 hover:text-white hover:underline active:text-white sm:text-base"
               >
                 Términos de Servicio
               </a>
-              <span className="text-gray-400 hidden sm:block text-sm cursor-default">
+              <span
+                className="hidden cursor-default text-sm text-gray-600 sm:block"
+                aria-hidden="true"
+              >
                 •
               </span>
               <a
                 href="/data-deletion"
-                className="text-gray-400 text-xs sm:text-sm hover:text-white active:text-white transition-colors cursor-pointer py-1"
+                title="Solicitud de Eliminación de Datos - GDN Pro"
+                className="cursor-pointer px-2 py-1.5 text-sm text-gray-400 underline-offset-4 transition-colors duration-200 hover:text-white hover:underline active:text-white sm:text-base"
               >
                 Eliminación de Datos
               </a>
-            </div>
+            </nav>
           </div>
         </div>
       </div>
