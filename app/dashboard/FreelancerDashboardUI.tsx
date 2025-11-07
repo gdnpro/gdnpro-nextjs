@@ -2113,11 +2113,11 @@ export default function FreelancerDashboardUI() {
                       </div>
                       <div className="flex flex-wrap gap-3">
                         {selectedProjectDetails.required_skills.map((skill, index) => {
-                          const skillName = typeof skill === "string" ? skill : skill?.name || skill
+                          const skillName = typeof skill === "string" ? skill : skill || skill
                           return (
                             <span
                               key={index}
-                              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30 whitespace-nowrap"
+                              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
                             >
                               <span className="relative z-10 flex items-center gap-2">
                                 <i className="ri-checkbox-circle-line"></i>
@@ -2166,7 +2166,7 @@ export default function FreelancerDashboardUI() {
               </div>
             </div>
             {/* Botones de Acción */}
-            <div className="shrink-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
               {!proposals.find((p) => p.project?.id === selectedProjectDetails.id) &&
                 proposals &&
                 selectedProjectDetails && (
@@ -2377,37 +2377,36 @@ export default function FreelancerDashboardUI() {
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
             {/* Botones de Acción */}
             {selectedProposalForDetails.status === "accepted" && (
-              <div className="shrink-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
-                    <button
-                      onClick={() => {
-                        setShowProposalDetails(false)
-                        openProgressManagement(proposalProjectDetails)
-                      }}
-                      className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
-                    >
-                      <i className="ri-bar-chart-line text-xl transition-transform group-hover:scale-110"></i>
-                      <span>Gestionar Progreso</span>
-                    </button>
-                    {proposalProjectDetails.client?.id && (
-                      <button
-                        onClick={() => {
-                          setShowProposalDetails(false)
-                          const client = proposalProjectDetails.client
-                          if (client) {
-                            handleContactClient(client.id, client.full_name)
-                          }
-                        }}
-                        className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
-                      >
-                        <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
-                        <span>Contactar Cliente</span>
-                      </button>
-                    )}
+              <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+                <button
+                  onClick={() => {
+                    setShowProposalDetails(false)
+                    openProgressManagement(proposalProjectDetails)
+                  }}
+                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                >
+                  <i className="ri-bar-chart-line text-xl transition-transform group-hover:scale-110"></i>
+                  <span>Gestionar Progreso</span>
+                </button>
+                {proposalProjectDetails.client?.id && (
+                  <button
+                    onClick={() => {
+                      setShowProposalDetails(false)
+                      const client = proposalProjectDetails.client
+                      if (client) {
+                        handleContactClient(client.id, client.full_name)
+                      }
+                    }}
+                    className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                  >
+                    <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
+                    <span>Contactar Cliente</span>
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -2627,11 +2626,10 @@ export default function FreelancerDashboardUI() {
                     </div>
                   </div>
                 )}
-
               </div>
             </div>
             {/* Botones de Acción */}
-            <div className="shrink-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
               {!selectedProjectForDetails._isFromTransaction && (
                 <button
                   onClick={() => {
@@ -2658,10 +2656,7 @@ export default function FreelancerDashboardUI() {
                 <button
                   onClick={() => {
                     setShowProjectDetailsModal(false)
-                    startChat(
-                      selectedProjectForDetails.id,
-                      selectedProjectForDetails.client!.id,
-                    )
+                    startChat(selectedProjectForDetails.id, selectedProjectForDetails.client!.id)
                   }}
                   className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
                 >
