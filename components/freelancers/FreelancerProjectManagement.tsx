@@ -547,8 +547,13 @@ export function FreelancerProjectManagement({
             <h5 className="text-xl font-bold text-blue-800">Agregar Nota de Progreso</h5>
           </div>
           <div className="flex flex-col gap-3 md:flex-row">
+            <label htmlFor="progress-note-input" className="sr-only">
+              Nota de progreso
+            </label>
             <input
               type="text"
+              id="progress-note-input"
+              name="progressNote"
               value={newProgressNote}
               onChange={(e) => setNewProgressNote(e.target.value)}
               placeholder="Describe el progreso realizado..."

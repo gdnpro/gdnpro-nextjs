@@ -125,10 +125,12 @@ export function InputDialog({
         {/* Content */}
         <div className="p-6">
           {label && (
-            <label className="mb-2 block text-sm font-semibold text-gray-700">{label}</label>
+            <label htmlFor="input-dialog-input" className="mb-2 block text-sm font-semibold text-gray-700">{label}</label>
           )}
           <input
             type={type}
+            id="input-dialog-input"
+            name="inputValue"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}

@@ -19,6 +19,7 @@ import { ConversationModal } from "@/components/ConversationModal"
 import { ProjectArticle } from "@/components/dashboard/ProjectArticle"
 import { ProposalArticle } from "@/components/dashboard/ProposalArticle"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import { ConversationCard } from "@/components/dashboard/ConversationCard"
 
 const supabase = supabaseBrowser()
 
@@ -1417,80 +1418,34 @@ export default function ClientDashboardUI() {
 
             {/* Mensajes */}
             {activeTab === "messages" && (
-              <div className="space-y-4">
-                <div className="mb-4 flex flex-col space-y-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-                  <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <h2 className="text-base font-semibold text-gray-900 sm:text-lg sm:text-xl">
                     Mis Conversaciones
                   </h2>
                   <button
                     onClick={loadConversations}
-                    className="bg-primary w-full cursor-pointer rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-4 sm:text-sm"
+                    className="bg-primary flex w-full cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-cyan-700 active:scale-95 sm:w-auto sm:px-4 sm:text-sm"
                   >
-                    <i className="ri-refresh-line mr-2"></i>
-                    Actualizar
+                    <i className="ri-refresh-line"></i>
+                    <span>Actualizar</span>
                   </button>
                 </div>
 
                 {conversations.length > 0 ? (
-                  <div className="space-y-3 sm:space-y-4">
-                    {conversations.map((conversation) => (
-                      <div
-                        key={conversation.id}
-                        className="cursor-pointer rounded-lg border border-gray-200 bg-white p-3 transition-shadow hover:shadow-md sm:p-4"
-                        onClick={() => openChat(conversation)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex min-w-0 flex-1 items-center">
-                            <div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 sm:mr-4 sm:h-12 sm:w-12">
-                              {conversation.client?.avatar_url ? (
-                                <img
-                                  src={conversation.client.avatar_url}
-                                  alt={conversation.client.full_name}
-                                  className="h-full w-full object-cover object-top"
-                                />
-                              ) : (
-                                <i className="ri-user-line text-primary text-lg sm:text-xl"></i>
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <h3 className="truncate text-sm font-semibold text-gray-900 sm:text-base">
-                                {conversation.client?.full_name || conversation.client.full_name}
-                              </h3>
-                              {conversation.project && (
-                                <p className="truncate text-xs text-gray-600 sm:text-sm">
-                                  Proyecto: {conversation.project.title}
-                                </p>
-                              )}
-                              {conversation.latest_message && (
-                                <p className="truncate text-xs text-gray-500 sm:text-sm">
-                                  {conversation.latest_message.sender_id === user?.id ? "Tú: " : ""}
-                                  {conversation.latest_message.message_text}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <div className="ml-2 shrink-0 text-right">
-                            {conversation.latest_message && (
-                              <p className="text-xs text-gray-400">
-                                {new Date(
-                                  conversation.latest_message.created_at,
-                                ).toLocaleDateString()}
-                              </p>
-                            )}
-                            <div className="mt-1 flex items-center justify-end">
-                              <i className="ri-chat-3-line mr-1 text-gray-400"></i>
-                              <span className="text-primary text-xs font-medium sm:text-sm">
-                                Ver chat
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                  <div className="w-full space-y-3 sm:space-y-4">
+                    {conversations.map((conversation, idx) => (
+                      <ConversationCard
+                        key={idx}
+                        conversation={conversation}
+                        openChat={openChat}
+                        user={user}
+                      />
                     ))}
                   </div>
                 ) : (
                   <div className="py-8 text-center sm:py-12">
-                    <i className="ri-chat-3-line sm:4xl mb-4 text-3xl text-gray-400"></i>
+                    <i className="ri-chat-3-line mb-3 text-4xl text-gray-400 sm:mb-4 sm:text-6xl"></i>
                     <h3 className="mb-2 text-base font-medium text-gray-900 sm:text-lg">
                       No tienes conversaciones aún
                     </h3>
@@ -1543,32 +1498,32 @@ export default function ClientDashboardUI() {
 
             {/* Reseñas Tab */}
             {activeTab === "reviews" && (
-              <div className="space-y-6">
-                <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-                  <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <h2 className="text-base font-semibold text-gray-900 sm:text-lg sm:text-xl">
                     Sistema de Reseñas
                   </h2>
                   <button
                     onClick={loadPendingReviewsCount}
-                    className="bg-primary w-full cursor-pointer rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-4 sm:text-sm"
+                    className="bg-primary flex w-full cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-cyan-700 active:scale-95 sm:w-auto sm:px-4 sm:text-sm"
                   >
-                    <i className="ri-refresh-line mr-2"></i>
-                    Actualizar
+                    <i className="ri-refresh-line"></i>
+                    <span>Actualizar</span>
                   </button>
                 </div>
 
                 {/* Notificación de proyectos pendientes */}
                 {pendingReviewsCount > 0 && (
-                  <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-                    <div className="flex items-center">
-                      <i className="ri-notification-line mr-3 text-xl text-yellow-600"></i>
-                      <div>
-                        <h4 className="font-medium text-yellow-800">
+                  <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 sm:p-4">
+                    <div className="flex items-start gap-2 sm:items-center sm:gap-3">
+                      <i className="ri-notification-line mt-0.5 shrink-0 text-base text-yellow-600 sm:text-xl"></i>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-sm font-medium text-yellow-800 sm:text-base">
                           ¡Tienes {pendingReviewsCount} proyecto
                           {pendingReviewsCount !== 1 ? "s" : ""} pendiente
                           {pendingReviewsCount !== 1 ? "s" : ""} de reseña!
                         </h4>
-                        <p className="mt-1 text-sm text-yellow-700">
+                        <p className="mt-1 text-xs text-yellow-700 sm:text-sm">
                           Ayuda a otros usuarios compartiendo tu experiencia con los freelancers.
                         </p>
                       </div>
@@ -1586,7 +1541,7 @@ export default function ClientDashboardUI() {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-300" />
                   </div>
-                  <div className="relative flex justify-center text-sm">
+                  <div className="relative flex justify-center text-xs sm:text-sm">
                     <span className="bg-white px-2 text-gray-500">Tus Reseñas Recibidas</span>
                   </div>
                 </div>
@@ -1634,25 +1589,25 @@ export default function ClientDashboardUI() {
           }}
         >
           <div
-            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:max-w-4xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
+            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-4xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-money-dollar-circle-line text-xl sm:text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-money-dollar-circle-line text-lg sm:text-xl md:text-2xl"></i>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Detalles de la Transacción
                       </h2>
-                      <h3 className="mt-2 text-xs sm:text-sm md:text-base text-cyan-100 truncate">
+                      <p className="mt-2 truncate text-xs text-cyan-100 sm:text-sm">
                         {selectedTransaction.project_title || "Proyecto Contratado"}
-                      </h3>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1661,38 +1616,38 @@ export default function ClientDashboardUI() {
                     setShowTransactionDetails(false)
                     setSelectedTransaction(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 min-h-0">
-              <div className="space-y-6">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Transaction Info Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 p-6 ring-1 ring-cyan-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10">
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 p-4 ring-1 ring-cyan-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10 sm:p-6">
                     <div className="mb-3 flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
-                        <i className="ri-money-dollar-circle-fill text-xl"></i>
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30 sm:h-12 sm:w-12">
+                        <i className="ri-money-dollar-circle-fill text-lg sm:text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-cyan-700">Monto</div>
+                      <div className="text-xs font-medium text-cyan-700 sm:text-sm">Monto</div>
                     </div>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-xl font-bold text-gray-900 sm:text-2xl">
                       ${selectedTransaction.amount} {selectedTransaction.currency.toUpperCase()}
                     </p>
                   </div>
 
-                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 p-6 ring-1 ring-emerald-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/10">
+                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 p-4 ring-1 ring-emerald-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/10 sm:p-6">
                     <div className="mb-3 flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/30">
-                        <i className="ri-checkbox-circle-fill text-xl"></i>
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/30 sm:h-12 sm:w-12">
+                        <i className="ri-checkbox-circle-fill text-lg sm:text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-emerald-700">Estado</div>
+                      <div className="text-xs font-medium text-emerald-700 sm:text-sm">Estado</div>
                     </div>
                     <p
-                      className={`text-2xl font-bold ${
+                      className={`text-xl font-bold sm:text-2xl ${
                         selectedTransaction.status === "paid"
                           ? "text-emerald-700"
                           : "text-yellow-700"
@@ -1704,39 +1659,45 @@ export default function ClientDashboardUI() {
                 </div>
 
                 {/* Transaction Details */}
-                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-                  <h3 className="mb-4 text-xl font-bold text-gray-900">
+                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 shadow-sm sm:p-6">
+                  <h3 className="mb-4 text-base font-bold text-gray-900 sm:text-xl">
                     Información de la Transacción
                   </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between border-b border-gray-200 pb-3">
-                      <div className="flex items-center gap-3">
-                        <i className="ri-file-text-line text-cyan-600"></i>
-                        <span className="font-medium text-gray-700">Título del Proyecto</span>
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <i className="ri-file-text-line text-base text-cyan-600 sm:text-lg"></i>
+                        <span className="text-xs font-medium text-gray-700 sm:text-sm">
+                          Título del Proyecto
+                        </span>
                       </div>
-                      <span className="text-right font-semibold text-gray-900">
+                      <span className="text-left text-sm font-semibold break-words text-gray-900 sm:text-right">
                         {selectedTransaction.project_title || "N/A"}
                       </span>
                     </div>
 
                     {selectedTransaction.project_description && (
-                      <div className="flex items-start justify-between border-b border-gray-200 pb-3">
-                        <div className="flex items-center gap-3">
-                          <i className="ri-file-list-3-line text-cyan-600"></i>
-                          <span className="font-medium text-gray-700">Descripción</span>
+                      <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <i className="ri-file-list-3-line text-base text-cyan-600 sm:text-lg"></i>
+                          <span className="text-xs font-medium text-gray-700 sm:text-sm">
+                            Descripción
+                          </span>
                         </div>
-                        <span className="max-w-md text-right text-sm text-gray-600">
+                        <span className="max-w-md text-left text-xs break-words text-gray-600 sm:text-right sm:text-sm">
                           {selectedTransaction.project_description}
                         </span>
                       </div>
                     )}
 
-                    <div className="flex items-start justify-between border-b border-gray-200 pb-3">
-                      <div className="flex items-center gap-3">
-                        <i className="ri-calendar-line text-cyan-600"></i>
-                        <span className="font-medium text-gray-700">Fecha de Creación</span>
+                    <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <i className="ri-calendar-line text-base text-cyan-600 sm:text-lg"></i>
+                        <span className="text-xs font-medium text-gray-700 sm:text-sm">
+                          Fecha de Creación
+                        </span>
                       </div>
-                      <span className="text-right text-sm text-gray-600">
+                      <span className="text-left text-xs text-gray-600 sm:text-right sm:text-sm">
                         {selectedTransaction.created_at
                           ? new Date(selectedTransaction.created_at).toLocaleDateString("es-ES", {
                               year: "numeric",
@@ -1748,12 +1709,14 @@ export default function ClientDashboardUI() {
                     </div>
 
                     {selectedTransaction.paid_at && (
-                      <div className="flex items-start justify-between border-b border-gray-200 pb-3">
-                        <div className="flex items-center gap-3">
-                          <i className="ri-checkbox-circle-line text-cyan-600"></i>
-                          <span className="font-medium text-gray-700">Fecha de Pago</span>
+                      <div className="flex flex-col gap-2 border-b border-gray-200 pb-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <i className="ri-checkbox-circle-line text-base text-cyan-600 sm:text-lg"></i>
+                          <span className="text-xs font-medium text-gray-700 sm:text-sm">
+                            Fecha de Pago
+                          </span>
                         </div>
-                        <span className="text-right text-sm text-gray-600">
+                        <span className="text-left text-xs text-gray-600 sm:text-right sm:text-sm">
                           {new Date(selectedTransaction.paid_at).toLocaleDateString("es-ES", {
                             year: "numeric",
                             month: "long",
@@ -1764,12 +1727,14 @@ export default function ClientDashboardUI() {
                     )}
 
                     {selectedTransaction.stripe_session_id && (
-                      <div className="flex items-start justify-between pb-3">
-                        <div className="flex items-center gap-3">
-                          <i className="ri-bank-card-line text-cyan-600"></i>
-                          <span className="font-medium text-gray-700">ID de Sesión Stripe</span>
+                      <div className="flex flex-col gap-2 pb-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <i className="ri-bank-card-line text-base text-cyan-600 sm:text-lg"></i>
+                          <span className="text-xs font-medium text-gray-700 sm:text-sm">
+                            ID de Sesión Stripe
+                          </span>
                         </div>
-                        <span className="max-w-md text-right font-mono text-xs break-all text-gray-600">
+                        <span className="max-w-md text-left font-mono text-xs break-all text-gray-600 sm:text-right">
                           {selectedTransaction.stripe_session_id}
                         </span>
                       </div>
@@ -1789,47 +1754,47 @@ export default function ClientDashboardUI() {
           onClick={() => setShowProposalsModal(false)}
         >
           <div
-            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:max-w-5xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
+            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-5xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-mail-line text-xl sm:text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-mail-line text-lg sm:text-xl md:text-2xl"></i>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Propuestas Recibidas
                       </h2>
-                      <h3 className="mt-2 text-xs sm:text-sm md:text-base text-cyan-100 truncate">
+                      <p className="mt-2 truncate text-xs text-cyan-100 sm:text-sm">
                         {selectedProject.title}
-                      </h3>
+                      </p>
                     </div>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowProposalsModal(false)}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 min-h-0">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
               {/* NUEVO: Mostrar mensaje inicial del cliente */}
-              <div className="mb-6 rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-4 shadow-sm sm:p-6">
+              <div className="mb-4 rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-3 shadow-sm sm:mb-6 sm:p-6">
                 <div className="flex items-start">
                   <div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mr-4 sm:h-12 sm:w-12">
-                    <i className="ri-message-3-line text-primary text-lg sm:text-xl"></i>
+                    <i className="ri-message-3-line text-primary text-base sm:text-xl"></i>
                   </div>
                   <div className="flex-1">
                     <div className="rounded-lg border border-blue-200 bg-white p-3 sm:p-4">
-                      <div className="space-y-3">
+                      <div className="space-y-2 sm:space-y-3">
                         <div>
                           <p className="mb-1 text-xs font-medium text-gray-600 sm:text-sm">
                             Título del Proyecto:
@@ -1927,7 +1892,7 @@ export default function ClientDashboardUI() {
                 </div>
               </div>
 
-              <div className="space-y-4 sm:space-y-6">
+              <div className="space-y-3 sm:space-y-4">
                 {projectProposals.map((proposal) => (
                   <ProposalArticle
                     key={proposal.id}
@@ -1963,23 +1928,23 @@ export default function ClientDashboardUI() {
           onClick={() => setShowNewProjectModal(false)}
         >
           <div
-            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:max-w-3xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
+            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-3xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-add-circle-line text-xl sm:text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-add-circle-line text-lg sm:text-xl md:text-2xl"></i>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Crear Nuevo Proyecto
                       </h2>
-                      <p className="mt-2 text-xs sm:text-sm text-cyan-100">
+                      <p className="mt-2 text-xs text-cyan-100 sm:text-sm">
                         Completa el formulario para crear tu proyecto
                       </p>
                     </div>
@@ -1987,15 +1952,19 @@ export default function ClientDashboardUI() {
                 </div>
                 <button
                   onClick={() => setShowNewProjectModal(false)}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 min-h-0">
-              <form onSubmit={createProject} className="space-y-4 sm:space-y-6">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+              <form
+                id="new-project-form"
+                onSubmit={createProject}
+                className="space-y-4 sm:space-y-6"
+              >
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
                     Título del Proyecto
@@ -2005,7 +1974,7 @@ export default function ClientDashboardUI() {
                     required
                     value={newProject.title}
                     onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     placeholder="Ej: Desarrollo de sitio web corporativo"
                   />
                 </div>
@@ -2024,7 +1993,7 @@ export default function ClientDashboardUI() {
                         description: e.target.value,
                       })
                     }
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     placeholder="Describe tu proyecto en detalle..."
                   />
                 </div>
@@ -2045,7 +2014,7 @@ export default function ClientDashboardUI() {
                           budget_min: e.target.value,
                         })
                       }
-                      className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                      className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     />
                   </div>
 
@@ -2064,7 +2033,7 @@ export default function ClientDashboardUI() {
                           budget_max: e.target.value,
                         })
                       }
-                      className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                      className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     />
                   </div>
                 </div>
@@ -2161,29 +2130,30 @@ export default function ClientDashboardUI() {
                         deadline: e.target.value,
                       })
                     }
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     min={new Date().toISOString().split("T")[0]}
                   />
                 </div>
-
-                <div className="flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowNewProjectModal(false)}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
-                  >
-                    <i className="ri-close-line"></i>
-                    <span>Cancelar</span>
-                  </button>
-                  <button
-                    type="submit"
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
-                  >
-                    <i className="ri-add-circle-fill text-lg transition-transform group-hover:scale-110"></i>
-                    <span>Crear Proyecto</span>
-                  </button>
-                </div>
               </form>
+            </div>
+            {/* Botones de Acción */}
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
+              <button
+                type="button"
+                onClick={() => setShowNewProjectModal(false)}
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 sm:px-6"
+              >
+                <i className="ri-close-line"></i>
+                <span className="text-sm sm:text-base">Cancelar</span>
+              </button>
+              <button
+                type="submit"
+                form="new-project-form"
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:px-6"
+              >
+                <i className="ri-add-circle-fill text-lg transition-transform group-hover:scale-110"></i>
+                <span className="text-sm sm:text-base">Crear Proyecto</span>
+              </button>
             </div>
           </div>
         </div>
@@ -2209,23 +2179,23 @@ export default function ClientDashboardUI() {
           onClick={() => setShowEditProfileModal(false)}
         >
           <div
-            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:max-w-3xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
+            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-3xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
                       <i className="ri-user-settings-line text-xl sm:text-2xl"></i>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Editar Perfil
                       </h2>
-                      <p className="mt-2 text-xs sm:text-sm text-cyan-100">
+                      <p className="mt-2 text-xs text-cyan-100 sm:text-sm">
                         Actualiza tu información personal
                       </p>
                     </div>
@@ -2233,15 +2203,19 @@ export default function ClientDashboardUI() {
                 </div>
                 <button
                   onClick={() => setShowEditProfileModal(false)}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 min-h-0">
-              <form onSubmit={updateProfile} className="space-y-4 sm:space-y-6">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+              <form
+                id="edit-profile-form"
+                onSubmit={updateProfile}
+                className="space-y-4 sm:space-y-6"
+              >
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
                     Nombre Completo
@@ -2253,7 +2227,7 @@ export default function ClientDashboardUI() {
                     onChange={(e) =>
                       setEditProfileForm({ ...editProfileForm, full_name: e.target.value })
                     }
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     placeholder="Tu nombre completo"
                   />
                 </div>
@@ -2268,7 +2242,7 @@ export default function ClientDashboardUI() {
                     onChange={(e) =>
                       setEditProfileForm({ ...editProfileForm, location: e.target.value })
                     }
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     placeholder="Ej: Ciudad, País"
                   />
                 </div>
@@ -2283,40 +2257,41 @@ export default function ClientDashboardUI() {
                     onChange={(e) =>
                       setEditProfileForm({ ...editProfileForm, bio: e.target.value })
                     }
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     placeholder="Describe tu perfil profesional..."
                   />
                 </div>
-
-                <div className="flex flex-col gap-3 border-t border-gray-200 bg-white p-4 sm:p-6 sm:flex-row sm:gap-4 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setShowEditProfileModal(false)}
-                    disabled={updatingProfile}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 sm:px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 active:translate-y-0 hover:border-gray-400 hover:bg-gray-50 active:bg-gray-100 hover:shadow-md active:shadow-sm disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:translate-y-0 min-h-[44px] touch-manipulation"
-                  >
-                    <i className="ri-close-line text-base sm:text-lg"></i>
-                    <span className="text-sm sm:text-base">Cancelar</span>
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={updatingProfile}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 sm:px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0 hover:scale-[1.02] active:scale-100 hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100 disabled:active:translate-y-0 disabled:active:scale-100 min-h-[44px] touch-manipulation"
-                  >
-                    {updatingProfile ? (
-                      <>
-                        <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
-                        <span className="text-sm sm:text-base">Guardando...</span>
-                      </>
-                    ) : (
-                      <>
-                        <i className="ri-save-line text-base sm:text-lg transition-transform group-hover:scale-110"></i>
-                        <span className="text-sm sm:text-base">Guardar Cambios</span>
-                      </>
-                    )}
-                  </button>
-                </div>
               </form>
+            </div>
+            {/* Botones de Acción */}
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
+              <button
+                type="button"
+                onClick={() => setShowEditProfileModal(false)}
+                disabled={updatingProfile}
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100 sm:px-6"
+              >
+                <i className="ri-close-line text-base sm:text-lg"></i>
+                <span className="text-sm sm:text-base">Cancelar</span>
+              </button>
+              <button
+                type="submit"
+                form="edit-profile-form"
+                disabled={updatingProfile}
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100 disabled:active:scale-100 sm:px-6"
+              >
+                {updatingProfile ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                    <span className="text-sm sm:text-base">Guardando...</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="ri-save-line text-base transition-transform group-hover:scale-110 sm:text-lg"></i>
+                    <span className="text-sm sm:text-base">Guardar Cambios</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
@@ -2332,23 +2307,23 @@ export default function ClientDashboardUI() {
           }}
         >
           <div
-            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:max-w-3xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
+            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-3xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-edit-line text-xl sm:text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-edit-line text-lg sm:text-xl md:text-2xl"></i>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Editar Proyecto
                       </h2>
-                      <p className="mt-2 text-sm text-cyan-100">
+                      <p className="mt-2 text-xs text-cyan-100 sm:text-sm">
                         Actualiza la información de tu proyecto
                       </p>
                     </div>
@@ -2359,15 +2334,19 @@ export default function ClientDashboardUI() {
                     setShowEditProjectModal(false)
                     setEditingProject(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 min-h-0">
-              <form onSubmit={updateProject} className="space-y-4 sm:space-y-6">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+              <form
+                id="edit-project-form"
+                onSubmit={updateProject}
+                className="space-y-4 sm:space-y-6"
+              >
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
                     Título del Proyecto
@@ -2379,7 +2358,7 @@ export default function ClientDashboardUI() {
                     onChange={(e) =>
                       setEditProjectForm({ ...editProjectForm, title: e.target.value })
                     }
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     placeholder="Ej: Desarrollo de sitio web corporativo"
                   />
                 </div>
@@ -2398,7 +2377,7 @@ export default function ClientDashboardUI() {
                         description: e.target.value,
                       })
                     }
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     placeholder="Describe tu proyecto en detalle..."
                   />
                 </div>
@@ -2419,7 +2398,7 @@ export default function ClientDashboardUI() {
                           budget_min: e.target.value,
                         })
                       }
-                      className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                      className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     />
                   </div>
 
@@ -2438,7 +2417,7 @@ export default function ClientDashboardUI() {
                           budget_max: e.target.value,
                         })
                       }
-                      className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                      className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     />
                   </div>
                 </div>
@@ -2535,43 +2514,44 @@ export default function ClientDashboardUI() {
                         deadline: e.target.value,
                       })
                     }
-                    className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none min-h-[44px]"
+                    className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
                     min={new Date().toISOString().split("T")[0]}
                   />
                 </div>
-
-                <div className="flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowEditProjectModal(false)
-                      setEditingProject(null)
-                    }}
-                    disabled={updatingProject}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md disabled:opacity-50 disabled:hover:translate-y-0"
-                  >
-                    <i className="ri-close-line"></i>
-                    <span>Cancelar</span>
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={updatingProject}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
-                  >
-                    {updatingProject ? (
-                      <>
-                        <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
-                        <span>Guardando...</span>
-                      </>
-                    ) : (
-                      <>
-                        <i className="ri-save-line text-lg transition-transform group-hover:scale-110"></i>
-                        <span>Guardar Cambios</span>
-                      </>
-                    )}
-                  </button>
-                </div>
               </form>
+            </div>
+            {/* Botones de Acción */}
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEditProjectModal(false)
+                  setEditingProject(null)
+                }}
+                disabled={updatingProject}
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100 sm:px-6"
+              >
+                <i className="ri-close-line"></i>
+                <span className="text-sm sm:text-base">Cancelar</span>
+              </button>
+              <button
+                type="submit"
+                form="edit-project-form"
+                disabled={updatingProject}
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100 disabled:active:scale-100 sm:px-6"
+              >
+                {updatingProject ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                    <span className="text-sm sm:text-base">Guardando...</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="ri-save-line text-lg transition-transform group-hover:scale-110"></i>
+                    <span className="text-sm sm:text-base">Guardar Cambios</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>

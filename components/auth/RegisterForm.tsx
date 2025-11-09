@@ -403,8 +403,13 @@ export function RegisterForm() {
                       ))}
                     </div>
                     <div className="mb-3 flex gap-2">
+                      <label htmlFor="skill-input" className="sr-only">
+                        Añadir habilidad
+                      </label>
                       <input
                         type="text"
+                        id="skill-input"
+                        name="skill"
                         value={skillInput}
                         onChange={(e) => setSkillInput(e.target.value)}
                         onKeyPress={(e) =>

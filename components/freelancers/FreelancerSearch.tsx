@@ -92,10 +92,16 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Search Input */}
             <div className="lg:col-span-3">
+              <label htmlFor="freelancer-search-input" className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
+                <i className="ri-search-line text-cyan-500"></i>
+                Buscar Freelancers
+              </label>
               <div className="relative">
                 <i className="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 transform text-xl text-cyan-500"></i>
                 <input
                   type="text"
+                  id="freelancer-search-input"
+                  name="search"
                   placeholder="Buscar por habilidades, nombre o descripción..."
                   value={searchFilters.search}
                   onChange={(e) => handleFilterChange("search", e.target.value)}
@@ -106,12 +112,14 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
 
             {/* Category Filter */}
             <div>
-              <label className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
+              <label htmlFor="freelancer-category" className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
                 <i className="ri-folder-line text-cyan-500"></i>
                 Categoría
               </label>
               <div className="relative">
                 <select
+                  id="freelancer-category"
+                  name="category"
                   value={searchFilters.category}
                   onChange={(e) => handleFilterChange("category", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white px-4 py-3 pr-8 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
@@ -129,12 +137,14 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
 
             {/* Experience Filter */}
             <div>
-              <label className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
+              <label htmlFor="freelancer-experience" className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
                 <i className="ri-star-line text-cyan-500"></i>
                 Experiencia
               </label>
               <div className="relative">
                 <select
+                  id="freelancer-experience"
+                  name="experience"
                   value={searchFilters.experience}
                   onChange={(e) => handleFilterChange("experience", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white px-4 py-3 pr-8 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
@@ -152,12 +162,14 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
 
             {/* Budget Filter */}
             <div>
-              <label className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
+              <label htmlFor="freelancer-budget" className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
                 <i className="ri-money-dollar-circle-line text-cyan-500"></i>
                 Presupuesto por hora
               </label>
               <div className="relative">
                 <select
+                  id="freelancer-budget"
+                  name="budget"
                   value={searchFilters.budget}
                   onChange={(e) => handleFilterChange("budget", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white px-4 py-3 pr-8 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"

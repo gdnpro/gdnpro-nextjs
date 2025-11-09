@@ -23,6 +23,7 @@ html {
   /* Prevent text size adjustment on orientation change */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scrollbar-gutter: stable;
 }
 
 /* Improve touch targets - ensure minimum 44x44px for accessibility */

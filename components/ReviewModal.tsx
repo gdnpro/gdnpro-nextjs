@@ -274,13 +274,15 @@ export default function ReviewModal({
 
             {/* Review Text */}
             <div>
-              <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
+              <label htmlFor="review-text" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                   <i className="ri-message-3-line text-sm"></i>
                 </div>
                 Comentario (Opcional)
               </label>
               <textarea
+                id="review-text"
+                name="reviewText"
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
                 placeholder="Comparte tu experiencia trabajando en este proyecto..."

@@ -98,9 +98,9 @@ export const ConversationModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
-      <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-[80vh] sm:max-w-2xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
+      <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[85vh] sm:max-w-2xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
         {/* Modern Header with linear */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 shrink-0">
+        <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
           <div className="relative z-10 flex min-w-0 flex-1 items-center justify-between gap-3">
             <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -112,7 +112,7 @@ export const ConversationModal = ({
                     className="h-full w-full object-cover object-top"
                   />
                 ) : (
-                  <i className="ri-user-3-line text-xl text-white"></i>
+                  <i className="ri-user-3-line text-lg sm:text-xl text-white"></i>
                 )}
               </div>
               <div className="min-w-0 flex-1">
@@ -142,7 +142,7 @@ export const ConversationModal = ({
         </div>
 
         {/* Área de Mensajes */}
-        <div className="flex-1 overflow-y-auto bg-gray-50 p-3 sm:p-4 min-h-0">
+        <div className="flex-1 min-h-0 overflow-y-auto bg-gray-50 p-3 sm:p-4">
           {chatLoading ? (
             <div className="flex h-full items-center justify-center">
               <div className="border-primary h-6 w-6 animate-spin rounded-full border-b-2 sm:h-8 sm:w-8"></div>
@@ -199,16 +199,21 @@ export const ConversationModal = ({
         </div>
 
         {/* Input para Escribir */}
-        <div className="border-t border-gray-200 bg-white p-3 sm:p-4 shrink-0 sm:rounded-b-2xl">
+        <div className="shrink-0 border-t border-gray-200 bg-white p-3 sm:p-4 sm:rounded-b-2xl">
           <div className="flex items-center gap-2 sm:gap-3">
+            <label htmlFor="conversation-message-input" className="sr-only">
+              Escribe tu mensaje
+            </label>
             <input
               type="text"
+              id="conversation-message-input"
+              name="message"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyUp={handleKeyPress}
               placeholder="Escribe tu mensaje..."
               disabled={chatLoading || sendingMessage}
-              className="focus:ring-primary flex-1 rounded-full border border-gray-300 px-3 py-2.5 text-base focus:border-transparent focus:ring-2 focus:outline-none disabled:bg-gray-100 sm:px-4 sm:py-3 sm:text-sm min-h-[44px]"
+              className="focus:ring-primary flex-1 rounded-full border border-gray-300 px-3 py-2.5 text-sm focus:border-transparent focus:ring-2 focus:outline-none disabled:bg-gray-100 sm:px-4 sm:py-3 min-h-[44px]"
               autoComplete="off"
             />
             <button
@@ -224,7 +229,7 @@ export const ConversationModal = ({
               )}
             </button>
           </div>
-          <p className="mt-2 flex items-center text-xs text-gray-500 hidden sm:flex">
+          <p className="mt-2 hidden items-center text-xs text-gray-500 sm:flex">
             <i className="ri-shield-check-line mr-1"></i>
             Chat seguro monitoreado por GDN Pro
           </p>

@@ -697,38 +697,66 @@ export default function ProjectManagement({
             </div>
             <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(92vh - 150px)" }}>
               <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Título del hito"
-                  value={newMilestone.title}
-                  onChange={(e) => setNewMilestone({ ...newMilestone, title: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
-                />
-                <textarea
-                  placeholder="Descripción"
-                  value={newMilestone.description}
-                  onChange={(e) =>
-                    setNewMilestone({
-                      ...newMilestone,
-                      description: e.target.value,
-                    })
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
-                  rows={3}
-                />
-                <input
-                  type="number"
-                  placeholder="Monto ($)"
-                  value={newMilestone.amount}
-                  onChange={(e) => setNewMilestone({ ...newMilestone, amount: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
-                />
-                <input
-                  type="date"
-                  value={newMilestone.due_date}
-                  onChange={(e) => setNewMilestone({ ...newMilestone, due_date: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
-                />
+                <div>
+                  <label htmlFor="milestone-title" className="mb-2 block text-sm font-medium text-gray-700">
+                    Título del hito
+                  </label>
+                  <input
+                    type="text"
+                    id="milestone-title"
+                    name="title"
+                    placeholder="Título del hito"
+                    value={newMilestone.title}
+                    onChange={(e) => setNewMilestone({ ...newMilestone, title: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="milestone-description" className="mb-2 block text-sm font-medium text-gray-700">
+                    Descripción
+                  </label>
+                  <textarea
+                    id="milestone-description"
+                    name="description"
+                    placeholder="Descripción"
+                    value={newMilestone.description}
+                    onChange={(e) =>
+                      setNewMilestone({
+                        ...newMilestone,
+                        description: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="milestone-amount" className="mb-2 block text-sm font-medium text-gray-700">
+                    Monto ($)
+                  </label>
+                  <input
+                    type="number"
+                    id="milestone-amount"
+                    name="amount"
+                    placeholder="Monto ($)"
+                    value={newMilestone.amount}
+                    onChange={(e) => setNewMilestone({ ...newMilestone, amount: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="milestone-due-date" className="mb-2 block text-sm font-medium text-gray-700">
+                    Fecha de vencimiento
+                  </label>
+                  <input
+                    type="date"
+                    id="milestone-due-date"
+                    name="due_date"
+                    value={newMilestone.due_date}
+                    onChange={(e) => setNewMilestone({ ...newMilestone, due_date: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
               </div>
               <div className="sticky bottom-0 flex gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6">
                 <button
@@ -784,36 +812,55 @@ export default function ProjectManagement({
             </div>
             <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(92vh - 150px)" }}>
               <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Título del entregable"
-                  value={newDeliverable.title}
-                  onChange={(e) =>
-                    setNewDeliverable({
-                      ...newDeliverable,
-                      title: e.target.value,
-                    })
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
-                />
-                <textarea
-                  placeholder="Descripción"
-                  value={newDeliverable.description}
-                  onChange={(e) =>
-                    setNewDeliverable({
-                      ...newDeliverable,
-                      description: e.target.value,
-                    })
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
-                  rows={3}
-                />
-                <div className="rounded-lg border-2 border-dashed border-gray-300 p-6 text-center">
-                  <i className="ri-upload-cloud-line mb-2 text-3xl text-gray-400"></i>
-                  <p className="text-gray-500">
-                    Arrastra archivos aquí o haz clic para seleccionar
-                  </p>
-                  <p className="mt-1 text-xs text-gray-400">Máximo 10MB</p>
+                <div>
+                  <label htmlFor="deliverable-title" className="mb-2 block text-sm font-medium text-gray-700">
+                    Título del entregable
+                  </label>
+                  <input
+                    type="text"
+                    id="deliverable-title"
+                    name="title"
+                    placeholder="Título del entregable"
+                    value={newDeliverable.title}
+                    onChange={(e) =>
+                      setNewDeliverable({
+                        ...newDeliverable,
+                        title: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="deliverable-description" className="mb-2 block text-sm font-medium text-gray-700">
+                    Descripción
+                  </label>
+                  <textarea
+                    id="deliverable-description"
+                    name="description"
+                    placeholder="Descripción"
+                    value={newDeliverable.description}
+                    onChange={(e) =>
+                      setNewDeliverable({
+                        ...newDeliverable,
+                        description: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-emerald-500"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="deliverable-file" className="mb-2 block text-sm font-medium text-gray-700">
+                    Archivo
+                  </label>
+                  <div className="rounded-lg border-2 border-dashed border-gray-300 p-6 text-center">
+                    <i className="ri-upload-cloud-line mb-2 text-3xl text-gray-400"></i>
+                    <p className="text-gray-500">
+                      Arrastra archivos aquí o haz clic para seleccionar
+                    </p>
+                    <p className="mt-1 text-xs text-gray-400">Máximo 10MB</p>
+                  </div>
                 </div>
               </div>
               <div className="sticky bottom-0 flex gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6">

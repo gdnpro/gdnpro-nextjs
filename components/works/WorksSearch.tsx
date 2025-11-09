@@ -86,7 +86,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {/* Search Input */}
             <div className="lg:col-span-4">
-              <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <label htmlFor="works-search-input" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <i className="ri-search-line text-cyan-600"></i>
                 Buscar Proyectos
               </label>
@@ -94,6 +94,8 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
                 <i className="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 transform text-xl text-cyan-500"></i>
                 <input
                   type="text"
+                  id="works-search-input"
+                  name="search"
                   placeholder="Buscar por título, descripción o habilidades requeridas..."
                   value={searchFilters.search}
                   onChange={(e) => handleFilterChange("search", e.target.value)}
@@ -104,12 +106,14 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
 
             {/* Category Filter */}
             <div>
-              <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <label htmlFor="works-category" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <i className="ri-folder-line text-cyan-600"></i>
                 Categoría
               </label>
               <div className="relative">
                 <select
+                  id="works-category"
+                  name="category"
                   value={searchFilters.category}
                   onChange={(e) => handleFilterChange("category", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 pr-8 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
@@ -127,12 +131,14 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
 
             {/* Budget Filter */}
             <div>
-              <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <label htmlFor="works-budget" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <i className="ri-money-dollar-circle-line text-cyan-600"></i>
                 Presupuesto
               </label>
               <div className="relative">
                 <select
+                  id="works-budget"
+                  name="budget"
                   value={searchFilters.budget}
                   onChange={(e) => handleFilterChange("budget", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 pr-8 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
@@ -150,12 +156,14 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
 
             {/* Deadline Filter */}
             <div>
-              <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <label htmlFor="works-deadline" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <i className="ri-calendar-line text-cyan-600"></i>
                 Plazo
               </label>
               <div className="relative">
                 <select
+                  id="works-deadline"
+                  name="deadline"
                   value={searchFilters.deadline}
                   onChange={(e) => handleFilterChange("deadline", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 pr-8 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"

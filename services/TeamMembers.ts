@@ -1,7 +1,7 @@
 export const teamMembers = [
   {
     name: "Genderson Lora",
-    position: "CEO & Founder | Full-Stack Developer & Pentester",
+    position: "CEO Founder | Full-Stack Developer & Pentester",
     image: "/photo/gdn.jpeg",
     bio: "Apasionado por la innovación tecnológica, con más de 8 años de experiencia desarrollando y liderando soluciones full-stack, pentesting y transformación digital.",
     skills: ["#"],
@@ -13,7 +13,7 @@ export const teamMembers = [
   },
   {
     name: "Junior Santana",
-    position: "CFO - Gestor de Finanzas",
+    position: "CFO | Gestor de Finanzas",
     image: "/photo/junior.png",
     bio: "Aporta el conocimiento financiero, contable y en general una mirada analítica al negocio para tomar decisiones que minimicen riesgos y maximicen beneficios.",
     skills: ["#"],
@@ -25,10 +25,22 @@ export const teamMembers = [
   },
   {
     name: "Rikelvi Capellán",
-    position: "CEO & Web/Mobile Developer",
+    position: "CTO | Full-Stack Developer",
     image: "https://rikirilis.com/images/about-image.webp",
-    bio: "Desarrollador web y móvil especializado en React Native y Astro con más de 50 apps publicadas.",
-    skills: ["#"],
+    bio: "Desarrollador full-stack especializado en React Native y Astro con más de 50 apps publicadas.",
+    skills: [
+      "React Native",
+      "Astro",
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "MongoDB",
+      "Docker",
+      "Kubernetes",
+      "AWS",
+      "Azure",
+      "GCP",
+    ],
     social: {
       linkedin: "https://www.linkedin.com/in/rikirilis",
       github: "https://github.com/RikiRilis",

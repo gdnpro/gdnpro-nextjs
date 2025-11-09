@@ -103,7 +103,7 @@ export default function WorksProposalModal({
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 min-h-0">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
-              <label className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
+              <label htmlFor="proposal-budget" className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
                 <div className="bg-gradient-to-br flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg from-cyan-500 to-cyan-600 text-white shadow-lg">
                   <i className="ri-money-dollar-circle-fill text-xs sm:text-sm"></i>
                 </div>
@@ -111,6 +111,8 @@ export default function WorksProposalModal({
               </label>
               <input
                 type="number"
+                id="proposal-budget"
+                name="budget"
                 value={formData.budget}
                 onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                 className="focus:ring-primary bg-gradient-to-br w-full rounded-xl border border-gray-300 from-gray-50 to-white px-4 py-3 text-base sm:text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none min-h-[44px]"
@@ -120,7 +122,7 @@ export default function WorksProposalModal({
             </div>
 
             <div>
-              <label className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
+              <label htmlFor="proposal-delivery-time" className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
                 <div className="bg-gradient-to-br flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg from-purple-500 to-pink-500 text-white shadow-lg">
                   <i className="ri-time-line text-xs sm:text-sm"></i>
                 </div>
@@ -128,6 +130,8 @@ export default function WorksProposalModal({
               </label>
               <input
                 type="number"
+                id="proposal-delivery-time"
+                name="delivery_time"
                 value={formData.delivery_time}
                 onChange={(e) => setFormData({ ...formData, delivery_time: e.target.value })}
                 className="focus:ring-primary bg-gradient-to-br w-full rounded-xl border border-gray-300 from-gray-50 to-white px-4 py-3 text-base sm:text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none min-h-[44px]"
@@ -137,13 +141,15 @@ export default function WorksProposalModal({
             </div>
 
             <div>
-              <label className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
+              <label htmlFor="proposal-message" className="mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-900">
                 <div className="bg-gradient-to-br flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg from-blue-500 to-indigo-500 text-white shadow-lg">
                   <i className="ri-message-3-line text-xs sm:text-sm"></i>
                 </div>
                 Mensaje
               </label>
               <textarea
+                id="proposal-message"
+                name="message"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 rows={5}

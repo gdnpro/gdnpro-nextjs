@@ -371,8 +371,13 @@ export default function LiveChat() {
               </div>
 
               <div className="space-y-4 px-2 sm:px-0">
+                <label htmlFor="livechat-name-input" className="sr-only">
+                  Tu nombre
+                </label>
                 <input
                   type="text"
+                  id="livechat-name-input"
+                  name="clientName"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
                   onKeyPress={handleKeyPress}
@@ -460,8 +465,13 @@ export default function LiveChat() {
               {/* Input de Mensaje */}
               <div className="p-3 sm:p-4 border-t border-gray-200 shrink-0 bg-white">
                 <div className="flex gap-2">
+                  <label htmlFor="livechat-message-input" className="sr-only">
+                    Escribe tu mensaje
+                  </label>
                   <input
                     type="text"
+                    id="livechat-message-input"
+                    name="message"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={handleKeyPress}

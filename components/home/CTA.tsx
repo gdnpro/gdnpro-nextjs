@@ -287,7 +287,12 @@ export default function CTA() {
                         </div>
                         <h4 className="text-xl font-bold text-gray-900">Selecciona la hora</h4>
                       </div>
+                      <label htmlFor="cta-time-select" className="sr-only">
+                        Selecciona la hora
+                      </label>
                       <select
+                        id="cta-time-select"
+                        name="time"
                         value={selectedTime}
                         onChange={handleTimeSelect}
                         className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
@@ -313,7 +318,12 @@ export default function CTA() {
                         </div>
                         <h4 className="text-xl font-bold text-gray-900">Tema de la reunión</h4>
                       </div>
+                      <label htmlFor="cta-meeting-topic" className="sr-only">
+                        Tema de la reunión
+                      </label>
                       <textarea
+                        id="cta-meeting-topic"
+                        name="meetingTopic"
                         className="w-full resize-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                         rows={4}
                         placeholder="Cuéntanos brevemente de qué te gustaría hablar..."
@@ -330,8 +340,13 @@ export default function CTA() {
                         </div>
                         <h4 className="text-xl font-bold text-gray-900">Tu nombre</h4>
                       </div>
+                      <label htmlFor="cta-client-name" className="sr-only">
+                        Tu nombre
+                      </label>
                       <input
                         type="text"
+                        id="cta-client-name"
+                        name="clientName"
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         placeholder="Tu nombre completo"

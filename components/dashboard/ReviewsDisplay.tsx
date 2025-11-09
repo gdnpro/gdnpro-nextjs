@@ -170,66 +170,66 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Statistics */}
       {showStats && stats && stats.totalReviews > 0 && (
-        <div className="rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
-          <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-xl font-bold text-gray-900">Resumen de Calificaciones</h3>
-            <div className="text-right">
-              <div className="text-primary text-3xl font-bold">
+        <div className="rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-4 sm:p-6">
+          <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+            <h3 className="text-base font-bold text-gray-900 sm:text-xl">Resumen de Calificaciones</h3>
+            <div className="text-left sm:text-right">
+              <div className="text-2xl font-bold text-primary sm:text-3xl">
                 {stats.averageRating.toFixed(1)}
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-xs text-gray-600 sm:text-sm">
                 de {stats.totalReviews} reseña
                 {stats.totalReviews !== 1 ? "s" : ""}
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
             <div className="text-center">
-              <div className="mb-1 text-2xl font-bold text-gray-900">
+              <div className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">
                 {stats.averageCommunication.toFixed(1)}
               </div>
-              <div className="text-sm text-gray-600">Comunicación</div>
+              <div className="mb-2 text-xs text-gray-600 sm:text-sm">Comunicación</div>
               {renderStars(stats.averageCommunication, "sm")}
             </div>
             <div className="text-center">
-              <div className="mb-1 text-2xl font-bold text-gray-900">
+              <div className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">
                 {stats.averageQuality.toFixed(1)}
               </div>
-              <div className="text-sm text-gray-600">Calidad</div>
+              <div className="mb-2 text-xs text-gray-600 sm:text-sm">Calidad</div>
               {renderStars(stats.averageQuality, "sm")}
             </div>
             <div className="text-center">
-              <div className="mb-1 text-2xl font-bold text-gray-900">
+              <div className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">
                 {stats.averageTimeliness.toFixed(1)}
               </div>
-              <div className="text-sm text-gray-600">Puntualidad</div>
+              <div className="mb-2 text-xs text-gray-600 sm:text-sm">Puntualidad</div>
               {renderStars(stats.averageTimeliness, "sm")}
             </div>
           </div>
 
           {/* Rating Distribution */}
-          <div className="mt-6">
-            <h4 className="mb-3 text-sm font-medium text-gray-700">
+          <div className="mt-4 sm:mt-6">
+            <h4 className="mb-3 text-xs font-medium text-gray-700 sm:text-sm">
               Distribución de Calificaciones
             </h4>
             <div className="space-y-2">
               {[5, 4, 3, 2, 1].map((rating) => (
-                <div key={rating} className="flex items-center">
-                  <span className="w-3 text-sm text-gray-600">{rating}</span>
-                  <i className="ri-star-fill mx-2 text-sm text-yellow-400"></i>
-                  <div className="mr-3 h-2 flex-1 rounded-full bg-gray-200">
+                <div key={rating} className="flex items-center gap-2">
+                  <span className="w-4 text-xs text-gray-600 sm:w-3 sm:text-sm">{rating}</span>
+                  <i className="ri-star-fill text-xs text-yellow-400 sm:text-sm"></i>
+                  <div className="h-2 flex-1 rounded-full bg-gray-200 sm:mr-3">
                     <div
-                      className="bg-primary h-2 rounded-full transition-all duration-500"
+                      className="h-2 rounded-full bg-primary transition-all duration-500"
                       style={{
                         width: `${stats.totalReviews > 0 ? (stats.ratingDistribution[rating] / stats.totalReviews) * 100 : 0}%`,
                       }}
                     ></div>
                   </div>
-                  <span className="w-8 text-sm text-gray-600">
+                  <span className="w-6 text-xs text-gray-600 sm:w-8 sm:text-sm">
                     {stats.ratingDistribution[rating]}
                   </span>
                 </div>
@@ -241,14 +241,14 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
 
       {/* Reviews List */}
       <div>
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-xl font-bold text-gray-900">
+        <div className="mb-4 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+          <h3 className="text-base font-bold text-gray-900 sm:text-xl">
             Reseñas {reviews.length > 0 && `(${reviews.length})`}
           </h3>
           {reviews.length > 3 && (
             <button
               onClick={() => setShowAllReviews(!showAllReviews)}
-              className="text-primary cursor-pointer text-sm font-medium hover:text-cyan-700"
+              className="w-fit cursor-pointer text-xs font-medium text-primary hover:text-cyan-700 sm:text-sm"
             >
               {showAllReviews ? "Ver menos" : `Ver todas (${reviews.length})`}
             </button>
@@ -256,35 +256,35 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
         </div>
 
         {reviews.length === 0 ? (
-          <div className="rounded-lg bg-gray-50 py-12 text-center">
-            <i className="ri-star-line mb-4 text-4xl text-gray-400"></i>
-            <h3 className="mb-2 text-lg font-medium text-gray-900">Sin reseñas aún</h3>
-            <p className="text-gray-600">Las reseñas de proyectos completados aparecerán aquí.</p>
+          <div className="rounded-lg bg-gray-50 py-8 text-center sm:py-12">
+            <i className="ri-star-line mb-3 text-3xl text-gray-400 sm:mb-4 sm:text-4xl"></i>
+            <h3 className="mb-2 text-base font-medium text-gray-900 sm:text-lg">Sin reseñas aún</h3>
+            <p className="text-sm text-gray-600 sm:text-base">Las reseñas de proyectos completados aparecerán aquí.</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {displayedReviews.map((review) => (
               <div
                 key={review.id}
-                className="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md"
+                className="rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md sm:p-6"
               >
-                <div className="mb-4 flex items-start justify-between">
-                  <div className="flex items-center">
-                    <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 sm:h-12 sm:w-12">
                       {review.reviewer.avatar_url ? (
                         <img
                           src={review.reviewer.avatar_url}
                           alt={review.reviewer.full_name}
-                          className="h-12 w-12 rounded-full object-cover object-top"
+                          className="h-10 w-10 rounded-full object-cover object-top sm:h-12 sm:w-12"
                         />
                       ) : (
-                        <i className="ri-user-line text-xl text-gray-600"></i>
+                        <i className="ri-user-line text-base text-gray-600 sm:text-xl"></i>
                       )}
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900">{review.reviewer.full_name}</h4>
-                      <p className="text-sm text-gray-600">Proyecto: {review.project.title}</p>
-                      <p className="text-xs text-gray-500">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-sm font-semibold text-gray-900 sm:text-base">{review.reviewer.full_name}</h4>
+                      <p className="mt-1 truncate text-xs text-gray-600 sm:text-sm">Proyecto: {review.project.title}</p>
+                      <p className="mt-1 text-xs text-gray-500">
                         {new Date(review.created_at).toLocaleDateString("es-ES", {
                           year: "numeric",
                           month: "long",
@@ -293,11 +293,11 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">{renderStars(review.overall_rating)}</div>
+                  <div className="sm:text-right">{renderStars(review.overall_rating, "sm")}</div>
                 </div>
 
                 {/* Detailed Ratings */}
-                <div className="mb-4 grid grid-cols-3 gap-4 text-sm">
+                <div className="mb-4 grid grid-cols-3 gap-2 text-xs sm:gap-4 sm:text-sm">
                   <div className="text-center">
                     <div className="text-gray-600">Comunicación</div>
                     <div className="font-medium text-gray-900">{review.communication_rating}/5</div>
@@ -314,8 +314,8 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
 
                 {/* Review Text */}
                 {review.review_text && (
-                  <div className="rounded-lg bg-gray-50 p-4">
-                    <p className="leading-relaxed text-gray-700">"{review.review_text}"</p>
+                  <div className="rounded-lg bg-gray-50 p-3 sm:p-4">
+                    <p className="text-sm leading-relaxed text-gray-700 sm:text-base">"{review.review_text}"</p>
                   </div>
                 )}
               </div>

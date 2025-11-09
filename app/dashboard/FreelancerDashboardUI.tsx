@@ -21,6 +21,7 @@ import type { ChatMessage } from "@/interfaces/ChatMessage"
 import { ConversationModal } from "@/components/ConversationModal"
 import { AvailableProjectArticle } from "@/components/AvailableProjectArticle"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import { ConversationCard } from "@/components/dashboard/ConversationCard"
 
 const supabase = supabaseBrowser()
 
@@ -1348,35 +1349,37 @@ export default function FreelancerDashboardUI() {
         {/* NUEVO: Panel de Gamificación - Solo se muestra si hay datos */}
         {user?.id && (
           <div className="mb-6 rounded-xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-4 sm:mb-8 sm:p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-cyan-600 to-teal-600">
-                  <i className="ri-trophy-line text-xl text-white"></i>
+            <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3 sm:items-center">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-cyan-600 to-teal-600 sm:h-12 sm:w-12">
+                  <i className="ri-trophy-line text-lg text-white sm:text-xl"></i>
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base font-bold text-gray-900 sm:text-lg">
                     🏆 Tu Progreso como Freelancer
                   </h3>
-                  <p className="text-sm text-cyan-700">
+                  <p className="mt-1 text-xs text-cyan-700 sm:mt-0 sm:text-sm">
                     Desbloquea logros y sube de nivel completando proyectos
                   </p>
                 </div>
               </div>
-              <BadgeSystem userId={user.id} userType="freelancer" compact={true} />
+              <div className="flex shrink-0 sm:ml-4">
+                <BadgeSystem userId={user.id} userType="freelancer" compact={true} />
+              </div>
             </div>
 
-            <div className="rounded-lg border border-cyan-200 bg-white p-4">
-              <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
-                <div className="flex items-center">
-                  <i className="ri-check-line text-primary mr-2"></i>
+            <div className="rounded-lg border border-cyan-200 bg-white p-3 sm:p-4">
+              <div className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-3 sm:gap-4 sm:text-sm">
+                <div className="flex items-center gap-2">
+                  <i className="ri-check-line text-primary shrink-0 text-base sm:text-lg"></i>
                   <span className="text-gray-700">Gana XP completando proyectos</span>
                 </div>
-                <div className="flex items-center">
-                  <i className="ri-star-line mr-2 text-yellow-500"></i>
+                <div className="flex items-center gap-2">
+                  <i className="ri-star-line shrink-0 text-base text-yellow-500 sm:text-lg"></i>
                   <span className="text-gray-700">Desbloquea badges por logros</span>
                 </div>
-                <div className="flex items-center">
-                  <i className="ri-trophy-line text-primary mr-2"></i>
+                <div className="flex items-center gap-2">
+                  <i className="ri-trophy-line text-primary shrink-0 text-base sm:text-lg"></i>
                   <span className="text-gray-700">Sube tu nivel profesional</span>
                 </div>
               </div>
@@ -1833,23 +1836,25 @@ export default function FreelancerDashboardUI() {
             {/* Mensajes */}
             {activeTab === "messages" && (
               <div className="space-y-4 sm:space-y-6">
-                <div className="flex flex-col space-y-4 sm:items-center sm:justify-between sm:space-y-0">
-                  <h3 className="text-lg font-semibold text-gray-900">Mensajes</h3>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <h3 className="text-base font-semibold text-gray-900 sm:text-lg">Mensajes</h3>
+                  <div className="flex items-center gap-2 text-xs text-gray-600 sm:text-sm">
                     <i className="ri-chat-3-line"></i>
                     <span>{conversations.length} conversaciones</span>
                   </div>
                 </div>
 
                 {conversationsLoading ? (
-                  <div className="py-8 text-center">
-                    <div className="border-primary mx-auto h-8 w-8 animate-spin rounded-full border-b-2"></div>
-                    <p className="mt-2 text-gray-500">Cargando conversaciones...</p>
+                  <div className="py-6 text-center sm:py-8">
+                    <div className="border-primary mx-auto h-6 w-6 animate-spin rounded-full border-b-2 sm:h-8 sm:w-8"></div>
+                    <p className="mt-2 text-sm text-gray-500 sm:text-base">
+                      Cargando conversaciones...
+                    </p>
                   </div>
                 ) : conversations.length === 0 ? (
                   <div className="py-8 text-center sm:py-12">
-                    <i className="ri-chat-3-line sm:6xl mb-4 text-4xl text-gray-300"></i>
-                    <h3 className="mb-2 text-lg font-medium text-gray-900 sm:text-xl">
+                    <i className="ri-chat-3-line mb-3 text-4xl text-gray-300 sm:mb-4 sm:text-6xl"></i>
+                    <h3 className="mb-2 text-base font-medium text-gray-900 sm:text-lg sm:text-xl">
                       No tienes mensajes
                     </h3>
                     <p className="text-sm text-gray-500 sm:text-base">
@@ -1857,56 +1862,14 @@ export default function FreelancerDashboardUI() {
                     </p>
                   </div>
                 ) : (
-                  <div className="grid gap-4">
+                  <div className="w-full space-y-3 sm:space-y-4">
                     {conversations.map((conversation) => (
-                      <div
+                      <ConversationCard
                         key={conversation.id}
-                        className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md"
-                        onClick={() => openChat(conversation)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
-                              {conversation.client?.avatar_url ? (
-                                <img
-                                  src={conversation.client.avatar_url}
-                                  alt={conversation.client.full_name}
-                                  className="h-full w-full object-cover object-top"
-                                />
-                              ) : (
-                                <i className="ri-user-line text-primary"></i>
-                              )}
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-gray-900">
-                                {conversation.client?.full_name}
-                              </h4>
-                              {conversation.project && (
-                                <p className="text-sm text-gray-500">
-                                  {conversation.project.title}
-                                </p>
-                              )}
-                              {conversation.latest_message && (
-                                <p className="mt-1 text-sm text-gray-600">
-                                  {conversation.latest_message.message_text.length > 50
-                                    ? `${conversation.latest_message.message_text.substring(0, 50)}...`
-                                    : conversation.latest_message.message_text}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            {conversation.latest_message && (
-                              <p className="text-xs text-gray-500">
-                                {new Date(
-                                  conversation.latest_message.created_at,
-                                ).toLocaleDateString("es-ES")}
-                              </p>
-                            )}
-                            <i className="ri-arrow-right-line mt-2 text-gray-400"></i>
-                          </div>
-                        </div>
-                      </div>
+                        conversation={conversation}
+                        openChat={openChat}
+                        user={user}
+                      />
                     ))}
                   </div>
                 )}
@@ -1915,22 +1878,24 @@ export default function FreelancerDashboardUI() {
 
             {/* Reseñas */}
             {activeTab === "reviews" && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900">Gestión de Reseñas</h3>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <h3 className="text-base font-semibold text-gray-900 sm:text-lg">
+                    Gestión de Reseñas
+                  </h3>
+                  <div className="flex items-center gap-2 text-xs text-gray-600 sm:text-sm">
                     <i className="ri-star-line"></i>
                     <span>Calificación promedio: {user?.rating || 0}★</span>
                   </div>
                 </div>
 
                 {/* Reseñas pendientes de escribir */}
-                <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
-                  <h4 className="mb-4 flex items-center text-lg font-semibold text-yellow-800">
-                    <i className="ri-edit-line mr-2"></i>
-                    Reseñas Pendientes de Escribir
+                <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 sm:p-6">
+                  <h4 className="mb-4 flex flex-wrap items-center gap-2 text-base font-semibold text-yellow-800 sm:text-lg">
+                    <i className="ri-edit-line text-lg sm:text-xl"></i>
+                    <span>Reseñas Pendientes de Escribir</span>
                     {pendingReviewsCount > 0 && (
-                      <span className="ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500 text-sm text-white">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500 text-xs text-white sm:h-6 sm:w-6 sm:text-sm">
                         {pendingReviewsCount}
                       </span>
                     )}
@@ -1939,10 +1904,10 @@ export default function FreelancerDashboardUI() {
                 </div>
 
                 {/* Reseñas recibidas */}
-                <div className="rounded-lg border border-gray-200 bg-white p-6">
-                  <h4 className="mb-4 flex items-center text-lg font-semibold text-gray-900">
-                    <i className="ri-star-fill mr-2 text-yellow-500"></i>
-                    Reseñas Recibidas
+                <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+                  <h4 className="mb-4 flex items-center gap-2 text-base font-semibold text-gray-900 sm:text-lg">
+                    <i className="ri-star-fill text-lg text-yellow-500 sm:text-xl"></i>
+                    <span>Reseñas Recibidas</span>
                   </h4>
                   <ReviewsDisplay userId={user?.id} userType="freelancer" />
                 </div>
@@ -2087,18 +2052,18 @@ export default function FreelancerDashboardUI() {
       {/* NUEVO: Modal de Gestión de Progreso para Propuestas Aceptadas */}
       {showProgressManagement && selectedProjectForProgress && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-6xl">
+          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:max-w-6xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
                       <i className="ri-bar-chart-line text-2xl"></i>
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Gestión de Progreso
                       </h2>
                       <p className="mt-2 text-sm text-cyan-100">
@@ -2131,7 +2096,7 @@ export default function FreelancerDashboardUI() {
                     setShowProgressManagement(false)
                     setSelectedProjectForProgress(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -2165,23 +2130,23 @@ export default function FreelancerDashboardUI() {
           }}
         >
           <div
-            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[92vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-6xl"
+            className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-6xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modern Header with Gradient */}
-            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-settings-3-line text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-settings-3-line text-xl sm:text-2xl"></i>
                     </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Gestión de Proyecto
                       </h2>
-                      <h3 className="mt-2 text-sm text-cyan-100 sm:text-base">
+                      <h3 className="mt-2 truncate text-xs text-cyan-100 sm:text-sm">
                         {selectedProjectForManagement.title}
                       </h3>
                     </div>
@@ -2193,7 +2158,7 @@ export default function FreelancerDashboardUI() {
                     setSelectedProjectForManagement(null)
                     loadData() // Recargar datos para actualizar el progreso
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
@@ -2201,7 +2166,7 @@ export default function FreelancerDashboardUI() {
               </div>
             </div>
             {/* Modal Content */}
-            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
               <FreelancerProjectManagement
                 project={selectedProjectForManagement}
                 onClose={() => {
@@ -2217,24 +2182,24 @@ export default function FreelancerDashboardUI() {
 
       {/* Modal de Detalles de Proyecto (Proyectos Disponibles) */}
       {showProjectDetails && selectedProjectDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-4xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
+          <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-4xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
             {/* Modern Header with Gradient */}
-            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-briefcase-4-line text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-briefcase-4-line text-xl sm:text-2xl"></i>
                     </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         {selectedProjectDetails.title}
                       </h2>
-                      <div className="mt-3 flex items-center gap-4">
+                      <div className="mt-2 flex flex-wrap items-center gap-2 sm:mt-3 sm:gap-4">
                         <span
-                          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold sm:px-3 ${
                             selectedProjectDetails.status === "open"
                               ? "bg-emerald-500/90 text-white"
                               : selectedProjectDetails.status === "in_progress"
@@ -2249,7 +2214,7 @@ export default function FreelancerDashboardUI() {
                               ? "En Progreso"
                               : selectedProjectDetails.status}
                         </span>
-                        <span className="text-lg font-bold text-white">
+                        <span className="text-base font-bold text-white sm:text-lg">
                           ${selectedProjectDetails.budget_min || selectedProjectDetails.budget || 0}{" "}
                           - $
                           {selectedProjectDetails.budget_max || selectedProjectDetails.budget || 0}
@@ -2263,14 +2228,14 @@ export default function FreelancerDashboardUI() {
                     setShowProjectDetails(false)
                     setSelectedProjectDetails(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
               <div className="space-y-6">
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -2442,7 +2407,7 @@ export default function FreelancerDashboardUI() {
               </div>
             </div>
             {/* Botones de Acción */}
-            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
               {!proposals.find((p) => p.project?.id === selectedProjectDetails.id) &&
                 proposals &&
                 selectedProjectDetails && (
@@ -2451,10 +2416,10 @@ export default function FreelancerDashboardUI() {
                       setShowProjectDetails(false)
                       sendProposal(selectedProjectDetails.id)
                     }}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                    className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
                   >
-                    <i className="ri-send-plane-fill text-xl transition-transform group-hover:translate-x-1"></i>
-                    <span>Enviar Propuesta</span>
+                    <i className="ri-send-plane-fill text-lg transition-transform group-hover:translate-x-1 sm:text-xl"></i>
+                    <span className="text-sm sm:text-base">Enviar Propuesta</span>
                   </button>
                 )}
               {selectedProjectDetails.client?.id && (
@@ -2463,10 +2428,10 @@ export default function FreelancerDashboardUI() {
                     setShowProjectDetails(false)
                     startChat(selectedProjectDetails.id, selectedProjectDetails.client!.id)
                   }}
-                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
+                  className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-cyan-500 bg-white px-4 py-3 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
                 >
-                  <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
-                  <span>Chat con Cliente</span>
+                  <i className="ri-chat-3-line text-lg transition-transform group-hover:scale-110 sm:text-xl"></i>
+                  <span className="text-sm sm:text-base">Chat con Cliente</span>
                 </button>
               )}
             </div>
@@ -2476,25 +2441,27 @@ export default function FreelancerDashboardUI() {
 
       {/* RESTAURADO: Modal de detalles de propuesta */}
       {showProposalDetails && selectedProposalForDetails && proposalProjectDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-4xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
+          <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-4xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
             {/* Modern Header with Gradient */}
-            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-file-list-3-line text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-file-list-3-line text-xl sm:text-2xl"></i>
                     </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Detalles de la Propuesta
                       </h2>
-                      <p className="mt-2 text-sm text-cyan-100">{proposalProjectDetails.title}</p>
-                      <div className="mt-3 flex items-center gap-4">
+                      <p className="mt-2 truncate text-xs text-cyan-100 sm:text-sm">
+                        {proposalProjectDetails.title}
+                      </p>
+                      <div className="mt-2 flex flex-wrap items-center gap-2 sm:mt-3 sm:gap-4">
                         <span
-                          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold sm:px-3 ${
                             selectedProposalForDetails.status === "accepted"
                               ? "bg-emerald-500/90 text-white"
                               : selectedProposalForDetails.status === "pending"
@@ -2517,7 +2484,7 @@ export default function FreelancerDashboardUI() {
                               ? "Pendiente"
                               : "Rechazada"}
                         </span>
-                        <span className="text-lg font-bold text-white">
+                        <span className="text-base font-bold text-white sm:text-lg">
                           ${selectedProposalForDetails.proposed_budget}
                         </span>
                       </div>
@@ -2530,14 +2497,14 @@ export default function FreelancerDashboardUI() {
                     setSelectedProposalForDetails(null)
                     setProposalProjectDetails(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
               <div className="space-y-6">
                 {/* Mi Propuesta */}
                 <div className="rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6 shadow-sm">
@@ -2657,16 +2624,16 @@ export default function FreelancerDashboardUI() {
             </div>
             {/* Botones de Acción */}
             {selectedProposalForDetails.status === "accepted" && (
-              <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+              <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
                 <button
                   onClick={() => {
                     setShowProposalDetails(false)
                     openProgressManagement(proposalProjectDetails)
                   }}
-                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                  className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
                 >
-                  <i className="ri-bar-chart-line text-xl transition-transform group-hover:scale-110"></i>
-                  <span>Gestionar Progreso</span>
+                  <i className="ri-bar-chart-line text-lg transition-transform group-hover:scale-110 sm:text-xl"></i>
+                  <span className="text-sm sm:text-base">Gestionar Progreso</span>
                 </button>
                 {proposalProjectDetails.client?.id && (
                   <button
@@ -2682,10 +2649,10 @@ export default function FreelancerDashboardUI() {
                         handleContactClient(client.id, client.full_name, projectId)
                       }
                     }}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                    className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
                   >
-                    <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
-                    <span>Contactar Cliente</span>
+                    <i className="ri-chat-3-line text-lg transition-transform group-hover:scale-110 sm:text-xl"></i>
+                    <span className="text-sm sm:text-base">Contactar Cliente</span>
                   </button>
                 )}
               </div>
@@ -2696,24 +2663,24 @@ export default function FreelancerDashboardUI() {
 
       {/* RESTAURADO: Modal de detalles de proyecto en "Mis Proyectos" */}
       {showProjectDetailsModal && selectedProjectForDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="flex h-[95vh] w-full max-w-full flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-4xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
+          <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-4xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
             {/* Modern Header with Gradient */}
-            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-6 text-white sm:p-8">
+            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-briefcase-4-line text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-briefcase-4-line text-xl sm:text-2xl"></i>
                     </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         {selectedProjectForDetails.title}
                       </h2>
-                      <div className="mt-3 flex items-center gap-4">
+                      <div className="mt-2 flex flex-wrap items-center gap-2 sm:mt-3 sm:gap-4">
                         <span
-                          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold sm:px-3 ${
                             selectedProjectForDetails._isFromTransaction
                               ? selectedProjectForDetails.payment_status === "paid"
                                 ? "bg-green-500/90 text-white"
@@ -2748,7 +2715,7 @@ export default function FreelancerDashboardUI() {
                                 ? "Completado"
                                 : "Mi Proyecto"}
                         </span>
-                        <span className="text-lg font-bold text-white">
+                        <span className="text-base font-bold text-white sm:text-lg">
                           $
                           {selectedProjectForDetails.budget ||
                             `${selectedProjectForDetails.budget_min}-${selectedProjectForDetails.budget_max}`}
@@ -2762,14 +2729,14 @@ export default function FreelancerDashboardUI() {
                     setShowProjectDetailsModal(false)
                     setSelectedProjectForDetails(null)
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 pb-24 sm:p-8">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
               <div className="space-y-6">
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -2911,17 +2878,17 @@ export default function FreelancerDashboardUI() {
               </div>
             </div>
             {/* Botones de Acción */}
-            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
               {!selectedProjectForDetails._isFromTransaction && (
                 <button
                   onClick={() => {
                     setShowProjectDetailsModal(false)
                     openProjectManagement(selectedProjectForDetails)
                   }}
-                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                  className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
                 >
-                  <i className="ri-settings-3-line text-xl transition-transform group-hover:rotate-90"></i>
-                  <span>Gestionar Proyecto</span>
+                  <i className="ri-settings-3-line text-lg transition-transform group-hover:rotate-90 sm:text-xl"></i>
+                  <span className="text-sm sm:text-base">Gestionar Proyecto</span>
                 </button>
               )}
               <button
@@ -2929,10 +2896,10 @@ export default function FreelancerDashboardUI() {
                   setShowProjectDetailsModal(false)
                   openProgressManagement(selectedProjectForDetails)
                 }}
-                className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
               >
-                <i className="ri-bar-chart-line text-xl transition-transform group-hover:scale-110"></i>
-                <span>Gestionar Progreso</span>
+                <i className="ri-bar-chart-line text-lg transition-transform group-hover:scale-110 sm:text-xl"></i>
+                <span className="text-sm sm:text-base">Gestionar Progreso</span>
               </button>
               {selectedProjectForDetails.client?.id && (
                 <button
@@ -2947,10 +2914,10 @@ export default function FreelancerDashboardUI() {
                       : selectedProjectForDetails.id
                     handleContactClient(clientId, clientName, projectId)
                   }}
-                  className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-cyan-500 bg-white px-6 py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30"
+                  className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-cyan-500 bg-white px-4 py-3 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
                 >
-                  <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
-                  <span>Contactar Cliente</span>
+                  <i className="ri-chat-3-line text-lg transition-transform group-hover:scale-110 sm:text-xl"></i>
+                  <span className="text-sm sm:text-base">Contactar Cliente</span>
                 </button>
               )}
             </div>
@@ -2960,22 +2927,24 @@ export default function FreelancerDashboardUI() {
 
       {/* Modal de Envío de Propuesta */}
       {showProposalModal && selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[90vh] sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
+          <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-send-plane-line text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-send-plane-line text-xl sm:text-2xl"></i>
                     </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Enviar Propuesta
                       </h2>
-                      <p className="mt-2 text-sm text-cyan-100">{selectedProject.title}</p>
+                      <p className="mt-2 truncate text-xs text-cyan-100 sm:text-sm">
+                        {selectedProject.title}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -2989,23 +2958,24 @@ export default function FreelancerDashboardUI() {
                       message: "",
                     })
                   }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(90vh - 200px)" }}>
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
               <form
+                id="proposal-form"
                 onSubmit={(e) => {
                   e.preventDefault()
                   submitProposal()
                 }}
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6"
               >
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
                     Presupuesto Propuesto (USD)
                   </label>
                   <input
@@ -3017,18 +2987,18 @@ export default function FreelancerDashboardUI() {
                         budget: e.target.value,
                       })
                     }
-                    className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:px-4 sm:py-3 sm:text-base"
                     placeholder="Ej: 500"
                     required
                   />
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-1 text-xs text-gray-500 sm:text-sm">
                     Presupuesto del cliente: ${selectedProject.budget_min} - $
                     {selectedProject.budget_max}
                   </p>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
                     Tiempo de Entrega (días)
                   </label>
                   <input
@@ -3040,14 +3010,14 @@ export default function FreelancerDashboardUI() {
                         delivery_time: e.target.value,
                       })
                     }
-                    className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:px-4 sm:py-3 sm:text-base"
                     placeholder="Ej: 7"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                  <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
                     Carta de Presentación
                   </label>
                   <textarea
@@ -3058,39 +3028,40 @@ export default function FreelancerDashboardUI() {
                         message: e.target.value,
                       })
                     }
-                    rows={6}
-                    className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                    rows={5}
+                    className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:px-4 sm:py-3 sm:text-base"
                     placeholder="Explica por qué eres el freelancer ideal para este proyecto..."
                     required
                   />
                 </div>
-
-                <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowProposalModal(false)
-                      setSelectedProject(null)
-                      setProposalForm({
-                        budget: "",
-                        delivery_time: "",
-                        message: "",
-                      })
-                    }}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
-                  >
-                    <i className="ri-close-line"></i>
-                    <span>Cancelar</span>
-                  </button>
-                  <button
-                    type="submit"
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
-                  >
-                    <i className="ri-send-plane-fill text-lg transition-transform group-hover:translate-x-1"></i>
-                    <span>Enviar Propuesta</span>
-                  </button>
-                </div>
               </form>
+            </div>
+            {/* Botones de Acción */}
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowProposalModal(false)
+                  setSelectedProject(null)
+                  setProposalForm({
+                    budget: "",
+                    delivery_time: "",
+                    message: "",
+                  })
+                }}
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 sm:gap-2 sm:px-6"
+              >
+                <i className="ri-close-line"></i>
+                <span className="text-sm sm:text-base">Cancelar</span>
+              </button>
+              <button
+                type="submit"
+                form="proposal-form"
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-2 sm:px-6"
+              >
+                <i className="ri-send-plane-fill text-lg transition-transform group-hover:translate-x-1"></i>
+                <span className="text-sm sm:text-base">Enviar Propuesta</span>
+              </button>
             </div>
           </div>
         </div>
@@ -3116,22 +3087,22 @@ export default function FreelancerDashboardUI() {
 
       {/* Modal Editar Perfil */}
       {showEditProfileModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-2 backdrop-blur-md sm:p-4">
-          <div className="max-h-[95vh] w-full max-w-full overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 sm:rounded-3xl sm:ring-1 sm:ring-black/5 sm:max-w-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
+          <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
             {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0 pr-4">
+                <div className="min-w-0 flex-1 pr-4">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                      <i className="ri-user-settings-line text-2xl"></i>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
+                      <i className="ri-user-settings-line text-xl sm:text-2xl"></i>
                     </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl leading-tight font-bold truncate">
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
                         Editar Perfil
                       </h2>
-                      <p className="mt-2 text-sm text-cyan-100">
+                      <p className="mt-2 text-xs text-cyan-100 sm:text-sm">
                         Actualiza tu información personal
                       </p>
                     </div>
@@ -3139,15 +3110,19 @@ export default function FreelancerDashboardUI() {
                 </div>
                 <button
                   onClick={() => setShowEditProfileModal(false)}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
+                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
                   aria-label="Cerrar"
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: "calc(95vh - 200px)" }}>
-              <form onSubmit={updateProfile} className="space-y-4 sm:space-y-6">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+              <form
+                id="edit-profile-form"
+                onSubmit={updateProfile}
+                className="space-y-4 sm:space-y-6"
+              >
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
                     Nombre Completo
@@ -3273,26 +3248,29 @@ export default function FreelancerDashboardUI() {
                     </button>
                   </div>
                 </div>
-
-                <div className="sticky bottom-0 flex flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 pt-6 sm:flex-row sm:gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowEditProfileModal(false)}
-                    disabled={updatingProfile}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md disabled:opacity-50 disabled:hover:translate-y-0"
-                  >
-                    <i className="ri-close-line"></i>
-                    <span>Cancelar</span>
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={updatingProfile}
-                    className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
-                  >
-                    {updatingProfile ? "Guardando..." : "Guardar Cambios"}
-                  </button>
-                </div>
               </form>
+            </div>
+            {/* Botones de Acción */}
+            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
+              <button
+                type="button"
+                onClick={() => setShowEditProfileModal(false)}
+                disabled={updatingProfile}
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100 sm:px-6"
+              >
+                <i className="ri-close-line"></i>
+                <span className="text-sm sm:text-base">Cancelar</span>
+              </button>
+              <button
+                type="submit"
+                form="edit-profile-form"
+                disabled={updatingProfile}
+                className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100 disabled:active:scale-100 sm:px-6"
+              >
+                <span className="text-sm sm:text-base">
+                  {updatingProfile ? "Guardando..." : "Guardar Cambios"}
+                </span>
+              </button>
             </div>
           </div>
         </div>
