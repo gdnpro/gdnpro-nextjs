@@ -22,10 +22,13 @@ import { ConversationModal } from "@/components/ConversationModal"
 import { AvailableProjectArticle } from "@/components/AvailableProjectArticle"
 import { supabaseBrowser } from "@/utils/supabase/client"
 import { ConversationCard } from "@/components/dashboard/ConversationCard"
+import { useTranslation } from "react-i18next"
+import ProjectDetailsModal from "@/components/dashboard/ProjectDetailsModal"
 
 const supabase = supabaseBrowser()
 
 export default function FreelancerDashboardUI() {
+  const { t, i18n } = useTranslation()
   const { profile: user, loading, refreshAuth } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [proposals, setProposals] = useState<Proposal[]>([])
@@ -93,7 +96,7 @@ export default function FreelancerDashboardUI() {
   const { setValue, getValue } = useSessionStorage("last_tab")
 
   useEffect(() => {
-    document.title = "Freelancer Dashboard | GDN Pro"
+    document.title = t("dashboard.freelancer.pageTitle")
     window.scrollTo(0, 0)
 
     if (getValue("last_tab")) {
@@ -102,7 +105,7 @@ export default function FreelancerDashboardUI() {
       setActiveTab("projects")
       setValue("last_tab", "projects")
     }
-  }, [])
+  }, [t])
 
   useEffect(() => {
     if (user) {
@@ -385,10 +388,12 @@ export default function FreelancerDashboardUI() {
 
                 return {
                   id: `transaction-${transaction.id}`,
-                  title: transaction.project_title || "Proyecto Contratado",
+                  title:
+                    transaction.project_title ||
+                    t("dashboard.freelancer.projects.myProjects.directContract"),
                   description:
                     transaction.project_description ||
-                    "Proyecto contratado directamente por el cliente",
+                    t("dashboard.freelancer.projects.myProjects.directContract"),
                   budget: Number(transaction.amount),
                   status: "in_progress", // Proyectos de transacciones siempre están en progreso
                   payment_status: transaction.status || "pending", // Usar el estado real de la transacción
@@ -656,8 +661,7 @@ export default function FreelancerDashboardUI() {
 
         if (data.flagged) {
           window.toast({
-            title:
-              "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+            title: t("dashboard.freelancer.errors.contactInfoWarning"),
             type: "info",
             location: "bottom-center",
             dismissible: true,
@@ -665,11 +669,11 @@ export default function FreelancerDashboardUI() {
           })
         }
       } else {
-        throw new Error(data.error || "Error desconocido al enviar mensaje")
+        throw new Error(data.error || t("dashboard.freelancer.errors.unknownError"))
       }
     } catch (error: unknown) {
       window.toast({
-        title: "Error enviando mensaje",
+        title: t("dashboard.freelancer.errors.sendMessage"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -719,7 +723,7 @@ export default function FreelancerDashboardUI() {
       await notifyProposal(data.id, "proposal_received")
 
       window.toast({
-        title: "¡Propuesta enviada exitosamente!",
+        title: t("dashboard.freelancer.success.proposalSent"),
         type: "success",
         location: "bottom-center",
         dismissible: true,
@@ -731,7 +735,7 @@ export default function FreelancerDashboardUI() {
       loadData() // Reload data
     } catch (error) {
       window.toast({
-        title: "Error al enviar la propuesta. Inténtalo de nuevo.",
+        title: t("dashboard.freelancer.errors.sendProposal"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -770,8 +774,23 @@ export default function FreelancerDashboardUI() {
         // Reload conversations and open chat
         await loadConversations()
         openChat(data.conversation)
+      } else {
+        window.toast({
+          title: t("dashboard.freelancer.errors.createChat"),
+          type: "error",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
       }
     } catch (error) {
+      window.toast({
+        title: t("dashboard.freelancer.errors.startChat"),
+        type: "error",
+        location: "bottom-center",
+        dismissible: true,
+        icon: true,
+      })
       console.error("Error creating chat:", error)
     }
   }
@@ -807,7 +826,7 @@ export default function FreelancerDashboardUI() {
 
         if (error) {
           window.toast({
-            title: "Error al cargar los detalles del proyecto",
+            title: t("dashboard.freelancer.errors.loadProjectDetails"),
             type: "error",
             location: "bottom-center",
             dismissible: true,
@@ -822,7 +841,7 @@ export default function FreelancerDashboardUI() {
       }
     } catch (error) {
       window.toast({
-        title: "Error al cargar los detalles del proyecto",
+        title: t("dashboard.freelancer.errors.loadProjectDetails"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -840,7 +859,7 @@ export default function FreelancerDashboardUI() {
         let projectWithClient = { ...project }
 
         // Si el cliente no tiene información completa, cargarla
-        if (!project.client?.id || project.client?.full_name === "Cliente") {
+        if (!project.client?.id || project.client?.full_name === t("dashboard.freelancer.client")) {
           const clientId = (project as any)._clientId || project.client?.id
 
           if (clientId) {
@@ -855,7 +874,7 @@ export default function FreelancerDashboardUI() {
                 ...project,
                 client: {
                   id: clientData.id,
-                  full_name: clientData.full_name || "Cliente",
+                  full_name: clientData.full_name || t("dashboard.freelancer.client"),
                   email: clientData.email || "",
                   rating: clientData.rating || 5.0,
                   avatar_url: clientData.avatar_url || "",
@@ -884,7 +903,7 @@ export default function FreelancerDashboardUI() {
 
         if (error) {
           window.toast({
-            title: "Error al cargar los detalles del proyecto",
+            title: t("dashboard.freelancer.errors.loadProjectDetails"),
             type: "error",
             location: "bottom-center",
             dismissible: true,
@@ -899,7 +918,7 @@ export default function FreelancerDashboardUI() {
       }
     } catch (error) {
       window.toast({
-        title: "Error al cargar los detalles del proyecto",
+        title: t("dashboard.freelancer.errors.loadProjectDetails"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -922,7 +941,7 @@ export default function FreelancerDashboardUI() {
         let projectWithClient = { ...project }
 
         // Si el cliente no tiene información completa, cargarla
-        if (!project.client?.id || project.client?.full_name === "Cliente") {
+        if (!project.client?.id || project.client?.full_name === t("dashboard.freelancer.client")) {
           const clientId = (project as any)._clientId || project.client?.id
 
           if (clientId) {
@@ -937,7 +956,7 @@ export default function FreelancerDashboardUI() {
                 ...project,
                 client: {
                   id: clientData.id,
-                  full_name: clientData.full_name || "Cliente",
+                  full_name: clientData.full_name || t("dashboard.freelancer.client"),
                   email: clientData.email || "",
                   rating: clientData.rating || 5.0,
                   avatar_url: clientData.avatar_url || "",
@@ -969,7 +988,7 @@ export default function FreelancerDashboardUI() {
 
         if (error) {
           window.toast({
-            title: "Error al cargar los detalles del proyecto",
+            title: t("dashboard.freelancer.errors.loadProjectDetails"),
             type: "error",
             location: "bottom-center",
             dismissible: true,
@@ -984,7 +1003,7 @@ export default function FreelancerDashboardUI() {
       }
     } catch (error) {
       window.toast({
-        title: "Error al cargar los detalles del proyecto",
+        title: t("dashboard.freelancer.errors.loadProjectDetails"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -1002,7 +1021,7 @@ export default function FreelancerDashboardUI() {
   ) => {
     if (!user) {
       window.toast({
-        title: "Necesitas iniciar sesión para chatear",
+        title: t("dashboard.freelancer.errors.loginRequired"),
         type: "warning",
         location: "bottom-center",
         dismissible: true,
@@ -1015,7 +1034,7 @@ export default function FreelancerDashboardUI() {
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) {
         window.toast({
-          title: "Necesitas iniciar sesión para chatear",
+          title: t("dashboard.freelancer.errors.loginRequired"),
           type: "warning",
           location: "bottom-center",
           dismissible: true,
@@ -1095,11 +1114,11 @@ export default function FreelancerDashboardUI() {
 
         await openChat(newConversation)
       } else {
-        throw new Error(data.error || "Error al crear conversación")
+        throw new Error(data.error || t("dashboard.freelancer.errors.createChat"))
       }
     } catch (error: unknown) {
       window.toast({
-        title: "Error al iniciar el chat",
+        title: t("dashboard.freelancer.errors.startChat"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -1172,7 +1191,7 @@ export default function FreelancerDashboardUI() {
       await refreshAuth()
 
       window.toast({
-        title: "Perfil actualizado exitosamente",
+        title: t("dashboard.freelancer.success.profileUpdated"),
         type: "success",
         location: "bottom-center",
         dismissible: true,
@@ -1181,7 +1200,7 @@ export default function FreelancerDashboardUI() {
     } catch (error) {
       console.error("Error updating profile:", error)
       window.toast({
-        title: "Error al actualizar el perfil",
+        title: t("dashboard.freelancer.modals.editProfile.error"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -1195,27 +1214,27 @@ export default function FreelancerDashboardUI() {
   const tabsOptions = [
     {
       value: "projects",
-      label: "Proyectos Disponibles",
+      label: t("dashboard.freelancer.tabs.projects"),
       count: projects.length,
     },
     {
       value: "my-projects",
-      label: "Mis Proyectos",
+      label: t("dashboard.freelancer.tabs.myProjects"),
       count: myProjects.length,
     },
     {
       value: "proposals",
-      label: "Mis Propuestas",
+      label: t("dashboard.freelancer.tabs.proposals"),
       count: proposals.length,
     },
     {
       value: "messages",
-      label: "Mensajes",
+      label: t("dashboard.freelancer.tabs.messages"),
       count: conversations.length,
     },
     {
       value: "reviews",
-      label: "Reseñas",
+      label: t("dashboard.freelancer.tabs.reviews"),
       count: pendingReviewsCount,
       hasBadge: true,
       hasIcon: true,
@@ -1231,24 +1250,24 @@ export default function FreelancerDashboardUI() {
     },
     {
       value: "achievements",
-      label: "Logros",
+      label: t("dashboard.freelancer.tabs.achievements"),
       hasIcon: true,
       icon: "ri-trophy-line",
     },
     {
       value: "user",
-      label: "Mi Perfil",
+      label: t("dashboard.freelancer.tabs.profile"),
     },
     {
       value: "payments",
-      label: "Ingresos",
+      label: t("dashboard.freelancer.tabs.payments"),
       hasIcon: true,
       icon: "ri-bank-card-line",
       specialStyle: true,
     },
     {
       value: "analytics",
-      label: "Analytics",
+      label: t("dashboard.freelancer.tabs.analytics"),
       hasIcon: true,
       icon: "ri-bar-chart-line",
     },
@@ -1274,9 +1293,11 @@ export default function FreelancerDashboardUI() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                  ¡Hola, {user?.full_name}!
+                  {t("dashboard.freelancer.greeting").replace("{name}", user?.full_name || "")}
                 </h1>
-                <p className="text-sm text-gray-600 sm:text-base">Freelancer Dashboard</p>
+                <p className="text-sm text-gray-600 sm:text-base">
+                  {t("dashboard.freelancer.title")}
+                </p>
               </div>
             </div>
 
@@ -1284,7 +1305,7 @@ export default function FreelancerDashboardUI() {
               <div className="text-primary text-2xl font-bold sm:text-3xl">
                 {user?.rating || 0}★
               </div>
-              <p className="text-xs text-gray-500 sm:text-sm">Rating</p>
+              <p className="text-xs text-gray-500 sm:text-sm">{t("dashboard.freelancer.rating")}</p>
             </div>
           </div>
         </div>
@@ -1298,7 +1319,9 @@ export default function FreelancerDashboardUI() {
               </div>
               <div>
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">{proposals.length}</p>
-                <p className="text-xs text-gray-600 sm:text-sm">Propuestas</p>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  {t("dashboard.freelancer.stats.proposals")}
+                </p>
               </div>
             </div>
           </div>
@@ -1312,7 +1335,9 @@ export default function FreelancerDashboardUI() {
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                   {proposals.filter((p) => p.status === "accepted").length}
                 </p>
-                <p className="text-xs text-gray-600 sm:text-sm">Aceptadas</p>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  {t("dashboard.freelancer.stats.accepted")}
+                </p>
               </div>
             </div>
           </div>
@@ -1326,7 +1351,9 @@ export default function FreelancerDashboardUI() {
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                   {proposals.filter((p) => p.status === "pending").length}
                 </p>
-                <p className="text-xs text-gray-600 sm:text-sm">Pendientes</p>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  {t("dashboard.freelancer.stats.pending")}
+                </p>
               </div>
             </div>
           </div>
@@ -1340,7 +1367,9 @@ export default function FreelancerDashboardUI() {
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                   {conversations.length}
                 </p>
-                <p className="text-xs text-gray-600 sm:text-sm">Mensajes</p>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  {t("dashboard.freelancer.stats.messages")}
+                </p>
               </div>
             </div>
           </div>
@@ -1356,10 +1385,10 @@ export default function FreelancerDashboardUI() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="text-base font-bold text-gray-900 sm:text-lg">
-                    🏆 Tu Progreso como Freelancer
+                    {t("dashboard.freelancer.gamification.title")}
                   </h3>
                   <p className="mt-1 text-xs text-cyan-700 sm:mt-0 sm:text-sm">
-                    Desbloquea logros y sube de nivel completando proyectos
+                    {t("dashboard.freelancer.gamification.description")}
                   </p>
                 </div>
               </div>
@@ -1372,15 +1401,21 @@ export default function FreelancerDashboardUI() {
               <div className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-3 sm:gap-4 sm:text-sm">
                 <div className="flex items-center gap-2">
                   <i className="ri-check-line text-primary shrink-0 text-base sm:text-lg"></i>
-                  <span className="text-gray-700">Gana XP completando proyectos</span>
+                  <span className="text-gray-700">
+                    {t("dashboard.freelancer.gamification.gainXP")}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <i className="ri-star-line shrink-0 text-base text-yellow-500 sm:text-lg"></i>
-                  <span className="text-gray-700">Desbloquea badges por logros</span>
+                  <span className="text-gray-700">
+                    {t("dashboard.freelancer.gamification.unlockBadges")}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <i className="ri-trophy-line text-primary shrink-0 text-base sm:text-lg"></i>
-                  <span className="text-gray-700">Sube tu nivel profesional</span>
+                  <span className="text-gray-700">
+                    {t("dashboard.freelancer.gamification.levelUp")}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1451,10 +1486,12 @@ export default function FreelancerDashboardUI() {
             {activeTab === "projects" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-                  <h3 className="text-lg font-semibold text-gray-900">Proyectos Disponibles</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {t("dashboard.freelancer.projects.title")}
+                  </h3>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <i className="ri-information-line"></i>
-                    <span>Proyectos sin propuestas aceptadas</span>
+                    <span>{t("dashboard.freelancer.projects.subtitle")}</span>
                   </div>
                 </div>
 
@@ -1489,10 +1526,17 @@ export default function FreelancerDashboardUI() {
             {activeTab === "my-projects" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-                  <h3 className="text-lg font-semibold text-gray-900">Mis Proyectos Activos</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {t("dashboard.freelancer.projects.myProjects.title")}
+                  </h3>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <i className="ri-briefcase-line"></i>
-                    <span>{myProjects.length} proyectos en total</span>
+                    <span>
+                      {t("dashboard.freelancer.projects.myProjects.subtitle").replace(
+                        "{count}",
+                        myProjects.length.toString(),
+                      )}
+                    </span>
                   </div>
                 </div>
 
@@ -1500,10 +1544,10 @@ export default function FreelancerDashboardUI() {
                   <div className="py-8 text-center sm:py-12">
                     <i className="ri-briefcase-line mb-4 text-4xl text-gray-300 sm:text-6xl"></i>
                     <h3 className="mb-2 text-lg font-medium text-gray-900 sm:text-xl">
-                      No tienes proyectos asignados
+                      {t("dashboard.freelancer.projects.myProjects.noProjects")}
                     </h3>
                     <p className="text-sm text-gray-500 sm:text-base">
-                      Envía propuestas para conseguir tus primeros proyectos
+                      {t("dashboard.freelancer.projects.myProjects.noProjectsDesc")}
                     </p>
                   </div>
                 ) : (
@@ -1540,8 +1584,10 @@ export default function FreelancerDashboardUI() {
                                       ></i>
                                       {project.payment_status === "paid" ||
                                       project.payment_status === "success"
-                                        ? "Pagado"
-                                        : "Pago Pendiente"}
+                                        ? t("dashboard.freelancer.projects.myProjects.status.paid")
+                                        : t(
+                                            "dashboard.freelancer.projects.myProjects.status.paymentPending",
+                                          )}
                                     </span>
                                     <span className="text-primary text-lg font-bold sm:text-xl">
                                       ${project.budget}
@@ -1559,10 +1605,16 @@ export default function FreelancerDashboardUI() {
                                       }`}
                                     >
                                       {project.status === "in_progress"
-                                        ? "En Progreso"
+                                        ? t(
+                                            "dashboard.freelancer.projects.myProjects.status.inProgress",
+                                          )
                                         : project.status === "completed"
-                                          ? "Completado"
-                                          : "Pendiente"}
+                                          ? t(
+                                              "dashboard.freelancer.projects.myProjects.status.completed",
+                                            )
+                                          : t(
+                                              "dashboard.freelancer.projects.myProjects.status.pending",
+                                            )}
                                     </span>
                                     <span className="text-primary text-lg font-bold sm:text-xl">
                                       $
@@ -1577,14 +1629,17 @@ export default function FreelancerDashboardUI() {
                             <p className="mb-4 text-sm leading-relaxed text-gray-600 sm:text-base">
                               {project.description && project.description.length > 200
                                 ? `${project.description.substring(0, 200)}...`
-                                : project.description || "Proyecto contratado directamente"}
+                                : project.description ||
+                                  t("dashboard.freelancer.projects.myProjects.directContract")}
                             </p>
 
                             <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                               <div className="flex items-center space-x-4 text-sm text-gray-500">
                                 <div className="flex items-center">
                                   <i className="ri-user-line mr-1"></i>
-                                  <span>{project.client?.full_name || "Cliente"}</span>
+                                  <span>
+                                    {project.client?.full_name || t("dashboard.freelancer.client")}
+                                  </span>
                                   {project.client?.rating && (
                                     <span className="ml-1 text-yellow-500">
                                       ★{project.client.rating}
@@ -1594,13 +1649,17 @@ export default function FreelancerDashboardUI() {
                                 <div className="flex items-center">
                                   <i className="ri-calendar-line mr-1"></i>
                                   <span>
-                                    {new Date(project.created_at).toLocaleDateString("es-ES")}
+                                    {new Date(project.created_at).toLocaleDateString(
+                                      i18n.language === "en" ? "en-US" : "es-ES",
+                                    )}
                                   </span>
                                 </div>
                                 {project._isFromTransaction && (
                                   <div className="flex items-center">
                                     <i className="ri-bank-card-line mr-1"></i>
-                                    <span>Pago Directo</span>
+                                    <span>
+                                      {t("dashboard.freelancer.projects.myProjects.directPayment")}
+                                    </span>
                                   </div>
                                 )}
                               </div>
@@ -1613,7 +1672,7 @@ export default function FreelancerDashboardUI() {
                               className="cursor-pointer rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-200"
                             >
                               <i className="ri-eye-line mr-2"></i>
-                              Ver Detalles
+                              {t("dashboard.freelancer.projects.myProjects.viewDetails")}
                             </button>
                             {!project._isFromTransaction && (
                               <>
@@ -1622,14 +1681,14 @@ export default function FreelancerDashboardUI() {
                                   className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                                 >
                                   <i className="ri-settings-3-line mr-2"></i>
-                                  Gestionar
+                                  {t("dashboard.freelancer.projects.myProjects.manage")}
                                 </button>
                                 <button
                                   onClick={() => openProgressManagement(project)}
                                   className="cursor-pointer rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-purple-700"
                                 >
                                   <i className="ri-bar-chart-line mr-2"></i>
-                                  Gestionar Progreso
+                                  {t("dashboard.freelancer.projects.myProjects.manageProgress")}
                                 </button>
                               </>
                             )}
@@ -1637,7 +1696,8 @@ export default function FreelancerDashboardUI() {
                               <button
                                 onClick={() => {
                                   const clientId = project.client?.id
-                                  const clientName = project.client?.full_name || "Cliente"
+                                  const clientName =
+                                    project.client?.full_name || t("dashboard.freelancer.client")
                                   // For transaction projects, pass null as projectId since there's no real project record
                                   // For regular projects, use the actual project ID
                                   const projectId = project._isFromTransaction ? null : project.id
@@ -1646,7 +1706,7 @@ export default function FreelancerDashboardUI() {
                                 className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                               >
                                 <i className="ri-chat-3-line mr-2"></i>
-                                Contactar Cliente
+                                {t("dashboard.freelancer.projects.myProjects.contactClient")}
                               </button>
                             )}
                           </div>
@@ -1662,24 +1722,35 @@ export default function FreelancerDashboardUI() {
             {activeTab === "proposals" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-                  <h3 className="text-lg font-semibold text-gray-900">Mis Propuestas</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {t("dashboard.freelancer.proposals.title")}
+                  </h3>
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2 text-sm">
                       <div className="h-3 w-3 rounded-full bg-green-500"></div>
                       <span>
-                        Aceptadas: {proposals.filter((p) => p.status === "accepted").length}
+                        {t("dashboard.freelancer.proposals.accepted").replace(
+                          "{count}",
+                          proposals.filter((p) => p.status === "accepted").length.toString(),
+                        )}
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 text-sm">
                       <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
                       <span>
-                        Pendientes: {proposals.filter((p) => p.status === "pending").length}
+                        {t("dashboard.freelancer.proposals.pending").replace(
+                          "{count}",
+                          proposals.filter((p) => p.status === "pending").length.toString(),
+                        )}
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 text-sm">
                       <div className="h-3 w-3 rounded-full bg-red-500"></div>
                       <span>
-                        Rechazadas: {proposals.filter((p) => p.status === "rejected").length}
+                        {t("dashboard.freelancer.proposals.rejected").replace(
+                          "{count}",
+                          proposals.filter((p) => p.status === "rejected").length.toString(),
+                        )}
                       </span>
                     </div>
                   </div>
@@ -1689,10 +1760,10 @@ export default function FreelancerDashboardUI() {
                   <div className="py-8 text-center sm:py-12">
                     <i className="ri-file-text-line mb-4 text-4xl text-gray-300 sm:text-6xl"></i>
                     <h3 className="mb-2 text-lg font-medium text-gray-900 sm:text-xl">
-                      No has enviado propuestas
+                      {t("dashboard.freelancer.proposals.noProposals")}
                     </h3>
                     <p className="text-sm text-gray-500 sm:text-base">
-                      Explora los proyectos disponibles y envía tu primera propuesta
+                      {t("dashboard.freelancer.proposals.noProposalsDesc")}
                     </p>
                   </div>
                 ) : (
@@ -1712,7 +1783,8 @@ export default function FreelancerDashboardUI() {
                           <div className="flex-1">
                             <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                               <h4 className="mb-2 text-lg font-semibold text-gray-900 sm:mb-0 sm:text-xl">
-                                {proposal.project?.title || "Proyecto"}
+                                {proposal.project?.title ||
+                                  t("dashboard.freelancer.proposals.project")}
                               </h4>
                               <div className="flex items-center space-x-4">
                                 <span
@@ -1734,10 +1806,10 @@ export default function FreelancerDashboardUI() {
                                     }`}
                                   ></i>
                                   {proposal.status === "accepted"
-                                    ? "Aceptada"
+                                    ? t("dashboard.freelancer.proposals.status.accepted")
                                     : proposal.status === "pending"
-                                      ? "Pendiente"
-                                      : "Rechazada"}
+                                      ? t("dashboard.freelancer.proposals.status.pending")
+                                      : t("dashboard.freelancer.proposals.status.rejected")}
                                 </span>
                                 <span className="text-primary text-lg font-bold sm:text-xl">
                                   ${proposal.proposed_budget}
@@ -1774,17 +1846,25 @@ export default function FreelancerDashboardUI() {
                               <div className="flex items-center space-x-4 text-sm text-gray-500">
                                 <div className="flex items-center">
                                   <i className="ri-user-line mr-1"></i>
-                                  <span>{proposal.project?.client?.full_name || "Cliente"}</span>
+                                  <span>
+                                    {proposal.project?.client?.full_name ||
+                                      t("dashboard.freelancer.client")}
+                                  </span>
                                 </div>
                                 <div className="flex items-center">
                                   <i className="ri-calendar-line mr-1"></i>
                                   <span>
-                                    {new Date(proposal.created_at).toLocaleDateString("es-ES")}
+                                    {new Date(proposal.created_at).toLocaleDateString(
+                                      i18n.language === "en" ? "en-US" : "es-ES",
+                                    )}
                                   </span>
                                 </div>
                                 <div className="flex items-center">
                                   <i className="ri-time-line mr-1"></i>
-                                  <span>{proposal.delivery_time} días</span>
+                                  <span>
+                                    {proposal.delivery_time}{" "}
+                                    {t("dashboard.freelancer.proposals.days")}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -1796,7 +1876,7 @@ export default function FreelancerDashboardUI() {
                               className="cursor-pointer rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-200"
                             >
                               <i className="ri-eye-line mr-2"></i>
-                              Ver Detalles
+                              {t("dashboard.freelancer.proposals.viewDetails")}
                             </button>
 
                             {/* NUEVO: Botón Gestionar Progreso para propuestas aceptadas */}
@@ -1806,7 +1886,7 @@ export default function FreelancerDashboardUI() {
                                 className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                               >
                                 <i className="ri-bar-chart-line mr-2"></i>
-                                Gestionar Progreso
+                                {t("dashboard.freelancer.proposals.manageProgress")}
                               </button>
                             )}
 
@@ -1821,7 +1901,7 @@ export default function FreelancerDashboardUI() {
                                 className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                               >
                                 <i className="ri-chat-3-line mr-2"></i>
-                                Contactar
+                                {t("dashboard.freelancer.proposals.contact")}
                               </button>
                             )}
                           </div>
@@ -1837,10 +1917,17 @@ export default function FreelancerDashboardUI() {
             {activeTab === "messages" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <h3 className="text-base font-semibold text-gray-900 sm:text-lg">Mensajes</h3>
+                  <h3 className="text-base font-semibold text-gray-900 sm:text-lg">
+                    {t("dashboard.freelancer.messages.title")}
+                  </h3>
                   <div className="flex items-center gap-2 text-xs text-gray-600 sm:text-sm">
                     <i className="ri-chat-3-line"></i>
-                    <span>{conversations.length} conversaciones</span>
+                    <span>
+                      {t("dashboard.freelancer.messages.conversations").replace(
+                        "{count}",
+                        conversations.length.toString(),
+                      )}
+                    </span>
                   </div>
                 </div>
 
@@ -1848,17 +1935,17 @@ export default function FreelancerDashboardUI() {
                   <div className="py-6 text-center sm:py-8">
                     <div className="border-primary mx-auto h-6 w-6 animate-spin rounded-full border-b-2 sm:h-8 sm:w-8"></div>
                     <p className="mt-2 text-sm text-gray-500 sm:text-base">
-                      Cargando conversaciones...
+                      {t("dashboard.freelancer.messages.loading")}
                     </p>
                   </div>
                 ) : conversations.length === 0 ? (
                   <div className="py-8 text-center sm:py-12">
                     <i className="ri-chat-3-line mb-3 text-4xl text-gray-300 sm:mb-4 sm:text-6xl"></i>
                     <h3 className="mb-2 text-base font-medium text-gray-900 sm:text-lg sm:text-xl">
-                      No tienes mensajes
+                      {t("dashboard.freelancer.messages.noMessages")}
                     </h3>
                     <p className="text-sm text-gray-500 sm:text-base">
-                      Las conversaciones con los clientes aparecerán aquí
+                      {t("dashboard.freelancer.messages.noMessagesDesc")}
                     </p>
                   </div>
                 ) : (
@@ -1881,11 +1968,16 @@ export default function FreelancerDashboardUI() {
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-base font-semibold text-gray-900 sm:text-lg">
-                    Gestión de Reseñas
+                    {t("dashboard.freelancer.reviews.title")}
                   </h3>
                   <div className="flex items-center gap-2 text-xs text-gray-600 sm:text-sm">
                     <i className="ri-star-line"></i>
-                    <span>Calificación promedio: {user?.rating || 0}★</span>
+                    <span>
+                      {t("dashboard.freelancer.reviews.averageRating").replace(
+                        "{rating}",
+                        (user?.rating || 0).toString(),
+                      )}
+                    </span>
                   </div>
                 </div>
 
@@ -1893,7 +1985,7 @@ export default function FreelancerDashboardUI() {
                 <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 sm:p-6">
                   <h4 className="mb-4 flex flex-wrap items-center gap-2 text-base font-semibold text-yellow-800 sm:text-lg">
                     <i className="ri-edit-line text-lg sm:text-xl"></i>
-                    <span>Reseñas Pendientes de Escribir</span>
+                    <span>{t("dashboard.freelancer.reviews.pendingTitle")}</span>
                     {pendingReviewsCount > 0 && (
                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-500 text-xs text-white sm:h-6 sm:w-6 sm:text-sm">
                         {pendingReviewsCount}
@@ -1907,7 +1999,7 @@ export default function FreelancerDashboardUI() {
                 <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
                   <h4 className="mb-4 flex items-center gap-2 text-base font-semibold text-gray-900 sm:text-lg">
                     <i className="ri-star-fill text-lg text-yellow-500 sm:text-xl"></i>
-                    <span>Reseñas Recibidas</span>
+                    <span>{t("dashboard.freelancer.reviews.receivedTitle")}</span>
                   </h4>
                   <ReviewsDisplay userId={user?.id} userType="freelancer" />
                 </div>
@@ -1917,13 +2009,15 @@ export default function FreelancerDashboardUI() {
             {/* Mi Perfil */}
             {activeTab === "user" && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">Mi Perfil</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {t("dashboard.freelancer.profile.title")}
+                </h3>
 
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   {/* Información Personal */}
                   <div className="rounded-lg border border-gray-200 bg-white p-6">
                     <h4 className="mb-4 text-lg font-semibold text-gray-900">
-                      Información Personal
+                      {t("dashboard.freelancer.profile.personalInfo")}
                     </h4>
                     <div className="space-y-4">
                       <div className="flex items-center space-x-4">
@@ -1944,22 +2038,27 @@ export default function FreelancerDashboardUI() {
                           <div className="mt-1 flex items-center">
                             <span className="text-yellow-500">★</span>
                             <span className="ml-1 text-sm text-gray-600">
-                              {user?.rating || 0} calificación
+                              {t("dashboard.freelancer.profile.rating").replace(
+                                "{rating}",
+                                (user?.rating || 0).toString(),
+                              )}
                             </span>
                           </div>
                         </div>
                       </div>
 
                       <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700">Bio</label>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">
+                          {t("dashboard.freelancer.profile.bio")}
+                        </label>
                         <p className="text-gray-600">
-                          {user?.bio || "No has agregado una biografía"}
+                          {user?.bio || t("dashboard.freelancer.profile.noBio")}
                         </p>
                       </div>
 
                       <div>
                         <label className="mb-1 block text-sm font-medium text-gray-700">
-                          Habilidades
+                          {t("dashboard.freelancer.profile.skills")}
                         </label>
                         <div className="flex flex-wrap gap-2">
                           {user?.skills ? (
@@ -1973,7 +2072,7 @@ export default function FreelancerDashboardUI() {
                             ))
                           ) : (
                             <span className="text-sm text-gray-500">
-                              No has agregado habilidades
+                              {t("dashboard.freelancer.profile.noSkills")}
                             </span>
                           )}
                         </div>
@@ -1984,7 +2083,7 @@ export default function FreelancerDashboardUI() {
                             className="bg-primary cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700 sm:px-6 sm:text-base"
                           >
                             <i className="ri-edit-line mr-2"></i>
-                            Editar Perfil
+                            {t("dashboard.freelancer.profile.editProfile")}
                           </button>
                         </div>
                       </div>
@@ -1993,27 +2092,37 @@ export default function FreelancerDashboardUI() {
 
                   {/* Estadísticas */}
                   <div className="rounded-lg border border-gray-200 bg-white p-6">
-                    <h4 className="mb-4 text-lg font-semibold text-gray-900">Estadísticas</h4>
+                    <h4 className="mb-4 text-lg font-semibold text-gray-900">
+                      {t("dashboard.freelancer.profile.stats.activeProjects")}
+                    </h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="rounded-lg bg-emerald-50 p-4 text-center">
                         <div className="text-primary text-2xl font-bold">{myProjects.length}</div>
-                        <div className="text-sm text-gray-600">Proyectos Activos</div>
+                        <div className="text-sm text-gray-600">
+                          {t("dashboard.freelancer.profile.stats.activeProjects")}
+                        </div>
                       </div>
                       <div className="rounded-lg bg-blue-50 p-4 text-center">
                         <div className="text-primary text-2xl font-bold">{proposals.length}</div>
-                        <div className="text-sm text-gray-600">Propuestas Enviadas</div>
+                        <div className="text-sm text-gray-600">
+                          {t("dashboard.freelancer.profile.stats.sentProposals")}
+                        </div>
                       </div>
                       <div className="rounded-lg bg-yellow-50 p-4 text-center">
                         <div className="text-2xl font-bold text-yellow-600">
                           {proposals.filter((p) => p.status === "accepted").length}
                         </div>
-                        <div className="text-sm text-gray-600">Propuestas Aceptadas</div>
+                        <div className="text-sm text-gray-600">
+                          {t("dashboard.freelancer.profile.stats.acceptedProposals")}
+                        </div>
                       </div>
                       <div className="rounded-lg bg-purple-50 p-4 text-center">
                         <div className="text-2xl font-bold text-purple-600">
                           {conversations.length}
                         </div>
-                        <div className="text-sm text-gray-600">Conversaciones</div>
+                        <div className="text-sm text-gray-600">
+                          {t("dashboard.freelancer.profile.stats.conversations")}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2035,10 +2144,12 @@ export default function FreelancerDashboardUI() {
             {activeTab === "achievements" && user?.id && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900">🏆 Sistema de Logros</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {t("dashboard.freelancer.achievements.title")}
+                  </h3>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <i className="ri-magic-line"></i>
-                    <span>Gamificación activada</span>
+                    <span>{t("dashboard.freelancer.gamification.gamificationActive")}</span>
                   </div>
                 </div>
 
@@ -2064,7 +2175,7 @@ export default function FreelancerDashboardUI() {
                     </div>
                     <div>
                       <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
-                        Gestión de Progreso
+                        {t("dashboard.freelancer.modals.progressManagement.title")}
                       </h2>
                       <p className="mt-2 text-sm text-cyan-100">
                         {selectedProjectForProgress.title}
@@ -2081,11 +2192,14 @@ export default function FreelancerDashboardUI() {
                         >
                           <i className="ri-check-line mr-1"></i>
                           {selectedProjectForProgress._isFromTransaction
-                            ? "Proyecto Contratado"
-                            : "Propuesta Aceptada"}
+                            ? t("dashboard.freelancer.modals.progressManagement.projectContracted")
+                            : t("dashboard.freelancer.modals.progressManagement.proposalAccepted")}
                         </span>
                         <span className="text-sm text-cyan-100">
-                          Cliente: {selectedProjectForProgress.client?.full_name}
+                          {t("dashboard.freelancer.modals.progressManagement.client").replace(
+                            "{name}",
+                            selectedProjectForProgress.client?.full_name || "",
+                          )}
                         </span>
                       </div>
                     </div>
@@ -2097,7 +2211,7 @@ export default function FreelancerDashboardUI() {
                     setSelectedProjectForProgress(null)
                   }}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
+                  aria-label={t("dashboard.freelancer.modals.progressManagement.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -2159,7 +2273,7 @@ export default function FreelancerDashboardUI() {
                     loadData() // Recargar datos para actualizar el progreso
                   }}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
+                  aria-label={t("dashboard.freelancer.modals.projectDetailsMyProjects.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -2181,263 +2295,29 @@ export default function FreelancerDashboardUI() {
       )}
 
       {/* Modal de Detalles de Proyecto (Proyectos Disponibles) */}
-      {showProjectDetails && selectedProjectDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4">
-          <div className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-4xl sm:rounded-3xl sm:ring-1 sm:ring-black/5">
-            {/* Modern Header with Gradient */}
-            <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-              <div className="relative z-10 flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1 pr-4">
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm sm:h-12 sm:w-12">
-                      <i className="ri-briefcase-4-line text-xl sm:text-2xl"></i>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
-                        {selectedProjectDetails.title}
-                      </h2>
-                      <div className="mt-2 flex flex-wrap items-center gap-2 sm:mt-3 sm:gap-4">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold sm:px-3 ${
-                            selectedProjectDetails.status === "open"
-                              ? "bg-emerald-500/90 text-white"
-                              : selectedProjectDetails.status === "in_progress"
-                                ? "bg-blue-500/90 text-white"
-                                : "bg-gray-500/90 text-white"
-                          }`}
-                        >
-                          <i className="ri-check-line mr-1"></i>
-                          {selectedProjectDetails.status === "open"
-                            ? "Abierto"
-                            : selectedProjectDetails.status === "in_progress"
-                              ? "En Progreso"
-                              : selectedProjectDetails.status}
-                        </span>
-                        <span className="text-base font-bold text-white sm:text-lg">
-                          ${selectedProjectDetails.budget_min || selectedProjectDetails.budget || 0}{" "}
-                          - $
-                          {selectedProjectDetails.budget_max || selectedProjectDetails.budget || 0}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setShowProjectDetails(false)
-                    setSelectedProjectDetails(null)
-                  }}
-                  className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
-                >
-                  <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
-                </button>
-              </div>
-            </div>
-            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-              <div className="space-y-6">
-                {/* Key Metrics Cards */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-50 to-teal-50 p-6 ring-1 ring-cyan-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10">
-                    <div className="mb-3 flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-lg shadow-cyan-500/30">
-                        <i className="ri-money-dollar-circle-fill text-xl"></i>
-                      </div>
-                      <div className="text-sm font-medium text-cyan-700">Presupuesto</div>
-                    </div>
-                    <p className="text-2xl font-bold text-gray-900">
-                      ${selectedProjectDetails.budget_min || selectedProjectDetails.budget || 0} - $
-                      {selectedProjectDetails.budget_max || selectedProjectDetails.budget || 0}
-                    </p>
-                  </div>
-
-                  {selectedProjectDetails.deadline && (
-                    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 p-6 ring-1 ring-purple-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10">
-                      <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30">
-                          <i className="ri-calendar-check-fill text-xl"></i>
-                        </div>
-                        <div className="text-sm font-medium text-purple-700">Fecha límite</div>
-                      </div>
-                      <p className="text-xl font-bold text-gray-900">
-                        {new Date(selectedProjectDetails.deadline).toLocaleDateString("es-ES", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {new Date(selectedProjectDetails.deadline).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                        })}
-                      </p>
-                    </div>
-                  )}
-
-                  {selectedProjectDetails.project_type && (
-                    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 p-6 ring-1 ring-orange-100 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10">
-                      <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/30">
-                          <i className="ri-folder-fill text-xl"></i>
-                        </div>
-                        <div className="text-sm font-medium text-orange-700">Tipo</div>
-                      </div>
-                      <p className="text-xl font-bold text-gray-900 capitalize">
-                        {selectedProjectDetails.project_type}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Información del Cliente */}
-                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
-                      <i className="ri-user-3-line text-lg"></i>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900">Información del Cliente</h3>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 ring-2 ring-cyan-200">
-                      {selectedProjectDetails.client?.avatar_url ? (
-                        <img
-                          src={selectedProjectDetails.client.avatar_url}
-                          alt={selectedProjectDetails.client.full_name}
-                          className="h-full w-full object-cover object-top"
-                        />
-                      ) : (
-                        <i className="ri-user-line text-xl text-cyan-600"></i>
-                      )}
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900">
-                        {selectedProjectDetails.client?.full_name}
-                      </h4>
-                      <p className="text-gray-600">{selectedProjectDetails.client?.email}</p>
-                      {selectedProjectDetails.client?.rating && (
-                        <div className="mt-1 flex items-center gap-1 text-sm text-cyan-600">
-                          <i className="ri-star-fill text-yellow-300"></i>
-                          <span className="font-medium">
-                            {selectedProjectDetails.client.rating.toFixed(1)}
-                          </span>
-                          <span className="text-gray-500">· Cliente verificado</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Descripción del Proyecto */}
-                <div>
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg">
-                      <i className="ri-file-text-line text-lg"></i>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900">Descripción del Proyecto</h3>
-                  </div>
-                  <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-                    <p className="leading-relaxed whitespace-pre-wrap text-gray-700">
-                      {selectedProjectDetails.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Habilidades Requeridas */}
-                {selectedProjectDetails.required_skills &&
-                  selectedProjectDetails.required_skills.length > 0 && (
-                    <div>
-                      <div className="mb-4 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 text-white shadow-lg">
-                          <i className="ri-tools-fill text-lg"></i>
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-900">Habilidades Requeridas</h3>
-                      </div>
-                      <div className="flex flex-wrap gap-3">
-                        {selectedProjectDetails.required_skills.map((skill, index) => {
-                          const skillName = typeof skill === "string" ? skill : skill || skill
-                          return (
-                            <span
-                              key={index}
-                              className="group relative overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-white shadow-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
-                            >
-                              <span className="relative z-10 flex items-center gap-2">
-                                <i className="ri-checkbox-circle-line"></i>
-                                <span>{skillName}</span>
-                              </span>
-                            </span>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                {/* Detalles Adicionales */}
-                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-lg">
-                      <i className="ri-calendar-check-line text-lg"></i>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900">Información Adicional</h3>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <h4 className="mb-2 text-sm font-semibold text-gray-900">Publicado el</h4>
-                      <p className="text-gray-700">
-                        {new Date(selectedProjectDetails.created_at).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </p>
-                    </div>
-                    {selectedProjectDetails.deadline && (
-                      <div>
-                        <h4 className="mb-2 text-sm font-semibold text-gray-900">Fecha Límite</h4>
-                        <p className="text-gray-700">
-                          {new Date(selectedProjectDetails.deadline).toLocaleDateString("es-ES", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Botones de Acción */}
-            <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
-              {!proposals.find((p) => p.project?.id === selectedProjectDetails.id) &&
-                proposals &&
-                selectedProjectDetails && (
-                  <button
-                    onClick={() => {
-                      setShowProjectDetails(false)
-                      sendProposal(selectedProjectDetails.id)
-                    }}
-                    className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
-                  >
-                    <i className="ri-send-plane-fill text-lg transition-transform group-hover:translate-x-1 sm:text-xl"></i>
-                    <span className="text-sm sm:text-base">Enviar Propuesta</span>
-                  </button>
-                )}
-              {selectedProjectDetails.client?.id && (
-                <button
-                  onClick={() => {
-                    setShowProjectDetails(false)
-                    startChat(selectedProjectDetails.id, selectedProjectDetails.client!.id)
-                  }}
-                  className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-cyan-500 bg-white px-4 py-3 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
-                >
-                  <i className="ri-chat-3-line text-lg transition-transform group-hover:scale-110 sm:text-xl"></i>
-                  <span className="text-sm sm:text-base">Chat con Cliente</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <ProjectDetailsModal
+        project={selectedProjectDetails}
+        isOpen={showProjectDetails}
+        onClose={() => {
+          setShowProjectDetails(false)
+          setSelectedProjectDetails(null)
+        }}
+        onSendProposal={(projectId) => {
+          setShowProjectDetails(false)
+          sendProposal(projectId)
+        }}
+        onStartChat={(projectId, clientId) => {
+          setShowProjectDetails(false)
+          startChat(projectId, clientId)
+        }}
+        showSendProposal={
+          !proposals.find((p) => p.project?.id === selectedProjectDetails?.id) &&
+          !!selectedProjectDetails
+        }
+        showStartChat={!!selectedProjectDetails?.client?.id}
+        hasProposal={!!proposals.find((p) => p.project?.id === selectedProjectDetails?.id)}
+        variant="freelancer"
+      />
 
       {/* RESTAURADO: Modal de detalles de propuesta */}
       {showProposalDetails && selectedProposalForDetails && proposalProjectDetails && (
@@ -2454,7 +2334,7 @@ export default function FreelancerDashboardUI() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
-                        Detalles de la Propuesta
+                        {t("dashboard.freelancer.modals.proposalDetails.title")}
                       </h2>
                       <p className="mt-2 truncate text-xs text-cyan-100 sm:text-sm">
                         {proposalProjectDetails.title}
@@ -2479,10 +2359,10 @@ export default function FreelancerDashboardUI() {
                             }`}
                           ></i>
                           {selectedProposalForDetails.status === "accepted"
-                            ? "Aceptada"
+                            ? t("dashboard.freelancer.proposals.status.accepted")
                             : selectedProposalForDetails.status === "pending"
-                              ? "Pendiente"
-                              : "Rechazada"}
+                              ? t("dashboard.freelancer.proposals.status.pending")
+                              : t("dashboard.freelancer.proposals.status.rejected")}
                         </span>
                         <span className="text-base font-bold text-white sm:text-lg">
                           ${selectedProposalForDetails.proposed_budget}
@@ -2498,7 +2378,7 @@ export default function FreelancerDashboardUI() {
                     setProposalProjectDetails(null)
                   }}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
+                  aria-label={t("dashboard.freelancer.modals.proposalDetails.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -2512,12 +2392,14 @@ export default function FreelancerDashboardUI() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                       <i className="ri-file-list-3-line text-lg"></i>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">Mi Propuesta</h3>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {t("dashboard.freelancer.modals.proposalDetails.myProposal")}
+                    </h3>
                   </div>
                   <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div className="rounded-xl border border-cyan-100 bg-white p-4 shadow-sm">
                       <h4 className="mb-2 text-sm font-semibold text-cyan-700">
-                        Presupuesto Propuesto
+                        {t("dashboard.freelancer.modals.proposalDetails.proposedBudget")}
                       </h4>
                       <p className="text-2xl font-bold text-cyan-600">
                         ${selectedProposalForDetails.proposed_budget}
@@ -2525,17 +2407,20 @@ export default function FreelancerDashboardUI() {
                     </div>
                     <div className="rounded-xl border border-cyan-100 bg-white p-4 shadow-sm">
                       <h4 className="mb-2 text-sm font-semibold text-cyan-700">
-                        Tiempo de Entrega
+                        {t("dashboard.freelancer.modals.proposalDetails.deliveryTime")}
                       </h4>
                       <p className="text-xl font-semibold text-cyan-600">
-                        {selectedProposalForDetails.delivery_time} días
+                        {selectedProposalForDetails.delivery_time}{" "}
+                        {t("dashboard.freelancer.proposals.days")}
                       </p>
                     </div>
                     <div className="rounded-xl border border-cyan-100 bg-white p-4 shadow-sm">
-                      <h4 className="mb-2 text-sm font-semibold text-cyan-700">Enviada</h4>
+                      <h4 className="mb-2 text-sm font-semibold text-cyan-700">
+                        {t("dashboard.freelancer.modals.proposalDetails.sent")}
+                      </h4>
                       <p className="text-cyan-600">
                         {new Date(selectedProposalForDetails.created_at).toLocaleDateString(
-                          "es-ES",
+                          i18n.language === "en" ? "en-US" : "es-ES",
                         )}
                       </p>
                     </div>
@@ -2543,7 +2428,7 @@ export default function FreelancerDashboardUI() {
                   <div className="rounded-xl border border-cyan-100 bg-white p-4 shadow-sm">
                     <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-cyan-700">
                       <i className="ri-message-3-line"></i>
-                      Carta de Presentación
+                      {t("dashboard.freelancer.modals.proposalDetails.coverLetter")}
                     </h4>
                     <p className="leading-relaxed text-gray-700">
                       {selectedProposalForDetails.message}
@@ -2557,7 +2442,9 @@ export default function FreelancerDashboardUI() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg">
                       <i className="ri-briefcase-4-line text-lg"></i>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">Información del Proyecto</h3>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {t("dashboard.freelancer.modals.proposalDetails.projectInfo")}
+                    </h3>
                   </div>
                   <div className="mb-6 rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                     <p className="leading-relaxed text-gray-700">
@@ -2568,16 +2455,19 @@ export default function FreelancerDashboardUI() {
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 shadow-sm">
                       <h4 className="mb-2 text-sm font-semibold text-gray-900">
-                        Presupuesto del Cliente
+                        {t("dashboard.freelancer.modals.proposalDetails.clientBudget")}
                       </h4>
                       <p className="text-xl font-bold text-cyan-600">
                         ${proposalProjectDetails.budget_min} - ${proposalProjectDetails.budget_max}
                       </p>
                     </div>
                     <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 shadow-sm">
-                      <h4 className="mb-2 text-sm font-semibold text-gray-900">Tipo de Proyecto</h4>
+                      <h4 className="mb-2 text-sm font-semibold text-gray-900">
+                        {t("dashboard.freelancer.modals.proposalDetails.projectType")}
+                      </h4>
                       <p className="text-gray-700">
-                        {proposalProjectDetails.project_type || "No especificado"}
+                        {proposalProjectDetails.project_type ||
+                          t("dashboard.freelancer.modals.proposalDetails.notSpecified")}
                       </p>
                     </div>
                   </div>
@@ -2589,7 +2479,9 @@ export default function FreelancerDashboardUI() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                       <i className="ri-user-3-line text-lg"></i>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">Cliente</h3>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {t("dashboard.freelancer.modals.proposalDetails.client")}
+                    </h3>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 ring-2 ring-cyan-200">
@@ -2614,7 +2506,12 @@ export default function FreelancerDashboardUI() {
                           <span className="font-medium">
                             {proposalProjectDetails.client.rating.toFixed(1)}
                           </span>
-                          <span className="text-gray-500">· Cliente verificado</span>
+                          <span className="text-gray-500">
+                            ·{" "}
+                            {t(
+                              "dashboard.freelancer.modals.projectDetailsMyProjects.verifiedClient",
+                            )}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -2707,13 +2604,13 @@ export default function FreelancerDashboardUI() {
                           ></i>
                           {selectedProjectForDetails._isFromTransaction
                             ? selectedProjectForDetails.payment_status === "paid"
-                              ? "Pagado"
-                              : "Pago Pendiente"
+                              ? t("dashboard.freelancer.projects.myProjects.status.paid")
+                              : t("dashboard.freelancer.projects.myProjects.status.paymentPending")
                             : selectedProjectForDetails.status === "in_progress"
-                              ? "En Progreso"
+                              ? t("dashboard.freelancer.projects.myProjects.status.inProgress")
                               : selectedProjectForDetails.status === "completed"
-                                ? "Completado"
-                                : "Mi Proyecto"}
+                                ? t("dashboard.freelancer.projects.myProjects.status.completed")
+                                : t("dashboard.freelancer.projects.myProjects.status.pending")}
                         </span>
                         <span className="text-base font-bold text-white sm:text-lg">
                           $
@@ -2730,7 +2627,7 @@ export default function FreelancerDashboardUI() {
                     setSelectedProjectForDetails(null)
                   }}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
+                  aria-label={t("dashboard.freelancer.modals.projectDetailsMyProjects.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -2745,7 +2642,9 @@ export default function FreelancerDashboardUI() {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-lg shadow-cyan-500/30">
                         <i className="ri-money-dollar-circle-fill text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-cyan-700">Presupuesto</div>
+                      <div className="text-sm font-medium text-cyan-700">
+                        {t("dashboard.freelancer.modals.projectDetails.budget")}
+                      </div>
                     </div>
                     <p className="text-2xl font-bold text-gray-900">
                       $
@@ -2759,18 +2658,20 @@ export default function FreelancerDashboardUI() {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/30">
                         <i className="ri-file-list-3-line text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-blue-700">Estado</div>
+                      <div className="text-sm font-medium text-blue-700">
+                        {t("dashboard.freelancer.modals.projectDetailsMyProjects.paymentStatus")}
+                      </div>
                     </div>
                     <p className="text-xl font-bold text-gray-900">
                       {selectedProjectForDetails._isFromTransaction
                         ? selectedProjectForDetails.payment_status === "paid"
-                          ? "Pagado - En Progreso"
-                          : "Pago Pendiente"
+                          ? `${t("dashboard.freelancer.modals.projectDetailsMyProjects.paid")} - ${t("dashboard.freelancer.projects.myProjects.status.inProgress")}`
+                          : t("dashboard.freelancer.projects.myProjects.status.paymentPending")
                         : selectedProjectForDetails.status === "in_progress"
-                          ? "En Progreso"
+                          ? t("dashboard.freelancer.projects.myProjects.status.inProgress")
                           : selectedProjectForDetails.status === "completed"
-                            ? "Completado"
-                            : "Abierto"}
+                            ? t("dashboard.freelancer.projects.myProjects.status.completed")
+                            : t("dashboard.projectsCard.status.open")}
                     </p>
                   </div>
 
@@ -2779,18 +2680,26 @@ export default function FreelancerDashboardUI() {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30">
                         <i className="ri-calendar-check-fill text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-purple-700">Fecha de Inicio</div>
+                      <div className="text-sm font-medium text-purple-700">
+                        {t("dashboard.freelancer.modals.projectDetails.publishedOn")}
+                      </div>
                     </div>
                     <p className="text-xl font-bold text-gray-900">
-                      {new Date(selectedProjectForDetails.created_at).toLocaleDateString("es-ES", {
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      {new Date(selectedProjectForDetails.created_at).toLocaleDateString(
+                        i18n.language === "en" ? "en-US" : "es-ES",
+                        {
+                          month: "short",
+                          day: "numeric",
+                        },
+                      )}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {new Date(selectedProjectForDetails.created_at).toLocaleDateString("es-ES", {
-                        year: "numeric",
-                      })}
+                      {new Date(selectedProjectForDetails.created_at).toLocaleDateString(
+                        i18n.language === "en" ? "en-US" : "es-ES",
+                        {
+                          year: "numeric",
+                        },
+                      )}
                     </p>
                   </div>
                 </div>
@@ -2801,7 +2710,9 @@ export default function FreelancerDashboardUI() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                       <i className="ri-user-3-line text-lg"></i>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">Información del Cliente</h3>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {t("dashboard.freelancer.modals.projectDetailsMyProjects.clientInfo")}
+                    </h3>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 ring-2 ring-cyan-200">
@@ -2826,7 +2737,12 @@ export default function FreelancerDashboardUI() {
                           <span className="font-medium">
                             {selectedProjectForDetails.client.rating.toFixed(1)}
                           </span>
-                          <span className="text-gray-500">· Cliente verificado</span>
+                          <span className="text-gray-500">
+                            ·{" "}
+                            {t(
+                              "dashboard.freelancer.modals.projectDetailsMyProjects.verifiedClient",
+                            )}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -2839,12 +2755,14 @@ export default function FreelancerDashboardUI() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg">
                       <i className="ri-file-text-line text-lg"></i>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">Descripción del Proyecto</h3>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {t("dashboard.freelancer.modals.projectDetailsMyProjects.description")}
+                    </h3>
                   </div>
                   <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                     <p className="leading-relaxed whitespace-pre-wrap text-gray-700">
                       {selectedProjectForDetails.description ||
-                        "Proyecto contratado directamente por el cliente"}
+                        t("dashboard.freelancer.modals.projectDetailsMyProjects.directContract")}
                     </p>
                   </div>
                 </div>
@@ -2856,20 +2774,28 @@ export default function FreelancerDashboardUI() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-lg">
                         <i className="ri-information-line text-lg"></i>
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900">Información Adicional</h3>
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {t("dashboard.freelancer.modals.projectDetailsMyProjects.additionalInfo")}
+                      </h3>
                     </div>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
-                        <h4 className="mb-2 text-sm font-semibold text-gray-900">Tipo</h4>
-                        <p className="text-gray-700">Contratación Directa</p>
+                        <h4 className="mb-2 text-sm font-semibold text-gray-900">
+                          {t("dashboard.freelancer.modals.projectDetailsMyProjects.type")}
+                        </h4>
+                        <p className="text-gray-700">
+                          {t("dashboard.freelancer.modals.projectDetailsMyProjects.directHire")}
+                        </p>
                       </div>
                       <div>
-                        <h4 className="mb-2 text-sm font-semibold text-gray-900">Estado de Pago</h4>
+                        <h4 className="mb-2 text-sm font-semibold text-gray-900">
+                          {t("dashboard.freelancer.modals.projectDetailsMyProjects.paymentStatus")}
+                        </h4>
                         <p className="text-gray-700">
                           {selectedProjectForDetails.payment_status === "paid" ||
                           selectedProjectForDetails.payment_status === "success"
-                            ? "Pagado"
-                            : "Pendiente"}
+                            ? t("dashboard.freelancer.modals.projectDetailsMyProjects.paid")
+                            : t("dashboard.freelancer.modals.projectDetailsMyProjects.pending")}
                         </p>
                       </div>
                     </div>
@@ -2888,7 +2814,9 @@ export default function FreelancerDashboardUI() {
                   className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
                 >
                   <i className="ri-settings-3-line text-lg transition-transform group-hover:rotate-90 sm:text-xl"></i>
-                  <span className="text-sm sm:text-base">Gestionar Proyecto</span>
+                  <span className="text-sm sm:text-base">
+                    {t("dashboard.freelancer.modals.projectDetailsMyProjects.manageProject")}
+                  </span>
                 </button>
               )}
               <button
@@ -2899,14 +2827,18 @@ export default function FreelancerDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
               >
                 <i className="ri-bar-chart-line text-lg transition-transform group-hover:scale-110 sm:text-xl"></i>
-                <span className="text-sm sm:text-base">Gestionar Progreso</span>
+                <span className="text-sm sm:text-base">
+                  {t("dashboard.freelancer.modals.projectDetailsMyProjects.manageProgress")}
+                </span>
               </button>
               {selectedProjectForDetails.client?.id && (
                 <button
                   onClick={() => {
                     setShowProjectDetailsModal(false)
                     const clientId = selectedProjectForDetails.client!.id
-                    const clientName = selectedProjectForDetails.client!.full_name || "Cliente"
+                    const clientName =
+                      selectedProjectForDetails.client!.full_name ||
+                      t("dashboard.freelancer.client")
                     // For transaction projects, pass null as projectId since there's no real project record
                     // For regular projects, use the actual project ID
                     const projectId = selectedProjectForDetails._isFromTransaction
@@ -2917,7 +2849,9 @@ export default function FreelancerDashboardUI() {
                   className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-cyan-500 bg-white px-4 py-3 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white hover:shadow-lg hover:shadow-cyan-500/30 active:scale-95 sm:gap-3 sm:px-6 sm:py-4"
                 >
                   <i className="ri-chat-3-line text-lg transition-transform group-hover:scale-110 sm:text-xl"></i>
-                  <span className="text-sm sm:text-base">Contactar Cliente</span>
+                  <span className="text-sm sm:text-base">
+                    {t("dashboard.freelancer.modals.projectDetailsMyProjects.contactClient")}
+                  </span>
                 </button>
               )}
             </div>
@@ -2940,7 +2874,7 @@ export default function FreelancerDashboardUI() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
-                        Enviar Propuesta
+                        {t("dashboard.freelancer.modals.sendProposal.title")}
                       </h2>
                       <p className="mt-2 truncate text-xs text-cyan-100 sm:text-sm">
                         {selectedProject.title}
@@ -2959,7 +2893,7 @@ export default function FreelancerDashboardUI() {
                     })
                   }}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
+                  aria-label={t("dashboard.freelancer.modals.sendProposal.cancel")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -2976,7 +2910,7 @@ export default function FreelancerDashboardUI() {
               >
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Presupuesto Propuesto (USD)
+                    {t("dashboard.freelancer.modals.sendProposal.proposedBudget")}
                   </label>
                   <input
                     type="number"
@@ -2988,18 +2922,20 @@ export default function FreelancerDashboardUI() {
                       })
                     }
                     className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:px-4 sm:py-3 sm:text-base"
-                    placeholder="Ej: 500"
+                    placeholder={t("dashboard.freelancer.modals.sendProposal.budgetPlaceholder")}
                     required
                   />
                   <p className="mt-1 text-xs text-gray-500 sm:text-sm">
-                    Presupuesto del cliente: ${selectedProject.budget_min} - $
-                    {selectedProject.budget_max}
+                    {t("dashboard.freelancer.modals.sendProposal.clientBudget", {
+                      min: selectedProject.budget_min,
+                      max: selectedProject.budget_max,
+                    })}
                   </p>
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Tiempo de Entrega (días)
+                    {t("dashboard.freelancer.modals.sendProposal.deliveryTime")}
                   </label>
                   <input
                     type="number"
@@ -3011,14 +2947,16 @@ export default function FreelancerDashboardUI() {
                       })
                     }
                     className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:px-4 sm:py-3 sm:text-base"
-                    placeholder="Ej: 7"
+                    placeholder={t(
+                      "dashboard.freelancer.modals.sendProposal.deliveryTimePlaceholder",
+                    )}
                     required
                   />
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Carta de Presentación
+                    {t("dashboard.freelancer.modals.sendProposal.coverLetter")}
                   </label>
                   <textarea
                     value={proposalForm.message}
@@ -3030,7 +2968,9 @@ export default function FreelancerDashboardUI() {
                     }
                     rows={5}
                     className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:px-4 sm:py-3 sm:text-base"
-                    placeholder="Explica por qué eres el freelancer ideal para este proyecto..."
+                    placeholder={t(
+                      "dashboard.freelancer.modals.sendProposal.coverLetterPlaceholder",
+                    )}
                     required
                   />
                 </div>
@@ -3052,7 +2992,9 @@ export default function FreelancerDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 sm:gap-2 sm:px-6"
               >
                 <i className="ri-close-line"></i>
-                <span className="text-sm sm:text-base">Cancelar</span>
+                <span className="text-sm sm:text-base">
+                  {t("dashboard.freelancer.modals.sendProposal.cancel")}
+                </span>
               </button>
               <button
                 type="submit"
@@ -3060,7 +3002,9 @@ export default function FreelancerDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:gap-2 sm:px-6"
               >
                 <i className="ri-send-plane-fill text-lg transition-transform group-hover:translate-x-1"></i>
-                <span className="text-sm sm:text-base">Enviar Propuesta</span>
+                <span className="text-sm sm:text-base">
+                  {t("dashboard.freelancer.modals.sendProposal.send")}
+                </span>
               </button>
             </div>
           </div>
@@ -3100,10 +3044,10 @@ export default function FreelancerDashboardUI() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
-                        Editar Perfil
+                        {t("dashboard.freelancer.modals.editProfile.title")}
                       </h2>
                       <p className="mt-2 text-xs text-cyan-100 sm:text-sm">
-                        Actualiza tu información personal
+                        {t("dashboard.freelancer.profile.editProfile")}
                       </p>
                     </div>
                   </div>
@@ -3111,7 +3055,7 @@ export default function FreelancerDashboardUI() {
                 <button
                   onClick={() => setShowEditProfileModal(false)}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
+                  aria-label={t("dashboard.freelancer.modals.editProfile.cancel")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -3125,7 +3069,7 @@ export default function FreelancerDashboardUI() {
               >
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Nombre Completo
+                    {t("dashboard.freelancer.modals.editProfile.fullName")}
                   </label>
                   <input
                     type="text"
@@ -3135,13 +3079,13 @@ export default function FreelancerDashboardUI() {
                       setEditProfileForm({ ...editProfileForm, full_name: e.target.value })
                     }
                     className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:text-base"
-                    placeholder="Tu nombre completo"
+                    placeholder={t("dashboard.freelancer.modals.editProfile.fullNamePlaceholder")}
                   />
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Ubicación
+                    {t("dashboard.freelancer.modals.editProfile.location")}
                   </label>
                   <input
                     type="text"
@@ -3150,13 +3094,13 @@ export default function FreelancerDashboardUI() {
                       setEditProfileForm({ ...editProfileForm, location: e.target.value })
                     }
                     className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:text-base"
-                    placeholder="Ej: Ciudad, País"
+                    placeholder={t("dashboard.freelancer.modals.editProfile.locationPlaceholder")}
                   />
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Biografía
+                    {t("dashboard.freelancer.modals.editProfile.bio")}
                   </label>
                   <textarea
                     rows={4}
@@ -3165,14 +3109,14 @@ export default function FreelancerDashboardUI() {
                       setEditProfileForm({ ...editProfileForm, bio: e.target.value })
                     }
                     className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:text-base"
-                    placeholder="Describe tu perfil profesional..."
+                    placeholder={t("dashboard.freelancer.modals.editProfile.bioPlaceholder")}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                      Tarifa por Hora (USD)
+                      {t("dashboard.freelancer.modals.editProfile.hourlyRate")}
                     </label>
                     <input
                       type="number"
@@ -3183,13 +3127,15 @@ export default function FreelancerDashboardUI() {
                         setEditProfileForm({ ...editProfileForm, hourly_rate: e.target.value })
                       }
                       className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:text-base"
-                      placeholder="Ej: 25.00"
+                      placeholder={t(
+                        "dashboard.freelancer.modals.editProfile.hourlyRatePlaceholder",
+                      )}
                     />
                   </div>
 
                   <div>
                     <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                      Años de Experiencia
+                      {t("dashboard.freelancer.modals.editProfile.experienceYears")}
                     </label>
                     <input
                       type="number"
@@ -3199,14 +3145,16 @@ export default function FreelancerDashboardUI() {
                         setEditProfileForm({ ...editProfileForm, experience_years: e.target.value })
                       }
                       className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:text-base"
-                      placeholder="Ej: 5"
+                      placeholder={t(
+                        "dashboard.freelancer.modals.editProfile.experienceYearsPlaceholder",
+                      )}
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Habilidades
+                    {t("dashboard.freelancer.modals.editProfile.skills")}
                   </label>
                   <div className="mb-3 flex flex-wrap gap-1 sm:gap-2">
                     {editProfileForm.skills.map((skill) => (
@@ -3237,7 +3185,7 @@ export default function FreelancerDashboardUI() {
                         }
                       }}
                       className="focus:ring-primary focus:border-primary flex-1 rounded-l-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
-                      placeholder="Añadir habilidad (presiona Enter)"
+                      placeholder={t("dashboard.freelancer.modals.editProfile.skillsPlaceholder")}
                     />
                     <button
                       type="button"
@@ -3259,7 +3207,9 @@ export default function FreelancerDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100 sm:px-6"
               >
                 <i className="ri-close-line"></i>
-                <span className="text-sm sm:text-base">Cancelar</span>
+                <span className="text-sm sm:text-base">
+                  {t("dashboard.freelancer.modals.editProfile.cancel")}
+                </span>
               </button>
               <button
                 type="submit"
@@ -3268,7 +3218,9 @@ export default function FreelancerDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100 disabled:active:scale-100 sm:px-6"
               >
                 <span className="text-sm sm:text-base">
-                  {updatingProfile ? "Guardando..." : "Guardar Cambios"}
+                  {updatingProfile
+                    ? t("dashboard.freelancer.modals.editProfile.updating")
+                    : t("dashboard.freelancer.modals.editProfile.save")}
                 </span>
               </button>
             </div>

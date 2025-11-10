@@ -1,690 +1,675 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export default function TermsOfService() {
+  const { t, i18n } = useTranslation()
+  const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
-    document.title = "Términos de Servicio | GDN Pro"
+    setMounted(true)
+    document.title = t("terms.pageTitle")
     window.scrollTo(0, 0)
-  }, [])
+  }, [t])
+
+  // Use fallback language for initial render to match server
+  const currentLocale = mounted ? (i18n.language === "en" ? "en-US" : "es-ES") : "es-ES"
 
   return (
     <div className="min-h-screen bg-white">
       <div className="pt-24 pb-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Términos de Servicio
-            </h1>
+          <div className="mb-12 text-center">
+            <h1 className="mb-4 text-4xl font-bold text-gray-900">{t("terms.title")}</h1>
             <p className="text-lg text-gray-600">
-              Última actualización: {new Date().toLocaleDateString("es-ES")}
+              {t("terms.lastUpdated")}{" "}
+              {new Date().toLocaleDateString(currentLocale)}
             </p>
           </div>
 
           {/* Content */}
           <div className="prose prose-lg max-w-none">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-              <h2 className="text-xl font-semibold text-blue-900 mb-3">
+            <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-6">
+              <h2 className="mb-3 text-xl font-semibold text-blue-900">
                 <i className="ri-file-text-line mr-2"></i>
-                Acuerdo de Servicios
+                {t("terms.agreement.title")}
               </h2>
-              <p className="text-blue-800">
-                Al utilizar los servicios de GDN Pro, aceptas estos términos y
-                condiciones. Por favor, léelos cuidadosamente antes de utilizar
-                nuestros servicios.
-              </p>
+              <p className="text-blue-800">{t("terms.agreement.description")}</p>
             </div>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                1. Definiciones
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section1.title")}</h2>
 
-              <div className="bg-gray-50 rounded-lg p-6 mb-4">
+              <div className="mb-4 rounded-lg bg-gray-50 p-6">
                 <ul className="space-y-3">
                   <li>
-                    <strong>"GDN Pro", "nosotros", "nuestro":</strong> Se
-                    refiere a la empresa prestadora de servicios
+                    <strong>{t("terms.section1.definitions.gdnpro").split(":")[0]}:</strong>{" "}
+                    {t("terms.section1.definitions.gdnpro").split(":")[1]}
                   </li>
                   <li>
-                    <strong>"Cliente", "tú", "tu":</strong> Se refiere a la
-                    persona o entidad que contrata nuestros servicios
+                    <strong>{t("terms.section1.definitions.client").split(":")[0]}:</strong>{" "}
+                    {t("terms.section1.definitions.client").split(":")[1]}
                   </li>
                   <li>
-                    <strong>"Servicios":</strong> Desarrollo web, aplicaciones
-                    móviles, marketing digital y servicios relacionados
+                    <strong>{t("terms.section1.definitions.services").split(":")[0]}:</strong>{" "}
+                    {t("terms.section1.definitions.services").split(":")[1]}
                   </li>
                   <li>
-                    <strong>"Plataforma":</strong> Nuestro sitio web y
-                    herramientas digitales
+                    <strong>{t("terms.section1.definitions.platform").split(":")[0]}:</strong>{" "}
+                    {t("terms.section1.definitions.platform").split(":")[1]}
                   </li>
                   <li>
-                    <strong>"Proyecto":</strong> Trabajo específico acordado
-                    entre las partes
+                    <strong>{t("terms.section1.definitions.project").split(":")[0]}:</strong>{" "}
+                    {t("terms.section1.definitions.project").split(":")[1]}
                   </li>
                   <li>
-                    <strong>"Freelancer":</strong> Profesional independiente que
-                    forma parte de nuestra red
+                    <strong>{t("terms.section1.definitions.freelancer").split(":")[0]}:</strong>{" "}
+                    {t("terms.section1.definitions.freelancer").split(":")[1]}
                   </li>
                 </ul>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                2. Servicios Ofrecidos
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section2.title")}</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-green-800 mb-3">
+              <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="rounded-lg border border-green-200 bg-green-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-green-800">
                     <i className="ri-code-line mr-2"></i>
-                    Desarrollo Técnico
+                    {t("terms.section2.technical.title")}
                   </h3>
-                  <ul className="list-disc pl-6 space-y-1 text-green-800">
-                    <li>Sitios web responsivos</li>
-                    <li>Aplicaciones móviles</li>
-                    <li>E-commerce</li>
-                    <li>Sistemas web personalizados</li>
-                    <li>APIs y integraciones</li>
+                  <ul className="list-disc space-y-1 pl-6 text-green-800">
+                    {(t("terms.section2.technical.items", { returnObjects: true }) as string[]).map(
+                      (item, index) => (
+                        <li key={index}>{item}</li>
+                      ),
+                    )}
                   </ul>
                 </div>
 
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">
+                <div className="rounded-lg border border-purple-200 bg-purple-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-purple-800">
                     <i className="ri-megaphone-line mr-2"></i>
-                    Marketing Digital
+                    {t("terms.section2.marketing.title")}
                   </h3>
-                  <ul className="list-disc pl-6 space-y-1 text-purple-800">
-                    <li>Estrategias de marketing</li>
-                    <li>Gestión de redes sociales</li>
-                    <li>SEO y SEM</li>
-                    <li>Email marketing</li>
-                    <li>Análisis y reportes</li>
+                  <ul className="list-disc space-y-1 pl-6 text-purple-800">
+                    {(t("terms.section2.marketing.items", { returnObjects: true }) as string[]).map(
+                      (item, index) => (
+                        <li key={index}>{item}</li>
+                      ),
+                    )}
                   </ul>
                 </div>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-800 mb-3">
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-blue-800">
                   <i className="ri-team-line mr-2"></i>
-                  Red de Freelancers
+                  {t("terms.section2.freelancers.title")}
                 </h3>
-                <p className="text-blue-800">
-                  Conectamos clientes con freelancers especializados para
-                  proyectos específicos, actuando como intermediarios y
-                  garantizando la calidad del servicio.
-                </p>
+                <p className="text-blue-800">{t("terms.section2.freelancers.description")}</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                3. Proceso de Contratación
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section3.title")}</h2>
 
               <div className="space-y-4">
-                <div className="flex items-start space-x-4 bg-gray-50 rounded-lg p-4">
-                  <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">
+                <div className="flex items-start space-x-4 rounded-lg bg-gray-50 p-4">
+                  <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white">
                     1
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">
-                      Consulta Inicial
+                      {t("terms.section3.steps.1.title")}
                     </h3>
-                    <p className="text-gray-700">
-                      Análisis de requerimientos y propuesta inicial
-                    </p>
+                    <p className="text-gray-700">{t("terms.section3.steps.1.description")}</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 bg-gray-50 rounded-lg p-4">
-                  <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">
+                <div className="flex items-start space-x-4 rounded-lg bg-gray-50 p-4">
+                  <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white">
                     2
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">
-                      Cotización Detallada
+                      {t("terms.section3.steps.2.title")}
                     </h3>
-                    <p className="text-gray-700">
-                      Propuesta técnica, cronograma y presupuesto
-                    </p>
+                    <p className="text-gray-700">{t("terms.section3.steps.2.description")}</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 bg-gray-50 rounded-lg p-4">
-                  <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">
+                <div className="flex items-start space-x-4 rounded-lg bg-gray-50 p-4">
+                  <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white">
                     3
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">
-                      Contrato y Anticipo
+                      {t("terms.section3.steps.3.title")}
                     </h3>
-                    <p className="text-gray-700">
-                      Firma de contrato y pago inicial (30-50%)
-                    </p>
+                    <p className="text-gray-700">{t("terms.section3.steps.3.description")}</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 bg-gray-50 rounded-lg p-4">
-                  <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">
+                <div className="flex items-start space-x-4 rounded-lg bg-gray-50 p-4">
+                  <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white">
                     4
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">
-                      Desarrollo y Entrega
+                      {t("terms.section3.steps.4.title")}
                     </h3>
-                    <p className="text-gray-700">
-                      Ejecución del proyecto con entregas parciales
-                    </p>
+                    <p className="text-gray-700">{t("terms.section3.steps.4.description")}</p>
                   </div>
                 </div>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                4. Obligaciones del Cliente
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section4.title")}</h2>
 
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-yellow-800 mb-3">
+              <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-yellow-800">
                   <i className="ri-user-star-line mr-2"></i>
-                  Responsabilidades del Cliente
+                  {t("terms.section4.subtitle")}
                 </h3>
-                <ul className="list-disc pl-6 space-y-2 text-yellow-800">
+                <ul className="list-disc space-y-2 pl-6 text-yellow-800">
                   <li>
-                    <strong>Información completa:</strong> Proporcionar todos
-                    los datos necesarios para el proyecto
+                    <strong>{t("terms.section4.items.information").split(":")[0]}:</strong>{" "}
+                    {t("terms.section4.items.information").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Contenido:</strong> Suministrar textos, imágenes y
-                    materiales requeridos
+                    <strong>{t("terms.section4.items.content").split(":")[0]}:</strong>{" "}
+                    {t("terms.section4.items.content").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Feedback oportuno:</strong> Revisar y aprobar
-                    entregas en los tiempos acordados
+                    <strong>{t("terms.section4.items.feedback").split(":")[0]}:</strong>{" "}
+                    {t("terms.section4.items.feedback").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Pagos puntuales:</strong> Realizar pagos según el
-                    cronograma establecido
+                    <strong>{t("terms.section4.items.payments").split(":")[0]}:</strong>{" "}
+                    {t("terms.section4.items.payments").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Accesos necesarios:</strong> Proporcionar
-                    credenciales de hosting, dominios, etc.
+                    <strong>{t("terms.section4.items.access").split(":")[0]}:</strong>{" "}
+                    {t("terms.section4.items.access").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Comunicación:</strong> Mantener canales de
-                    comunicación abiertos
+                    <strong>{t("terms.section4.items.communication").split(":")[0]}:</strong>{" "}
+                    {t("terms.section4.items.communication").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Decisiones:</strong> Tomar decisiones de proyecto en
-                    tiempo y forma
+                    <strong>{t("terms.section4.items.decisions").split(":")[0]}:</strong>{" "}
+                    {t("terms.section4.items.decisions").split(":")[1]}
                   </li>
                 </ul>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                5. Obligaciones de GDN Pro
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section5.title")}</h2>
 
-              <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-green-800 mb-3">
+              <div className="rounded-lg border border-green-200 bg-green-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-green-800">
                   <i className="ri-shield-check-line mr-2"></i>
-                  Nuestros Compromisos
+                  {t("terms.section5.subtitle")}
                 </h3>
-                <ul className="list-disc pl-6 space-y-2 text-green-800">
+                <ul className="list-disc space-y-2 pl-6 text-green-800">
                   <li>
-                    <strong>Calidad profesional:</strong> Entregar trabajo de
-                    alta calidad técnica
+                    <strong>{t("terms.section5.items.quality").split(":")[0]}:</strong>{" "}
+                    {t("terms.section5.items.quality").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Cumplimiento de plazos:</strong> Respetar
-                    cronogramas acordados
+                    <strong>{t("terms.section5.items.deadlines").split(":")[0]}:</strong>{" "}
+                    {t("terms.section5.items.deadlines").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Comunicación regular:</strong> Mantener informado
-                    sobre el progreso
+                    <strong>{t("terms.section5.items.communication").split(":")[0]}:</strong>{" "}
+                    {t("terms.section5.items.communication").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Soporte técnico:</strong> Brindar asistencia durante
-                    el desarrollo
+                    <strong>{t("terms.section5.items.support").split(":")[0]}:</strong>{" "}
+                    {t("terms.section5.items.support").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Confidencialidad:</strong> Proteger información
-                    sensible del cliente
+                    <strong>{t("terms.section5.items.confidentiality").split(":")[0]}:</strong>{" "}
+                    {t("terms.section5.items.confidentiality").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Mejores prácticas:</strong> Aplicar estándares de la
-                    industria
+                    <strong>{t("terms.section5.items.practices").split(":")[0]}:</strong>{" "}
+                    {t("terms.section5.items.practices").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Documentación:</strong> Entregar documentación
-                    técnica necesaria
+                    <strong>{t("terms.section5.items.documentation").split(":")[0]}:</strong>{" "}
+                    {t("terms.section5.items.documentation").split(":")[1]}
                   </li>
                 </ul>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                6. Pagos y Facturación
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section6.title")}</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-3">
+              <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-blue-800">
                     <i className="ri-money-dollar-circle-line mr-2"></i>
-                    Estructura de Pagos
+                    {t("terms.section6.structure.title")}
                   </h3>
-                  <ul className="list-disc pl-6 space-y-2 text-blue-800">
+                  <ul className="list-disc space-y-2 pl-6 text-blue-800">
                     <li>
-                      <strong>Anticipo:</strong> 20-30% al firmar contrato
+                      <strong>{t("terms.section6.structure.items.advance").split(":")[0]}:</strong>{" "}
+                      {t("terms.section6.structure.items.advance").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Pagos parciales:</strong> Según hitos del proyecto
+                      <strong>{t("terms.section6.structure.items.partial").split(":")[0]}:</strong>{" "}
+                      {t("terms.section6.structure.items.partial").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Pago final:</strong> Al completar y entregar
+                      <strong>{t("terms.section6.structure.items.final").split(":")[0]}:</strong>{" "}
+                      {t("terms.section6.structure.items.final").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Moneda:</strong> Dollar (USD)
+                      <strong>{t("terms.section6.structure.items.currency").split(":")[0]}:</strong>{" "}
+                      {t("terms.section6.structure.items.currency").split(":")[1]}
                     </li>
                   </ul>
                 </div>
 
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-orange-800 mb-3">
+                <div className="rounded-lg border border-orange-200 bg-orange-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-orange-800">
                     <i className="ri-calendar-check-line mr-2"></i>
-                    Términos de Pago
+                    {t("terms.section6.paymentTerms.title")}
                   </h3>
-                  <ul className="list-disc pl-6 space-y-2 text-orange-800">
+                  <ul className="list-disc space-y-2 pl-6 text-orange-800">
                     <li>
-                      <strong>Plazo:</strong> 15 días naturales
+                      <strong>
+                        {t("terms.section6.paymentTerms.items.deadline").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section6.paymentTerms.items.deadline").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Métodos:</strong> Transferencia, tarjeta, Stripe
+                      <strong>
+                        {t("terms.section6.paymentTerms.items.methods").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section6.paymentTerms.items.methods").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Facturación:</strong> Con datos fiscales válidos
+                      <strong>
+                        {t("terms.section6.paymentTerms.items.billing").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section6.paymentTerms.items.billing").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Mora:</strong> 2% mensual por retraso
+                      <strong>{t("terms.section6.paymentTerms.items.late").split(":")[0]}:</strong>{" "}
+                      {t("terms.section6.paymentTerms.items.late").split(":")[1]}
                     </li>
                   </ul>
                 </div>
               </div>
 
-              <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-red-800 mb-3">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-red-800">
                   <i className="ri-alert-line mr-2"></i>
-                  Política de Pagos Atrasados
+                  {t("terms.section6.latePayment.title")}
                 </h3>
-                <p className="text-red-800 mb-3">
-                  En caso de retraso en pagos, nos reservamos el derecho a:
-                </p>
-                <ul className="list-disc pl-6 space-y-1 text-red-800">
-                  <li>Suspender el desarrollo del proyecto</li>
-                  <li>Aplicar intereses moratorios</li>
-                  <li>Retener entregables hasta regularizar pagos</li>
-                  <li>Cancelar el contrato por incumplimiento</li>
+                <p className="mb-3 text-red-800">{t("terms.section6.latePayment.description")}</p>
+                <ul className="list-disc space-y-1 pl-6 text-red-800">
+                  {(t("terms.section6.latePayment.items", { returnObjects: true }) as string[]).map(
+                    (item, index) => (
+                      <li key={index}>{item}</li>
+                    ),
+                  )}
                 </ul>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                7. Propiedad Intelectual
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section7.title")}</h2>
 
               <div className="space-y-6">
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">
+                <div className="rounded-lg border border-purple-200 bg-purple-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-purple-800">
                     <i className="ri-copyright-line mr-2"></i>
-                    Derechos del Cliente
+                    {t("terms.section7.clientRights.title")}
                   </h3>
-                  <p className="text-purple-800 mb-3">
-                    Una vez completado el pago total, el cliente obtiene:
+                  <p className="mb-3 text-purple-800">
+                    {t("terms.section7.clientRights.description")}
                   </p>
-                  <ul className="list-disc pl-6 space-y-1 text-purple-800">
-                    <li>Derechos de uso completo del código desarrollado</li>
-                    <li>Propiedad de contenidos y materiales proporcionados</li>
-                    <li>Licencia de uso de diseños personalizados</li>
-                    <li>Acceso a código fuente (cuando aplique)</li>
+                  <ul className="list-disc space-y-1 pl-6 text-purple-800">
+                    {(
+                      t("terms.section7.clientRights.items", { returnObjects: true }) as string[]
+                    ).map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
                   </ul>
                 </div>
 
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-gray-800">
                     <i className="ri-shield-line mr-2"></i>
-                    Derechos Reservados por GDN Pro
+                    {t("terms.section7.reservedRights.title")}
                   </h3>
-                  <ul className="list-disc pl-6 space-y-1 text-gray-700">
-                    <li>Metodologías y procesos de desarrollo</li>
-                    <li>Frameworks y librerías propietarias</li>
-                    <li>Conocimiento técnico y experiencia</li>
-                    <li>Derecho a mostrar el proyecto en portafolio</li>
+                  <ul className="list-disc space-y-1 pl-6 text-gray-700">
+                    {(
+                      t("terms.section7.reservedRights.items", { returnObjects: true }) as string[]
+                    ).map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
                   </ul>
                 </div>
 
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-yellow-800 mb-3">
+                <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-yellow-800">
                     <i className="ri-creative-commons-line mr-2"></i>
-                    Licencias de Terceros
+                    {t("terms.section7.thirdParty.title")}
                   </h3>
-                  <p className="text-yellow-800">
-                    Algunos componentes pueden estar sujetos a licencias de
-                    terceros. El cliente es responsable de cumplir con estas
-                    licencias en el uso del producto final.
-                  </p>
+                  <p className="text-yellow-800">{t("terms.section7.thirdParty.description")}</p>
                 </div>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                8. Garantías y Soporte
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section8.title")}</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-green-800 mb-3">
+              <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="rounded-lg border border-green-200 bg-green-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-green-800">
                     <i className="ri-shield-check-line mr-2"></i>
-                    Garantía de Calidad
+                    {t("terms.section8.quality.title")}
                   </h3>
-                  <ul className="list-disc pl-6 space-y-2 text-green-800">
+                  <ul className="list-disc space-y-2 pl-6 text-green-800">
                     <li>
-                      <strong>Funcionalidad:</strong> 90 días para bugs críticos
+                      <strong>
+                        {t("terms.section8.quality.items.functionality").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section8.quality.items.functionality").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Compatibilidad:</strong> Navegadores principales
+                      <strong>
+                        {t("terms.section8.quality.items.compatibility").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section8.quality.items.compatibility").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Rendimiento:</strong> Optimización básica incluida
+                      <strong>
+                        {t("terms.section8.quality.items.performance").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section8.quality.items.performance").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Seguridad:</strong> Mejores prácticas aplicadas
+                      <strong>{t("terms.section8.quality.items.security").split(":")[0]}:</strong>{" "}
+                      {t("terms.section8.quality.items.security").split(":")[1]}
                     </li>
                   </ul>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-3">
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-blue-800">
                     <i className="ri-customer-service-2-line mr-2"></i>
-                    Soporte Incluido
+                    {t("terms.section8.support.title")}
                   </h3>
-                  <ul className="list-disc pl-6 space-y-2 text-blue-800">
+                  <ul className="list-disc space-y-2 pl-6 text-blue-800">
                     <li>
-                      <strong>Duración:</strong> 30 días post-entrega
+                      <strong>{t("terms.section8.support.items.duration").split(":")[0]}:</strong>{" "}
+                      {t("terms.section8.support.items.duration").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Alcance:</strong> Corrección de errores
+                      <strong>{t("terms.section8.support.items.scope").split(":")[0]}:</strong>{" "}
+                      {t("terms.section8.support.items.scope").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Horario:</strong> Lun - Sab: 9:00 AM - 8:00 PM
+                      <strong>{t("terms.section8.support.items.schedule").split(":")[0]}:</strong>{" "}
+                      {t("terms.section8.support.items.schedule").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Respuesta:</strong> 24-48 horas
+                      <strong>{t("terms.section8.support.items.response").split(":")[0]}:</strong>{" "}
+                      {t("terms.section8.support.items.response").split(":")[1]}
                     </li>
                   </ul>
                 </div>
               </div>
 
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-orange-800 mb-3">
+              <div className="rounded-lg border border-orange-200 bg-orange-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-orange-800">
                   <i className="ri-tools-line mr-2"></i>
-                  Mantenimiento Adicional
+                  {t("terms.section8.maintenance.title")}
                 </h3>
-                <p className="text-orange-800">
-                  El mantenimiento continuo, actualizaciones de contenido y
-                  nuevas funcionalidades están disponibles bajo contratos
-                  separados con tarifas preferenciales.
-                </p>
+                <p className="text-orange-800">{t("terms.section8.maintenance.description")}</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                9. Limitaciones y Exclusiones
-              </h2>
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">{t("terms.section9.title")}</h2>
 
-              <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-4">
-                <h3 className="text-lg font-semibold text-red-800 mb-3">
+              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-red-800">
                   <i className="ri-error-warning-line mr-2"></i>
-                  Limitaciones de Responsabilidad
+                  {t("terms.section9.limitations.title")}
                 </h3>
-                <ul className="list-disc pl-6 space-y-2 text-red-800">
-                  <li>
-                    No somos responsables por pérdidas de datos del cliente
-                  </li>
-                  <li>No garantizamos resultados específicos de marketing</li>
-                  <li>
-                    No nos hacemos responsables por contenido proporcionado por
-                    el cliente
-                  </li>
-                  <li>
-                    Nuestra responsabilidad se limita al monto pagado por el
-                    proyecto
-                  </li>
-                  <li>No cubrimos daños indirectos o lucro cesante</li>
+                <ul className="list-disc space-y-2 pl-6 text-red-800">
+                  {(t("terms.section9.limitations.items", { returnObjects: true }) as string[]).map(
+                    (item, index) => (
+                      <li key={index}>{item}</li>
+                    ),
+                  )}
                 </ul>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-gray-800">
                   <i className="ri-information-line mr-2"></i>
-                  Exclusiones de Garantía
+                  {t("terms.section9.exclusions.title")}
                 </h3>
-                <p className="text-gray-700 mb-3">No garantizamos:</p>
-                <ul className="list-disc pl-6 space-y-1 text-gray-700">
-                  <li>Funcionamiento en navegadores obsoletos</li>
-                  <li>Compatibilidad con modificaciones no autorizadas</li>
-                  <li>Rendimiento en hosting inadecuado</li>
-                  <li>Problemas causados por terceros</li>
+                <p className="mb-3 text-gray-700">{t("terms.section9.exclusions.description")}</p>
+                <ul className="list-disc space-y-1 pl-6 text-gray-700">
+                  {(t("terms.section9.exclusions.items", { returnObjects: true }) as string[]).map(
+                    (item, index) => (
+                      <li key={index}>{item}</li>
+                    ),
+                  )}
                 </ul>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                10. Cancelación y Terminación
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                {t("terms.section10.title")}
               </h2>
 
               <div className="space-y-6">
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-yellow-800 mb-3">
+                <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-yellow-800">
                     <i className="ri-close-circle-line mr-2"></i>
-                    Cancelación por el Cliente
+                    {t("terms.section10.clientCancellation.title")}
                   </h3>
-                  <ul className="list-disc pl-6 space-y-2 text-yellow-800">
+                  <ul className="list-disc space-y-2 pl-6 text-yellow-800">
                     <li>
-                      <strong>Antes del inicio:</strong> Reembolso del 90% del
-                      anticipo
+                      <strong>
+                        {t("terms.section10.clientCancellation.items.before").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section10.clientCancellation.items.before").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Durante desarrollo:</strong> Pago por trabajo
-                      completado
+                      <strong>
+                        {t("terms.section10.clientCancellation.items.during").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section10.clientCancellation.items.during").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Entrega de avances:</strong> Según porcentaje de
-                      avance
+                      <strong>
+                        {t("terms.section10.clientCancellation.items.partial").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section10.clientCancellation.items.partial").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Penalización:</strong> 20% por cancelación sin
-                      causa justificada
+                      <strong>
+                        {t("terms.section10.clientCancellation.items.penalty").split(":")[0]}:
+                      </strong>{" "}
+                      {t("terms.section10.clientCancellation.items.penalty").split(":")[1]}
                     </li>
                   </ul>
                 </div>
 
-                <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-red-800 mb-3">
+                <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-red-800">
                     <i className="ri-alert-line mr-2"></i>
-                    Terminación por Incumplimiento
+                    {t("terms.section10.termination.title")}
                   </h3>
-                  <p className="text-red-800 mb-3">
-                    Podemos terminar el contrato inmediatamente si:
+                  <p className="mb-3 text-red-800">
+                    {t("terms.section10.termination.description")}
                   </p>
-                  <ul className="list-disc pl-6 space-y-1 text-red-800">
-                    <li>El cliente no realiza pagos acordados</li>
-                    <li>No proporciona información necesaria</li>
-                    <li>Solicita actividades ilegales o no éticas</li>
-                    <li>Incumple términos del contrato</li>
+                  <ul className="list-disc space-y-1 pl-6 text-red-800">
+                    {(
+                      t("terms.section10.termination.items", { returnObjects: true }) as string[]
+                    ).map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                11. Confidencialidad
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                {t("terms.section11.title")}
               </h2>
 
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-purple-800 mb-3">
+              <div className="rounded-lg border border-purple-200 bg-purple-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-purple-800">
                   <i className="ri-lock-line mr-2"></i>
-                  Compromiso de Confidencialidad
+                  {t("terms.section11.subtitle")}
                 </h3>
-                <p className="text-purple-800 mb-3">
-                  Nos comprometemos a mantener la confidencialidad de:
-                </p>
-                <ul className="list-disc pl-6 space-y-2 text-purple-800">
-                  <li>Información comercial y estratégica del cliente</li>
-                  <li>Datos técnicos y de sistemas</li>
-                  <li>Información financiera y operativa</li>
-                  <li>Cualquier información marcada como confidencial</li>
-                  <li>Datos personales según nuestra política de privacidad</li>
+                <p className="mb-3 text-purple-800">{t("terms.section11.description")}</p>
+                <ul className="list-disc space-y-2 pl-6 text-purple-800">
+                  {(t("terms.section11.items", { returnObjects: true }) as string[]).map(
+                    (item, index) => (
+                      <li key={index}>{item}</li>
+                    ),
+                  )}
                 </ul>
 
-                <p className="text-purple-800 mt-4">
-                  <strong>Duración:</strong> Esta obligación permanece vigente
-                  durante y después de la relación comercial, sin límite de
-                  tiempo.
+                <p className="mt-4 text-purple-800">
+                  <strong>{t("terms.section11.duration")}</strong>
                 </p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                12. Resolución de Disputas
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                {t("terms.section12.title")}
               </h2>
 
               <div className="space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-3">
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-blue-800">
                     <i className="ri-discuss-line mr-2"></i>
-                    Proceso de Resolución
+                    {t("terms.section12.process.title")}
                   </h3>
-                  <ol className="list-decimal pl-6 space-y-2 text-blue-800">
+                  <ol className="list-decimal space-y-2 pl-6 text-blue-800">
                     <li>
-                      <strong>Negociación directa:</strong> Intentar resolver
-                      amigablemente
+                      <strong>{t("terms.section12.process.steps.1").split(":")[0]}:</strong>{" "}
+                      {t("terms.section12.process.steps.1").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Mediación:</strong> Recurrir a mediador neutral
+                      <strong>{t("terms.section12.process.steps.2").split(":")[0]}:</strong>{" "}
+                      {t("terms.section12.process.steps.2").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Arbitraje:</strong> Proceso arbitral vinculante
+                      <strong>{t("terms.section12.process.steps.3").split(":")[0]}:</strong>{" "}
+                      {t("terms.section12.process.steps.3").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Jurisdicción:</strong> Tribunales de la Ciudad
-                      correspondiente
+                      <strong>{t("terms.section12.process.steps.4").split(":")[0]}:</strong>{" "}
+                      {t("terms.section12.process.steps.4").split(":")[1]}
                     </li>
                   </ol>
                 </div>
 
-                <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-green-800 mb-3">
+                <div className="rounded-lg border border-green-200 bg-green-50 p-6">
+                  <h3 className="mb-3 text-lg font-semibold text-green-800">
                     <i className="ri-scales-line mr-2"></i>
-                    Ley Aplicable
+                    {t("terms.section12.law.title")}
                   </h3>
-                  <p className="text-green-800">
-                    Estos términos se rigen por las leyes que corresponde.
-                    Cualquier disputa será resuelta en los tribunales
-                    competentes.
-                  </p>
+                  <p className="text-green-800">{t("terms.section12.law.description")}</p>
                 </div>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                13. Modificaciones
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                {t("terms.section13.title")}
               </h2>
 
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-orange-800 mb-3">
+              <div className="rounded-lg border border-orange-200 bg-orange-50 p-6">
+                <h3 className="mb-3 text-lg font-semibold text-orange-800">
                   <i className="ri-edit-line mr-2"></i>
-                  Cambios en los Términos
+                  {t("terms.section13.subtitle")}
                 </h3>
-                <p className="text-orange-800 mb-3">
-                  Nos reservamos el derecho de modificar estos términos. Los
-                  cambios serán notificados:
-                </p>
-                <ul className="list-disc pl-6 space-y-1 text-orange-800">
-                  <li>Por email a clientes activos</li>
-                  <li>Mediante aviso en nuestro sitio web</li>
-                  <li>Con 30 días de anticipación mínimo</li>
+                <p className="mb-3 text-orange-800">{t("terms.section13.description")}</p>
+                <ul className="list-disc space-y-1 pl-6 text-orange-800">
+                  {(t("terms.section13.items", { returnObjects: true }) as string[]).map(
+                    (item, index) => (
+                      <li key={index}>{item}</li>
+                    ),
+                  )}
                 </ul>
-                <p className="text-orange-800 mt-3">
-                  <strong>
-                    El uso continuado de nuestros servicios constituye
-                    aceptación de los nuevos términos.
-                  </strong>
+                <p className="mt-3 text-orange-800">
+                  <strong>{t("terms.section13.acceptance")}</strong>
                 </p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                14. Contacto
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                {t("terms.section14.title")}
               </h2>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-800 mb-4">
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+                <h3 className="mb-4 text-lg font-semibold text-blue-800">
                   <i className="ri-customer-service-2-line mr-2"></i>
-                  Información de Contacto
+                  {t("terms.section14.subtitle")}
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <h4 className="font-semibold text-blue-800 mb-2">
-                      Datos Generales
+                    <h4 className="mb-2 font-semibold text-blue-800">
+                      {t("terms.section14.general.title")}
                     </h4>
                     <ul className="space-y-2 text-cyan-700">
                       <li>
                         <i className="ri-building-line mr-2"></i>
-                        <strong>Empresa:</strong> GDN Pro
+                        <strong>{t("terms.section14.general.company")}</strong> GDN Pro
                       </li>
                       <li>
                         <i className="ri-mail-line mr-2"></i>
-                        <strong>Email:</strong> contact@gdnpro.com
+                        <strong>{t("terms.section14.general.email")}</strong> contact@gdnpro.com
                       </li>
                       <li>
                         <i className="ri-map-pin-line mr-2"></i>
-                        <strong>Dirección:</strong> Sede central: Newark, DE
-                        (EE. UU.) — Próximamente se traslada a Tallin, Estonia
-                        (UE)
+                        <strong>{t("terms.section14.general.address")}</strong>{" "}
+                        {t("terms.section14.general.addressValue")}
                       </li>
                     </ul>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-blue-800 mb-2">
-                      Datos Fiscales
+                    <h4 className="mb-2 font-semibold text-blue-800">
+                      {t("terms.section14.fiscal.title")}
                     </h4>
                     <ul className="space-y-2 text-cyan-700">
                       <li>
                         <i className="ri-bank-line mr-2"></i>
-                        <strong>Régimen:</strong> LLC (Delaware, EE. UU.) —
-                        Próximamente OÜ (Private Limited Company) en Estonia
-                        (UE)
+                        <strong>{t("terms.section14.fiscal.regime")}</strong>{" "}
+                        {t("terms.section14.fiscal.regimeValue")}
                       </li>
                       <li>
                         <i className="ri-time-line mr-2"></i>
-                        <strong>Horario:</strong> Lun - Sab: 9:00 AM - 8:00 PM
+                        <strong>{t("terms.section14.fiscal.schedule")}</strong>{" "}
+                        {t("terms.section14.fiscal.scheduleValue")}
                       </li>
                     </ul>
                   </div>
@@ -693,18 +678,16 @@ export default function TermsOfService() {
             </section>
 
             {/* Footer Legal */}
-            <div className="border-t border-gray-200 pt-8 mt-12">
-              <div className="bg-gray-50 rounded-lg p-6">
-                <p className="text-sm text-gray-600 text-center mb-2">
-                  Estos Términos de Servicio constituyen un acuerdo legal
-                  vinculante entre el cliente y GDN Pro para la prestación de
-                  servicios de desarrollo digital.
+            <div className="mt-12 border-t border-gray-200 pt-8">
+              <div className="rounded-lg bg-gray-50 p-6">
+                <p className="mb-2 text-center text-sm text-gray-600">
+                  {t("terms.footer.compliance")}
                 </p>
-                <p className="text-xs text-gray-500 text-center">
-                  Última actualización: {new Date().toLocaleDateString("es-ES")}{" "}
-                  | Versión 1.0 | Vigente desde:{" "}
-                  {new Date().toLocaleDateString("es-ES")}
-                </p>
+                 <p className="text-center text-xs text-gray-500">
+                   {t("terms.footer.lastUpdated")}{" "}
+                   {new Date().toLocaleDateString(currentLocale)} | {t("terms.footer.version")} |{" "}
+                   {t("terms.footer.validFrom")} {new Date().toLocaleDateString(currentLocale)}
+                 </p>
               </div>
             </div>
           </div>

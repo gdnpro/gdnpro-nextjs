@@ -1,6 +1,9 @@
 "use client"
 
+import { useTranslation } from "react-i18next"
+
 export default function WorksHero() {
+  const { t } = useTranslation()
   const scrollToSearch = () => {
     const element = document.getElementById("works-search")
     if (element) {
@@ -24,12 +27,11 @@ export default function WorksHero() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 text-center text-white">
         <h1 className="mb-8 text-5xl leading-tight font-bold md:text-7xl">
-          Encuentra Proyectos
-          <span className="block text-cyan-400">Que Te Inspiren</span>
+          {t("works.hero.title")}
+          <span className="block text-cyan-400">{t("works.hero.titleHighlight")}</span>
         </h1>
         <p className="mx-auto mb-12 max-w-4xl text-xl leading-relaxed md:text-2xl">
-          Descubre oportunidades de trabajo que se ajusten a tus habilidades y experiencia. Conecta
-          con clientes verificados y crece tu carrera como freelancer
+          {t("works.hero.description")}
         </p>
 
         <div className="flex flex-col justify-center gap-6 sm:flex-row">
@@ -38,14 +40,14 @@ export default function WorksHero() {
             className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-12 py-5 text-xl font-bold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/40"
           >
             <i className="ri-search-line text-2xl transition-transform group-hover:scale-110"></i>
-            Explorar Proyectos
+            {t("works.hero.exploreProjects")}
           </button>
           <a
             href="/dashboard"
             className="group inline-flex cursor-pointer items-center gap-2 rounded-full border-2 border-white bg-white/10 px-12 py-5 text-xl font-bold whitespace-nowrap text-white backdrop-blur-sm transition-all hover:scale-105 hover:bg-white hover:text-gray-900"
           >
             <i className="ri-dashboard-line text-2xl transition-transform group-hover:scale-110"></i>
-            Ver Mi Dashboard
+            {t("works.hero.viewDashboard")}
           </a>
         </div>
       </div>

@@ -1,6 +1,10 @@
+"use client"
+
 import { gdnStats } from "@/constants/currentData"
+import { useTranslation } from "react-i18next"
 
 const Hero = () => {
+  const { t } = useTranslation()
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-16">
       {/* Background Image */}
@@ -24,30 +28,29 @@ const Hero = () => {
           <div className="space-y-6 sm:space-y-8 text-white">
             <div className="space-y-4 sm:space-y-6">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight font-bold">
-                Transformamos
+                {t("hero.title")}
                 <span className="block bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                  Ideas en Realidad
+                  {t("hero.titleHighlight")}
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-blue-100">
-                En <span className="font-semibold text-white">GDN PRO</span> creamos soluciones
-                digitales innovadoras. Desarrollo web, apps móviles y marketing digital de clase
-                mundial.
-              </p>
+              <p
+                className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-blue-100"
+                dangerouslySetInnerHTML={{ __html: t("hero.description") }}
+              />
 
               <div className="flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm text-blue-200">
                 <div className="flex items-center gap-2">
                   <i className="ri-check-line text-green-400 text-sm sm:text-base"></i>
-                  <span>+19 Proyectos Completados</span>
+                  <span>{t("hero.stats.completedProjects")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <i className="ri-check-line text-green-400 text-sm sm:text-base"></i>
-                  <span>Equipo de Expertos</span>
+                  <span>{t("hero.stats.expertTeam")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <i className="ri-check-line text-green-400 text-sm sm:text-base"></i>
-                  <span>Soporte 24/7</span>
+                  <span>{t("hero.stats.support247")}</span>
                 </div>
               </div>
             </div>
@@ -58,7 +61,7 @@ const Hero = () => {
                 href="#portfolio"
                 className="w-full sm:w-auto transform cursor-pointer rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-center whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-emerald-700 hover:to-emerald-600 hover:shadow-xl active:scale-95 touch-manipulation min-h-[44px] flex items-center justify-center"
               >
-                Ver Portafolio
+                {t("hero.cta.viewPortfolio")}
                 <i className="ri-arrow-right-line ml-2"></i>
               </a>
 
@@ -66,7 +69,7 @@ const Hero = () => {
                 href="#contact"
                 className="w-full sm:w-auto cursor-pointer rounded-lg border border-white/30 bg-white/10 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-center whitespace-nowrap text-white backdrop-blur-sm transition-all hover:bg-white/20 active:bg-white/30 touch-manipulation min-h-[44px] flex items-center justify-center"
               >
-                Contactar Ahora
+                {t("hero.cta.contactNow")}
                 <i className="ri-phone-line ml-2"></i>
               </a>
 
@@ -74,7 +77,7 @@ const Hero = () => {
                 href="/freelancers"
                 className="w-full sm:w-auto transform cursor-pointer rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-center whitespace-nowrap text-white shadow-lg transition-all hover:scale-105 hover:from-cyan-700 hover:to-cyan-600 hover:shadow-xl active:scale-95 touch-manipulation min-h-[44px] flex items-center justify-center"
               >
-                Ver Freelancers
+                {t("hero.cta.viewFreelancers")}
                 <i className="ri-team-line ml-2"></i>
               </a>
             </div>
@@ -86,21 +89,21 @@ const Hero = () => {
                   <i className="ri-briefcase-line text-sm sm:text-lg text-white"></i>
                 </div>
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">+{gdnStats.completedProjects}</div>
-                <div className="text-xs sm:text-sm text-blue-200">Proyectos</div>
+                <div className="text-xs sm:text-sm text-blue-200">{t("hero.stats.projects")}</div>
               </div>
               <div className="group text-center transition-all hover:scale-105">
                 <div className="mb-2 inline-flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
                   <i className="ri-team-line text-sm sm:text-lg text-white"></i>
                 </div>
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">+{gdnStats.satisfiedClients}</div>
-                <div className="text-xs sm:text-sm text-blue-200">Clientes</div>
+                <div className="text-xs sm:text-sm text-blue-200">{t("hero.stats.clients")}</div>
               </div>
               <div className="group text-center transition-all hover:scale-105">
                 <div className="mb-2 inline-flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
                   <i className="ri-star-fill text-sm sm:text-lg text-yellow-300"></i>
                 </div>
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">5★</div>
-                <div className="text-xs sm:text-sm text-blue-200">Calificación</div>
+                <div className="text-xs sm:text-sm text-blue-200">{t("hero.stats.rating")}</div>
               </div>
             </div>
           </div>

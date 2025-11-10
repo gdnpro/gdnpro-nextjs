@@ -20,10 +20,12 @@ import { ProjectArticle } from "@/components/dashboard/ProjectArticle"
 import { ProposalArticle } from "@/components/dashboard/ProposalArticle"
 import { supabaseBrowser } from "@/utils/supabase/client"
 import { ConversationCard } from "@/components/dashboard/ConversationCard"
+import { useTranslation } from "react-i18next"
 
 const supabase = supabaseBrowser()
 
 export default function ClientDashboardUI() {
+  const { t, i18n } = useTranslation()
   const { profile: user, loading, refreshAuth } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -102,7 +104,7 @@ export default function ClientDashboardUI() {
   ]
 
   useEffect(() => {
-    document.title = "Cliente Dashboard | GDN Pro"
+    document.title = t("dashboard.client.pageTitle")
     window.scrollTo(0, 0)
 
     if (getValue("last_tab")) {
@@ -111,7 +113,7 @@ export default function ClientDashboardUI() {
       setActiveTab("projects")
       setValue("last_tab", "projects")
     }
-  }, [])
+  }, [t])
 
   useEffect(() => {
     if (!user && !loading) {
@@ -235,10 +237,10 @@ export default function ClientDashboardUI() {
 
               return {
                 id: `transaction-${transaction.id}`,
-                title: transaction.project_title || "Proyecto Contratado",
+                title: transaction.project_title || t("dashboard.client.projects.directContract"),
                 description:
                   transaction.project_description ||
-                  "Proyecto contratado directamente al freelancer",
+                  t("dashboard.client.projects.directContractDesc"),
                 budget_min: Number(transaction.amount),
                 budget_max: Number(transaction.amount),
                 budget: Number(transaction.amount), // Para mostrar precio único
@@ -246,14 +248,14 @@ export default function ClientDashboardUI() {
                 payment_status: transaction.status, // 'paid' o 'pending'
                 created_at:
                   transaction.created_at || transaction.paid_at || new Date().toISOString(),
-                project_type: "Contrato Directo",
+                project_type: t("dashboard.client.projects.directContractType"),
                 required_skills: [], // Proyectos pagados no tienen habilidades específicas
                 deadline: null,
                 proposals: [], // Proyectos pagados no tienen propuestas
                 // Información del freelancer cargada correctamente
                 freelancer: {
                   id: freelancerInfo.id,
-                  full_name: freelancerInfo.full_name || "Freelancer",
+                  full_name: freelancerInfo.full_name || t("common.freelancer"),
                   email: freelancerInfo.email || "",
                   rating: freelancerInfo.rating || 5.0,
                   avatar_url: freelancerInfo.avatar_url || "",
@@ -1047,17 +1049,17 @@ export default function ClientDashboardUI() {
   const tabsOptions = [
     {
       value: "projects",
-      label: "Mis Proyectos",
+      label: t("dashboard.client.tabs.projects"),
       count: projects.length,
     },
     {
       value: "messages",
-      label: "Mensajes",
+      label: t("dashboard.client.tabs.messages"),
       count: conversations.length,
     },
     {
       value: "reviews",
-      label: "Reseñas",
+      label: t("dashboard.client.tabs.reviews"),
       count: pendingReviewsCount,
       hasBadge: true,
       onSelect: () => {
@@ -1067,11 +1069,12 @@ export default function ClientDashboardUI() {
     },
     {
       value: "user",
-      label: "Mi Perfil",
+      label: t("dashboard.client.tabs.profile"),
+      count: pendingReviewsCount,
     },
     {
       value: "payments",
-      label: "Pagos",
+      label: t("dashboard.client.tabs.payments"),
       hasIcon: true,
     },
   ]
@@ -1088,9 +1091,9 @@ export default function ClientDashboardUI() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                  ¡Hola, {user?.full_name}!
+                  {t("dashboard.client.greeting").replace("{name}", user?.full_name || "")}
                 </h1>
-                <p className="text-sm text-gray-600 sm:text-base">Cliente Dashboard</p>
+                <p className="text-sm text-gray-600 sm:text-base">{t("dashboard.client.title")}</p>
               </div>
             </div>
             <button
@@ -1098,7 +1101,7 @@ export default function ClientDashboardUI() {
               className="bg-primary w-full cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-6 sm:py-3 sm:text-base"
             >
               <i className="ri-add-line mr-2"></i>
-              Nuevo Proyecto
+              {t("dashboard.client.projects.createProject")}
             </button>
           </div>
         </div>
@@ -1112,7 +1115,9 @@ export default function ClientDashboardUI() {
               </div>
               <div>
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">{projects.length}</p>
-                <p className="text-xs text-gray-600 sm:text-sm">Proyectos</p>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  {t("dashboard.client.stats.activeProjects")}
+                </p>
               </div>
             </div>
           </div>
@@ -1126,7 +1131,9 @@ export default function ClientDashboardUI() {
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                   {projects.filter((p) => p.status === "completed").length}
                 </p>
-                <p className="text-xs text-gray-600 sm:text-sm">Completados</p>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  {t("dashboard.client.stats.completedProjects")}
+                </p>
               </div>
             </div>
           </div>
@@ -1140,7 +1147,9 @@ export default function ClientDashboardUI() {
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                   {projects.filter((p) => p.status === "open").length}
                 </p>
-                <p className="text-xs text-gray-600 sm:text-sm">Activos</p>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  {t("dashboard.client.stats.pendingProposals")}
+                </p>
               </div>
             </div>
           </div>
@@ -1154,7 +1163,9 @@ export default function ClientDashboardUI() {
                 <p className="text-lg font-bold text-gray-900 sm:text-2xl">
                   {conversations.length}
                 </p>
-                <p className="text-xs text-gray-600 sm:text-sm">Conversaciones</p>
+                <p className="text-xs text-gray-600 sm:text-sm">
+                  {t("dashboard.client.stats.messages")}
+                </p>
               </div>
             </div>
           </div>
@@ -1217,7 +1228,9 @@ export default function ClientDashboardUI() {
             {activeTab === "projects" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-                  <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">Mis Proyectos</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
+                    {t("dashboard.client.projects.title")}
+                  </h2>
                   <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
                     {/* NUEVO: Botón de Matching Inteligente */}
                     <button
@@ -1299,7 +1312,7 @@ export default function ClientDashboardUI() {
                       className="bg-primary w-full cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-6 sm:py-3 sm:text-base"
                     >
                       <i className="ri-add-line mr-2"></i>
-                      Crear Proyecto
+                      {t("dashboard.client.projects.createProject")}
                     </button>
                   </div>
                 </div>
@@ -1324,61 +1337,67 @@ export default function ClientDashboardUI() {
                     <div className="rounded-lg bg-white p-4 shadow-sm">
                       <div className="text-primary mb-2 flex items-center">
                         <i className="ri-brain-line mr-2 text-xl"></i>
-                        <span className="font-semibold">Análisis IA</span>
+                        <span className="font-semibold">
+                          {t("dashboard.client.analytics.aiAnalysis")}
+                        </span>
                       </div>
                       <p className="text-xs text-gray-600">
-                        Algoritmo avanzado que analiza compatibilidad de habilidades, presupuesto y
-                        experiencia
+                        {t("dashboard.client.analytics.aiAnalysisDesc")}
                       </p>
                     </div>
 
                     <div className="rounded-lg bg-white p-4 shadow-sm">
                       <div className="text-primary mb-2 flex items-center">
                         <i className="ri-target-line mr-2 text-xl"></i>
-                        <span className="font-semibold">Matching Preciso</span>
+                        <span className="font-semibold">
+                          {t("dashboard.client.analytics.preciseMatching")}
+                        </span>
                       </div>
                       <p className="text-xs text-gray-600">
-                        Encuentra los Top 10 freelancers más compatibles con tus proyectos
-                        específicos
+                        {t("dashboard.client.analytics.preciseMatchingDesc")}
                       </p>
                     </div>
 
                     <div className="rounded-lg bg-white p-4 shadow-sm">
                       <div className="mb-2 flex items-center text-cyan-600">
                         <i className="ri-award-line mr-2 text-xl"></i>
-                        <span className="font-semibold">Predicción Éxito</span>
+                        <span className="font-semibold">
+                          {t("dashboard.client.analytics.successPrediction")}
+                        </span>
                       </div>
                       <p className="text-xs text-gray-600">
-                        Calcula la probabilidad de éxito de cada colaboración potencial
+                        {t("dashboard.client.analytics.successPredictionDesc")}
                       </p>
                     </div>
                   </div>
 
                   <div className="rounded-lg border border-purple-200 bg-white p-4">
                     <h4 className="mb-2 font-medium text-gray-900">
-                      ¿Cómo Funciona el Matching Inteligente?
+                      {t("dashboard.client.analytics.howItWorks")}
                     </h4>
                     <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                       <div className="flex items-start">
                         <i className="ri-check-line text-primary mt-0.5 mr-2"></i>
                         <span className="text-gray-700">
-                          Analiza tus proyectos activos y requisitos
+                          {t("dashboard.client.analytics.analyzeProjects")}
                         </span>
                       </div>
                       <div className="flex items-start">
                         <i className="ri-check-line text-primary mt-0.5 mr-2"></i>
                         <span className="text-gray-700">
-                          Evalúa freelancers por habilidades y experiencia
+                          {t("dashboard.client.analytics.evaluateFreelancers")}
                         </span>
                       </div>
                       <div className="flex items-start">
                         <i className="ri-check-line text-primary mt-0.5 mr-2"></i>
-                        <span className="text-gray-700">Calcula compatibilidad de presupuesto</span>
+                        <span className="text-gray-700">
+                          {t("dashboard.client.analytics.calculateBudget")}
+                        </span>
                       </div>
                       <div className="flex items-start">
                         <i className="ri-check-line text-primary mt-0.5 mr-2"></i>
                         <span className="text-gray-700">
-                          Predice probabilidad de éxito del proyecto
+                          {t("dashboard.client.analytics.predictSuccess")}
                         </span>
                       </div>
                     </div>
@@ -1421,14 +1440,14 @@ export default function ClientDashboardUI() {
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <h2 className="text-base font-semibold text-gray-900 sm:text-lg sm:text-xl">
-                    Mis Conversaciones
+                    {t("dashboard.client.messages.title")}
                   </h2>
                   <button
                     onClick={loadConversations}
                     className="bg-primary flex w-full cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-cyan-700 active:scale-95 sm:w-auto sm:px-4 sm:text-sm"
                   >
                     <i className="ri-refresh-line"></i>
-                    <span>Actualizar</span>
+                    <span>{t("common.refresh")}</span>
                   </button>
                 </div>
 
@@ -1447,11 +1466,10 @@ export default function ClientDashboardUI() {
                   <div className="py-8 text-center sm:py-12">
                     <i className="ri-chat-3-line mb-3 text-4xl text-gray-400 sm:mb-4 sm:text-6xl"></i>
                     <h3 className="mb-2 text-base font-medium text-gray-900 sm:text-lg">
-                      No tienes conversaciones aún
+                      {t("dashboard.client.messages.noMessages")}
                     </h3>
                     <p className="px-4 text-sm text-gray-600 sm:text-base">
-                      Las conversaciones con freelancers aparecerán aquí cuando contactes
-                      freelancers desde la página principal.
+                      {t("dashboard.client.messages.noMessagesDesc")}
                     </p>
                   </div>
                 )}
@@ -1472,7 +1490,7 @@ export default function ClientDashboardUI() {
                     <p className="text-sm text-gray-600 sm:text-base">{user?.email}</p>
                     <div className="mt-2 flex items-center justify-center sm:justify-start">
                       <span className="text-primary text-sm font-semibold sm:text-base">
-                        Cliente activo desde {new Date().getFullYear()}
+                        {t("dashboard.client.profile.personalInfo")}
                       </span>
                     </div>
                   </div>
@@ -1480,10 +1498,10 @@ export default function ClientDashboardUI() {
 
                 <div>
                   <h3 className="mb-2 text-base font-semibold text-gray-900 sm:text-lg">
-                    Información de perfil
+                    {t("dashboard.client.profile.personalInfo")}
                   </h3>
                   <p className="text-sm text-gray-700 sm:text-base">
-                    {user?.bio || "No has añadido una descripción aún."}
+                    {user?.bio || t("dashboard.client.profile.noBio")}
                   </p>
                 </div>
 
@@ -1491,7 +1509,7 @@ export default function ClientDashboardUI() {
                   onClick={openEditProfileModal}
                   className="bg-primary w-full cursor-pointer rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700 sm:w-auto sm:px-6 sm:text-base"
                 >
-                  Editar Perfil
+                  {t("dashboard.client.profile.editProfile")}
                 </button>
               </div>
             )}
@@ -1501,14 +1519,14 @@ export default function ClientDashboardUI() {
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <h2 className="text-base font-semibold text-gray-900 sm:text-lg sm:text-xl">
-                    Sistema de Reseñas
+                    {t("dashboard.client.reviews.title")}
                   </h2>
                   <button
                     onClick={loadPendingReviewsCount}
                     className="bg-primary flex w-full cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-cyan-700 active:scale-95 sm:w-auto sm:px-4 sm:text-sm"
                   >
                     <i className="ri-refresh-line"></i>
-                    <span>Actualizar</span>
+                    <span>{t("common.refresh")}</span>
                   </button>
                 </div>
 
@@ -1519,12 +1537,16 @@ export default function ClientDashboardUI() {
                       <i className="ri-notification-line mt-0.5 shrink-0 text-base text-yellow-600 sm:text-xl"></i>
                       <div className="min-w-0 flex-1">
                         <h4 className="text-sm font-medium text-yellow-800 sm:text-base">
-                          ¡Tienes {pendingReviewsCount} proyecto
-                          {pendingReviewsCount !== 1 ? "s" : ""} pendiente
-                          {pendingReviewsCount !== 1 ? "s" : ""} de reseña!
+                          {pendingReviewsCount === 1
+                            ? t("dashboard.client.reviews.pendingTitleSingular", {
+                                count: pendingReviewsCount,
+                              })
+                            : t("dashboard.client.reviews.pendingTitlePlural", {
+                                count: pendingReviewsCount,
+                              })}
                         </h4>
                         <p className="mt-1 text-xs text-yellow-700 sm:text-sm">
-                          Ayuda a otros usuarios compartiendo tu experiencia con los freelancers.
+                          {t("dashboard.client.reviews.pendingDescription")}
                         </p>
                       </div>
                     </div>
@@ -1542,7 +1564,9 @@ export default function ClientDashboardUI() {
                     <div className="w-full border-t border-gray-300" />
                   </div>
                   <div className="relative flex justify-center text-xs sm:text-sm">
-                    <span className="bg-white px-2 text-gray-500">Tus Reseñas Recibidas</span>
+                    <span className="bg-white px-2 text-gray-500">
+                      {t("dashboard.client.reviews.givenTitle")}
+                    </span>
                   </div>
                 </div>
 
@@ -1606,7 +1630,8 @@ export default function ClientDashboardUI() {
                         Detalles de la Transacción
                       </h2>
                       <p className="mt-2 truncate text-xs text-cyan-100 sm:text-sm">
-                        {selectedTransaction.project_title || "Proyecto Contratado"}
+                        {selectedTransaction.project_title ||
+                          t("dashboard.client.projects.directContract")}
                       </p>
                     </div>
                   </div>
@@ -1632,7 +1657,9 @@ export default function ClientDashboardUI() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30 sm:h-12 sm:w-12">
                         <i className="ri-money-dollar-circle-fill text-lg sm:text-xl"></i>
                       </div>
-                      <div className="text-xs font-medium text-cyan-700 sm:text-sm">Monto</div>
+                      <div className="text-xs font-medium text-cyan-700 sm:text-sm">
+                        {t("dashboard.client.transactions.amount")}
+                      </div>
                     </div>
                     <p className="text-xl font-bold text-gray-900 sm:text-2xl">
                       ${selectedTransaction.amount} {selectedTransaction.currency.toUpperCase()}
@@ -1644,7 +1671,9 @@ export default function ClientDashboardUI() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/30 sm:h-12 sm:w-12">
                         <i className="ri-checkbox-circle-fill text-lg sm:text-xl"></i>
                       </div>
-                      <div className="text-xs font-medium text-emerald-700 sm:text-sm">Estado</div>
+                      <div className="text-xs font-medium text-emerald-700 sm:text-sm">
+                        {t("dashboard.client.transactions.status")}
+                      </div>
                     </div>
                     <p
                       className={`text-xl font-bold sm:text-2xl ${
@@ -1653,7 +1682,9 @@ export default function ClientDashboardUI() {
                           : "text-yellow-700"
                       }`}
                     >
-                      {selectedTransaction.status === "paid" ? "Pagado" : "Pendiente"}
+                      {selectedTransaction.status === "paid"
+                        ? t("dashboard.client.transactions.paid")
+                        : t("dashboard.client.transactions.pending")}
                     </p>
                   </div>
                 </div>
@@ -1829,8 +1860,8 @@ export default function ClientDashboardUI() {
                             </p>
                             <p className="text-sm text-gray-900 sm:text-base">
                               {selectedProject.project_type === "hourly"
-                                ? "Precio por hora"
-                                : "Precio fijo"}
+                                ? t("dashboard.client.common.hourlyPrice")
+                                : t("dashboard.client.common.fixedPrice")}
                             </p>
                           </div>
                         </div>
@@ -1942,10 +1973,10 @@ export default function ClientDashboardUI() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
-                        Crear Nuevo Proyecto
+                        {t("dashboard.client.modals.newProject.title")}
                       </h2>
                       <p className="mt-2 text-xs text-cyan-100 sm:text-sm">
-                        Completa el formulario para crear tu proyecto
+                        {t("dashboard.client.modals.newProject.subtitle")}
                       </p>
                     </div>
                   </div>
@@ -1953,7 +1984,7 @@ export default function ClientDashboardUI() {
                 <button
                   onClick={() => setShowNewProjectModal(false)}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
+                  aria-label={t("common.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -1967,7 +1998,7 @@ export default function ClientDashboardUI() {
               >
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Título del Proyecto
+                    {t("dashboard.client.modals.newProject.projectTitle")}
                   </label>
                   <input
                     type="text"
@@ -1975,13 +2006,13 @@ export default function ClientDashboardUI() {
                     value={newProject.title}
                     onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
                     className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
-                    placeholder="Ej: Desarrollo de sitio web corporativo"
+                    placeholder={t("dashboard.client.modals.newProject.projectTitlePlaceholder")}
                   />
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Descripción
+                    {t("dashboard.client.modals.newProject.description")}
                   </label>
                   <textarea
                     required
@@ -1994,14 +2025,14 @@ export default function ClientDashboardUI() {
                       })
                     }
                     className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
-                    placeholder="Describe tu proyecto en detalle..."
+                    placeholder={t("dashboard.client.modals.newProject.descriptionPlaceholder")}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                      Presupuesto Mínimo (USD)
+                      {t("dashboard.client.modals.newProject.budgetMin")}
                     </label>
                     <input
                       type="number"
@@ -2015,12 +2046,13 @@ export default function ClientDashboardUI() {
                         })
                       }
                       className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
+                      placeholder={t("dashboard.client.modals.newProject.budgetMinPlaceholder")}
                     />
                   </div>
 
                   <div>
                     <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                      Presupuesto Máximo (USD)
+                      {t("dashboard.client.modals.newProject.budgetMax")}
                     </label>
                     <input
                       type="number"
@@ -2034,13 +2066,14 @@ export default function ClientDashboardUI() {
                         })
                       }
                       className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
+                      placeholder={t("dashboard.client.modals.newProject.budgetMaxPlaceholder")}
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Tipo de Proyecto
+                    {t("dashboard.client.modals.newProject.projectType")}
                   </label>
                   <select
                     value={newProject.project_type}
@@ -2052,14 +2085,14 @@ export default function ClientDashboardUI() {
                     }
                     className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 px-3 py-2 pr-8 text-sm focus:outline-none sm:text-base"
                   >
-                    <option value="fixed">Precio Fijo</option>
-                    <option value="hourly">Por Hora</option>
+                    <option value="fixed">{t("dashboard.client.modals.newProject.fixed")}</option>
+                    <option value="hourly">{t("dashboard.client.modals.newProject.hourly")}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Habilidades Requeridas
+                    {t("dashboard.client.modals.newProject.requiredSkills")}
                   </label>
                   <div className="mb-3 flex flex-wrap gap-1 sm:gap-2">
                     {newProject.required_skills.map((skill) => (
@@ -2090,7 +2123,7 @@ export default function ClientDashboardUI() {
                         }
                       }}
                       className="focus:ring-primary focus:border-primary flex-1 rounded-l-md border border-gray-300 px-3 py-2 text-sm focus:outline-none sm:text-base"
-                      placeholder="Añadir habilidad (presiona Enter)"
+                      placeholder={t("dashboard.client.modals.newProject.skillsPlaceholder")}
                     />
                     <button
                       type="button"
@@ -2101,7 +2134,9 @@ export default function ClientDashboardUI() {
                     </button>
                   </div>
                   <div className="mt-2">
-                    <p className="text-xs text-gray-600 sm:text-sm">Habilidades populares:</p>
+                    <p className="text-xs text-gray-600 sm:text-sm">
+                      {t("dashboard.client.common.popularSkills")}
+                    </p>
                     <div className="mt-1 flex flex-wrap gap-1 sm:gap-2">
                       {popularSkills.map((skill) => (
                         <button
@@ -2119,7 +2154,7 @@ export default function ClientDashboardUI() {
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Fecha límite (opcional)
+                    {t("dashboard.client.modals.newProject.deadline")}
                   </label>
                   <input
                     type="date"
@@ -2144,7 +2179,7 @@ export default function ClientDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 sm:px-6"
               >
                 <i className="ri-close-line"></i>
-                <span className="text-sm sm:text-base">Cancelar</span>
+                <span className="text-sm sm:text-base">{t("dashboard.client.common.cancel")}</span>
               </button>
               <button
                 type="submit"
@@ -2152,7 +2187,9 @@ export default function ClientDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95 sm:px-6"
               >
                 <i className="ri-add-circle-fill text-lg transition-transform group-hover:scale-110"></i>
-                <span className="text-sm sm:text-base">Crear Proyecto</span>
+                <span className="text-sm sm:text-base">
+                  {t("dashboard.client.common.createProject")}
+                </span>
               </button>
             </div>
           </div>
@@ -2272,7 +2309,7 @@ export default function ClientDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100 sm:px-6"
               >
                 <i className="ri-close-line text-base sm:text-lg"></i>
-                <span className="text-sm sm:text-base">Cancelar</span>
+                <span className="text-sm sm:text-base">{t("dashboard.client.common.cancel")}</span>
               </button>
               <button
                 type="submit"
@@ -2283,12 +2320,16 @@ export default function ClientDashboardUI() {
                 {updatingProfile ? (
                   <>
                     <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
-                    <span className="text-sm sm:text-base">Guardando...</span>
+                    <span className="text-sm sm:text-base">
+                      {t("dashboard.client.common.saving")}
+                    </span>
                   </>
                 ) : (
                   <>
                     <i className="ri-save-line text-base transition-transform group-hover:scale-110 sm:text-lg"></i>
-                    <span className="text-sm sm:text-base">Guardar Cambios</span>
+                    <span className="text-sm sm:text-base">
+                      {t("dashboard.client.common.saveChanges")}
+                    </span>
                   </>
                 )}
               </button>
@@ -2485,7 +2526,9 @@ export default function ClientDashboardUI() {
                     </button>
                   </div>
                   <div className="mt-2">
-                    <p className="text-xs text-gray-600 sm:text-sm">Habilidades populares:</p>
+                    <p className="text-xs text-gray-600 sm:text-sm">
+                      {t("dashboard.client.common.popularSkills")}
+                    </p>
                     <div className="mt-1 flex flex-wrap gap-1 sm:gap-2">
                       {popularSkills.map((skill) => (
                         <button
@@ -2532,7 +2575,7 @@ export default function ClientDashboardUI() {
                 className="group flex flex-1 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-semibold text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:active:scale-100 sm:px-6"
               >
                 <i className="ri-close-line"></i>
-                <span className="text-sm sm:text-base">Cancelar</span>
+                <span className="text-sm sm:text-base">{t("dashboard.client.common.cancel")}</span>
               </button>
               <button
                 type="submit"
@@ -2543,12 +2586,16 @@ export default function ClientDashboardUI() {
                 {updatingProject ? (
                   <>
                     <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
-                    <span className="text-sm sm:text-base">Guardando...</span>
+                    <span className="text-sm sm:text-base">
+                      {t("dashboard.client.common.saving")}
+                    </span>
                   </>
                 ) : (
                   <>
                     <i className="ri-save-line text-lg transition-transform group-hover:scale-110"></i>
-                    <span className="text-sm sm:text-base">Guardar Cambios</span>
+                    <span className="text-sm sm:text-base">
+                      {t("dashboard.client.common.saveChanges")}
+                    </span>
                   </>
                 )}
               </button>

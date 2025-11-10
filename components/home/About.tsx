@@ -1,12 +1,16 @@
+"use client"
+
 import { Counter } from "@/components/Counter"
 import { gdnStats } from "@/constants/currentData"
+import { useTranslation } from "react-i18next"
 
 export default function About() {
+  const { t } = useTranslation()
   const stats = [
-    { number: gdnStats.completedProjects, label: "Proyectos Completados" },
-    { number: gdnStats.satisfiedClients, label: "Clientes Satisfechos" },
-    { number: gdnStats.experienceYears, label: "Años de Experiencia" },
-    { number: gdnStats.qualifications, label: "Tasa de Satisfacción" },
+    { number: gdnStats.completedProjects, label: t("about.stats.completedProjects") },
+    { number: gdnStats.satisfiedClients, label: t("about.stats.satisfiedClients") },
+    { number: gdnStats.experienceYears, label: t("about.stats.yearsExperience") },
+    { number: gdnStats.qualifications, label: t("about.stats.satisfactionRate") },
   ]
 
   const scrollToContact = () => {
@@ -21,16 +25,12 @@ export default function About() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           <div>
-            <h2 className="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">Sobre GDN Pro</h2>
+            <h2 className="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">{t("about.title")}</h2>
             <p className="mb-8 text-xl leading-relaxed text-gray-600">
-              Somos una empresa de consultoría digital especializada en transformar ideas en
-              soluciones tecnológicas innovadoras. Con más de 2 años de experiencia, hemos ayudado a
-              empresas de todos los tamaños a digitalizar sus procesos y alcanzar sus objetivos.
+              {t("about.description1")}
             </p>
             <p className="mb-8 text-lg leading-relaxed text-gray-600">
-              Nuestro enfoque integral combina desarrollo de software de alta calidad, estrategias
-              de marketing digital efectivas y acceso a una red de freelancers especializados para
-              cubrir todas tus necesidades digitales.
+              {t("about.description2")}
             </p>
 
             <div className="mb-8 space-y-4">
@@ -39,26 +39,26 @@ export default function About() {
                   <i className="ri-checkbox-circle-line text-lg"></i>
                 </div>
                 <span className="text-lg text-gray-700">
-                  Soluciones personalizadas para cada cliente
+                  {t("about.features.customSolutions")}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                   <i className="ri-checkbox-circle-line text-lg"></i>
                 </div>
-                <span className="text-lg text-gray-700">Tecnologías de vanguardia</span>
+                <span className="text-lg text-gray-700">{t("about.features.cuttingEdge")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                   <i className="ri-checkbox-circle-line text-lg"></i>
                 </div>
-                <span className="text-lg text-gray-700">Soporte continuo y mantenimiento</span>
+                <span className="text-lg text-gray-700">{t("about.features.continuousSupport")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                   <i className="ri-checkbox-circle-line text-lg"></i>
                 </div>
-                <span className="text-lg text-gray-700">Red de freelancers especializados</span>
+                <span className="text-lg text-gray-700">{t("about.features.freelancerNetwork")}</span>
               </div>
             </div>
 
@@ -67,7 +67,7 @@ export default function About() {
               className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] active:scale-100 hover:shadow-xl hover:shadow-cyan-500/40 whitespace-nowrap min-h-[44px] touch-manipulation"
             >
               <i className="ri-information-line text-lg sm:text-xl transition-transform group-hover:scale-110"></i>
-              <span className="text-sm sm:text-base">Conoce Más Sobre Nosotros</span>
+              <span className="text-sm sm:text-base">{t("about.cta")}</span>
             </button>
           </div>
 
@@ -81,7 +81,7 @@ export default function About() {
               <div className="text-center">
                 <div className="mb-2 flex items-center justify-center gap-2 text-gray-600 text-xs sm:text-sm">
                   <i className="ri-calendar-check-line text-cyan-500 text-sm sm:text-base"></i>
-                  Fundada
+                  {t("about.founded")}
                 </div>
                 <div className="text-2xl sm:text-3xl font-bold text-cyan-600">2023</div>
               </div>

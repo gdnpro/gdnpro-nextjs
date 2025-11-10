@@ -2,6 +2,7 @@
 
 import { supabaseBrowser } from "@/utils/supabase/client"
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import type { Project } from "@/interfaces/Project"
 import type { Transaction } from "@/interfaces/Transaction"
 import type { Review } from "@/interfaces/Review"
@@ -15,6 +16,7 @@ interface AnalyticsDashboardProps {
 }
 
 export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashboardProps) {
+  const { t, i18n } = useTranslation()
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [timeRange, setTimeRange] = useState("6months")
@@ -37,7 +39,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         await loadClientAnalytics()
       }
     } catch (error) {
-      console.error("Error cargando analytics:", error)
+      console.error(t("dashboard.analytics.error"), error)
     } finally {
       setLoading(false)
     }
@@ -151,7 +153,9 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           .reduce((sum: number, t: Transaction) => sum + (Number(t.amount) || 0), 0) || 0
 
       chartData.push({
-        month: targetDate.toLocaleDateString("es-ES", { month: "short" }),
+        month: targetDate.toLocaleDateString(i18n.language === "en" ? "en-US" : "es-ES", {
+          month: "short",
+        }),
         earnings: monthEarnings,
         projects:
           projects?.filter((p: Project) => {
@@ -242,8 +246,8 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
     if (averageRating < 4.5) {
       recommendations.push({
         type: "rating",
-        title: "Mejora tu calificación",
-        description: "Enfócate en la calidad para obtener mejores reseñas",
+        title: t("dashboard.analytics.recommendations.improveRating.title"),
+        description: t("dashboard.analytics.recommendations.improveRating.description"),
         impact: "Alto",
       })
     }
@@ -251,8 +255,8 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
     if (calculatedGrowthRate < 0) {
       recommendations.push({
         type: "growth",
-        title: "Aumenta tus ingresos",
-        description: "Considera subir tus tarifas o tomar más proyectos",
+        title: t("dashboard.analytics.recommendations.increaseIncome.title"),
+        description: t("dashboard.analytics.recommendations.increaseIncome.description"),
         impact: "Alto",
       })
     }
@@ -260,16 +264,16 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
     if (completedProjects < 5) {
       recommendations.push({
         type: "projects",
-        title: "Completa más proyectos",
-        description: "Más proyectos = mejor reputación y más ingresos",
+        title: t("dashboard.analytics.recommendations.completeMoreProjects.title"),
+        description: t("dashboard.analytics.recommendations.completeMoreProjects.description"),
         impact: "Medio",
       })
     }
 
     recommendations.push({
       type: "optimization",
-      title: "Optimiza tu perfil",
-      description: "Un perfil completo atrae 3x más clientes",
+      title: t("dashboard.analytics.recommendations.optimizeProfile.title"),
+      description: t("dashboard.analytics.recommendations.optimizeProfile.description"),
       impact: "Alto",
     })
 
@@ -344,7 +348,9 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           .reduce((sum: number, t: Transaction) => sum + (Number(t.amount) || 0), 0) || 0
 
       chartData.push({
-        month: targetDate.toLocaleDateString("es-ES", { month: "short" }),
+        month: targetDate.toLocaleDateString(i18n.language === "en" ? "en-US" : "es-ES", {
+          month: "short",
+        }),
         earnings: monthSpent,
         projects:
           projects?.filter((p: Project) => {
@@ -392,8 +398,8 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
     if (activeProjects === 0 && completedProjects > 0) {
       recommendations.push({
         type: "projects",
-        title: "Inicia un nuevo proyecto",
-        description: "Tienes freelancers de confianza esperando trabajar contigo",
+        title: t("dashboard.analytics.recommendations.startNewProject.title"),
+        description: t("dashboard.analytics.recommendations.startNewProject.description"),
         impact: "Alto",
       })
     }
@@ -401,16 +407,16 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
     if (averageSatisfaction < 4.0 && reviews && reviews.length > 0) {
       recommendations.push({
         type: "satisfaction",
-        title: "Mejora la comunicación",
-        description: "Una mejor comunicación lleva a mejores resultados",
+        title: t("dashboard.analytics.recommendations.improveCommunication.title"),
+        description: t("dashboard.analytics.recommendations.improveCommunication.description"),
         impact: "Medio",
       })
     }
 
     recommendations.push({
       type: "optimization",
-      title: "Explora nuevos freelancers",
-      description: "Diversifica tu red de colaboradores para mejores resultados",
+      title: t("dashboard.analytics.recommendations.exploreFreelancers.title"),
+      description: t("dashboard.analytics.recommendations.exploreFreelancers.description"),
       impact: "Medio",
     })
 
@@ -436,8 +442,10 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
     return (
       <div className="rounded-xl bg-white p-6 text-center shadow-lg">
         <i className="ri-bar-chart-line mb-4 text-4xl text-gray-400"></i>
-        <h3 className="mb-2 text-lg font-semibold text-gray-900">Sin datos suficientes</h3>
-        <p className="text-gray-600">Completa algunos proyectos para ver tus analytics</p>
+        <h3 className="mb-2 text-lg font-semibold text-gray-900">
+          {t("dashboard.analytics.noData.title")}
+        </h3>
+        <p className="text-gray-600">{t("dashboard.analytics.noData.description")}</p>
       </div>
     )
   }
@@ -450,12 +458,12 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           <div>
             <h2 className="flex items-center text-2xl font-bold text-gray-900">
               <i className="ri-bar-chart-line text-primary mr-3"></i>
-              Analytics Profesionales
+              {t("dashboard.analytics.title")}
             </h2>
             <p className="mt-1 text-gray-600">
               {userType === "freelancer"
-                ? "Análisis de tu rendimiento como freelancer"
-                : "Análisis de tus proyectos como cliente"}
+                ? t("dashboard.analytics.subtitle.freelancer")
+                : t("dashboard.analytics.subtitle.client")}
             </p>
           </div>
           <select
@@ -463,9 +471,9 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTimeRange(e.target.value)}
             className="focus:ring-primary rounded-lg border border-gray-300 px-4 py-2 pr-8 focus:ring-2"
           >
-            <option value="3months">Últimos 3 meses</option>
-            <option value="6months">Últimos 6 meses</option>
-            <option value="1year">Último año</option>
+            <option value="3months">{t("dashboard.analytics.timeRange.3months")}</option>
+            <option value="6months">{t("dashboard.analytics.timeRange.6months")}</option>
+            <option value="1year">{t("dashboard.analytics.timeRange.1year")}</option>
           </select>
         </div>
       </div>
@@ -476,14 +484,20 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-blue-100">
-                {userType === "freelancer" ? "Ingresos Totales" : "Inversión Total"}
+                {userType === "freelancer"
+                  ? t("dashboard.analytics.metrics.totalEarnings")
+                  : t("dashboard.analytics.metrics.totalInvestment")}
               </p>
               <p className="mt-1 text-3xl font-bold">
                 ${analytics.metrics.totalEarnings.toLocaleString()}
               </p>
               <div className="mt-2 flex items-center">
                 <i className="ri-arrow-up-line mr-1 text-green-300"></i>
-                <span className="text-sm text-green-300">+{growthRate.toFixed(1)}% este mes</span>
+                <span className="text-sm text-green-300">
+                  {t("dashboard.analytics.metrics.growthThisMonth", {
+                    rate: growthRate.toFixed(1),
+                  })}
+                </span>
               </div>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-400">
@@ -495,13 +509,17 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         <div className="rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-emerald-100">Este Mes</p>
+              <p className="text-sm font-medium text-emerald-100">
+                {t("dashboard.analytics.metrics.thisMonth")}
+              </p>
               <p className="mt-1 text-3xl font-bold">
                 ${analytics.metrics.monthlyEarnings.toLocaleString()}
               </p>
               <div className="mt-2 flex items-center">
                 <i className="ri-calendar-line mr-1 text-emerald-300"></i>
-                <span className="text-sm text-emerald-300">Mes actual</span>
+                <span className="text-sm text-emerald-300">
+                  {t("dashboard.analytics.metrics.currentMonth")}
+                </span>
               </div>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-400">
@@ -513,11 +531,15 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         <div className="rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-purple-100">Proyectos Completados</p>
+              <p className="text-sm font-medium text-purple-100">
+                {t("dashboard.analytics.metrics.completedProjects")}
+              </p>
               <p className="mt-1 text-3xl font-bold">{analytics.metrics.completedProjects}</p>
               <div className="mt-2 flex items-center">
                 <i className="ri-check-line mr-1 text-purple-300"></i>
-                <span className="text-sm text-purple-300">Finalizados</span>
+                <span className="text-sm text-purple-300">
+                  {t("dashboard.analytics.metrics.finished")}
+                </span>
               </div>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-400">
@@ -529,7 +551,9 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         <div className="rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-amber-100">Rating Promedio</p>
+              <p className="text-sm font-medium text-amber-100">
+                {t("dashboard.analytics.metrics.averageRating")}
+              </p>
               <p className="mt-1 text-3xl font-bold">
                 {analytics.metrics.averageRating.toFixed(1)}
               </p>
@@ -554,7 +578,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         <div className="rounded-xl bg-white p-6 shadow-lg">
           <h3 className="mb-6 flex items-center text-lg font-semibold text-gray-900">
             <i className="ri-line-chart-line text-primary mr-2"></i>
-            Evolución de Ingresos
+            {t("dashboard.analytics.charts.earningsEvolution")}
           </h3>
           <div className="space-y-4">
             {analytics.monthlyData.map((month: AnalyticsData["monthlyData"][0], index: number) => {
@@ -578,7 +602,9 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
                     <span className="text-sm font-semibold text-gray-900">
                       ${month.earnings.toLocaleString()}
                     </span>
-                    <div className="text-xs text-gray-500">{month.projects} proyectos</div>
+                    <div className="text-xs text-gray-500">
+                      {month.projects} {t("dashboard.analytics.charts.projects")}
+                    </div>
                   </div>
                 </div>
               )
@@ -592,7 +618,7 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         <div className="rounded-xl bg-white p-6 shadow-lg">
           <h3 className="mb-6 flex items-center text-lg font-semibold text-gray-900">
             <i className="ri-trophy-line mr-2 text-amber-600"></i>
-            Servicios Más Rentables
+            {t("dashboard.analytics.charts.topServices")}
           </h3>
           <div className="space-y-4">
             {analytics.topServices.map(
@@ -610,7 +636,9 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
                     <div className="flex-1">
                       <div className="mb-1 flex items-center justify-between">
                         <span className="font-medium text-gray-900">{service.service}</span>
-                        <span className="text-sm text-gray-600">{service.projects} proyectos</span>
+                        <span className="text-sm text-gray-600">
+                          {service.projects} {t("dashboard.analytics.charts.projects")}
+                        </span>
                       </div>
                       <div className="relative h-2 overflow-hidden rounded-full bg-gray-200">
                         <div
@@ -637,12 +665,14 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         <div className="rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-blue-50 p-6">
           <h3 className="mb-4 flex items-center text-lg font-semibold text-indigo-900">
             <i className="ri-crystal-ball-line mr-2"></i>
-            Predicciones IA
+            {t("dashboard.analytics.predictions.title")}
           </h3>
           <div className="space-y-4">
             <div className="rounded-lg border border-indigo-100 bg-white p-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Ingresos próximo mes</span>
+                <span className="text-sm text-gray-600">
+                  {t("dashboard.analytics.predictions.nextMonthEarnings")}
+                </span>
                 <span className="font-semibold text-indigo-600">
                   ${Math.round(analytics.metrics.monthlyEarnings * 1.15).toLocaleString()}
                 </span>
@@ -650,15 +680,20 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
             </div>
             <div className="rounded-lg border border-indigo-100 bg-white p-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Proyectos estimados</span>
+                <span className="text-sm text-gray-600">
+                  {t("dashboard.analytics.predictions.estimatedProjects")}
+                </span>
                 <span className="font-semibold text-indigo-600">
-                  {Math.round(analytics.metrics.completedProjects * 0.3)} nuevos
+                  {Math.round(analytics.metrics.completedProjects * 0.3)}{" "}
+                  {t("dashboard.analytics.predictions.new")}
                 </span>
               </div>
             </div>
             <div className="rounded-lg border border-indigo-100 bg-white p-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Crecimiento esperado</span>
+                <span className="text-sm text-gray-600">
+                  {t("dashboard.analytics.predictions.expectedGrowth")}
+                </span>
                 <span className="font-semibold text-green-600">+18%</span>
               </div>
             </div>
@@ -668,40 +703,68 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 p-6">
           <h3 className="mb-4 flex items-center text-lg font-semibold text-emerald-900">
             <i className="ri-lightbulb-line mr-2"></i>
-            Recomendaciones IA
+            {t("dashboard.analytics.recommendations.title")}
           </h3>
           <div className="space-y-3">
-            <div className="rounded-lg border border-emerald-100 bg-white p-4">
-              <div className="flex items-start space-x-3">
-                <i className="ri-arrow-up-circle-line mt-1 text-emerald-600"></i>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Aumenta tus tarifas</p>
-                  <p className="text-xs text-gray-600">
-                    Tu rating es excelente, puedes cobrar 20% más
-                  </p>
+            {recommendations.length > 0 ? (
+              recommendations.map((rec, index) => (
+                <div key={index} className="rounded-lg border border-emerald-100 bg-white p-4">
+                  <div className="flex items-start space-x-3">
+                    <i className="ri-arrow-up-circle-line mt-1 text-emerald-600"></i>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{rec.title}</p>
+                      <p className="text-xs text-gray-600">{rec.description}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="rounded-lg border border-emerald-100 bg-white p-4">
-              <div className="flex items-start space-x-3">
-                <i className="ri-target-line mt-1 text-emerald-600"></i>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Enfócate en {analytics.topServices[0]?.service || "tu mejor servicio"}
-                  </p>
-                  <p className="text-xs text-gray-600">Es tu servicio más rentable</p>
+              ))
+            ) : (
+              <>
+                <div className="rounded-lg border border-emerald-100 bg-white p-4">
+                  <div className="flex items-start space-x-3">
+                    <i className="ri-arrow-up-circle-line mt-1 text-emerald-600"></i>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {t("dashboard.analytics.recommendations.increaseRates.title")}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        {t("dashboard.analytics.recommendations.increaseRates.description")}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="rounded-lg border border-emerald-100 bg-white p-4">
-              <div className="flex items-start space-x-3">
-                <i className="ri-time-line mt-1 text-emerald-600"></i>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Optimiza tu tiempo</p>
-                  <p className="text-xs text-gray-600">Puedes manejar 2 proyectos más este mes</p>
+                {analytics.topServices[0] && (
+                  <div className="rounded-lg border border-emerald-100 bg-white p-4">
+                    <div className="flex items-start space-x-3">
+                      <i className="ri-target-line mt-1 text-emerald-600"></i>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {t("dashboard.analytics.recommendations.focusService.title", {
+                            service: analytics.topServices[0].service,
+                          })}
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          {t("dashboard.analytics.recommendations.focusService.description")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div className="rounded-lg border border-emerald-100 bg-white p-4">
+                  <div className="flex items-start space-x-3">
+                    <i className="ri-time-line mt-1 text-emerald-600"></i>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {t("dashboard.analytics.recommendations.optimizeTime.title")}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        {t("dashboard.analytics.recommendations.optimizeTime.description")}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </div>
       </div>

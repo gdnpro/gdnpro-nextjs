@@ -1,8 +1,11 @@
+"use client"
+
 import { useEffect, useRef } from "react"
 import type { ChatMessage } from "@/interfaces/ChatMessage"
 import type { Conversation } from "@/interfaces/Conversation"
 import type { Profile } from "@/interfaces/Profile"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import { useTranslation } from "react-i18next"
 
 const supabase = supabaseBrowser()
 
@@ -35,6 +38,7 @@ export const ConversationModal = ({
   sendingMessage,
   sendMessage,
 }: Props) => {
+  const { t, i18n } = useTranslation()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const subscriptionRef = useRef<any>(null)
   const chatMessagesRef = useRef<ChatMessage[]>(chatMessages)
@@ -134,7 +138,7 @@ export const ConversationModal = ({
                 setNewMessage("")
               }}
               className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:bg-white/30 active:scale-95 sm:h-12 sm:w-12 touch-manipulation"
-              aria-label="Cerrar chat"
+              aria-label={t("conversation.closeChat")}
             >
               <i className="ri-close-line text-lg transition-transform group-hover:rotate-90 sm:text-xl"></i>
             </button>
@@ -147,7 +151,7 @@ export const ConversationModal = ({
             <div className="flex h-full items-center justify-center">
               <div className="border-primary h-6 w-6 animate-spin rounded-full border-b-2 sm:h-8 sm:w-8"></div>
               <span className="ml-2 text-sm text-gray-600 sm:text-base">
-                Cargando conversación...
+                {t("conversation.loadingConversation")}
               </span>
             </div>
           ) : (
@@ -174,10 +178,13 @@ export const ConversationModal = ({
                         message.sender_id === user?.id ? "text-cyan-300/50" : "text-gray-500"
                       }`}
                     >
-                      {new Date(message.created_at).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {new Date(message.created_at).toLocaleTimeString(
+                        i18n.language === "en" ? "en-US" : "es-ES",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )}
                     </p>
                   </div>
                 </div>
@@ -186,10 +193,8 @@ export const ConversationModal = ({
               {chatMessages.length === 0 && !chatLoading && (
                 <div className="py-6 text-center text-gray-500 sm:py-8">
                   <i className="ri-chat-3-line sm:4xl mb-4 text-3xl"></i>
-                  <p className="text-sm sm:text-base">No hay mensajes en esta conversación aún</p>
-                  <p className="mt-2 text-xs sm:text-sm">
-                    Inicia la conversación escribiendo un mensaje
-                  </p>
+                  <p className="text-sm sm:text-base">{t("conversation.noMessages")}</p>
+                  <p className="mt-2 text-xs sm:text-sm">{t("conversation.startConversation")}</p>
                 </div>
               )}
               {/* Invisible div to scroll to */}
@@ -202,7 +207,7 @@ export const ConversationModal = ({
         <div className="shrink-0 border-t border-gray-200 bg-white p-3 sm:p-4 sm:rounded-b-2xl">
           <div className="flex items-center gap-2 sm:gap-3">
             <label htmlFor="conversation-message-input" className="sr-only">
-              Escribe tu mensaje
+              {t("conversation.writeMessage")}
             </label>
             <input
               type="text"
@@ -211,7 +216,7 @@ export const ConversationModal = ({
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyUp={handleKeyPress}
-              placeholder="Escribe tu mensaje..."
+              placeholder={t("conversation.writeMessagePlaceholder")}
               disabled={chatLoading || sendingMessage}
               className="focus:ring-primary flex-1 rounded-full border border-gray-300 px-3 py-2.5 text-sm focus:border-transparent focus:ring-2 focus:outline-none disabled:bg-gray-100 sm:px-4 sm:py-3 min-h-[44px]"
               autoComplete="off"
@@ -220,7 +225,7 @@ export const ConversationModal = ({
               onClick={sendMessage}
               disabled={!newMessage.trim() || chatLoading || sendingMessage}
               className="group flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30 transition-all hover:scale-110 active:scale-95 hover:shadow-xl hover:shadow-cyan-500/40 disabled:bg-gray-300 disabled:shadow-none disabled:hover:scale-100 disabled:active:scale-100 sm:h-12 sm:w-12 touch-manipulation"
-              aria-label="Enviar mensaje"
+              aria-label={t("conversation.sendMessage")}
             >
               {sendingMessage ? (
                 <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
@@ -231,7 +236,7 @@ export const ConversationModal = ({
           </div>
           <p className="mt-2 hidden items-center text-xs text-gray-500 sm:flex">
             <i className="ri-shield-check-line mr-1"></i>
-            Chat seguro monitoreado por GDN Pro
+            {t("conversation.secureChat")}
           </p>
         </div>
       </div>

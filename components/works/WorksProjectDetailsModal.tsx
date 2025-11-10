@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import type { Project } from "@/interfaces/Project"
 
 interface WorksProjectDetailsModalProps {
@@ -18,6 +19,8 @@ export default function WorksProjectDetailsModal({
   onSendProposal,
   onStartChat,
 }: WorksProjectDetailsModalProps) {
+  const { t, i18n } = useTranslation()
+  
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"
@@ -86,9 +89,9 @@ export default function WorksProjectDetailsModal({
                       }`}
                     >
                       {project.status === "open"
-                        ? "Abierto"
+                        ? t("works.projectDetails.statusOpen")
                         : project.status === "in_progress"
-                          ? "En Progreso"
+                          ? t("works.projectDetails.statusInProgress")
                           : project.status}
                     </span>
                   )}
@@ -113,7 +116,7 @@ export default function WorksProjectDetailsModal({
                       <div className="mt-1 flex items-center gap-1 text-xs sm:text-sm text-cyan-100">
                         <i className="ri-star-fill text-yellow-300"></i>
                         <span className="font-medium">{project.client.rating.toFixed(1)}</span>
-                        <span className="text-white/70 hidden sm:inline">· Cliente verificado</span>
+                        <span className="text-white/70 hidden sm:inline">· {t("works.projectDetails.verifiedClient")}</span>
                       </div>
                     )}
                   </div>
@@ -123,7 +126,7 @@ export default function WorksProjectDetailsModal({
             <button
               onClick={onClose}
               className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 touch-manipulation"
-              aria-label="Cerrar"
+              aria-label={t("works.projectDetails.close")}
             >
               <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
             </button>
@@ -139,14 +142,14 @@ export default function WorksProjectDetailsModal({
                 <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-lg shadow-cyan-500/30">
                   <i className="ri-money-dollar-circle-fill text-lg sm:text-xl"></i>
                 </div>
-                <div className="text-xs sm:text-sm font-medium text-cyan-700">Presupuesto</div>
+                <div className="text-xs sm:text-sm font-medium text-cyan-700">{t("works.projectDetails.budget")}</div>
               </div>
               <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 break-words">
                 {project.budget_min && project.budget_max
                   ? `$${project.budget_min.toLocaleString()} - $${project.budget_max.toLocaleString()}`
                   : project.budget
                     ? `$${project.budget.toLocaleString()}`
-                    : "No especificado"}
+                    : t("works.projectDetails.notSpecified")}
               </p>
             </div>
 
@@ -156,16 +159,16 @@ export default function WorksProjectDetailsModal({
                   <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                     <i className="ri-calendar-check-fill text-lg sm:text-xl"></i>
                   </div>
-                  <div className="text-xs sm:text-sm font-medium text-cyan-700">Fecha límite</div>
+                  <div className="text-xs sm:text-sm font-medium text-cyan-700">{t("works.projectDetails.deadline")}</div>
                 </div>
                 <p className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
-                  {new Date(project.deadline).toLocaleDateString("es-ES", {
+                  {new Date(project.deadline).toLocaleDateString(i18n.language === "en" ? "en-US" : "es-ES", {
                     month: "short",
                     day: "numeric",
                   })}
                 </p>
                 <p className="text-xs sm:text-sm text-gray-600">
-                  {new Date(project.deadline).toLocaleDateString("es-ES", { year: "numeric" })}
+                  {new Date(project.deadline).toLocaleDateString(i18n.language === "en" ? "en-US" : "es-ES", { year: "numeric" })}
                 </p>
               </div>
             )}
@@ -176,7 +179,7 @@ export default function WorksProjectDetailsModal({
                   <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                     <i className="ri-folder-fill text-lg sm:text-xl"></i>
                   </div>
-                  <div className="text-xs sm:text-sm font-medium text-cyan-700">Tipo</div>
+                  <div className="text-xs sm:text-sm font-medium text-cyan-700">{t("works.projectDetails.type")}</div>
                 </div>
                 <p className="text-base sm:text-lg md:text-xl font-bold text-gray-900 capitalize break-words">{project.project_type}</p>
               </div>
@@ -189,7 +192,7 @@ export default function WorksProjectDetailsModal({
               <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                 <i className="ri-file-text-line text-sm sm:text-lg"></i>
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900">Descripción del Proyecto</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t("works.projectDetails.projectDescription")}</h3>
             </div>
             <div className="rounded-xl sm:rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 sm:p-6 shadow-sm">
               <p className="leading-relaxed whitespace-pre-wrap text-sm sm:text-base text-gray-700 break-words">
@@ -205,7 +208,7 @@ export default function WorksProjectDetailsModal({
                 <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                   <i className="ri-list-check-2 text-sm sm:text-lg"></i>
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900">Requisitos</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t("works.projectDetails.requirements")}</h3>
               </div>
               <div className="rounded-xl sm:rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 sm:p-6 shadow-sm">
                 <p className="leading-relaxed whitespace-pre-wrap text-sm sm:text-base text-gray-700 break-words">
@@ -222,7 +225,7 @@ export default function WorksProjectDetailsModal({
                 <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                   <i className="ri-tools-fill text-sm sm:text-lg"></i>
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900">Habilidades Requeridas</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t("works.projectDetails.requiredSkills")}</h3>
               </div>
               <div className="flex flex-wrap gap-2 sm:gap-3">
                 {project.required_skills.map((skill, index) => {
@@ -248,7 +251,7 @@ export default function WorksProjectDetailsModal({
                 <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                   <i className="ri-time-line text-sm sm:text-lg"></i>
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900">Duración Estimada</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">{t("works.projectDetails.estimatedDuration")}</h3>
               </div>
               <div className="rounded-xl sm:rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 sm:p-6 shadow-sm">
                 <p className="text-base sm:text-lg font-medium text-gray-700">{project.duration}</p>
@@ -263,9 +266,9 @@ export default function WorksProjectDetailsModal({
                 <i className="ri-calendar-check-line text-gray-600 text-sm sm:text-base"></i>
               </div>
               <div>
-                <p className="font-medium text-gray-900 text-xs sm:text-sm">Publicado el</p>
+                <p className="font-medium text-gray-900 text-xs sm:text-sm">{t("works.projectDetails.publishedOn")}</p>
                 <p className="text-gray-600 text-xs sm:text-sm">
-                  {new Date(project.created_at).toLocaleDateString("es-ES", {
+                  {new Date(project.created_at).toLocaleDateString(i18n.language === "en" ? "en-US" : "es-ES", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -275,7 +278,7 @@ export default function WorksProjectDetailsModal({
             </div>
             <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500">
               <i className="ri-eye-line"></i>
-              <span>Vista detallada</span>
+              <span>{t("works.projectDetails.detailedView")}</span>
             </div>
           </div>
         </div>
@@ -288,14 +291,14 @@ export default function WorksProjectDetailsModal({
               className="group flex flex-1 cursor-pointer items-center justify-center gap-2 sm:gap-3 rounded-xl border-2 border-cyan-500 bg-white px-4 sm:px-6 py-3 sm:py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 active:translate-y-0 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white active:bg-cyan-50 hover:shadow-lg hover:shadow-cyan-500/30 min-h-[44px] touch-manipulation"
             >
               <i className="ri-chat-3-line text-lg sm:text-xl transition-transform group-hover:scale-110"></i>
-              <span className="text-sm sm:text-base">Iniciar Chat</span>
+              <span className="text-sm sm:text-base">{t("works.projectDetails.startChat")}</span>
             </button>
             <button
               onClick={handleSendProposal}
               className="group flex flex-1 cursor-pointer items-center justify-center gap-2 sm:gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 sm:px-6 py-3 sm:py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0 hover:scale-[1.02] active:scale-100 hover:shadow-xl hover:shadow-cyan-500/40 min-h-[44px] touch-manipulation"
             >
               <i className="ri-send-plane-fill text-lg sm:text-xl transition-transform group-hover:translate-x-1"></i>
-              <span className="text-sm sm:text-base">Enviar Propuesta</span>
+              <span className="text-sm sm:text-base">{t("works.projectDetails.sendProposal")}</span>
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface WorksSearchProps {
   onFiltersChange: (filters: {
@@ -12,6 +13,7 @@ interface WorksSearchProps {
 }
 
 export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
+  const { t } = useTranslation()
   const [searchFilters, setSearchFilters] = useState({
     search: "",
     category: "",
@@ -75,10 +77,10 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
             </div>
           </div>
           <h2 className="mb-4 text-4xl font-bold text-gray-900 sm:text-5xl">
-            Encuentra el Proyecto Perfecto
+            {t("works.search.title")}
           </h2>
           <p className="mx-auto max-w-2xl text-xl text-gray-600">
-            Filtra por categoría, presupuesto y plazo para encontrar proyectos que se ajusten a ti
+            {t("works.search.description")}
           </p>
         </div>
 
@@ -88,7 +90,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
             <div className="lg:col-span-4">
               <label htmlFor="works-search-input" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <i className="ri-search-line text-cyan-600"></i>
-                Buscar Proyectos
+                {t("works.search.searchButton")}
               </label>
               <div className="relative">
                 <i className="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 transform text-xl text-cyan-500"></i>
@@ -96,7 +98,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
                   type="text"
                   id="works-search-input"
                   name="search"
-                  placeholder="Buscar por título, descripción o habilidades requeridas..."
+                  placeholder={t("works.search.searchPlaceholder")}
                   value={searchFilters.search}
                   onChange={(e) => handleFilterChange("search", e.target.value)}
                   className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white py-4 pr-4 pl-12 text-lg shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
@@ -108,7 +110,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
             <div>
               <label htmlFor="works-category" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <i className="ri-folder-line text-cyan-600"></i>
-                Categoría
+                {t("works.search.category")}
               </label>
               <div className="relative">
                 <select
@@ -118,7 +120,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
                   onChange={(e) => handleFilterChange("category", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 pr-8 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                 >
-                  <option value="">Todas las categorías</option>
+                  <option value="">{t("works.search.allCategories")}</option>
                   {categories.map((category, index) => (
                     <option key={index} value={category}>
                       {category}
@@ -133,7 +135,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
             <div>
               <label htmlFor="works-budget" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <i className="ri-money-dollar-circle-line text-cyan-600"></i>
-                Presupuesto
+                {t("works.search.budget")}
               </label>
               <div className="relative">
                 <select
@@ -143,7 +145,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
                   onChange={(e) => handleFilterChange("budget", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 pr-8 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                 >
-                  <option value="">Cualquier presupuesto</option>
+                  <option value="">{t("works.search.anyBudget")}</option>
                   {budgetRanges.map((range, index) => (
                     <option key={index} value={range}>
                       {range}
@@ -158,7 +160,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
             <div>
               <label htmlFor="works-deadline" className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <i className="ri-calendar-line text-cyan-600"></i>
-                Plazo
+                {t("works.search.deadline")}
               </label>
               <div className="relative">
                 <select
@@ -168,7 +170,7 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
                   onChange={(e) => handleFilterChange("deadline", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white px-4 py-3 pr-8 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                 >
-                  <option value="">Cualquier plazo</option>
+                  <option value="">{t("works.search.anyDeadline")}</option>
                   {deadlineOptions.map((option, index) => (
                     <option key={index} value={option}>
                       {option}
@@ -186,14 +188,14 @@ export default function WorksSearch({ onFiltersChange }: WorksSearchProps) {
               className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-8 py-3 font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
               <i className="ri-search-line text-lg transition-transform group-hover:scale-110"></i>
-              Buscar Proyectos
+              {t("works.search.searchButton")}
             </button>
             <button
               onClick={handleClearFilters}
               className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-8 py-3 font-semibold whitespace-nowrap text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
             >
               <i className="ri-refresh-line text-lg transition-transform group-hover:rotate-180"></i>
-              Limpiar Filtros
+              {t("works.search.clearFilters")}
             </button>
           </div>
         </div>

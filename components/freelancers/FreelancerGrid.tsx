@@ -8,6 +8,7 @@ import { ChatMessage } from "@/interfaces/ChatMessage"
 import { Conversation } from "@/interfaces/Conversation"
 import type { Profile } from "@/interfaces/Profile"
 import { ConversationModal } from "@/components/ConversationModal"
+import { useTranslation } from "react-i18next"
 
 interface FreelancerGridProps {
   searchFilters?: {
@@ -21,6 +22,7 @@ interface FreelancerGridProps {
 }
 
 export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
+  const { t } = useTranslation()
   const supabase = supabaseBrowser()
   const navigate = useRouter()
   const [freelancers, setFreelancers] = useState<Freelancer[]>([])
@@ -141,7 +143,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       // Availability filter
       if (searchFilters.availability) {
         if (searchFilters.availability === "Disponible ahora") {
-          filtered = filtered.filter((freelancer) => freelancer.availability === "Disponible")
+          filtered = filtered.filter((freelancer) => freelancer.availability === t("freelancers.grid.available"))
         }
       }
     }
@@ -227,7 +229,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         completed_projects: Math.floor(Math.random() * 50) + freelancer.experience_years * 10,
         response_time: ["1 hora", "2 horas", "3 horas", "4 horas"][Math.floor(Math.random() * 4)],
         languages: ["Español", "Inglés"],
-        availability: Math.random() > 0.3 ? "Disponible" : "Ocupado hasta Feb 15",
+        availability: Math.random() > 0.3 ? t("freelancers.grid.available") : "Ocupado hasta Feb 15",
         location:
           freelancer.location ||
           ["Ciudad de México", "Guadalajara", "Monterrey", "Puebla"][Math.floor(Math.random() * 4)],
@@ -305,7 +307,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   const handleContactFreelancer = async (freelancer: Freelancer) => {
     if (!currentUser) {
       window.toast({
-        title: "Debes iniciar sesión para contactar freelancers",
+        title: t("freelancers.grid.loginToContact"),
         type: "warning",
         location: "bottom-center",
         dismissible: true,
@@ -315,7 +317,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     }
     if (!currentProfile) {
       window.toast({
-        title: "No se pudo cargar tu perfil",
+        title: t("freelancers.grid.profileLoadError"),
         type: "warning",
         location: "bottom-center",
         dismissible: true,
@@ -335,13 +337,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
       if (!session?.access_token) {
         window.toast({
-          title: "No hay sesión activa",
+          title: t("freelancers.grid.noSession"),
           type: "error",
           location: "bottom-center",
           dismissible: true,
           icon: true,
         })
-        throw new Error("No hay sesión activa")
+        throw new Error(t("freelancers.grid.noSession"))
       }
 
       // First, check if a conversation already exists
@@ -413,7 +415,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
             },
           }
         } else {
-          throw new Error(data.error || "Error al crear conversación")
+          throw new Error(data.error || t("freelancers.grid.chatCreateError"))
         }
       } else {
         // Ensure conversation has freelancer info (shown as "client" in modal)
@@ -428,7 +430,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       await loadMessages(conversation.id)
     } catch (err: unknown) {
       window.toast({
-        title: "Error al iniciar el chat",
+        title: t("freelancers.grid.chatStartError"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -450,13 +452,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
       if (!session?.access_token) {
         window.toast({
-          title: "No hay sesión activa",
+          title: t("freelancers.grid.noSession"),
           type: "error",
           location: "bottom-center",
           dismissible: true,
           icon: true,
         })
-        throw new Error("No hay sesión activa")
+        throw new Error(t("freelancers.grid.noSession"))
       }
 
       const response = await fetch(
@@ -499,7 +501,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
       } = await supabase.auth.getSession()
 
       if (!session?.access_token) {
-        throw new Error("No hay sesión activa")
+        throw new Error(t("freelancers.grid.noSession"))
       }
 
       const response = await fetch(
@@ -530,8 +532,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
         await loadMessages(selectedConversation.id)
         if (data.flagged) {
           window.toast({
-            title:
-              "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+            title: t("freelancers.grid.contactInfoWarning"),
             type: "info",
             location: "bottom-center",
             dismissible: true,
@@ -539,11 +540,11 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
           })
         }
       } else {
-        throw new Error(data.error || "Error desconocido al enviar mensaje")
+        throw new Error(data.error || t("freelancers.grid.messageUnknownError"))
       }
     } catch (err: unknown) {
       window.toast({
-        title: "Error al enviar mensaje",
+        title: t("freelancers.grid.messageSendError"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -565,7 +566,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
   const handleHireFreelancer = (freelancer: Freelancer) => {
     if (!currentUser) {
       window.toast({
-        title: "Debes iniciar sesión para contratar freelancers",
+        title: t("freelancers.grid.loginToHire"),
         type: "warning",
         location: "bottom-center",
         dismissible: true,
@@ -576,7 +577,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
 
     if (!currentProfile) {
       window.toast({
-        title: "No se pudo cargar tu perfil",
+        title: t("freelancers.grid.profileLoadError"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -586,10 +587,11 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
     }
 
     const params = new URLSearchParams({
-      title: `Proyecto con ${freelancer.full_name}`,
-      description: `Proyecto de desarrollo con ${freelancer.full_name} - ${
-        freelancer.skills?.[0] || "Freelancer"
-      } especialista`,
+      title: `${t("freelancers.grid.projectWith")} ${freelancer.full_name}`,
+      description: t("freelancers.grid.projectDescription", {
+        name: freelancer.full_name,
+        skill: freelancer.skills?.[0] || t("freelancers.grid.freelancer"),
+      }),
       amount: (freelancer.hourly_rate * 10).toString(),
     })
 
@@ -614,7 +616,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
               <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                 <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/30 border-t-white"></div>
               </div>
-              <p className="mt-4 text-gray-600">Cargando freelancers...</p>
+              <p className="mt-4 text-gray-600">{t("freelancers.grid.loading")}</p>
             </div>
           </div>
         </div>
@@ -630,15 +632,15 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
             <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-400 to-gray-500 text-white shadow-lg">
               <i className="ri-user-search-line text-3xl"></i>
             </div>
-            <h3 className="mb-4 text-2xl font-bold text-gray-900">No se encontraron freelancers</h3>
+            <h3 className="mb-4 text-2xl font-bold text-gray-900">{t("freelancers.grid.noFreelancersFound")}</h3>
             <p className="text-gray-600">
               {searchFilters &&
               (searchFilters.search ||
                 searchFilters.category ||
                 searchFilters.experience ||
                 searchFilters.budget)
-                ? "Intenta ajustar los filtros de búsqueda para encontrar más resultados."
-                : "Actualmente no hay freelancers registrados en la plataforma."}
+                ? t("freelancers.grid.noFreelancersMessage")
+                : t("freelancers.grid.noFreelancersRegistered")}
             </p>
           </div>
         </div>
@@ -656,22 +658,23 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                 <i className="ri-team-line text-xl"></i>
               </div>
-              <h3 className="text-3xl font-bold text-gray-900">Freelancers Destacados</h3>
+              <h3 className="text-3xl font-bold text-gray-900">{t("freelancers.grid.featuredFreelancers")}</h3>
             </div>
             <p className="mt-2 text-gray-600">
-              Mostrando {displayedFreelancers.length} de {filteredFreelancers.length} freelancers
+              {t("freelancers.grid.showing")} {displayedFreelancers.length} {t("freelancers.grid.of")}{" "}
+              {filteredFreelancers.length} {t("freelancers.grid.freelancers")}
               {searchFilters &&
                 (searchFilters.search ||
                   searchFilters.category ||
                   searchFilters.experience ||
                   searchFilters.budget) &&
-                " (filtrados)"}
+                ` ${t("freelancers.grid.filtered")}`}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4">
             <span className="flex items-center gap-2 font-medium text-gray-700">
               <i className="ri-sort-desc text-cyan-500"></i>
-              Ordenar por:
+              {t("freelancers.grid.sortBy")}
             </span>
             <div className="relative w-full sm:w-auto">
               <select
@@ -679,11 +682,11 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white px-4 py-2.5 pr-8 font-medium transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none sm:w-auto"
               >
-                <option value="rating">Mejor calificados</option>
-                <option value="price-low">Precio: menor a mayor</option>
-                <option value="price-high">Precio: mayor a menor</option>
-                <option value="projects">Más proyectos</option>
-                <option value="response">Respuesta más rápida</option>
+                <option value="rating">{t("freelancers.grid.sortBestRated")}</option>
+                <option value="price-low">{t("freelancers.grid.sortPriceLow")}</option>
+                <option value="price-high">{t("freelancers.grid.sortPriceHigh")}</option>
+                <option value="projects">{t("freelancers.grid.sortMoreProjects")}</option>
+                <option value="response">{t("freelancers.grid.sortFastestResponse")}</option>
               </select>
               <i className="ri-arrow-down-s-line pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform text-cyan-500" />
             </div>
@@ -716,7 +719,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                       <h3 className="text-xl font-bold text-gray-900">{freelancer.full_name}</h3>
                       <div
                         className={`mb-2 w-fit rounded-full px-3 py-1 text-xs font-semibold ${
-                          freelancer.availability === "Disponible"
+                          freelancer.availability === t("freelancers.grid.available")
                             ? "bg-green-100 text-green-700"
                             : "bg-yellow-100 text-yellow-700"
                         }`}
@@ -725,8 +728,8 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                       </div>
                       <p className="text-primary font-semibold">
                         {freelancer.skills?.[0]
-                          ? `${freelancer.skills[0]} Specialist`
-                          : "Freelancer"}
+                          ? `${freelancer.skills[0]} ${t("freelancers.grid.specialist")}`
+                          : t("freelancers.grid.freelancer")}
                       </p>
                       <p className="flex items-center text-sm text-gray-500">
                         <i className="ri-map-pin-line mr-1" />
@@ -748,14 +751,16 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                       />
                     ))}
                     <span className="ml-2 font-semibold text-gray-600">{freelancer.rating}</span>
-                    <span className="ml-1 text-gray-500">({freelancer.total_reviews} reviews)</span>
+                    <span className="ml-1 text-gray-500">
+                      ({freelancer.total_reviews} {t("freelancers.grid.reviews")})
+                    </span>
                   </div>
                 </div>
 
                 {/* Bio */}
                 <div className="h-full flex-1">
                   <p className="mb-4 leading-relaxed text-gray-600">
-                    {freelancer.bio || "Freelancer profesional con experiencia comprobada."}
+                    {freelancer.bio || t("freelancers.grid.professionalWithExperience")}
                   </p>
 
                   {/* Skills */}
@@ -775,11 +780,11 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   <div className="mb-6 grid grid-cols-2 gap-4 text-sm text-gray-600">
                     <div className="flex items-center">
                       <i className="ri-briefcase-line mr-2" />
-                      {freelancer.completed_projects} proyectos
+                      {freelancer.completed_projects} {t("freelancers.grid.projects")}
                     </div>
                     <div className="flex items-center">
                       <i className="ri-time-line mr-2" />
-                      Responde en {freelancer.response_time}
+                      {t("freelancers.grid.respondsIn")} {freelancer.response_time}
                     </div>
                   </div>
                 </div>
@@ -787,7 +792,8 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 <div className="border-t border-gray-300 pt-4">
                   <div className="mb-4 flex items-center justify-between">
                     <div className="text-2xl font-bold text-gray-900">
-                      ${freelancer.hourly_rate}/hora
+                      ${freelancer.hourly_rate}
+                      {t("freelancers.grid.perHour")}
                     </div>
                     <div className="flex items-center text-gray-600">
                       {freelancer.languages?.map((lang, idx) => (
@@ -805,14 +811,14 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 py-3 font-semibold text-white shadow-md shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] active:scale-100 hover:shadow-lg hover:shadow-cyan-500/40 min-h-[44px] touch-manipulation"
                   >
                     <i className="ri-chat-3-line transition-transform group-hover:scale-110"></i>
-                    <span className="text-sm sm:text-base">Contactar</span>
+                    <span className="text-sm sm:text-base">{t("freelancers.grid.contact")}</span>
                   </button>
                   <button
                     onClick={() => handleViewProfile(freelancer)}
                     className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-cyan-500 bg-white py-3 font-semibold text-cyan-600 transition-all hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white active:bg-cyan-50 hover:shadow-md min-h-[44px] touch-manipulation"
                   >
                     <i className="ri-user-line"></i>
-                    <span className="text-sm sm:text-base">Ver Perfil</span>
+                    <span className="text-sm sm:text-base">{t("freelancers.grid.viewProfile")}</span>
                   </button>
                 </div>
 
@@ -822,11 +828,13 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] active:scale-100 hover:shadow-xl hover:shadow-emerald-500/40 min-h-[44px] touch-manipulation"
                   >
                     <i className="ri-secure-payment-line text-base sm:text-lg transition-transform group-hover:scale-110" />
-                    <span className="text-sm sm:text-base">Contratar Ahora - ${freelancer.hourly_rate * 10}</span>
+                    <span className="text-sm sm:text-base">
+                      {t("freelancers.grid.hireNow")} - ${freelancer.hourly_rate * 10}
+                    </span>
                   </button>
                   <p className="mt-2 text-center text-xs text-gray-500 hidden sm:block">
                     <i className="ri-shield-check-line mr-1 text-emerald-500"></i>
-                    Pago seguro con Stripe • Estimación 10 horas
+                    {t("freelancers.grid.securePayment")}
                   </p>
                 </div>
               </div>
@@ -839,14 +847,14 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
           {loadingMore && (
             <div className="flex items-center justify-center">
               <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
-              <span className="ml-3 text-gray-600">Cargando más freelancers...</span>
+              <span className="ml-3 text-gray-600">{t("freelancers.grid.loadingMore")}</span>
             </div>
           )}
           {!hasMore && !loadingMore && filteredFreelancers.length > 0 && (
             <div className="py-8">
               <p className="text-gray-500">
                 <i className="ri-check-line mr-2 text-green-500"></i>
-                Has visto todos los freelancers disponibles
+                {t("freelancers.grid.allFreelancersSeen")}
               </p>
             </div>
           )}
@@ -868,7 +876,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     </div>
                     <div className="min-w-0 flex-1">
                       <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-bold truncate">
-                        Perfil del Freelancer
+                        {t("freelancers.grid.freelancerProfile")}
                       </h2>
                     </div>
                   </div>
@@ -876,7 +884,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                 <button
                   onClick={() => setShowProfile(false)}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 active:scale-95 hover:bg-white/20 active:bg-white/30 sm:h-12 sm:w-12 touch-manipulation"
-                  aria-label="Cerrar"
+                  aria-label={t("freelancers.grid.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -908,8 +916,8 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     </div>
                     <p className="text-lg font-semibold text-cyan-700">
                       {selectedFreelancer.skills?.[0]
-                        ? `${selectedFreelancer.skills[0]} Specialist`
-                        : "Freelancer"}
+                        ? `${selectedFreelancer.skills[0]} ${t("freelancers.grid.specialist")}`
+                        : t("freelancers.grid.freelancer")}
                     </p>
                   </div>
                   <div className="mb-2 flex items-center gap-2 text-gray-600">
@@ -931,12 +939,12 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     </div>
                     <span className="font-semibold text-gray-900">{selectedFreelancer.rating}</span>
                     <span className="text-gray-600">
-                      ({selectedFreelancer.total_reviews} reseñas)
+                      ({selectedFreelancer.total_reviews} {t("freelancers.grid.reviews")})
                     </span>
                   </div>
                   <p className="text-sm text-gray-500">
                     <i className="ri-time-line mr-1 text-cyan-500"></i>
-                    {selectedFreelancer.experience_years} años de experiencia
+                    {selectedFreelancer.experience_years} {t("freelancers.grid.yearsOfExperience")}
                   </p>
                 </div>
               </div>
@@ -948,7 +956,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-lg shadow-cyan-500/30">
                       <i className="ri-money-dollar-circle-fill text-xl"></i>
                     </div>
-                    <div className="text-sm font-medium text-cyan-700">Tarifa por hora</div>
+                    <div className="text-sm font-medium text-cyan-700">{t("freelancers.grid.hourlyRate")}</div>
                   </div>
                   <p className="text-2xl font-bold text-gray-900">
                     ${selectedFreelancer.hourly_rate}
@@ -959,7 +967,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                       <i className="ri-briefcase-line text-xl"></i>
                     </div>
-                    <div className="text-sm font-medium text-cyan-700">Proyectos</div>
+                    <div className="text-sm font-medium text-cyan-700">{t("freelancers.grid.projectsLabel")}</div>
                   </div>
                   <p className="text-2xl font-bold text-gray-900">
                     {selectedFreelancer.completed_projects}
@@ -970,7 +978,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                       <i className="ri-time-line text-xl"></i>
                     </div>
-                    <div className="text-sm font-medium text-cyan-700">Respuesta</div>
+                    <div className="text-sm font-medium text-cyan-700">{t("freelancers.grid.response")}</div>
                   </div>
                   <p className="text-xl font-bold text-gray-900">
                     {selectedFreelancer.response_time}
@@ -984,7 +992,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                     <i className="ri-file-text-line text-lg"></i>
                   </div>
-                  <h4 className="text-xl font-bold text-gray-900">Acerca de</h4>
+                  <h4 className="text-xl font-bold text-gray-900">{t("freelancers.grid.about")}</h4>
                 </div>
                 <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                   <p className="leading-relaxed text-gray-700">{selectedFreelancer.bio}</p>
@@ -996,7 +1004,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                     <i className="ri-tools-fill text-lg"></i>
                   </div>
-                  <h4 className="text-xl font-bold text-gray-900">Habilidades</h4>
+                  <h4 className="text-xl font-bold text-gray-900">{t("freelancers.grid.skills")}</h4>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {selectedFreelancer.skills?.map((skill, idx) => (
@@ -1016,11 +1024,11 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                     <i className="ri-mail-line text-lg"></i>
                   </div>
-                  <h4 className="text-xl font-bold text-gray-900">Información de Contacto</h4>
+                  <h4 className="text-xl font-bold text-gray-900">{t("freelancers.grid.contactInfo")}</h4>
                 </div>
                 <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                   <p className="text-gray-700">
-                    <span className="font-semibold">Email:</span> {selectedFreelancer.email}
+                    <span className="font-semibold">{t("freelancers.grid.email")}</span> {selectedFreelancer.email}
                   </p>
                 </div>
               </div>
@@ -1037,7 +1045,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   className="group flex flex-1 cursor-pointer items-center justify-center gap-2 sm:gap-3 rounded-xl border-2 border-cyan-500 bg-white px-4 sm:px-6 py-3 sm:py-4 font-semibold text-cyan-600 transition-all hover:-translate-y-0.5 active:translate-y-0 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-teal-500 hover:text-white active:bg-cyan-50 hover:shadow-lg hover:shadow-cyan-500/30 min-h-[44px] touch-manipulation"
                 >
                   <i className="ri-chat-3-line text-lg sm:text-xl transition-transform group-hover:scale-110"></i>
-                  <span className="text-sm sm:text-base">Contactar Ahora</span>
+                  <span className="text-sm sm:text-base">{t("freelancers.grid.contactNow")}</span>
                 </button>
                 <button
                   onClick={() => {
@@ -1047,7 +1055,7 @@ export default function FreelancerGrid({ searchFilters }: FreelancerGridProps) {
                   className="group flex flex-1 cursor-pointer items-center justify-center gap-2 sm:gap-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 sm:px-6 py-3 sm:py-4 font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0 hover:scale-[1.02] active:scale-100 hover:shadow-xl hover:shadow-emerald-500/40 min-h-[44px] touch-manipulation"
                 >
                   <i className="ri-secure-payment-line text-lg sm:text-xl transition-transform group-hover:scale-110"></i>
-                  <span className="text-sm sm:text-base">Contratar Ahora</span>
+                  <span className="text-sm sm:text-base">{t("freelancers.grid.hireNowButton")}</span>
                 </button>
               </div>
             </div>
@@ -1091,6 +1099,7 @@ export const FreelancerGridList = ({
   freelancers: Freelancer[]
   loading: boolean
 }) => {
+  const { t } = useTranslation()
   const navigate = useRouter()
 
   const handleViewProfile = (freelancer: Freelancer) => {
@@ -1109,9 +1118,9 @@ export const FreelancerGridList = ({
       .replace(/[^a-z0-9-]/g, "")
 
     const profileUrl = `${window.location.origin}/freelancer/${slug}`
-    const shareText = `¡Conoce a ${freelancer.full_name}, ${freelancer.skills
+    const shareText = `${freelancer.full_name}, ${freelancer.skills
       .slice(0, 3)
-      .join(", ")} en GDN Pro! 💼`
+      .join(", ")} - GDN Pro! 💼`
 
     let shareUrl = ""
 
@@ -1134,7 +1143,7 @@ export const FreelancerGridList = ({
         const notification = document.createElement("div")
         notification.className =
           "fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50"
-        notification.textContent = "¡Enlace copiado!"
+        notification.textContent = t("freelancers.grid.linkCopied")
         document.body.appendChild(notification)
         setTimeout(() => document.body.removeChild(notification), 3000)
         return
@@ -1206,7 +1215,9 @@ export const FreelancerGridList = ({
                 <i className="ri-star-fill mr-1 text-yellow-400" />
                 <span>{freelancer.rating ?? 5.0}</span>
                 <span className="mx-2">•</span>
-                <span>{freelancer.completed_projects ?? 0} proyectos</span>
+                <span>
+                  {freelancer.completed_projects ?? 0} {t("freelancers.grid.projects")}
+                </span>
               </div>
             </div>
 
@@ -1244,7 +1255,7 @@ export const FreelancerGridList = ({
                   className="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <i className="ri-link mr-3 text-gray-500" />
-                  Copiar enlace
+                  {t("freelancers.grid.copyLink")}
                 </button>
               </div>
             </div>
@@ -1252,7 +1263,7 @@ export const FreelancerGridList = ({
 
           {/* Bio */}
           <p className="mb-4 line-clamp-2 text-sm text-gray-600">
-            {freelancer.bio || "Profesional experimentado listo para ayudarte con tus proyectos."}
+            {freelancer.bio || t("freelancers.grid.professionalReady")}
           </p>
 
           {/* Skills */}
@@ -1267,7 +1278,7 @@ export const FreelancerGridList = ({
             ))}
             {freelancer.skills.length > 3 && (
               <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                +{freelancer.skills.length - 3} más
+                +{freelancer.skills.length - 3} {t("freelancers.grid.more")}
               </span>
             )}
           </div>
@@ -1276,9 +1287,14 @@ export const FreelancerGridList = ({
           <div className="mb-4 flex items-center justify-between text-sm">
             <div className="flex items-center text-gray-600">
               <i className="ri-time-line mr-1" />
-              <span>{freelancer.experience_years}+ años exp.</span>
+              <span>
+                {freelancer.experience_years}+ {t("freelancers.grid.yearsExp")}
+              </span>
             </div>
-            <div className="font-semibold text-emerald-600">${freelancer.hourly_rate}/hora</div>
+            <div className="font-semibold text-emerald-600">
+              ${freelancer.hourly_rate}
+              {t("freelancers.grid.perHour")}
+            </div>
           </div>
 
           {/* Availability */}
@@ -1295,10 +1311,10 @@ export const FreelancerGridList = ({
               onClick={() => handleViewProfile(freelancer)}
               className="flex-1 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
             >
-              Ver Perfil
+              {t("freelancers.grid.viewProfile")}
             </button>
             <button className="rounded-lg border border-emerald-600 px-4 py-2 text-sm font-medium whitespace-nowrap text-emerald-600 transition-colors hover:bg-emerald-50">
-              Contactar
+              {t("freelancers.grid.contact")}
             </button>
           </div>
         </div>

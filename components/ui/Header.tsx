@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation"
 import NotificationBell from "@/components/NotificationBell"
 import { useAuth } from "@/contexts/AuthContext"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import { useTranslation } from "react-i18next"
+import LanguageSelector from "@/components/ui/LanguageSelector"
 
 const supabase = supabaseBrowser()
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const { t } = useTranslation()
 
   const { profile: user, loading, refreshAuth } = useAuth()
   const navigate = useRouter()
@@ -58,24 +61,24 @@ export default function Header() {
   // Menu items based on user type
   const getMenuItems = () => {
     const baseItems = [
-      { label: "Inicio", url: "/" },
-      { label: "Servicios", url: "/#services" },
-      { label: "Portafolio", url: "/#portfolio" },
-      { label: "Equipo", url: "/#team" },
+      { label: t("header.menu.home"), url: "/" },
+      { label: t("header.menu.services"), url: "/#services" },
+      { label: t("header.menu.portfolio"), url: "/#portfolio" },
+      { label: t("header.menu.team"), url: "/#team" },
     ]
 
     // Show "Works" for freelancers, "Freelancers" for clients and non-logged users
     if (user?.user_type === "freelancer") {
       return [
         ...baseItems,
-        { label: "Trabajos", url: "/works" },
-        { label: "Contacto", url: "/#contact" },
+        { label: t("header.menu.works"), url: "/works" },
+        { label: t("header.menu.contact"), url: "/#contact" },
       ]
     } else {
       return [
         ...baseItems,
-        { label: "Freelancers", url: "/freelancers" },
-        { label: "Contacto", url: "/#contact" },
+        { label: t("header.menu.freelancers"), url: "/freelancers" },
+        { label: t("header.menu.contact"), url: "/#contact" },
       ]
     }
   }
@@ -91,7 +94,7 @@ export default function Header() {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="hover:text-primary flex size-10 touch-manipulation items-center justify-center text-gray-700 transition-colors"
-              aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-label={isMenuOpen ? t("header.mobile.closeMenu") : t("header.mobile.openMenu")}
             >
               <i
                 className={`text-2xl transition-transform ${
@@ -142,6 +145,7 @@ export default function Header() {
           {!loading && user ? (
             <div className="relative hidden md:block">
               <div className="flex items-center space-x-3">
+                <LanguageSelector />
                 <NotificationBell />
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -158,7 +162,7 @@ export default function Header() {
                       <i className="ri-user-line text-primary text-xl sm:text-2xl"></i>
                     )}
                   </div>
-                  <span>{user?.full_name?.split(" ")[0] || "Usuario"}</span>
+                  <span>{user?.full_name?.split(" ")[0] || t("header.user.user")}</span>
                   <i
                     className={`ri-arrow-down-s-line transition-transform ${
                       isUserMenuOpen ? "rotate-180" : ""
@@ -178,31 +182,32 @@ export default function Header() {
                     className="flex w-full cursor-pointer px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
                   >
                     <i className="ri-dashboard-line mr-2"></i>
-                    Dashboard
+                    {t("header.user.dashboard")}
                   </a>
                   <button
                     onClick={handleLogout}
                     className="flex w-full cursor-pointer px-4 py-2 text-left text-red-600 hover:bg-red-50"
                   >
                     <i className="ri-logout-box-line mr-2"></i>
-                    Cerrar sesión
+                    {t("header.user.logout")}
                   </button>
                 </div>
               )}
             </div>
           ) : (
             <div className="hidden items-center space-x-4 md:flex">
+              <LanguageSelector />
               <a
                 href="/auth/login"
                 className="hover:text-primary cursor-pointer font-medium text-gray-700 transition-colors"
               >
-                Iniciar Sesión
+                {t("header.auth.login")}
               </a>
               <a
                 href="/auth/register"
                 className="bg-primary transform cursor-pointer rounded-full px-6 py-2 font-semibold text-white transition-all hover:scale-105 hover:bg-cyan-700"
               >
-                Registrarse
+                {t("header.auth.register")}
               </a>
             </div>
           )}
@@ -233,7 +238,7 @@ export default function Header() {
                     className="block w-full rounded-lg px-4 py-3 text-left font-medium text-gray-700 transition-colors hover:bg-gray-50 active:bg-gray-100"
                   >
                     <i className="ri-dashboard-line mr-2"></i>
-                    Dashboard
+                    {t("header.user.dashboard")}
                   </a>
                   <button
                     onClick={() => {
@@ -243,26 +248,29 @@ export default function Header() {
                     className="block w-full rounded-lg px-4 py-3 text-left font-medium text-red-600 transition-colors hover:bg-red-50 active:bg-red-100"
                   >
                     <i className="ri-logout-box-line mr-2"></i>
-                    Cerrar Sesión
+                    {t("header.user.logout")}
                   </button>
                 </div>
               )}
 
               {!user && (
                 <div className="mt-3 space-y-2 border-t border-gray-200 pt-3">
+                  <div className="px-4 py-2">
+                    <LanguageSelector />
+                  </div>
                   <a
                     href="/auth/login"
                     onClick={() => setIsMenuOpen(false)}
                     className="block w-full rounded-lg px-4 py-3 text-center font-medium text-gray-700 transition-colors hover:bg-gray-50 active:bg-gray-100"
                   >
-                    Iniciar Sesión
+                    {t("header.auth.login")}
                   </a>
                   <a
                     href="/auth/register"
                     onClick={() => setIsMenuOpen(false)}
                     className="bg-primary block w-full rounded-lg px-4 py-3 text-center font-medium text-white transition-colors hover:bg-cyan-700 active:bg-cyan-800"
                   >
-                    Registrarse
+                    {t("header.auth.register")}
                   </a>
                 </div>
               )}

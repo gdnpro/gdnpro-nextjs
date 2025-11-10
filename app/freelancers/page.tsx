@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 import FreelancerHero from "@/components/freelancers/FreelancerHero"
 import FreelancerStats from "@/components/freelancers/FreelancerStats"
 import FreelancerSearch from "@/components/freelancers/FreelancerSearch"
@@ -10,6 +11,7 @@ import JoinFreelancer from "@/components/freelancers/JoinFreelancer"
 import { useAuth } from "@/contexts/AuthContext"
 
 export default function Freelancers() {
+  const { t } = useTranslation()
   const { profile, loading } = useAuth()
   const router = useRouter()
   const [searchFilters, setSearchFilters] = useState({
@@ -22,9 +24,9 @@ export default function Freelancers() {
   })
 
   useEffect(() => {
-    document.title = "Freelancers | GDN Pro | Encuentra al freelancer ideal para tu proyecto"
+    document.title = t("freelancers.pageTitle")
     window.scrollTo(0, 0)
-  }, [])
+  }, [t])
 
   useEffect(() => {
     // If user is a freelancer, redirect to works page

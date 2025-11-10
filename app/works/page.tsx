@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 import { supabaseBrowser } from "@/utils/supabase/client"
 import { useAuth } from "@/contexts/AuthContext"
 import type { Project } from "@/interfaces/Project"
@@ -14,11 +15,12 @@ import WorksStats from "@/components/works/WorksStats"
 import WorksSearch from "@/components/works/WorksSearch"
 import WorksGrid from "@/components/works/WorksGrid"
 import WorksProposalModal from "@/components/works/WorksProposalModal"
-import WorksProjectDetailsModal from "@/components/works/WorksProjectDetailsModal"
+import ProjectDetailsModal from "@/components/dashboard/ProjectDetailsModal"
 
 const supabase = supabaseBrowser()
 
 export default function Works() {
+  const { t } = useTranslation()
   const { profile, loading: authLoading } = useAuth()
   const router = useRouter()
   const [projects, setProjects] = useState<Project[]>([])
@@ -45,9 +47,9 @@ export default function Works() {
   const ITEMS_PER_PAGE = 12
 
   useEffect(() => {
-    document.title = "Trabajos Disponibles | GDN Pro"
+    document.title = t("works.pageTitle")
     window.scrollTo(0, 0)
-  }, [])
+  }, [t])
 
   useEffect(() => {
     // Redirect if not a freelancer
@@ -211,7 +213,7 @@ export default function Works() {
       if (error) throw error
 
       window.toast({
-        title: "¡Propuesta enviada exitosamente!",
+        title: t("works.proposal.success"),
         type: "success",
         location: "bottom-center",
         dismissible: true,
@@ -222,7 +224,7 @@ export default function Works() {
       loadData() // Reload data
     } catch (error) {
       window.toast({
-        title: "Error al enviar la propuesta. Inténtalo de nuevo.",
+        title: t("works.proposal.error"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -236,7 +238,7 @@ export default function Works() {
     try {
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) {
-        throw new Error("No hay sesión activa")
+        throw new Error(t("works.errors.noSession"))
       }
 
       const response = await fetch(
@@ -277,7 +279,7 @@ export default function Works() {
     try {
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) {
-        throw new Error("No hay sesión activa")
+        throw new Error(t("works.errors.noSession"))
       }
 
       const response = await fetch(
@@ -308,8 +310,7 @@ export default function Works() {
         await loadMessages(selectedConversation.id)
         if (data.flagged) {
           window.toast({
-            title:
-              "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+            title: t("works.chat.contactInfoWarning"),
             type: "info",
             location: "bottom-center",
             dismissible: true,
@@ -317,11 +318,11 @@ export default function Works() {
           })
         }
       } else {
-        throw new Error(data.error || "Error desconocido al enviar mensaje")
+        throw new Error(data.error || t("works.chat.unknownError"))
       }
     } catch (error: unknown) {
       window.toast({
-        title: "Error al enviar mensaje",
+        title: t("works.chat.sendError"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -343,7 +344,7 @@ export default function Works() {
   const startChat = async (projectId: string, clientId: string) => {
     if (!profile) {
       window.toast({
-        title: "Debes iniciar sesión para chatear",
+        title: t("works.chat.loginRequired"),
         type: "warning",
         location: "bottom-center",
         dismissible: true,
@@ -358,7 +359,7 @@ export default function Works() {
     try {
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) {
-        throw new Error("No hay sesión activa")
+        throw new Error(t("works.errors.noSession"))
       }
 
       // Find the project to get client info
@@ -427,7 +428,7 @@ export default function Works() {
             project_id: projectId,
             updated_at: new Date().toISOString(),
             client: {
-              full_name: project?.client?.full_name || "Cliente",
+              full_name: project?.client?.full_name || t("works.client"),
               avatar_url: project?.client?.avatar_url,
             },
             project: project
@@ -437,13 +438,14 @@ export default function Works() {
               : undefined,
           }
         } else {
-          throw new Error(data.error || "Error al crear conversación")
+          throw new Error(data.error || t("works.chat.createError"))
         }
       } else {
         // Ensure conversation has client and project info
         if (project) {
           conversation.client = {
-            full_name: project.client?.full_name || conversation.client?.full_name || "Cliente",
+            full_name:
+              project.client?.full_name || conversation.client?.full_name || t("works.client"),
             avatar_url: project.client?.avatar_url || conversation.client?.avatar_url,
           }
           conversation.project = {
@@ -457,7 +459,7 @@ export default function Works() {
       await loadMessages(conversation.id)
     } catch (error) {
       window.toast({
-        title: "Error al iniciar el chat. Inténtalo de nuevo.",
+        title: t("works.chat.startError"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -486,7 +488,7 @@ export default function Works() {
         <div className="flex min-h-screen items-center justify-center">
           <div className="text-center">
             <div className="border-primary mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
-            <p className="text-gray-600">Cargando trabajos disponibles...</p>
+            <p className="text-gray-600">{t("works.loading")}</p>
           </div>
         </div>
       </div>
@@ -519,7 +521,7 @@ export default function Works() {
         onClose={() => setShowProposalModal(false)}
         onSubmit={submitProposal}
       />
-      <WorksProjectDetailsModal
+      <ProjectDetailsModal
         project={selectedProject}
         isOpen={showProjectDetailsModal}
         onClose={() => {
@@ -528,6 +530,10 @@ export default function Works() {
         }}
         onSendProposal={sendProposal}
         onStartChat={startChat}
+        showSendProposal={true}
+        showStartChat={true}
+        hasProposal={proposals.some((p) => p.project_id === selectedProject?.id)}
+        variant="works"
       />
       {showChat && selectedConversation && (
         <ConversationModal

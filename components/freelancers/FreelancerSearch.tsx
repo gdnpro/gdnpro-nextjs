@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface FreelancerSearchProps {
   onFiltersChange: (filters: {
@@ -14,6 +15,7 @@ interface FreelancerSearchProps {
 }
 
 export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchProps) {
+  const { t } = useTranslation()
   const [searchFilters, setSearchFilters] = useState({
     search: "",
     category: "",
@@ -81,10 +83,10 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
             </div>
           </div>
           <h2 className="mb-4 text-4xl font-bold text-gray-900">
-            Encuentra el Freelancer Perfecto
+            {t("freelancers.search.title")}
           </h2>
           <p className="text-xl text-gray-600">
-            Filtra por especialidad, experiencia y presupuesto para encontrar el talento ideal
+            {t("freelancers.search.description")}
           </p>
         </div>
 
@@ -94,7 +96,7 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
             <div className="lg:col-span-3">
               <label htmlFor="freelancer-search-input" className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
                 <i className="ri-search-line text-cyan-500"></i>
-                Buscar Freelancers
+                {t("freelancers.search.searchButton")}
               </label>
               <div className="relative">
                 <i className="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 transform text-xl text-cyan-500"></i>
@@ -102,7 +104,7 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
                   type="text"
                   id="freelancer-search-input"
                   name="search"
-                  placeholder="Buscar por habilidades, nombre o descripción..."
+                  placeholder={t("freelancers.search.searchPlaceholder")}
                   value={searchFilters.search}
                   onChange={(e) => handleFilterChange("search", e.target.value)}
                   className="w-full rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white py-4 pr-4 pl-12 text-lg transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
@@ -114,7 +116,7 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
             <div>
               <label htmlFor="freelancer-category" className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
                 <i className="ri-folder-line text-cyan-500"></i>
-                Categoría
+                {t("freelancers.search.category")}
               </label>
               <div className="relative">
                 <select
@@ -124,7 +126,7 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
                   onChange={(e) => handleFilterChange("category", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white px-4 py-3 pr-8 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                 >
-                  <option value="">Todas las categorías</option>
+                  <option value="">{t("freelancers.search.allCategories")}</option>
                   {categories.map((category, index) => (
                     <option key={index} value={category}>
                       {category}
@@ -139,7 +141,7 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
             <div>
               <label htmlFor="freelancer-experience" className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
                 <i className="ri-star-line text-cyan-500"></i>
-                Experiencia
+                {t("freelancers.search.experience")}
               </label>
               <div className="relative">
                 <select
@@ -149,7 +151,7 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
                   onChange={(e) => handleFilterChange("experience", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white px-4 py-3 pr-8 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                 >
-                  <option value="">Cualquier nivel</option>
+                  <option value="">{t("freelancers.search.anyLevel")}</option>
                   {experienceLevels.map((level, index) => (
                     <option key={index} value={level}>
                       {level}
@@ -164,7 +166,7 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
             <div>
               <label htmlFor="freelancer-budget" className="mb-2 flex items-center gap-2 font-semibold text-gray-700">
                 <i className="ri-money-dollar-circle-line text-cyan-500"></i>
-                Presupuesto por hora
+                {t("freelancers.search.budgetPerHour")}
               </label>
               <div className="relative">
                 <select
@@ -174,7 +176,7 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
                   onChange={(e) => handleFilterChange("budget", e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-xl border border-gray-300 bg-gradient-to-r from-gray-50 to-white px-4 py-3 pr-8 transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                 >
-                  <option value="">Cualquier presupuesto</option>
+                  <option value="">{t("freelancers.search.anyBudget")}</option>
                   {budgetRanges.map((range, index) => (
                     <option key={index} value={range}>
                       {range}
@@ -192,14 +194,14 @@ export default function FreelancerSearch({ onFiltersChange }: FreelancerSearchPr
               className="group inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-8 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
               <i className="ri-search-line text-lg transition-transform group-hover:scale-110"></i>
-              Buscar Freelancers
+              {t("freelancers.search.searchButton")}
             </button>
             <button
               onClick={handleClearFilters}
               className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-8 py-3 font-semibold text-gray-700 transition-all hover:border-cyan-500 hover:bg-cyan-50 hover:text-cyan-700"
             >
               <i className="ri-refresh-line text-lg"></i>
-              Limpiar Filtros
+              {t("freelancers.search.clearFilters")}
             </button>
           </div>
         </div>

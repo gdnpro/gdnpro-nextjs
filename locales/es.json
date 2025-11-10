@@ -1,0 +1,1874 @@
+{
+  "header": {
+    "menu": {
+      "home": "Inicio",
+      "services": "Servicios",
+      "portfolio": "Portafolio",
+      "team": "Equipo",
+      "works": "Trabajos",
+      "freelancers": "Freelancers",
+      "contact": "Contacto"
+    },
+    "mobile": {
+      "openMenu": "Abrir menú",
+      "closeMenu": "Cerrar menú"
+    },
+    "user": {
+      "dashboard": "Dashboard",
+      "logout": "Cerrar sesión",
+      "user": "Usuario"
+    },
+    "auth": {
+      "login": "Iniciar Sesión",
+      "register": "Registrarse"
+    }
+  },
+  "hero": {
+    "title": "Transformamos",
+    "titleHighlight": "Ideas en Realidad",
+    "description": "En <strong>GDN PRO</strong> creamos soluciones digitales innovadoras. Desarrollo web, apps móviles y marketing digital de clase mundial.",
+    "stats": {
+      "completedProjects": "+19 Proyectos Completados",
+      "expertTeam": "Equipo de Expertos",
+      "support247": "Soporte 24/7",
+      "projects": "Proyectos",
+      "clients": "Clientes",
+      "rating": "Calificación"
+    },
+    "cta": {
+      "viewPortfolio": "Ver Portafolio",
+      "contactNow": "Contactar Ahora",
+      "viewFreelancers": "Ver Freelancers"
+    }
+  },
+  "about": {
+    "title": "Sobre GDN Pro",
+    "description1": "Somos una empresa de consultoría digital especializada en transformar ideas en soluciones tecnológicas innovadoras. Con más de 2 años de experiencia, hemos ayudado a empresas de todos los tamaños a digitalizar sus procesos y alcanzar sus objetivos.",
+    "description2": "Nuestro enfoque integral combina desarrollo de software de alta calidad, estrategias de marketing digital efectivas y acceso a una red de freelancers especializados para cubrir todas tus necesidades digitales.",
+    "features": {
+      "customSolutions": "Soluciones personalizadas para cada cliente",
+      "cuttingEdge": "Tecnologías de vanguardia",
+      "continuousSupport": "Soporte continuo y mantenimiento",
+      "freelancerNetwork": "Red de freelancers especializados"
+    },
+    "cta": "Conoce Más Sobre Nosotros",
+    "stats": {
+      "completedProjects": "Proyectos Completados",
+      "satisfiedClients": "Clientes Satisfechos",
+      "yearsExperience": "Años de Experiencia",
+      "satisfactionRate": "Tasa de Satisfacción"
+    },
+    "founded": "Fundada"
+  },
+  "services": {
+    "title": "Nuestros Servicios",
+    "subtitle": "Ofrecemos soluciones completas para impulsar tu negocio en el mundo digital",
+    "webDevelopment": {
+      "title": "Desarrollo Web",
+      "description": "Diseñamos y desarrollamos sitios y aplicaciones web modernas, rápidas y escalables. Perfectas para empresas que buscan presencia sólida y rendimiento en línea.",
+      "features": [
+        "React & Next.js",
+        "Tiendas en línea (E-commerce)",
+        "CMS a medida para gestión de contenido",
+        "Integración y desarrollo de APIs"
+      ],
+      "price": "Desde $1,500"
+    },
+    "mobileDevelopment": {
+      "title": "Desarrollo Móvil",
+      "description": "Creamos aplicaciones móviles nativas e híbridas con excelente rendimiento y una experiencia de usuario fluida, listas para publicar en App Store y Google Play.",
+      "features": [
+        "React Native y Flutter",
+        "Publicación en tiendas (App Store / Google Play)",
+        "Notificaciones Push integradas",
+        "Diseño adaptado a iOS y Android"
+      ],
+      "price": "Desde $5,000"
+    },
+    "digitalMarketing": {
+      "title": "Marketing Digital",
+      "description": "Aumenta tu visibilidad, tráfico y ventas con estrategias digitales efectivas, adaptadas a tu negocio. Nos enfocamos en resultados medibles.",
+      "features": [
+        "Posicionamiento SEO y campañas SEM",
+        "Gestión de redes sociales",
+        "Automatización de Email Marketing",
+        "Monitoreo y análisis de datos (Analytics)"
+      ],
+      "price": "Desde $1,000/mes"
+    },
+    "freelancerNetwork": {
+      "title": "Red de Freelancers",
+      "description": "Accede al mejor talento freelance para cualquier tipo de proyecto. Nosotros nos encargamos de la selección, gestión y calidad del trabajo.",
+      "features": [
+        "Talento verificado por expertos",
+        "Gestión completa de proyectos",
+        "Garantía en entregables",
+        "Soporte dedicado 24/7"
+      ],
+      "price": "Comisión 15%",
+      "cta": "Unirte Ahora"
+    },
+    "cta": {
+      "title": "¿Necesitas una solución personalizada?",
+      "description": "Cada proyecto es único. Conversemos sobre tus necesidades específicas y creemos la solución perfecta para ti.",
+      "button": "Consulta Gratuita"
+    },
+    "requestQuote": "Solicitar Cotización"
+  },
+  "portfolio": {
+    "title": "Nuestro Portafolio",
+    "subtitle": "Algunos de los proyectos exitosos que hemos desarrollado para nuestros clientes",
+    "filters": {
+      "all": "Todos los Proyectos",
+      "web": "Desarrollo Web",
+      "mobile": "Apps Móviles",
+      "marketing": "Marketing Digital"
+    },
+    "categories": {
+      "web": "Web",
+      "mobile": "Móvil",
+      "marketing": "Marketing"
+    },
+    "viewDetails": "Ver Detalles",
+    "viewMore": "Ver Más Proyectos"
+  },
+  "team": {
+    "title": "Nuestro Equipo",
+    "subtitle": "Conoce a los profesionales apasionados que hacen posible cada proyecto exitoso",
+    "cta": {
+      "title": "¿Quieres formar parte de nuestro equipo?",
+      "description": "Estamos siempre buscando talento excepcional para unirse a nuestra red de freelancers especializados",
+      "viewOpportunities": "Ver Oportunidades",
+      "joinAsFreelancer": "Únete Como Freelancer"
+    }
+  },
+  "testimonials": {
+    "title": "Lo Que Dicen Nuestros Clientes",
+    "subtitle": "La satisfacción de nuestros clientes es nuestra mejor carta de presentación",
+    "project": "Proyecto:"
+  },
+  "cta": {
+    "title": "¿Listo para transformar tu negocio?",
+    "description": "No esperes más. Comencemos a construir el futuro digital de tu empresa hoy mismo. Nuestro equipo está listo para hacer realidad tus ideas más ambiciosas.",
+    "startNow": "Empezar Ahora",
+    "scheduleAppointment": "Agenda una cita",
+    "contact": {
+      "email": "Escríbenos",
+      "emailAddress": "contact@gdnpro.com",
+      "virtualMeeting": "Reunión Virtual",
+      "schedule": "Agenda una cita"
+    },
+    "modal": {
+      "title": "Agenda tu cita gratuita",
+      "subtitle": "Completa los datos para confirmar tu reunión",
+      "close": "Cerrar",
+      "selectDate": "Selecciona una fecha",
+      "selectTime": "Selecciona la hora",
+      "selectTimePlaceholder": "Elige una hora",
+      "meetingTopic": "Tema de la reunión",
+      "meetingTopicPlaceholder": "Cuéntanos brevemente de qué te gustaría hablar...",
+      "yourName": "Tu nombre",
+      "yourNamePlaceholder": "Tu nombre completo",
+      "preferredPlatform": "¿Cómo prefieres reunirte?",
+      "contactInfo": "Información de contacto",
+      "whatsappPlaceholder": "Número de WhatsApp",
+      "emailPlaceholder": "Correo electrónico",
+      "scheduleButton": "Agendar cita",
+      "errors": {
+        "fillAllFields": "Por favor, completa todos los campos antes de agendar",
+        "errorSending": "Error al enviar la cita",
+        "serverError": "Hubo un problema al comunicarse con el servidor"
+      },
+      "success": "Tu cita fue enviada correctamente. Te contactaremos pronto {contactText}."
+    }
+  },
+  "contact": {
+    "title": "Información de Contacto",
+    "subtitle": "¿Tienes un proyecto en mente? Cuéntanos sobre tu idea y te ayudaremos a hacerla realidad.",
+    "talkAboutProject": {
+      "title": "Hablemos de tu proyecto",
+      "description": "Estamos aquí para ayudarte a transformar tus ideas en soluciones digitales exitosas. Contáctanos y descubre cómo podemos impulsar tu negocio."
+    },
+    "info": {
+      "location": "Ubicación",
+      "locationValue": "Nueva Jersey, Estados Unidos",
+      "email": "Email",
+      "emailValue": "contact@gdnpro.com",
+      "schedule": "Horario",
+      "scheduleValue": "Lun - Sab: 9:00 AM - 8:00 PM"
+    },
+    "whyChooseUs": {
+      "title": "¿Por qué elegirnos?",
+      "features": [
+        "Experiencia comprobada en proyectos exitosos",
+        "Equipo de desarrolladores especializados",
+        "Soporte continuo y mantenimiento",
+        "Precios competitivos y transparentes"
+      ]
+    },
+    "form": {
+      "title": "Solicita una Cotización",
+      "fields": {
+        "fullName": "Nombre Completo *",
+        "fullNamePlaceholder": "Tu nombre completo",
+        "email": "Email *",
+        "emailPlaceholder": "tu@email.com",
+        "company": "Empresa",
+        "companyPlaceholder": "Nombre de tu empresa",
+        "phone": "Teléfono",
+        "phonePlaceholder": "+000 000 0000",
+        "serviceType": "Tipo de Servicio *",
+        "servicePlaceholder": "Selecciona un servicio",
+        "services": {
+          "web": "Desarrollo Web",
+          "mobile": "Aplicación Móvil",
+          "uiux": "Diseño UI/UX",
+          "ecommerce": "E-commerce",
+          "marketing": "Marketing Digital",
+          "consulting": "Consultoría",
+          "other": "Otro"
+        },
+        "budget": "Presupuesto Estimado *",
+        "budgetPlaceholder": "Selecciona un rango",
+        "budgetOptions": {
+          "less1000": "Menos de $1,000",
+          "1000-2000": "$1,000 - $2,000",
+          "2000-5000": "$2,000 - $5,000",
+          "5000-10000": "$5,000 - $10,000",
+          "10000-25000": "$10,000 - $25,000",
+          "more25000": "Más de $25,000"
+        },
+        "timeline": "Timeline del Proyecto *",
+        "timelinePlaceholder": "Selecciona un timeline",
+        "timelineOptions": {
+          "1-2weeks": "1-2 semanas",
+          "2-4weeks": "2-4 semanas",
+          "1month": "1 mes",
+          "2-3months": "2-3 meses",
+          "3-6months": "3-6 meses",
+          "more6months": "Más de 6 meses"
+        },
+        "projectDescription": "Descripción del Proyecto *",
+        "projectDescriptionPlaceholder": "Cuéntanos sobre tu proyecto, objetivos, funcionalidades requeridas, etc.",
+        "projectDescriptionHint": "Describe tu proyecto con el mayor detalle posible"
+      },
+      "submit": "Enviar Mensaje",
+      "submitting": "Enviando...",
+      "disclaimer": "Al enviar este formulario, aceptas que nos pongamos en contacto contigo para discutir tu proyecto.",
+      "errors": {
+        "fillRequired": "Por favor completa todos los campos requeridos",
+        "messageTooLong": "El mensaje no puede exceder 500 caracteres",
+        "errorSending": "Error al enviar el mensaje"
+      },
+      "success": "¡Mensaje enviado correctamente! Te contactaremos pronto."
+    }
+  },
+  "footer": {
+    "description": "Transformamos ideas en realidad digital. Expertos en desarrollo web, apps móviles y marketing digital. Soluciones tecnológicas de clase mundial para empresas que buscan destacar en el mercado digital.",
+    "sections": {
+      "services": "Servicios",
+      "company": "Empresa"
+    },
+    "links": {
+      "webDevelopment": "Desarrollo Web",
+      "mobileDevelopment": "Desarrollo Móvil",
+      "digitalMarketing": "Marketing Digital",
+      "freelancerNetwork": "Red de Freelancers",
+      "consulting": "Consultoría",
+      "about": "Sobre Nosotros",
+      "portfolio": "Portafolio",
+      "team": "Nuestro Equipo",
+      "testimonials": "Testimonios"
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Suscríbete para recibir las últimas noticias sobre desarrollo web, aplicaciones móviles, marketing digital y ofertas especiales de GDN Pro.",
+      "emailPlaceholder": "Tu email",
+      "subscribe": "Suscribirse"
+    },
+    "copyright": "© {year} GDN Pro. Todos los derechos reservados.",
+    "legal": {
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio",
+      "dataDeletion": "Eliminación de Datos"
+    },
+    "social": {
+      "linkedin": "Síguenos en LinkedIn - GDN Pro",
+      "twitter": "Síguenos en Twitter - GDN Pro",
+      "instagram": "Síguenos en Instagram - GDN Pro",
+      "github": "Visita nuestro GitHub - GDN Pro"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Inicia Sesión",
+      "subtitle": "¿No tienes cuenta?",
+      "registerLink": "Regístrate aquí",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "password": "Contraseña",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Iniciar Sesión",
+      "submitting": "Iniciando sesión...",
+      "forgotPassword": "¿Olvidaste la contraseña?",
+      "verificationSent": "Te enviamos un correo de verificación. Revisa tu bandeja antes de iniciar sesión.",
+      "resendEmail": "Reenviar email",
+      "writeEmail": "Escribe tu email",
+      "recoveryEmailSent": "Se envió un email de recuperación"
+    }
+  },
+  "seo": {
+    "title": "GDN Pro",
+    "description": "GDN Pro es una plataforma en la que desarrolladores freelancers y clientes en búsqueda de trabajadores se encuentran y llegan a acuerdos corporativos. En GDN PRO creamos soluciones digitales innovadoras. Desarrollo web, apps móviles y marketing digital de clase mundial."
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "close": "Cerrar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "back": "Volver",
+    "refresh": "Actualizar",
+    "language": "Idioma",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "freelancer": "Freelancer"
+  },
+  "freelancers": {
+    "pageTitle": "Freelancers | GDN Pro | Encuentra al freelancer ideal para tu proyecto",
+    "hero": {
+      "title": "Marketplace de",
+      "titleHighlight": "Freelancers",
+      "description": "Conecta con los mejores freelancers especializados o únete a nuestra red de talento verificado",
+      "searchFreelancers": "Buscar Freelancers",
+      "viewDashboard": "Ver Mi Dashboard",
+      "joinAsFreelancer": "Únete Como Freelancer"
+    },
+    "stats": {
+      "completedProjects": "Proyectos Completados",
+      "clientSatisfaction": "Satisfacción del Cliente",
+      "supportAvailable": "Soporte Disponible"
+    },
+    "search": {
+      "title": "Encuentra el Freelancer Perfecto",
+      "description": "Filtra por especialidad, experiencia y presupuesto para encontrar el talento ideal",
+      "searchPlaceholder": "Buscar por habilidades, nombre o descripción...",
+      "category": "Categoría",
+      "allCategories": "Todas las categorías",
+      "experience": "Experiencia",
+      "anyLevel": "Cualquier nivel",
+      "budgetPerHour": "Presupuesto por hora",
+      "anyBudget": "Cualquier presupuesto",
+      "searchButton": "Buscar Freelancers",
+      "clearFilters": "Limpiar Filtros"
+    },
+    "join": {
+      "title": "Únete a Nuestra Red de Freelancers",
+      "description": "Forma parte de nuestra comunidad de profesionales y accede a proyectos de alta calidad con clientes verificados",
+      "joinButton": "Únete Como Freelancer",
+      "whyJoin": "¿Por qué unirse a GDN Pro?",
+      "guaranteedPayments": "Pagos Garantizados",
+      "guaranteedPaymentsDesc": "Recibe tus pagos de forma segura y puntual a través de nuestra plataforma.",
+      "verifiedClients": "Clientes Verificados",
+      "verifiedClientsDesc": "Todos nuestros clientes pasan por un proceso de verificación riguroso.",
+      "support247": "Soporte 24/7",
+      "support247Desc": "Nuestro equipo te apoya en cada paso del proceso.",
+      "qualityProjects": "Proyectos de Calidad",
+      "qualityProjectsDesc": "Accede a proyectos interesantes y bien remunerados.",
+      "competitiveCommission": "Comisión Competitiva",
+      "commissionRate": "Solo 15%",
+      "commissionDesc": "Una de las comisiones más bajas del mercado. Mantén más de tus ganancias.",
+      "noHiddenCosts": "Sin costos ocultos",
+      "weeklyPayments": "Pagos semanales",
+      "multiplePaymentMethods": "Múltiples métodos de pago"
+    },
+    "grid": {
+      "loading": "Cargando freelancers...",
+      "noFreelancersFound": "No se encontraron freelancers",
+      "noFreelancersMessage": "Intenta ajustar los filtros de búsqueda para encontrar más resultados.",
+      "noFreelancersRegistered": "Actualmente no hay freelancers registrados en la plataforma.",
+      "featuredFreelancers": "Freelancers Destacados",
+      "showing": "Mostrando",
+      "of": "de",
+      "freelancers": "freelancers",
+      "filtered": "(filtrados)",
+      "sortBy": "Ordenar por:",
+      "sortBestRated": "Mejor calificados",
+      "sortPriceLow": "Precio: menor a mayor",
+      "sortPriceHigh": "Precio: mayor a menor",
+      "sortMoreProjects": "Más proyectos",
+      "sortFastestResponse": "Respuesta más rápida",
+      "moreProjects": "Más proyectos",
+      "available": "Disponible",
+      "freelancer": "Freelancer",
+      "projects": "proyectos",
+      "respondsIn": "Responde en",
+      "contact": "Contactar",
+      "viewProfile": "Ver Perfil",
+      "hireNow": "Contratar Ahora",
+      "securePayment": "Pago seguro con Stripe • Estimación 10 horas",
+      "loadingMore": "Cargando más freelancers...",
+      "allFreelancersSeen": "Has visto todos los freelancers disponibles",
+      "freelancerProfile": "Perfil del Freelancer",
+      "close": "Cerrar",
+      "yearsOfExperience": "años de experiencia",
+      "hourlyRate": "Tarifa por hora",
+      "perHour": "/hora",
+      "projectsLabel": "Proyectos",
+      "response": "Respuesta",
+      "about": "Acerca de",
+      "skills": "Habilidades",
+      "contactInfo": "Información de Contacto",
+      "email": "Email:",
+      "contactNow": "Contactar Ahora",
+      "hireNowButton": "Contratar Ahora",
+      "reviews": "reseñas",
+      "copyLink": "Copiar enlace",
+      "linkCopied": "¡Enlace copiado!",
+      "more": "más",
+      "yearsExp": "años exp.",
+      "professionalReady": "Profesional experimentado listo para ayudarte con tus proyectos.",
+      "specialist": "Specialist",
+      "loginToContact": "Debes iniciar sesión para contactar freelancers",
+      "profileLoadError": "No se pudo cargar tu perfil",
+      "noSession": "No hay sesión activa",
+      "chatCreateError": "Error al crear conversación",
+      "chatStartError": "Error al iniciar el chat",
+      "contactInfoWarning": "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+      "messageUnknownError": "Error desconocido al enviar mensaje",
+      "messageSendError": "Error al enviar mensaje",
+      "loginToHire": "Debes iniciar sesión para contratar freelancers",
+      "professionalWithExperience": "Freelancer profesional con experiencia comprobada.",
+      "projectWith": "Proyecto con",
+      "projectDescription": "Proyecto de desarrollo con {{name}} - {{skill}} especialista"
+    }
+  },
+  "works": {
+    "pageTitle": "Trabajos Disponibles | GDN Pro",
+    "loading": "Cargando trabajos disponibles...",
+    "client": "Cliente",
+    "hero": {
+      "title": "Encuentra Proyectos",
+      "titleHighlight": "Que Te Inspiren",
+      "description": "Descubre oportunidades de trabajo que se ajusten a tus habilidades y experiencia. Conecta con clientes verificados y crece tu carrera como freelancer",
+      "exploreProjects": "Explorar Proyectos",
+      "viewDashboard": "Ver Mi Dashboard"
+    },
+    "stats": {
+      "completedProjects": "Proyectos Completados",
+      "clientSatisfaction": "Satisfacción del Cliente",
+      "supportAvailable": "Soporte Disponible"
+    },
+    "search": {
+      "title": "Encuentra el Proyecto Perfecto",
+      "description": "Filtra por categoría, presupuesto y plazo para encontrar proyectos que se ajusten a ti",
+      "searchPlaceholder": "Buscar por título, descripción o habilidades requeridas...",
+      "category": "Categoría",
+      "allCategories": "Todas las categorías",
+      "budget": "Presupuesto",
+      "anyBudget": "Cualquier presupuesto",
+      "deadline": "Plazo",
+      "anyDeadline": "Cualquier plazo",
+      "searchButton": "Buscar Proyectos",
+      "clearFilters": "Limpiar Filtros"
+    },
+    "proposal": {
+      "success": "¡Propuesta enviada exitosamente!",
+      "error": "Error al enviar la propuesta. Inténtalo de nuevo."
+    },
+    "chat": {
+      "contactInfoWarning": "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+      "unknownError": "Error desconocido al enviar mensaje",
+      "sendError": "Error al enviar mensaje",
+      "loginRequired": "Debes iniciar sesión para chatear",
+      "createError": "Error al crear conversación",
+      "startError": "Error al iniciar el chat. Inténtalo de nuevo."
+    },
+    "errors": {
+      "noSession": "No hay sesión activa"
+    },
+    "grid": {
+      "loading": "Cargando proyectos...",
+      "noProjectsFound": "No se encontraron proyectos",
+      "adjustFilters": "Intenta ajustar tus filtros de búsqueda",
+      "availableProjects": "Proyectos Disponibles",
+      "projectsFound": "proyecto encontrado",
+      "projectsFoundPlural": "proyectos encontrados",
+      "loadingMore": "Cargando más proyectos...",
+      "allProjectsSeen": "Has visto todos los proyectos disponibles"
+    },
+    "proposalModal": {
+      "title": "Enviar Propuesta",
+      "description": "Completa el formulario para enviar tu propuesta",
+      "proposedBudget": "Presupuesto Propuesto ($)",
+      "budgetPlaceholder": "Ej: 500",
+      "deliveryTime": "Tiempo de Entrega (días)",
+      "deliveryTimePlaceholder": "Ej: 30",
+      "message": "Mensaje",
+      "messagePlaceholder": "Explica por qué eres el mejor candidato para este proyecto...",
+      "cancel": "Cancelar",
+      "submit": "Enviar Propuesta"
+    },
+    "projectDetails": {
+      "close": "Cerrar",
+      "statusOpen": "Abierto",
+      "statusInProgress": "En Progreso",
+      "verifiedClient": "Cliente verificado",
+      "budget": "Presupuesto",
+      "notSpecified": "No especificado",
+      "deadline": "Fecha límite",
+      "type": "Tipo",
+      "projectDescription": "Descripción del Proyecto",
+      "requirements": "Requisitos",
+      "requiredSkills": "Habilidades Requeridas",
+      "estimatedDuration": "Duración Estimada",
+      "publishedOn": "Publicado el",
+      "detailedView": "Vista detallada",
+      "startChat": "Iniciar Chat",
+      "sendProposal": "Enviar Propuesta"
+    }
+  },
+  "conversation": {
+    "closeChat": "Cerrar chat",
+    "loadingConversation": "Cargando conversación...",
+    "noMessages": "No hay mensajes en esta conversación aún",
+    "startConversation": "Inicia la conversación escribiendo un mensaje",
+    "writeMessage": "Escribe tu mensaje",
+    "writeMessagePlaceholder": "Escribe tu mensaje...",
+    "sendMessage": "Enviar mensaje",
+    "secureChat": "Chat seguro monitoreado por GDN Pro"
+  },
+  "privacy": {
+    "pageTitle": "Política de Privacidad | GDN Pro",
+    "title": "Política de Privacidad",
+    "lastUpdated": "Última actualización:",
+    "commitment": {
+      "title": "Compromiso con tu Privacidad",
+      "description": "En GDN Pro, respetamos y protegemos tu privacidad. Esta política explica cómo recopilamos, usamos y protegemos tu información personal cuando utilizas nuestros servicios."
+    },
+    "section1": {
+      "title": "1. Información que Recopilamos",
+      "personal": {
+        "title": "1.1 Información Personal",
+        "items": [
+          "Nombre completo y datos de contacto (email, teléfono)",
+          "Información de la empresa (nombre, dirección, sector)",
+          "Detalles del proyecto y requerimientos técnicos",
+          "Información de facturación y pagos",
+          "Comunicaciones y mensajes intercambiados"
+        ]
+      },
+      "technical": {
+        "title": "1.2 Información Técnica",
+        "items": [
+          "Dirección IP y datos de navegación",
+          "Tipo de dispositivo y navegador utilizado",
+          "Páginas visitadas y tiempo de permanencia",
+          "Cookies y tecnologías similares"
+        ]
+      }
+    },
+    "section2": {
+      "title": "2. Cómo Utilizamos tu Información",
+      "subtitle": "Utilizamos tu información para:",
+      "items": {
+        "services": "Prestación de servicios: Desarrollo web, aplicaciones móviles y marketing digital",
+        "communication": "Comunicación: Responder consultas, enviar actualizaciones del proyecto",
+        "billing": "Facturación: Procesar pagos y generar facturas",
+        "improvement": "Mejora de servicios: Analizar uso y optimizar nuestra plataforma",
+        "marketing": "Marketing: Enviar información relevante (solo con tu consentimiento)",
+        "legal": "Cumplimiento legal: Cumplir obligaciones legales y fiscales"
+      }
+    },
+    "section3": {
+      "title": "3. Compartir Información",
+      "subtitle": "Cuándo Compartimos tu Información",
+      "items": {
+        "providers": "Proveedores de servicios: Empresas que nos ayudan a operar (hosting, pagos, email)",
+        "freelancers": "Freelancers: Solo información necesaria para ejecutar tu proyecto",
+        "legal": "Requerimientos legales: Cuando sea requerido por ley o autoridades",
+        "transfer": "Transferencia de negocio: En caso de fusión, adquisición o venta"
+      },
+      "neverSell": "Nunca vendemos tu información personal a terceros para fines comerciales."
+    },
+    "section4": {
+      "title": "4. Seguridad de Datos",
+      "security": {
+        "title": "Medidas de Seguridad",
+        "items": [
+          "Encriptación SSL/TLS",
+          "Servidores seguros",
+          "Acceso restringido",
+          "Monitoreo continuo"
+        ]
+      },
+      "storage": {
+        "title": "Almacenamiento",
+        "items": [
+          "Servidores en la nube seguros",
+          "Respaldos regulares",
+          "Retención limitada",
+          "Eliminación segura"
+        ]
+      }
+    },
+    "section5": {
+      "title": "5. Tus Derechos",
+      "subtitle": "Derechos sobre tus Datos",
+      "rights": {
+        "access": "Acceso: Solicitar copia de tus datos",
+        "rectification": "Rectificación: Corregir datos incorrectos",
+        "deletion": "Eliminación: Solicitar borrado de datos",
+        "portability": "Portabilidad: Transferir datos a otro proveedor",
+        "limitation": "Limitación: Restringir el procesamiento",
+        "opposition": "Oposición: Oponerte al procesamiento",
+        "revocation": "Revocación: Retirar consentimiento",
+        "complaint": "Reclamación: Presentar quejas ante autoridades"
+      },
+      "contact": "Para ejercer estos derechos, contáctanos en:"
+    },
+    "section6": {
+      "title": "6. Cookies y Tecnologías Similares",
+      "essential": {
+        "title": "🍪 Cookies Esenciales",
+        "description": "Necesarias para el funcionamiento básico del sitio web."
+      },
+      "analytics": {
+        "title": "📊 Cookies de Análisis",
+        "description": "Nos ayudan a entender cómo los usuarios interactúan con nuestro sitio."
+      },
+      "marketing": {
+        "title": "🎯 Cookies de Marketing",
+        "description": "Utilizadas para mostrar anuncios relevantes (solo con tu consentimiento)."
+      }
+    },
+    "section7": {
+      "title": "7. Retención de Datos",
+      "subtitle": "Períodos de Retención",
+      "items": {
+        "active": "Datos de clientes activos: Durante la relación comercial",
+        "projects": "Datos de proyectos: 5 años después de finalización",
+        "billing": "Datos de facturación: 10 años (requerimiento fiscal)",
+        "marketing": "Datos de marketing: Hasta revocación del consentimiento",
+        "logs": "Logs técnicos: 12 meses máximo"
+      }
+    },
+    "section8": {
+      "title": "8. Transferencias Internacionales",
+      "description": "Algunos de nuestros proveedores de servicios pueden estar ubicados en distintos paises. En estos casos, aseguramos que:",
+      "items": [
+        "Se implementen salvaguardas adecuadas",
+        "Se cumplan estándares internacionales de protección",
+        "Se mantenga el mismo nivel de protección"
+      ]
+    },
+    "section9": {
+      "title": "9. Menores de Edad",
+      "subtitle": "Protección de Menores",
+      "description": "Nuestros servicios están dirigidos a empresas y profesionales. No recopilamos intencionalmente información de menores de 18 años. Si detectamos que hemos recopilado datos de un menor, los eliminaremos inmediatamente."
+    },
+    "section10": {
+      "title": "10. Cambios en esta Política",
+      "description": "Podemos actualizar esta política ocasionalmente. Te notificaremos sobre cambios significativos mediante:",
+      "items": [
+        "Email a tu dirección registrada",
+        "Aviso prominente en nuestro sitio web",
+        "Notificación en nuestros servicios"
+      ]
+    },
+    "section11": {
+      "title": "11. Contacto",
+      "subtitle": "¿Preguntas sobre Privacidad?",
+      "contactInfo": {
+        "title": "Datos de Contacto",
+        "email": "Email:",
+        "address": "Dirección:",
+        "addressValue": "Sede central: Newark, DE (EE. UU.) — Próximamente se traslada a Tallin, Estonia (UE)"
+      },
+      "dataController": {
+        "title": "Responsable de Datos",
+        "name": "GDN Pro",
+        "role": "Responsable de Protección de Datos"
+      }
+    },
+    "footer": {
+      "compliance": "Esta Política de Privacidad cumple con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) y el Reglamento General de Protección de Datos (GDPR).",
+      "lastUpdated": "Última actualización:",
+      "version": "Versión 1.0",
+      "validFrom": "Válida desde:"
+    }
+  },
+  "terms": {
+    "pageTitle": "Términos de Servicio | GDN Pro",
+    "title": "Términos de Servicio",
+    "lastUpdated": "Última actualización:",
+    "agreement": {
+      "title": "Acuerdo de Servicios",
+      "description": "Al utilizar los servicios de GDN Pro, aceptas estos términos y condiciones. Por favor, léelos cuidadosamente antes de utilizar nuestros servicios."
+    },
+    "section1": {
+      "title": "1. Definiciones",
+      "definitions": {
+        "gdnpro": "\"GDN Pro\", \"nosotros\", \"nuestro\": Se refiere a la empresa prestadora de servicios",
+        "client": "\"Cliente\", \"tú\", \"tu\": Se refiere a la persona o entidad que contrata nuestros servicios",
+        "services": "\"Servicios\": Desarrollo web, aplicaciones móviles, marketing digital y servicios relacionados",
+        "platform": "\"Plataforma\": Nuestro sitio web y herramientas digitales",
+        "project": "\"Proyecto\": Trabajo específico acordado entre las partes",
+        "freelancer": "\"Freelancer\": Profesional independiente que forma parte de nuestra red"
+      }
+    },
+    "section2": {
+      "title": "2. Servicios Ofrecidos",
+      "technical": {
+        "title": "Desarrollo Técnico",
+        "items": [
+          "Sitios web responsivos",
+          "Aplicaciones móviles",
+          "E-commerce",
+          "Sistemas web personalizados",
+          "APIs y integraciones"
+        ]
+      },
+      "marketing": {
+        "title": "Marketing Digital",
+        "items": [
+          "Estrategias de marketing",
+          "Gestión de redes sociales",
+          "SEO y SEM",
+          "Email marketing",
+          "Análisis y reportes"
+        ]
+      },
+      "freelancers": {
+        "title": "Red de Freelancers",
+        "description": "Conectamos clientes con freelancers especializados para proyectos específicos, actuando como intermediarios y garantizando la calidad del servicio."
+      }
+    },
+    "section3": {
+      "title": "3. Proceso de Contratación",
+      "steps": {
+        "1": {
+          "title": "Consulta Inicial",
+          "description": "Análisis de requerimientos y propuesta inicial"
+        },
+        "2": {
+          "title": "Cotización Detallada",
+          "description": "Propuesta técnica, cronograma y presupuesto"
+        },
+        "3": {
+          "title": "Contrato y Anticipo",
+          "description": "Firma de contrato y pago inicial (30-50%)"
+        },
+        "4": {
+          "title": "Desarrollo y Entrega",
+          "description": "Ejecución del proyecto con entregas parciales"
+        }
+      }
+    },
+    "section4": {
+      "title": "4. Obligaciones del Cliente",
+      "subtitle": "Responsabilidades del Cliente",
+      "items": {
+        "information": "Información completa: Proporcionar todos los datos necesarios para el proyecto",
+        "content": "Contenido: Suministrar textos, imágenes y materiales requeridos",
+        "feedback": "Feedback oportuno: Revisar y aprobar entregas en los tiempos acordados",
+        "payments": "Pagos puntuales: Realizar pagos según el cronograma establecido",
+        "access": "Accesos necesarios: Proporcionar credenciales de hosting, dominios, etc.",
+        "communication": "Comunicación: Mantener canales de comunicación abiertos",
+        "decisions": "Decisiones: Tomar decisiones de proyecto en tiempo y forma"
+      }
+    },
+    "section5": {
+      "title": "5. Obligaciones de GDN Pro",
+      "subtitle": "Nuestros Compromisos",
+      "items": {
+        "quality": "Calidad profesional: Entregar trabajo de alta calidad técnica",
+        "deadlines": "Cumplimiento de plazos: Respetar cronogramas acordados",
+        "communication": "Comunicación regular: Mantener informado sobre el progreso",
+        "support": "Soporte técnico: Brindar asistencia durante el desarrollo",
+        "confidentiality": "Confidencialidad: Proteger información sensible del cliente",
+        "practices": "Mejores prácticas: Aplicar estándares de la industria",
+        "documentation": "Documentación: Entregar documentación técnica necesaria"
+      }
+    },
+    "section6": {
+      "title": "6. Pagos y Facturación",
+      "structure": {
+        "title": "Estructura de Pagos",
+        "items": {
+          "advance": "Anticipo: 20-30% al firmar contrato",
+          "partial": "Pagos parciales: Según hitos del proyecto",
+          "final": "Pago final: Al completar y entregar",
+          "currency": "Moneda: Dollar (USD)"
+        }
+      },
+      "paymentTerms": {
+        "title": "Términos de Pago",
+        "items": {
+          "deadline": "Plazo: 15 días naturales",
+          "methods": "Métodos: Transferencia, tarjeta, Stripe",
+          "billing": "Facturación: Con datos fiscales válidos",
+          "late": "Mora: 2% mensual por retraso"
+        }
+      },
+      "latePayment": {
+        "title": "Política de Pagos Atrasados",
+        "description": "En caso de retraso en pagos, nos reservamos el derecho a:",
+        "items": [
+          "Suspender el desarrollo del proyecto",
+          "Aplicar intereses moratorios",
+          "Retener entregables hasta regularizar pagos",
+          "Cancelar el contrato por incumplimiento"
+        ]
+      }
+    },
+    "section7": {
+      "title": "7. Propiedad Intelectual",
+      "clientRights": {
+        "title": "Derechos del Cliente",
+        "description": "Una vez completado el pago total, el cliente obtiene:",
+        "items": [
+          "Derechos de uso completo del código desarrollado",
+          "Propiedad de contenidos y materiales proporcionados",
+          "Licencia de uso de diseños personalizados",
+          "Acceso a código fuente (cuando aplique)"
+        ]
+      },
+      "reservedRights": {
+        "title": "Derechos Reservados por GDN Pro",
+        "items": [
+          "Metodologías y procesos de desarrollo",
+          "Frameworks y librerías propietarias",
+          "Conocimiento técnico y experiencia",
+          "Derecho a mostrar el proyecto en portafolio"
+        ]
+      },
+      "thirdParty": {
+        "title": "Licencias de Terceros",
+        "description": "Algunos componentes pueden estar sujetos a licencias de terceros. El cliente es responsable de cumplir con estas licencias en el uso del producto final."
+      }
+    },
+    "section8": {
+      "title": "8. Garantías y Soporte",
+      "quality": {
+        "title": "Garantía de Calidad",
+        "items": {
+          "functionality": "Funcionalidad: 90 días para bugs críticos",
+          "compatibility": "Compatibilidad: Navegadores principales",
+          "performance": "Rendimiento: Optimización básica incluida",
+          "security": "Seguridad: Mejores prácticas aplicadas"
+        }
+      },
+      "support": {
+        "title": "Soporte Incluido",
+        "items": {
+          "duration": "Duración: 30 días post-entrega",
+          "scope": "Alcance: Corrección de errores",
+          "schedule": "Horario: Lun - Sab: 9:00 AM - 8:00 PM",
+          "response": "Respuesta: 24-48 horas"
+        }
+      },
+      "maintenance": {
+        "title": "Mantenimiento Adicional",
+        "description": "El mantenimiento continuo, actualizaciones de contenido y nuevas funcionalidades están disponibles bajo contratos separados con tarifas preferenciales."
+      }
+    },
+    "section9": {
+      "title": "9. Limitaciones y Exclusiones",
+      "limitations": {
+        "title": "Limitaciones de Responsabilidad",
+        "items": [
+          "No somos responsables por pérdidas de datos del cliente",
+          "No garantizamos resultados específicos de marketing",
+          "No nos hacemos responsables por contenido proporcionado por el cliente",
+          "Nuestra responsabilidad se limita al monto pagado por el proyecto",
+          "No cubrimos daños indirectos o lucro cesante"
+        ]
+      },
+      "exclusions": {
+        "title": "Exclusiones de Garantía",
+        "description": "No garantizamos:",
+        "items": [
+          "Funcionamiento en navegadores obsoletos",
+          "Compatibilidad con modificaciones no autorizadas",
+          "Rendimiento en hosting inadecuado",
+          "Problemas causados por terceros"
+        ]
+      }
+    },
+    "section10": {
+      "title": "10. Cancelación y Terminación",
+      "clientCancellation": {
+        "title": "Cancelación por el Cliente",
+        "items": {
+          "before": "Antes del inicio: Reembolso del 90% del anticipo",
+          "during": "Durante desarrollo: Pago por trabajo completado",
+          "partial": "Entrega de avances: Según porcentaje de avance",
+          "penalty": "Penalización: 20% por cancelación sin causa justificada"
+        }
+      },
+      "termination": {
+        "title": "Terminación por Incumplimiento",
+        "description": "Podemos terminar el contrato inmediatamente si:",
+        "items": [
+          "El cliente no realiza pagos acordados",
+          "No proporciona información necesaria",
+          "Solicita actividades ilegales o no éticas",
+          "Incumple términos del contrato"
+        ]
+      }
+    },
+    "section11": {
+      "title": "11. Confidencialidad",
+      "subtitle": "Compromiso de Confidencialidad",
+      "description": "Nos comprometemos a mantener la confidencialidad de:",
+      "items": [
+        "Información comercial y estratégica del cliente",
+        "Datos técnicos y de sistemas",
+        "Información financiera y operativa",
+        "Cualquier información marcada como confidencial",
+        "Datos personales según nuestra política de privacidad"
+      ],
+      "duration": "Duración: Esta obligación permanece vigente durante y después de la relación comercial, sin límite de tiempo."
+    },
+    "section12": {
+      "title": "12. Resolución de Disputas",
+      "process": {
+        "title": "Proceso de Resolución",
+        "steps": {
+          "1": "Negociación directa: Intentar resolver amigablemente",
+          "2": "Mediación: Recurrir a mediador neutral",
+          "3": "Arbitraje: Proceso arbitral vinculante",
+          "4": "Jurisdicción: Tribunales de la Ciudad correspondiente"
+        }
+      },
+      "law": {
+        "title": "Ley Aplicable",
+        "description": "Estos términos se rigen por las leyes que corresponde. Cualquier disputa será resuelta en los tribunales competentes."
+      }
+    },
+    "section13": {
+      "title": "13. Modificaciones",
+      "subtitle": "Cambios en los Términos",
+      "description": "Nos reservamos el derecho de modificar estos términos. Los cambios serán notificados:",
+      "items": [
+        "Por email a clientes activos",
+        "Mediante aviso en nuestro sitio web",
+        "Con 30 días de anticipación mínimo"
+      ],
+      "acceptance": "El uso continuado de nuestros servicios constituye aceptación de los nuevos términos."
+    },
+    "section14": {
+      "title": "14. Contacto",
+      "subtitle": "Información de Contacto",
+      "general": {
+        "title": "Datos Generales",
+        "company": "Empresa:",
+        "email": "Email:",
+        "address": "Dirección:",
+        "addressValue": "Sede central: Newark, DE (EE. UU.) — Próximamente se traslada a Tallin, Estonia (UE)"
+      },
+      "fiscal": {
+        "title": "Datos Fiscales",
+        "regime": "Régimen:",
+        "regimeValue": "LLC (Delaware, EE. UU.) — Próximamente OÜ (Private Limited Company) en Estonia (UE)",
+        "schedule": "Horario:",
+        "scheduleValue": "Lun - Sab: 9:00 AM - 8:00 PM"
+      }
+    },
+    "footer": {
+      "compliance": "Estos Términos de Servicio constituyen un acuerdo legal vinculante entre el cliente y GDN Pro para la prestación de servicios de desarrollo digital.",
+      "lastUpdated": "Última actualización:",
+      "version": "Versión 1.0",
+      "validFrom": "Vigente desde:"
+    }
+  },
+  "dataDeletion": {
+    "pageTitle": "Eliminación de Datos | GDN Pro",
+    "title": "Eliminación de Datos de Usuario",
+    "subtitle": "Solicita la eliminación de tus datos personales de nuestros sistemas",
+    "right": {
+      "title": "Derecho a la Eliminación de Datos",
+      "description": "Tienes derecho a solicitar la eliminación de tus datos personales de nuestros sistemas. Este proceso es irreversible y puede afectar el acceso a ciertos servicios."
+    },
+    "section1": {
+      "title": "¿Qué Datos Podemos Eliminar?",
+      "deletable": {
+        "title": "Datos Eliminables",
+        "items": [
+          "Información de perfil personal",
+          "Datos de contacto",
+          "Preferencias de usuario",
+          "Historial de comunicaciones",
+          "Datos de marketing",
+          "Cookies y datos de navegación"
+        ]
+      },
+      "retained": {
+        "title": "Datos que Debemos Conservar",
+        "items": [
+          "Información fiscal y contable (10 años)",
+          "Contratos y documentos legales",
+          "Datos requeridos por ley",
+          "Información de transacciones",
+          "Registros de auditoría"
+        ]
+      }
+    },
+    "form": {
+      "title": "Formulario de Solicitud de Eliminación",
+      "fields": {
+        "name": "Nombre Completo *",
+        "namePlaceholder": "Tu nombre completo",
+        "email": "Email *",
+        "emailPlaceholder": "tu@email.com",
+        "phone": "Teléfono",
+        "phonePlaceholder": "+1 (555) 123-4567",
+        "requestType": "Tipo de Solicitud *",
+        "requestTypePlaceholder": "Selecciona el tipo de solicitud",
+        "requestTypes": {
+          "complete": "Eliminación Completa de Datos",
+          "partial": "Eliminación Parcial de Datos",
+          "deactivate": "Desactivación de Cuenta",
+          "limit": "Limitación de Procesamiento",
+          "optout": "Opt-out de Marketing"
+        },
+        "description": "Descripción de la Solicitud *",
+        "descriptionPlaceholder": "Describe específicamente qué datos quieres eliminar y por qué...",
+        "descriptionHint": "Especifica qué datos quieres eliminar y el motivo",
+        "verification": "Verificación de Identidad",
+        "verificationPlaceholder": "Últimos 4 dígitos de tu teléfono registrado",
+        "verificationHint": "Para verificar tu identidad, proporciona información adicional que tengas registrada con nosotros"
+      },
+      "important": {
+        "title": "Importante:",
+        "items": [
+          "La eliminación de datos es un proceso irreversible",
+          "Puede afectar tu acceso a servicios y proyectos activos",
+          "El proceso puede tomar hasta 30 días hábiles",
+          "Algunos datos deben conservarse por obligaciones legales"
+        ]
+      },
+      "submit": "Enviar Solicitud de Eliminación",
+      "submitting": "Enviando Solicitud...",
+      "confirmation": "Al enviar esta solicitud, confirmas que entiendes las consecuencias de la eliminación de datos.",
+      "errors": {
+        "required": "Por favor completa todos los campos requeridos",
+        "descriptionLength": "La descripción no puede exceder 500 caracteres",
+        "submit": "Error al enviar la solicitud"
+      },
+      "success": "Solicitud enviada correctamente. Te contactaremos en 24-48 horas para procesar tu solicitud."
+    },
+    "section2": {
+      "title": "Información Adicional",
+      "subtitle": "¿Necesitas Ayuda?",
+      "contact": {
+        "title": "Contacto Directo",
+        "email": "Email:",
+        "schedule": "Horario:",
+        "scheduleValue": "Lun - Sab: 9:00 AM - 8:00 PM"
+      },
+      "response": {
+        "title": "Tiempo de Respuesta",
+        "confirmation": "Confirmación:",
+        "confirmationValue": "24-48 horas",
+        "processing": "Procesamiento:",
+        "processingValue": "1-3 días",
+        "final": "Confirmación final:",
+        "finalValue": "Por email"
+      }
+    },
+    "footer": {
+      "compliance": "Este proceso cumple con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) y el Reglamento General de Protección de Datos (GDPR).",
+      "moreInfo": "Para más información, consulta nuestra Política de Privacidad"
+    }
+  },
+  "dashboard": {
+    "projectsCard": {
+      "status": {
+        "open": "Abierto",
+        "inProgress": "En Progreso",
+        "completed": "Completado",
+        "pending": "Pendiente",
+        "accepted": "Aceptado",
+        "rejected": "Rechazado",
+        "cancelled": "Cancelado",
+        "expired": "Expirado"
+      },
+      "from": "Desde",
+      "to": "Hasta",
+      "viewDetails": "Ver Detalles",
+      "sendProposal": "Enviar Propuesta",
+      "chatWithClient": "Chat con Cliente"
+    },
+    "freelancer": {
+      "pageTitle": "Freelancer Dashboard | GDN Pro",
+      "title": "Freelancer Dashboard",
+      "greeting": "¡Hola, {name}!",
+      "rating": "Rating",
+      "stats": {
+        "proposals": "Propuestas",
+        "accepted": "Aceptadas",
+        "pending": "Pendientes",
+        "messages": "Mensajes"
+      },
+      "gamification": {
+        "title": "🏆 Tu Progreso como Freelancer",
+        "description": "Desbloquea logros y sube de nivel completando proyectos",
+        "gainXP": "Gana XP completando proyectos",
+        "unlockBadges": "Desbloquea badges por logros",
+        "levelUp": "Sube tu nivel profesional",
+        "gamificationActive": "Gamificación activada"
+      },
+      "tabs": {
+        "projects": "Proyectos Disponibles",
+        "myProjects": "Mis Proyectos",
+        "proposals": "Mis Propuestas",
+        "messages": "Mensajes",
+        "reviews": "Reseñas",
+        "achievements": "Logros",
+        "profile": "Mi Perfil",
+        "payments": "Ingresos",
+        "analytics": "Analytics"
+      },
+      "projects": {
+        "title": "Proyectos Disponibles",
+        "subtitle": "Proyectos sin propuestas aceptadas",
+        "noProjects": "No hay proyectos disponibles",
+        "noProjectsDesc": "Vuelve más tarde para ver nuevas oportunidades",
+        "myProjects": {
+          "title": "Mis Proyectos Activos",
+          "subtitle": "{count} proyectos en total",
+          "noProjects": "No tienes proyectos asignados",
+          "noProjectsDesc": "Envía propuestas para conseguir tus primeros proyectos",
+          "viewDetails": "Ver Detalles",
+          "manage": "Gestionar",
+          "manageProgress": "Gestionar Progreso",
+          "contactClient": "Contactar Cliente",
+          "status": {
+            "inProgress": "En Progreso",
+            "completed": "Completado",
+            "pending": "Pendiente",
+            "paid": "Pagado",
+            "paymentPending": "Pago Pendiente"
+          },
+          "directPayment": "Pago Directo",
+          "directContract": "Proyecto contratado directamente"
+        }
+      },
+      "proposals": {
+        "title": "Mis Propuestas",
+        "accepted": "Aceptadas: {count}",
+        "pending": "Pendientes: {count}",
+        "rejected": "Rechazadas: {count}",
+        "noProposals": "No has enviado propuestas",
+        "noProposalsDesc": "Explora proyectos disponibles y envía tu primera propuesta",
+        "viewDetails": "Ver Detalles",
+        "manageProgress": "Gestionar Progreso",
+        "contact": "Contactar",
+        "status": {
+          "accepted": "Aceptada",
+          "pending": "Pendiente",
+          "rejected": "Rechazada"
+        },
+        "project": "Proyecto",
+        "days": "días"
+      },
+      "messages": {
+        "title": "Mensajes",
+        "conversations": "{count} conversaciones",
+        "loading": "Cargando conversaciones...",
+        "noMessages": "No tienes mensajes",
+        "noMessagesDesc": "Las conversaciones con los clientes aparecerán aquí"
+      },
+      "reviews": {
+        "title": "Gestión de Reseñas",
+        "averageRating": "Calificación promedio: {rating}★",
+        "pendingTitle": "Reseñas Pendientes de Escribir",
+        "receivedTitle": "Reseñas Recibidas"
+      },
+      "profile": {
+        "title": "Mi Perfil",
+        "personalInfo": "Información Personal",
+        "bio": "Bio",
+        "noBio": "No has agregado una biografía",
+        "skills": "Habilidades",
+        "noSkills": "No has agregado habilidades",
+        "editProfile": "Editar Perfil",
+        "stats": {
+          "activeProjects": "Proyectos Activos",
+          "sentProposals": "Propuestas Enviadas",
+          "acceptedProposals": "Propuestas Aceptadas",
+          "conversations": "Conversaciones"
+        },
+        "rating": "{rating} calificación"
+      },
+      "achievements": {
+        "title": "🏆 Sistema de Logros"
+      },
+      "modals": {
+        "progressManagement": {
+          "title": "Gestión de Progreso",
+          "projectContracted": "Proyecto Contratado",
+          "proposalAccepted": "Propuesta Aceptada",
+          "client": "Cliente: {name}",
+          "close": "Cerrar"
+        },
+        "projectDetails": {
+          "title": "Detalles del Proyecto",
+          "budget": "Presupuesto",
+          "deadline": "Fecha límite",
+          "type": "Tipo",
+          "clientInfo": "Información del Cliente",
+          "verifiedClient": "Cliente verificado",
+          "description": "Descripción del Proyecto",
+          "projectDescription": "Descripción del Proyecto",
+          "requiredSkills": "Habilidades Requeridas",
+          "requirements": "Requisitos",
+          "estimatedDuration": "Duración Estimada",
+          "additionalInfo": "Información Adicional",
+          "publishedOn": "Publicado el",
+          "deadlineLabel": "Fecha Límite",
+          "detailedView": "Vista Detallada",
+          "sendProposal": "Enviar Propuesta",
+          "startChat": "Iniciar Chat",
+          "chatWithClient": "Chat con Cliente",
+          "notSpecified": "No especificado",
+          "close": "Cerrar",
+          "status": {
+            "open": "Abierto",
+            "inProgress": "En Progreso"
+          }
+        },
+        "proposalDetails": {
+          "title": "Detalles de la Propuesta",
+          "myProposal": "Mi Propuesta",
+          "proposedBudget": "Presupuesto Propuesto",
+          "deliveryTime": "Tiempo de Entrega",
+          "sent": "Enviada",
+          "coverLetter": "Carta de Presentación",
+          "projectInfo": "Información del Proyecto",
+          "clientBudget": "Presupuesto del Cliente",
+          "projectType": "Tipo de Proyecto",
+          "notSpecified": "No especificado",
+          "client": "Cliente",
+          "close": "Cerrar"
+        },
+        "sendProposal": {
+          "title": "Enviar Propuesta",
+          "proposedBudget": "Presupuesto Propuesto (USD)",
+          "budgetPlaceholder": "Ej: 500",
+          "clientBudget": "Presupuesto del cliente: ${min} - ${max}",
+          "deliveryTime": "Tiempo de Entrega (días)",
+          "deliveryTimePlaceholder": "Ej: 7",
+          "coverLetter": "Carta de Presentación",
+          "coverLetterPlaceholder": "Explica por qué eres el freelancer ideal para este proyecto...",
+          "cancel": "Cancelar",
+          "send": "Enviar Propuesta"
+        },
+        "editProfile": {
+          "title": "Editar Perfil",
+          "fullName": "Nombre Completo",
+          "fullNamePlaceholder": "Tu nombre completo",
+          "bio": "Biografía",
+          "bioPlaceholder": "Cuéntanos sobre ti...",
+          "location": "Ubicación",
+          "locationPlaceholder": "Ej: Ciudad, País",
+          "hourlyRate": "Tarifa por Hora (USD)",
+          "hourlyRatePlaceholder": "Ej: 25",
+          "experienceYears": "Años de Experiencia",
+          "experienceYearsPlaceholder": "Ej: 5",
+          "skills": "Habilidades",
+          "skillsPlaceholder": "Agregar habilidad",
+          "addSkill": "Agregar",
+          "cancel": "Cancelar",
+          "save": "Guardar Cambios",
+          "updating": "Actualizando...",
+          "success": "Perfil actualizado exitosamente",
+          "error": "Error al actualizar el perfil"
+        },
+        "projectDetailsMyProjects": {
+          "title": "Detalles del Proyecto",
+          "clientInfo": "Información del Cliente",
+          "verifiedClient": "Cliente verificado",
+          "description": "Descripción del Proyecto",
+          "directContract": "Proyecto contratado directamente por el cliente",
+          "additionalInfo": "Información Adicional",
+          "type": "Tipo",
+          "directHire": "Contratación Directa",
+          "paymentStatus": "Estado de Pago",
+          "paid": "Pagado",
+          "pending": "Pendiente",
+          "manageProject": "Gestionar Proyecto",
+          "manageProgress": "Gestionar Progreso",
+          "contactClient": "Contactar Cliente",
+          "close": "Cerrar"
+        }
+      },
+      "errors": {
+        "loadProjectDetails": "Error al cargar los detalles del proyecto",
+        "loadTransactions": "Error cargando transacciones para proyectos:",
+        "loadProposals": "Error loading proposals:",
+        "loadData": "Error loading data:",
+        "loadConversations": "Error loading conversations:",
+        "openChat": "Error opening chat:",
+        "loadMessages": "Error loading messages:",
+        "sendMessage": "Error enviando mensaje",
+        "sendProposal": "Error al enviar la propuesta. Inténtalo de nuevo.",
+        "createChat": "Error al crear conversación",
+        "startChat": "Error al iniciar el chat",
+        "noSession": "No hay sesión activa",
+        "contactInfoWarning": "Tu mensaje contiene información de contacto. Por seguridad, usa solo el chat interno de la plataforma.",
+        "unknownError": "Error desconocido al enviar mensaje",
+        "loginRequired": "Necesitas iniciar sesión para chatear"
+      },
+      "success": {
+        "proposalSent": "¡Propuesta enviada exitosamente!",
+        "profileUpdated": "Perfil actualizado exitosamente"
+      },
+      "client": "Cliente"
+    },
+    "client": {
+      "pageTitle": "Cliente Dashboard | GDN Pro",
+      "title": "Cliente Dashboard",
+      "greeting": "¡Hola, {name}!",
+      "stats": {
+        "activeProjects": "Proyectos Activos",
+        "completedProjects": "Completados",
+        "pendingProposals": "Propuestas Pendientes",
+        "messages": "Mensajes",
+        "totalSpent": "Total Gastado"
+      },
+      "tabs": {
+        "projects": "Mis Proyectos",
+        "messages": "Mensajes",
+        "reviews": "Reseñas",
+        "profile": "Mi Perfil",
+        "payments": "Pagos",
+        "analytics": "Analytics"
+      },
+      "projects": {
+        "title": "Mis Proyectos",
+        "createProject": "Crear Nuevo Proyecto",
+        "noProjects": "No tienes proyectos",
+        "noProjectsDesc": "Crea tu primer proyecto y encuentra el freelancer perfecto",
+        "viewProposals": "Ver Propuestas",
+        "editProject": "Editar Proyecto",
+        "manageProject": "Gestionar Proyecto",
+        "deleteProject": "Eliminar Proyecto",
+        "directContract": "Proyecto Contratado",
+        "directContractDesc": "Proyecto contratado directamente al freelancer",
+        "directContractType": "Contrato Directo",
+        "status": {
+          "open": "Abierto",
+          "inProgress": "En Progreso",
+          "completed": "Completado"
+        }
+      },
+      "messages": {
+        "title": "Mensajes",
+        "conversations": "{count} conversaciones",
+        "loading": "Cargando conversaciones...",
+        "noMessages": "No tienes mensajes",
+        "noMessagesDesc": "Las conversaciones con los freelancers aparecerán aquí"
+      },
+      "reviews": {
+        "title": "Gestión de Reseñas",
+        "pendingTitleSingular": "¡Tienes {{count}} proyecto pendiente de reseña!",
+        "pendingTitlePlural": "¡Tienes {{count}} proyectos pendientes de reseña!",
+        "pendingDescription": "Ayuda a otros usuarios compartiendo tu experiencia con los freelancers.",
+        "givenTitle": "Reseñas Dadas"
+      },
+      "profile": {
+        "title": "Mi Perfil",
+        "personalInfo": "Información Personal",
+        "bio": "Bio",
+        "noBio": "No has agregado una biografía",
+        "editProfile": "Editar Perfil",
+        "stats": {
+          "activeProjects": "Proyectos Activos",
+          "completedProjects": "Proyectos Completados",
+          "totalSpent": "Total Gastado",
+          "conversations": "Conversaciones"
+        }
+      },
+      "modals": {
+        "newProject": {
+          "title": "Crear Nuevo Proyecto",
+          "subtitle": "Completa el formulario para crear tu proyecto",
+          "projectTitle": "Título del Proyecto",
+          "projectTitlePlaceholder": "Ej: Desarrollo de sitio web corporativo",
+          "description": "Descripción",
+          "descriptionPlaceholder": "Describe tu proyecto en detalle...",
+          "budgetMin": "Presupuesto Mínimo (USD)",
+          "budgetMinPlaceholder": "Ej: 500",
+          "budgetMax": "Presupuesto Máximo (USD)",
+          "budgetMaxPlaceholder": "Ej: 1000",
+          "projectType": "Tipo de Proyecto",
+          "fixed": "Precio Fijo",
+          "hourly": "Por Hora",
+          "requiredSkills": "Habilidades Requeridas",
+          "skillsPlaceholder": "Añadir habilidad (presiona Enter)",
+          "addSkill": "Agregar",
+          "deadline": "Fecha límite (opcional)",
+          "cancel": "Cancelar",
+          "create": "Crear Proyecto",
+          "creating": "Creando...",
+          "success": "Proyecto creado exitosamente",
+          "error": "Error al crear el proyecto"
+        },
+        "editProject": {
+          "title": "Editar Proyecto",
+          "projectTitle": "Título del Proyecto",
+          "projectTitlePlaceholder": "Ej: Desarrollo de sitio web",
+          "description": "Descripción",
+          "descriptionPlaceholder": "Describe tu proyecto en detalle...",
+          "budgetMin": "Presupuesto Mínimo (USD)",
+          "budgetMinPlaceholder": "Ej: 500",
+          "budgetMax": "Presupuesto Máximo (USD)",
+          "budgetMaxPlaceholder": "Ej: 1000",
+          "projectType": "Tipo de Proyecto",
+          "fixed": "Precio Fijo",
+          "hourly": "Por Hora",
+          "requiredSkills": "Habilidades Requeridas",
+          "skillsPlaceholder": "Agregar habilidad",
+          "addSkill": "Agregar",
+          "deadline": "Fecha Límite",
+          "cancel": "Cancelar",
+          "save": "Guardar Cambios",
+          "updating": "Actualizando...",
+          "success": "Proyecto actualizado exitosamente",
+          "error": "Error al actualizar el proyecto"
+        },
+        "editProfile": {
+          "title": "Editar Perfil",
+          "fullName": "Nombre Completo",
+          "fullNamePlaceholder": "Tu nombre completo",
+          "bio": "Biografía",
+          "bioPlaceholder": "Cuéntanos sobre ti...",
+          "location": "Ubicación",
+          "locationPlaceholder": "Ej: Ciudad, País",
+          "cancel": "Cancelar",
+          "save": "Guardar Cambios",
+          "updating": "Actualizando...",
+          "success": "Perfil actualizado exitosamente",
+          "error": "Error al actualizar el perfil"
+        },
+        "proposals": {
+          "title": "Propuestas para {title}",
+          "noProposals": "No hay propuestas para este proyecto",
+          "noProposalsDesc": "Los freelancers pueden enviar propuestas para este proyecto",
+          "accept": "Aceptar",
+          "reject": "Rechazar",
+          "viewProfile": "Ver Perfil",
+          "contact": "Contactar",
+          "budget": "Presupuesto",
+          "deliveryTime": "Tiempo de Entrega",
+          "days": "días",
+          "coverLetter": "Carta de Presentación",
+          "close": "Cerrar"
+        },
+        "projectDetails": {
+          "title": "Detalles del Proyecto",
+          "budget": "Presupuesto",
+          "deadline": "Fecha límite",
+          "type": "Tipo",
+          "clientInfo": "Información del Cliente",
+          "verifiedClient": "Cliente verificado",
+          "description": "Descripción del Proyecto",
+          "projectDescription": "Descripción del Proyecto",
+          "requiredSkills": "Habilidades Requeridas",
+          "requirements": "Requisitos",
+          "estimatedDuration": "Duración Estimada",
+          "additionalInfo": "Información Adicional",
+          "publishedOn": "Publicado el",
+          "deadlineLabel": "Fecha Límite",
+          "detailedView": "Vista Detallada",
+          "sendProposal": "Enviar Propuesta",
+          "startChat": "Iniciar Chat",
+          "chatWithClient": "Chat con Cliente",
+          "notSpecified": "No especificado",
+          "close": "Cerrar",
+          "status": {
+            "open": "Abierto",
+            "inProgress": "En Progreso"
+          }
+        }
+      },
+      "errors": {
+        "loadProjects": "Error loading projects:",
+        "loadConversations": "Error loading conversations:",
+        "createProject": "Error al crear el proyecto",
+        "updateProject": "Error al actualizar el proyecto",
+        "deleteProject": "Error al eliminar el proyecto",
+        "updateProfile": "Error al actualizar el perfil",
+        "loadProposals": "Error loading proposals:",
+        "acceptProposal": "Error al aceptar la propuesta",
+        "rejectProposal": "Error al rechazar la propuesta",
+        "loginRequired": "Necesitas iniciar sesión para chatear",
+        "createChat": "Error al crear conversación",
+        "startChat": "Error al iniciar el chat"
+      },
+      "success": {
+        "projectCreated": "Proyecto creado exitosamente",
+        "projectUpdated": "Proyecto actualizado exitosamente",
+        "projectDeleted": "Proyecto eliminado exitosamente",
+        "profileUpdated": "Perfil actualizado exitosamente",
+        "proposalAccepted": "Propuesta aceptada exitosamente",
+        "proposalRejected": "Propuesta rechazada exitosamente"
+      },
+      "analytics": {
+        "aiAnalysis": "Análisis IA",
+        "aiAnalysisDesc": "Algoritmo avanzado que analiza compatibilidad de habilidades, presupuesto y experiencia",
+        "preciseMatching": "Matching Preciso",
+        "preciseMatchingDesc": "Encuentra los Top 10 freelancers más compatibles con tus proyectos específicos",
+        "successPrediction": "Predicción Éxito",
+        "successPredictionDesc": "Calcula la probabilidad de éxito de cada colaboración potencial",
+        "howItWorks": "¿Cómo Funciona el Matching Inteligente?",
+        "analyzeProjects": "Analiza tus proyectos activos y requisitos",
+        "evaluateFreelancers": "Evalúa freelancers por habilidades y experiencia",
+        "calculateBudget": "Calcula compatibilidad de presupuesto",
+        "predictSuccess": "Predice probabilidad de éxito del proyecto"
+      },
+      "transactions": {
+        "amount": "Monto",
+        "status": "Estado",
+        "paid": "Pagado",
+        "pending": "Pendiente"
+      },
+      "common": {
+        "popularSkills": "Habilidades populares:",
+        "cancel": "Cancelar",
+        "createProject": "Crear Proyecto",
+        "saving": "Guardando...",
+        "saveChanges": "Guardar Cambios",
+        "fixedPrice": "Precio fijo",
+        "hourlyPrice": "Precio por hora"
+      }
+    },
+    "admin": {
+      "pageTitle": "Admin Dashboard | GDN Pro",
+      "title": "Admin Dashboard",
+      "contacts": {
+        "title": "Mensajes de Contacto",
+        "noMessages": "No hay mensajes de contacto",
+        "name": "Nombre",
+        "email": "Email",
+        "message": "Mensaje",
+        "date": "Fecha",
+        "actions": "Acciones",
+        "delete": "Eliminar",
+        "loading": "Cargando mensajes..."
+      },
+      "errors": {
+        "loadContacts": "Error loading contacts:",
+        "deleteContact": "Error al eliminar el mensaje"
+      },
+      "success": {
+        "contactDeleted": "Mensaje eliminado exitosamente"
+      }
+    },
+    "badges": {
+      "title": "🏆 Logros y Badges",
+      "subtitle": "{unlocked} de {total} badges desbloqueados",
+      "totalXP": "XP Total",
+      "unlockedBadges": "Badges Desbloqueados",
+      "lockedBadges": "Próximos Logros",
+      "unlocked": "Desbloqueado",
+      "locked": "Bloqueado",
+      "more": "más",
+      "badgeUnlocked": "¡Badge Desbloqueado! 🎉",
+      "congratulations": "✅ ¡Felicidades!",
+      "great": "¡Genial!",
+      "loading": "Cargando badges...",
+      "error": "Error cargando badges:",
+      "progress": {
+        "projects": "{current}/{required} proyectos",
+        "reviews": "{current}/{required} rating",
+        "revenue": "${current}/${required}",
+        "experience": "{current}/{required} días",
+        "comingSoon": "Próximamente"
+      },
+      "common": {
+        "welcome": {
+          "name": "🎉 Bienvenido",
+          "description": "Te uniste a la plataforma"
+        },
+        "firstWeek": {
+          "name": "📅 Primera Semana",
+          "description": "Una semana activo en la plataforma"
+        },
+        "monthVeteran": {
+          "name": "🗓️ Veterano Mensual",
+          "description": "Un mes activo en la plataforma"
+        }
+      },
+      "freelancer": {
+        "firstProject": {
+          "name": "🚀 Primer Proyecto",
+          "description": "Completaste tu primer proyecto"
+        },
+        "projectMaster": {
+          "name": "⭐ Maestro de Proyectos",
+          "description": "Completaste 5 proyectos"
+        },
+        "projectLegend": {
+          "name": "🏆 Leyenda de Proyectos",
+          "description": "Completaste 20 proyectos"
+        },
+        "fiveStars": {
+          "name": "⭐ 5 Estrellas",
+          "description": "Rating promedio de 4.5 o más"
+        },
+        "topEarner": {
+          "name": "💰 Top Earner",
+          "description": "Ganaste más de $5,000"
+        },
+        "highRoller": {
+          "name": "💎 High Roller",
+          "description": "Ganaste más de $20,000"
+        }
+      },
+      "client": {
+        "firstHire": {
+          "name": "🤝 Primera Contratación",
+          "description": "Contrataste tu primer freelancer"
+        },
+        "projectSponsor": {
+          "name": "💼 Patrocinador de Proyectos",
+          "description": "Creaste 5 proyectos"
+        },
+        "enterpriseClient": {
+          "name": "🏢 Cliente Empresarial",
+          "description": "Creaste más de 20 proyectos"
+        }
+      },
+      "notification": {
+        "title": "🏆 ¡Badge Desbloqueado!",
+        "message": "Has desbloqueado el badge \"{name}\" - {description}"
+      }
+    },
+    "payments": {
+      "title": "Pagos e Ingresos",
+      "loading": "Cargando información de pagos...",
+      "error": "Error al cargar",
+      "retry": "Intentar de Nuevo",
+      "stats": {
+        "totalPaid": "Total Pagado",
+        "totalReceived": "Total Recibido",
+        "thisMonth": "Este Mes",
+        "projects": "Proyectos"
+      },
+      "filters": {
+        "all": "Todos",
+        "paid": "Pagados",
+        "pending": "Pendientes"
+      },
+      "projects": {
+        "title": "Proyectos Contratados",
+        "noProjects": "No hay proyectos",
+        "noProjectsDesc": "Aún no tienes proyectos contratados.",
+        "noProjectsFiltered": "No tienes proyectos con estado \"{status}\".",
+        "viewDetails": "Ver Detalles",
+        "status": {
+          "paid": "Pagado",
+          "pending": "Pago Pendiente",
+          "completed": "Completado",
+          "inProgress": "En Progreso",
+          "open": "Abierto",
+          "failed": "Fallido",
+          "refunded": "Reembolsado"
+        }
+      },
+      "transactions": {
+        "title": "Detalles de la Transacción",
+        "amount": "Monto",
+        "status": "Estado",
+        "paid": "Pagado",
+        "pending": "Pendiente",
+        "info": "Información de la Transacción",
+        "projectTitle": "Título del Proyecto",
+        "description": "Descripción",
+        "createdAt": "Fecha de Creación",
+        "paidAt": "Fecha de Pago",
+        "stripeSessionId": "ID de Sesión Stripe"
+      },
+      "modals": {
+        "projectDetails": {
+          "title": "Detalles del Proyecto",
+          "budget": "Presupuesto",
+          "status": "Estado",
+          "startDate": "Fecha de Inicio",
+          "clientInfo": "Información del Cliente",
+          "freelancerInfo": "Información del Freelancer",
+          "description": "Descripción del Proyecto",
+          "additionalInfo": "Información Adicional",
+          "duration": "Duración",
+          "requirements": "Requisitos",
+          "skills": "Habilidades",
+          "contactClient": "Contactar Cliente",
+          "contactFreelancer": "Contactar Freelancer",
+          "close": "Cerrar",
+          "noDescription": "Sin descripción disponible",
+          "verified": "verificado"
+        }
+      },
+      "errors": {
+        "loadTransactions": "Error al cargar transacciones",
+        "noSession": "No hay sesión activa",
+        "profileNotFound": "Perfil no encontrado",
+        "loginRequired": "Necesitas iniciar sesión para chatear",
+        "createChat": "Error al crear conversación",
+        "startChat": "Error al iniciar el chat",
+        "loadMessages": "Error loading messages:",
+        "sendMessage": "Error desconocido al enviar mensaje",
+        "sendMessageError": "Error enviando mensaje"
+      }
+    },
+    "analytics": {
+      "title": "Analytics Profesionales",
+      "subtitle": {
+        "freelancer": "Análisis de tu rendimiento como freelancer",
+        "client": "Análisis de tus proyectos como cliente"
+      },
+      "timeRange": {
+        "3months": "Últimos 3 meses",
+        "6months": "Últimos 6 meses",
+        "1year": "Último año"
+      },
+      "metrics": {
+        "totalEarnings": "Ingresos Totales",
+        "totalInvestment": "Inversión Total",
+        "thisMonth": "Este Mes",
+        "currentMonth": "Mes actual",
+        "completedProjects": "Proyectos Completados",
+        "finished": "Finalizados",
+        "averageRating": "Rating Promedio",
+        "growthThisMonth": "+{rate}% este mes"
+      },
+      "charts": {
+        "earningsEvolution": "Evolución de Ingresos",
+        "topServices": "Servicios Más Rentables",
+        "projects": "proyectos"
+      },
+      "predictions": {
+        "title": "Predicciones IA",
+        "nextMonthEarnings": "Ingresos próximo mes",
+        "estimatedProjects": "Proyectos estimados",
+        "new": "nuevos",
+        "expectedGrowth": "Crecimiento esperado"
+      },
+      "recommendations": {
+        "title": "Recomendaciones IA",
+        "increaseRates": {
+          "title": "Aumenta tus tarifas",
+          "description": "Tu rating es excelente, puedes cobrar 20% más"
+        },
+        "focusService": {
+          "title": "Enfócate en {service}",
+          "description": "Es tu servicio más rentable"
+        },
+        "optimizeTime": {
+          "title": "Optimiza tu tiempo",
+          "description": "Puedes manejar 2 proyectos más este mes"
+        },
+        "improveRating": {
+          "title": "Mejora tu calificación",
+          "description": "Enfócate en la calidad para obtener mejores reseñas"
+        },
+        "increaseIncome": {
+          "title": "Aumenta tus ingresos",
+          "description": "Considera subir tus tarifas o tomar más proyectos"
+        },
+        "completeMoreProjects": {
+          "title": "Completa más proyectos",
+          "description": "Más proyectos = mejor reputación y más ingresos"
+        },
+        "optimizeProfile": {
+          "title": "Optimiza tu perfil",
+          "description": "Un perfil completo atrae 3x más clientes"
+        },
+        "startNewProject": {
+          "title": "Inicia un nuevo proyecto",
+          "description": "Tienes freelancers de confianza esperando trabajar contigo"
+        },
+        "improveCommunication": {
+          "title": "Mejora la comunicación",
+          "description": "Una mejor comunicación lleva a mejores resultados"
+        },
+        "exploreFreelancers": {
+          "title": "Explora nuevos freelancers",
+          "description": "Diversifica tu red de colaboradores para mejores resultados"
+        }
+      },
+      "noData": {
+        "title": "Sin datos suficientes",
+        "description": "Completa algunos proyectos para ver tus analytics"
+      },
+      "loading": "Cargando analytics...",
+      "error": "Error cargando analytics:"
+    },
+    "shareProfile": {
+      "title": "Comparte tu Perfil",
+      "description": "Aumenta tu visibilidad compartiendo tu perfil profesional en redes sociales",
+      "profileUrl": {
+        "title": "Tu URL de Perfil",
+        "description": "Esta es tu URL personalizada que puedes compartir en cualquier lugar",
+        "copy": "Copiar",
+        "copied": "¡Copiado!",
+        "notAvailable": "URL no disponible todavía",
+        "copyError": "No se pudo copiar la URL. Intenta manualmente"
+      },
+      "social": {
+        "title": "Compartir en Redes Sociales",
+        "linkedin": "LinkedIn",
+        "linkedinDesc": "Profesional",
+        "twitter": "Twitter",
+        "twitterDesc": "Rápido",
+        "facebook": "Facebook",
+        "facebookDesc": "Personal",
+        "whatsapp": "WhatsApp",
+        "whatsappDesc": "Directo",
+        "shareText": "¡Conoce mi perfil profesional en GDN Pro! 💼 Especializado en {skills}"
+      },
+      "qr": {
+        "title": "Código QR",
+        "shareTitle": "Comparte tu QR",
+        "description": "Usa este código QR en tus tarjetas de presentación, CV, o cualquier material impreso. Los clientes pueden escanearlo para acceder directamente a tu perfil.",
+        "download": "Descargar QR",
+        "print": "Imprimir",
+        "downloadError": "No se pudo descargar el QR. Intenta de nuevo.",
+        "alt": "QR Code del perfil"
+      },
+      "stats": {
+        "title": "Estadísticas de Compartir",
+        "totalShares": "Veces Compartido",
+        "clicks": "Clicks Recibidos",
+        "conversions": "Contactos Generados"
+      },
+      "tips": {
+        "title": "Tips para Maximizar tu Alcance",
+        "updateRegularly": {
+          "title": "Actualiza regularmente",
+          "description": "Mantén tu perfil actualizado con nuevos proyectos y habilidades"
+        },
+        "shareValuableContent": {
+          "title": "Comparte contenido valioso",
+          "description": "Acompaña tu perfil con tips y casos de éxito"
+        },
+        "useHashtags": {
+          "title": "Usa hashtags relevantes",
+          "description": "Incluye hashtags de tu industria al compartir"
+        },
+        "interactWithAudience": {
+          "title": "Interactúa con tu audiencia",
+          "description": "Responde comentarios y mensajes rápidamente"
+        }
+      }
+    }
+  }
+}

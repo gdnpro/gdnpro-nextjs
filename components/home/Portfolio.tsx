@@ -2,15 +2,17 @@
 
 import { projects } from "@/services/Projects"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export default function Portfolio() {
+  const { t } = useTranslation()
   const [activeFilter, setActiveFilter] = useState("all")
 
   const filters = [
-    { id: "all", label: "Todos los Proyectos" },
-    { id: "web", label: "Desarrollo Web" },
-    { id: "mobile", label: "Apps Móviles" },
-    { id: "marketing", label: "Marketing Digital" },
+    { id: "all", label: t("portfolio.filters.all") },
+    { id: "web", label: t("portfolio.filters.web") },
+    { id: "mobile", label: t("portfolio.filters.mobile") },
+    { id: "marketing", label: t("portfolio.filters.marketing") },
   ]
 
   const filteredProjects =
@@ -30,11 +32,10 @@ export default function Portfolio() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Nuestro Portafolio
+            {t("portfolio.title")}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Algunos de los proyectos exitosos que hemos desarrollado para
-            nuestros clientes
+            {t("portfolio.subtitle")}
           </p>
 
           {/* Filter Buttons */}
@@ -70,10 +71,10 @@ export default function Portfolio() {
                 />
                 <div className="absolute top-4 right-4 bg-sky-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
                   {project.category === "web"
-                    ? "Web"
+                    ? t("portfolio.categories.web")
                     : project.category === "mobile"
-                      ? "Móvil"
-                      : "Marketing"}
+                      ? t("portfolio.categories.mobile")
+                      : t("portfolio.categories.marketing")}
                 </div>
               </div>
 
@@ -102,7 +103,7 @@ export default function Portfolio() {
                 target="_blank"
                 className="w-auto m-6 flex justify-center items-center bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-xl font-semibold transition-all  whitespace-nowrap cursor-pointer"
               >
-                Ver Detalles
+                {t("portfolio.viewDetails")}
               </a>
             </article>
           ))}
@@ -114,7 +115,7 @@ export default function Portfolio() {
               onClick={scrollToContact}
               className="bg-sky-600 hover:bg-sky-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all  whitespace-nowrap cursor-pointer"
             >
-              Ver Más Proyectos
+              {t("portfolio.viewMore")}
             </button>
           </div>
         )}

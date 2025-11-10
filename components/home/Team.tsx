@@ -1,16 +1,19 @@
+"use client"
+
 import { teamMembers } from "@/services/TeamMembers"
+import { useTranslation } from "react-i18next"
 
 export default function Team() {
+  const { t } = useTranslation()
   return (
     <section id="team" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Nuestro Equipo
+            {t("team.title")}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Conoce a los profesionales apasionados que hacen posible cada
-            proyecto exitoso
+            {t("team.subtitle")}
           </p>
         </div>
 
@@ -71,24 +74,23 @@ export default function Team() {
         <div className="text-center mt-16">
           <div className="bg-blue-50 rounded-2xl p-8 md:p-12">
             <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-              ¿Quieres formar parte de nuestro equipo?
+              {t("team.cta.title")}
             </h3>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Estamos siempre buscando talento excepcional para unirse a nuestra
-              red de freelancers especializados
+              {t("team.cta.description")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => (window.location.href = "/freelancers")}
                 className="bg-primary hover:bg-cyan-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all whitespace-nowrap cursor-pointer"
               >
-                Ver Oportunidades
+                {t("team.cta.viewOpportunities")}
               </button>
               <button
                 onClick={() => (window.location.href = "/auth/register")}
                 className="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all whitespace-nowrap cursor-pointer"
               >
-                Únete Como Freelancer
+                {t("team.cta.joinAsFreelancer")}
               </button>
             </div>
           </div>

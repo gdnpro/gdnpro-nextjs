@@ -1,12 +1,20 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export default function PrivacyPolicy() {
+  const { t, i18n } = useTranslation()
+  const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
-    document.title = "Política de Privacidad | GDN Pro"
+    setMounted(true)
+    document.title = t("privacy.pageTitle")
     window.scrollTo(0, 0)
-  }, [])
+  }, [t])
+
+  // Use fallback language for initial render to match server
+  const currentLocale = mounted ? (i18n.language === "en" ? "en-US" : "es-ES") : "es-ES"
 
   return (
     <div className="min-h-screen bg-white">
@@ -15,10 +23,11 @@ export default function PrivacyPolicy() {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Política de Privacidad
+              {t("privacy.title")}
             </h1>
             <p className="text-lg text-gray-600">
-              Última actualización: {new Date().toLocaleDateString("es-ES")}
+              {t("privacy.lastUpdated")}{" "}
+              {new Date().toLocaleDateString(currentLocale)}
             </p>
           </div>
 
@@ -27,75 +36,72 @@ export default function PrivacyPolicy() {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
               <h2 className="text-xl font-semibold text-blue-900 mb-3">
                 <i className="ri-shield-check-line mr-2"></i>
-                Compromiso con tu Privacidad
+                {t("privacy.commitment.title")}
               </h2>
-              <p className="text-blue-800">
-                En GDN Pro, respetamos y protegemos tu privacidad. Esta política
-                explica cómo recopilamos, usamos y protegemos tu información
-                personal cuando utilizas nuestros servicios.
-              </p>
+              <p className="text-blue-800">{t("privacy.commitment.description")}</p>
             </div>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                1. Información que Recopilamos
+                {t("privacy.section1.title")}
               </h2>
 
               <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                1.1 Información Personal
+                {t("privacy.section1.personal.title")}
               </h3>
               <ul className="list-disc pl-6 mb-4 space-y-2">
-                <li>Nombre completo y datos de contacto (email, teléfono)</li>
-                <li>Información de la empresa (nombre, dirección, sector)</li>
-                <li>Detalles del proyecto y requerimientos técnicos</li>
-                <li>Información de facturación y pagos</li>
-                <li>Comunicaciones y mensajes intercambiados</li>
+                {(t("privacy.section1.personal.items", { returnObjects: true }) as string[]).map(
+                  (item, index) => (
+                    <li key={index}>{item}</li>
+                  ),
+                )}
               </ul>
 
               <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                1.2 Información Técnica
+                {t("privacy.section1.technical.title")}
               </h3>
               <ul className="list-disc pl-6 mb-4 space-y-2">
-                <li>Dirección IP y datos de navegación</li>
-                <li>Tipo de dispositivo y navegador utilizado</li>
-                <li>Páginas visitadas y tiempo de permanencia</li>
-                <li>Cookies y tecnologías similares</li>
+                {(t("privacy.section1.technical.items", { returnObjects: true }) as string[]).map(
+                  (item, index) => (
+                    <li key={index}>{item}</li>
+                  ),
+                )}
               </ul>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                2. Cómo Utilizamos tu Información
+                {t("privacy.section2.title")}
               </h2>
 
               <div className="bg-gray-50 rounded-lg p-6 mb-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                  Utilizamos tu información para:
+                  {t("privacy.section2.subtitle")}
                 </h3>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>
-                    <strong>Prestación de servicios:</strong> Desarrollo web,
-                    aplicaciones móviles y marketing digital
+                    <strong>{t("privacy.section2.items.services").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section2.items.services").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Comunicación:</strong> Responder consultas, enviar
-                    actualizaciones del proyecto
+                    <strong>{t("privacy.section2.items.communication").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section2.items.communication").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Facturación:</strong> Procesar pagos y generar
-                    facturas
+                    <strong>{t("privacy.section2.items.billing").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section2.items.billing").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Mejora de servicios:</strong> Analizar uso y
-                    optimizar nuestra plataforma
+                    <strong>{t("privacy.section2.items.improvement").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section2.items.improvement").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Marketing:</strong> Enviar información relevante
-                    (solo con tu consentimiento)
+                    <strong>{t("privacy.section2.items.marketing").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section2.items.marketing").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Cumplimiento legal:</strong> Cumplir obligaciones
-                    legales y fiscales
+                    <strong>{t("privacy.section2.items.legal").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section2.items.legal").split(":")[1]}
                   </li>
                 </ul>
               </div>
@@ -103,69 +109,70 @@ export default function PrivacyPolicy() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                3. Compartir Información
+                {t("privacy.section3.title")}
               </h2>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-4">
                 <h3 className="text-lg font-semibold text-yellow-800 mb-3">
                   <i className="ri-alert-line mr-2"></i>
-                  Cuándo Compartimos tu Información
+                  {t("privacy.section3.subtitle")}
                 </h3>
                 <ul className="list-disc pl-6 space-y-2 text-yellow-800">
                   <li>
-                    <strong>Proveedores de servicios:</strong> Empresas que nos
-                    ayudan a operar (hosting, pagos, email)
+                    <strong>{t("privacy.section3.items.providers").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section3.items.providers").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Freelancers:</strong> Solo información necesaria
-                    para ejecutar tu proyecto
+                    <strong>{t("privacy.section3.items.freelancers").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section3.items.freelancers").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Requerimientos legales:</strong> Cuando sea
-                    requerido por ley o autoridades
+                    <strong>{t("privacy.section3.items.legal").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section3.items.legal").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Transferencia de negocio:</strong> En caso de
-                    fusión, adquisición o venta
+                    <strong>{t("privacy.section3.items.transfer").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section3.items.transfer").split(":")[1]}
                   </li>
                 </ul>
               </div>
 
               <p className="text-gray-700">
-                <strong>Nunca vendemos</strong> tu información personal a
-                terceros para fines comerciales.
+                <strong>{t("privacy.section3.neverSell")}</strong>
               </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                4. Seguridad de Datos
+                {t("privacy.section4.title")}
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="bg-green-50 border border-green-200 rounded-lg p-6">
                   <h3 className="text-lg font-semibold text-green-800 mb-3">
                     <i className="ri-shield-check-line mr-2"></i>
-                    Medidas de Seguridad
+                    {t("privacy.section4.security.title")}
                   </h3>
                   <ul className="list-disc pl-6 space-y-1 text-green-800">
-                    <li>Encriptación SSL/TLS</li>
-                    <li>Servidores seguros</li>
-                    <li>Acceso restringido</li>
-                    <li>Monitoreo continuo</li>
+                    {(t("privacy.section4.security.items", { returnObjects: true }) as string[]).map(
+                      (item, index) => (
+                        <li key={index}>{item}</li>
+                      ),
+                    )}
                   </ul>
                 </div>
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                   <h3 className="text-lg font-semibold text-blue-800 mb-3">
                     <i className="ri-database-2-line mr-2"></i>
-                    Almacenamiento
+                    {t("privacy.section4.storage.title")}
                   </h3>
                   <ul className="list-disc pl-6 space-y-1 text-blue-800">
-                    <li>Servidores en la nube seguros</li>
-                    <li>Respaldos regulares</li>
-                    <li>Retención limitada</li>
-                    <li>Eliminación segura</li>
+                    {(t("privacy.section4.storage.items", { returnObjects: true }) as string[]).map(
+                      (item, index) => (
+                        <li key={index}>{item}</li>
+                      ),
+                    )}
                   </ul>
                 </div>
               </div>
@@ -173,50 +180,56 @@ export default function PrivacyPolicy() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                5. Tus Derechos
+                {t("privacy.section5.title")}
               </h2>
 
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-4">
                 <h3 className="text-lg font-semibold text-purple-800 mb-3">
                   <i className="ri-user-settings-line mr-2"></i>
-                  Derechos sobre tus Datos
+                  {t("privacy.section5.subtitle")}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <ul className="list-disc pl-6 space-y-2 text-purple-800">
                     <li>
-                      <strong>Acceso:</strong> Solicitar copia de tus datos
+                      <strong>{t("privacy.section5.rights.access").split(":")[0]}:</strong>{" "}
+                      {t("privacy.section5.rights.access").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Rectificación:</strong> Corregir datos incorrectos
+                      <strong>{t("privacy.section5.rights.rectification").split(":")[0]}:</strong>{" "}
+                      {t("privacy.section5.rights.rectification").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Eliminación:</strong> Solicitar borrado de datos
+                      <strong>{t("privacy.section5.rights.deletion").split(":")[0]}:</strong>{" "}
+                      {t("privacy.section5.rights.deletion").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Portabilidad:</strong> Transferir datos a otro
-                      proveedor
+                      <strong>{t("privacy.section5.rights.portability").split(":")[0]}:</strong>{" "}
+                      {t("privacy.section5.rights.portability").split(":")[1]}
                     </li>
                   </ul>
                   <ul className="list-disc pl-6 space-y-2 text-purple-800">
                     <li>
-                      <strong>Limitación:</strong> Restringir el procesamiento
+                      <strong>{t("privacy.section5.rights.limitation").split(":")[0]}:</strong>{" "}
+                      {t("privacy.section5.rights.limitation").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Oposición:</strong> Oponerte al procesamiento
+                      <strong>{t("privacy.section5.rights.opposition").split(":")[0]}:</strong>{" "}
+                      {t("privacy.section5.rights.opposition").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Revocación:</strong> Retirar consentimiento
+                      <strong>{t("privacy.section5.rights.revocation").split(":")[0]}:</strong>{" "}
+                      {t("privacy.section5.rights.revocation").split(":")[1]}
                     </li>
                     <li>
-                      <strong>Reclamación:</strong> Presentar quejas ante
-                      autoridades
+                      <strong>{t("privacy.section5.rights.complaint").split(":")[0]}:</strong>{" "}
+                      {t("privacy.section5.rights.complaint").split(":")[1]}
                     </li>
                   </ul>
                 </div>
               </div>
 
               <p className="text-gray-700">
-                Para ejercer estos derechos, contáctanos en:
+                {t("privacy.section5.contact")}
                 <a
                   href="mailto:privacidad@gdnpro.com"
                   className="text-primary hover:text-blue-800 ml-1"
@@ -228,70 +241,63 @@ export default function PrivacyPolicy() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                6. Cookies y Tecnologías Similares
+                {t("privacy.section6.title")}
               </h2>
 
               <div className="space-y-4">
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-800 mb-2">
-                    🍪 Cookies Esenciales
+                    {t("privacy.section6.essential.title")}
                   </h3>
-                  <p className="text-gray-700">
-                    Necesarias para el funcionamiento básico del sitio web.
-                  </p>
+                  <p className="text-gray-700">{t("privacy.section6.essential.description")}</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-800 mb-2">
-                    📊 Cookies de Análisis
+                    {t("privacy.section6.analytics.title")}
                   </h3>
-                  <p className="text-gray-700">
-                    Nos ayudan a entender cómo los usuarios interactúan con
-                    nuestro sitio.
-                  </p>
+                  <p className="text-gray-700">{t("privacy.section6.analytics.description")}</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-800 mb-2">
-                    🎯 Cookies de Marketing
+                    {t("privacy.section6.marketing.title")}
                   </h3>
-                  <p className="text-gray-700">
-                    Utilizadas para mostrar anuncios relevantes (solo con tu
-                    consentimiento).
-                  </p>
+                  <p className="text-gray-700">{t("privacy.section6.marketing.description")}</p>
                 </div>
               </div>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                7. Retención de Datos
+                {t("privacy.section7.title")}
               </h2>
 
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-orange-800 mb-3">
                   <i className="ri-time-line mr-2"></i>
-                  Períodos de Retención
+                  {t("privacy.section7.subtitle")}
                 </h3>
                 <ul className="list-disc pl-6 space-y-2 text-orange-800">
                   <li>
-                    <strong>Datos de clientes activos:</strong> Durante la
-                    relación comercial
+                    <strong>{t("privacy.section7.items.active").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section7.items.active").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Datos de proyectos:</strong> 5 años después de
-                    finalización
+                    <strong>{t("privacy.section7.items.projects").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section7.items.projects").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Datos de facturación:</strong> 10 años
-                    (requerimiento fiscal)
+                    <strong>{t("privacy.section7.items.billing").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section7.items.billing").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Datos de marketing:</strong> Hasta revocación del
-                    consentimiento
+                    <strong>{t("privacy.section7.items.marketing").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section7.items.marketing").split(":")[1]}
                   </li>
                   <li>
-                    <strong>Logs técnicos:</strong> 12 meses máximo
+                    <strong>{t("privacy.section7.items.logs").split(":")[0]}:</strong>{" "}
+                    {t("privacy.section7.items.logs").split(":")[1]}
                   </li>
                 </ul>
               </div>
@@ -299,95 +305,87 @@ export default function PrivacyPolicy() {
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                8. Transferencias Internacionales
+                {t("privacy.section8.title")}
               </h2>
 
-              <p className="text-gray-700 mb-4">
-                Algunos de nuestros proveedores de servicios pueden estar
-                ubicados en distintos paises. En estos casos, aseguramos que:
-              </p>
+              <p className="text-gray-700 mb-4">{t("privacy.section8.description")}</p>
 
               <ul className="list-disc pl-6 mb-4 space-y-2">
-                <li>Se implementen salvaguardas adecuadas</li>
-                <li>Se cumplan estándares internacionales de protección</li>
-                <li>Se mantenga el mismo nivel de protección</li>
+                {(t("privacy.section8.items", { returnObjects: true }) as string[]).map(
+                  (item, index) => (
+                    <li key={index}>{item}</li>
+                  ),
+                )}
               </ul>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                9. Menores de Edad
+                {t("privacy.section9.title")}
               </h2>
 
               <div className="bg-red-50 border border-red-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-red-800 mb-3">
                   <i className="ri-user-forbid-line mr-2"></i>
-                  Protección de Menores
+                  {t("privacy.section9.subtitle")}
                 </h3>
-                <p className="text-red-800">
-                  Nuestros servicios están dirigidos a empresas y profesionales.
-                  No recopilamos intencionalmente información de menores de 18
-                  años. Si detectamos que hemos recopilado datos de un menor,
-                  los eliminaremos inmediatamente.
-                </p>
+                <p className="text-red-800">{t("privacy.section9.description")}</p>
               </div>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                10. Cambios en esta Política
+                {t("privacy.section10.title")}
               </h2>
 
-              <p className="text-gray-700 mb-4">
-                Podemos actualizar esta política ocasionalmente. Te
-                notificaremos sobre cambios significativos mediante:
-              </p>
+              <p className="text-gray-700 mb-4">{t("privacy.section10.description")}</p>
 
               <ul className="list-disc pl-6 mb-4 space-y-2">
-                <li>Email a tu dirección registrada</li>
-                <li>Aviso prominente en nuestro sitio web</li>
-                <li>Notificación en nuestros servicios</li>
+                {(t("privacy.section10.items", { returnObjects: true }) as string[]).map(
+                  (item, index) => (
+                    <li key={index}>{item}</li>
+                  ),
+                )}
               </ul>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                11. Contacto
+                {t("privacy.section11.title")}
               </h2>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-blue-800 mb-4">
                   <i className="ri-customer-service-2-line mr-2"></i>
-                  ¿Preguntas sobre Privacidad?
+                  {t("privacy.section11.subtitle")}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h4 className="font-semibold text-blue-800 mb-2">
-                      Datos de Contacto
+                      {t("privacy.section11.contactInfo.title")}
                     </h4>
                     <ul className="space-y-2 text-cyan-700">
                       <li>
                         <i className="ri-mail-line mr-2"></i>
-                        <strong>Email:</strong> privacidad@gdnpro.com
+                        <strong>{t("privacy.section11.contactInfo.email")}</strong> privacidad@gdnpro.com
                       </li>
                       <li>
                         <i className="ri-map-pin-line mr-2"></i>
-                        <strong>Dirección:</strong> Sede central: Newark, DE
-                        (EE. UU.) — Próximamente se traslada a Tallin, Estonia
-                        (UE)
+                        <strong>{t("privacy.section11.contactInfo.address")}</strong>{" "}
+                        {t("privacy.section11.contactInfo.addressValue")}
                       </li>
                     </ul>
                   </div>
 
                   <div>
                     <h4 className="font-semibold text-blue-800 mb-2">
-                      Responsable de Datos
+                      {t("privacy.section11.dataController.title")}
                     </h4>
                     <p className="text-cyan-700">
-                      <strong>GDN Pro</strong>
+                      <strong>{t("privacy.section11.dataController.name")}</strong>
                       <br />
-                      Responsable de Protección de Datos
+                      {t("privacy.section11.dataController.role")}
                     </p>
                   </div>
                 </div>
@@ -398,15 +396,12 @@ export default function PrivacyPolicy() {
             <div className="border-t border-gray-200 pt-8 mt-12">
               <div className="bg-gray-50 rounded-lg p-6">
                 <p className="text-sm text-gray-600 text-center">
-                  Esta Política de Privacidad cumple con la Ley Federal de
-                  Protección de Datos Personales en Posesión de los Particulares
-                  (LFPDPPP) y el Reglamento General de Protección de Datos
-                  (GDPR).
+                  {t("privacy.footer.compliance")}
                 </p>
                 <p className="text-xs text-gray-500 text-center mt-2">
-                  Última actualización: {new Date().toLocaleDateString("es-ES")}{" "}
-                  | Versión 1.0 | Válida desde:{" "}
-                  {new Date().toLocaleDateString("es-ES")}
+                  {t("privacy.footer.lastUpdated")}{" "}
+                  {new Date().toLocaleDateString(currentLocale)} | {t("privacy.footer.version")} |{" "}
+                  {t("privacy.footer.validFrom")} {new Date().toLocaleDateString(currentLocale)}
                 </p>
               </div>
             </div>

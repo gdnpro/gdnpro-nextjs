@@ -1,6 +1,10 @@
+"use client"
+
 import { services } from "@/services/HomeServices"
+import { useTranslation } from "react-i18next"
 
 export default function Services() {
+  const { t } = useTranslation()
   const scrollToContact = () => {
     const element = document.getElementById("contact")
     if (element) {
@@ -16,9 +20,9 @@ export default function Services() {
     <section id="services" className="bg-gray-50 py-20">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 text-center">
-          <h2 className="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">Nuestros Servicios</h2>
+          <h2 className="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">{t("services.title")}</h2>
           <p className="mx-auto max-w-3xl text-xl text-gray-600">
-            Ofrecemos soluciones completas para impulsar tu negocio en el mundo digital
+            {t("services.subtitle")}
           </p>
         </div>
 
@@ -51,7 +55,7 @@ export default function Services() {
                   onClick={service.title === "Red de Freelancers" ? Unirteahora : scrollToContact}
                   className="group w-full cursor-pointer rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 py-3 font-semibold whitespace-nowrap text-white shadow-md shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/40"
                 >
-                  {service.title === "Red de Freelancers" ? "Unirte Ahora" : "Solicitar Cotización"}
+                  {service.title === "Red de Freelancers" ? t("services.freelancerNetwork.cta") : t("services.requestQuote")}
                 </button>
               </footer>
             </article>
@@ -61,18 +65,17 @@ export default function Services() {
         <div className="mt-16 text-center">
           <div className="rounded-2xl bg-white p-8 shadow-lg md:p-12">
             <h3 className="mb-4 text-2xl font-bold text-gray-900 md:text-3xl">
-              ¿Necesitas una solución personalizada?
+              {t("services.cta.title")}
             </h3>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-600">
-              Cada proyecto es único. Conversemos sobre tus necesidades específicas y creemos la
-              solución perfecta para ti.
+              {t("services.cta.description")}
             </p>
             <button
               onClick={scrollToContact}
               className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-8 py-4 text-lg font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
               <i className="ri-calendar-check-line text-xl transition-transform group-hover:scale-110"></i>
-              Consulta Gratuita
+              {t("services.cta.button")}
             </button>
           </div>
         </div>

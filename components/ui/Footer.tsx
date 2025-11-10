@@ -1,4 +1,10 @@
+"use client"
+
+import LanguageSelector from "@/components/ui/LanguageSelector"
+import { useTranslation } from "react-i18next"
+
 export default function Footer() {
+  const { t } = useTranslation()
   const currentYear = new Date().getFullYear()
 
   // Schema.org structured data for SEO
@@ -8,8 +14,7 @@ export default function Footer() {
     name: "GDN Pro",
     url: "https://gdnpro.com",
     logo: "https://gdnpro.com/logo.png",
-    description:
-      "Transformamos ideas en realidad digital. Expertos en desarrollo web, apps móviles y marketing digital.",
+    description: t("footer.description"),
     email: "contact@gdnpro.com",
     address: {
       "@type": "PostalAddress",
@@ -72,7 +77,7 @@ export default function Footer() {
             itemType="https://schema.org/Organization"
           >
             <div className="group w-fit">
-              <a href="/" aria-label="GDN Pro - Inicio" itemProp="url">
+              <a href="/" aria-label={`GDN Pro - ${t("header.menu.home")}`} itemProp="url">
                 <img
                   src="/logo.png"
                   alt="GDN Pro - Desarrollo Web, Apps Móviles y Marketing Digital"
@@ -87,9 +92,7 @@ export default function Footer() {
               className="max-w-md text-base leading-relaxed text-gray-300 sm:text-lg"
               itemProp="description"
             >
-              Transformamos ideas en realidad digital. Expertos en desarrollo web, apps móviles y
-              marketing digital. Soluciones tecnológicas de clase mundial para empresas que buscan
-              destacar en el mercado digital.
+              {t("footer.description")}
             </p>
 
             {/* Contact Information for SEO */}
@@ -111,20 +114,19 @@ export default function Footer() {
               <div className="flex items-center gap-2">
                 <i className="ri-map-pin-line text-primary"></i>
                 <span itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
-                  <span itemProp="addressLocality">Newark</span>,{" "}
-                  <span itemProp="addressRegion">DE</span>,{" "}
+                  <span itemProp="addressLocality">New Jersey</span>,{" "}
                   <span itemProp="addressCountry">US</span>
                 </span>
               </div>
             </div>
 
             {/* Social Media Links */}
-            <nav aria-label="Redes sociales de GDN Pro" className="flex items-center gap-4 pt-2">
+            <nav aria-label={t("footer.social.linkedin")} className="flex items-center gap-4 pt-2">
               <a
                 href="https://linkedin.com/company/gdnpro"
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                aria-label="Síguenos en LinkedIn - GDN Pro"
+                aria-label={t("footer.social.linkedin")}
                 className="group hover:bg-primary hover:border-primary/50 relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:scale-110"
                 itemProp="sameAs"
               >
@@ -134,7 +136,7 @@ export default function Footer() {
                 href="https://twitter.com/gdnpro"
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                aria-label="Síguenos en Twitter - GDN Pro"
+                aria-label={t("footer.social.twitter")}
                 className="group hover:bg-primary hover:border-primary/50 relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:scale-110"
                 itemProp="sameAs"
               >
@@ -144,7 +146,7 @@ export default function Footer() {
                 href="https://instagram.com/gdnpro"
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                aria-label="Síguenos en Instagram - GDN Pro"
+                aria-label={t("footer.social.instagram")}
                 className="group hover:bg-primary hover:border-primary/50 relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:scale-110"
                 itemProp="sameAs"
               >
@@ -154,7 +156,7 @@ export default function Footer() {
                 href="https://github.com/gdnpro"
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                aria-label="Visita nuestro GitHub - GDN Pro"
+                aria-label={t("footer.social.github")}
                 className="group hover:bg-primary hover:border-primary/50 relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:scale-110"
                 itemProp="sameAs"
               >
@@ -166,71 +168,71 @@ export default function Footer() {
           {/* Links Section */}
           <nav
             className="grid grid-cols-2 gap-8 md:col-span-4 lg:col-span-4 lg:gap-12"
-            aria-label="Navegación del sitio"
+            aria-label={t("footer.sections.services")}
           >
             <div>
               <h2 className="relative mb-6 inline-block text-lg font-bold text-white sm:text-xl">
-                Servicios
+                {t("footer.sections.services")}
                 <span className="bg-primary absolute -bottom-2 left-0 h-0.5 w-8 rounded-full"></span>
               </h2>
               <ul className="space-y-3.5" role="list">
                 <li>
                   <a
                     href="/#services"
-                    title="Servicios de Desarrollo Web - GDN Pro"
+                    title={`${t("footer.links.webDevelopment")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Desarrollo Web
+                      {t("footer.links.webDevelopment")}
                     </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#services"
-                    title="Desarrollo de Aplicaciones Móviles - GDN Pro"
+                    title={`${t("footer.links.mobileDevelopment")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Desarrollo Móvil
+                      {t("footer.links.mobileDevelopment")}
                     </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#services"
-                    title="Servicios de Marketing Digital - GDN Pro"
+                    title={`${t("footer.links.digitalMarketing")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Marketing Digital
+                      {t("footer.links.digitalMarketing")}
                     </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/freelancers"
-                    title="Red de Freelancers - GDN Pro"
+                    title={`${t("footer.links.freelancerNetwork")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Red de Freelancers
+                      {t("footer.links.freelancerNetwork")}
                     </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#contact"
-                    title="Consultoría Tecnológica - GDN Pro"
+                    title={`${t("footer.links.consulting")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Consultoría
+                      {t("footer.links.consulting")}
                     </span>
                   </a>
                 </li>
@@ -239,55 +241,55 @@ export default function Footer() {
 
             <div>
               <h2 className="relative mb-6 inline-block text-lg font-bold text-white sm:text-xl">
-                Empresa
+                {t("footer.sections.company")}
                 <span className="bg-primary absolute -bottom-2 left-0 h-0.5 w-8 rounded-full"></span>
               </h2>
               <ul className="space-y-3.5" role="list">
                 <li>
                   <a
                     href="/#about"
-                    title="Sobre GDN Pro - Nuestra Historia"
+                    title={`${t("footer.links.about")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Sobre Nosotros
+                      {t("footer.links.about")}
                     </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#portfolio"
-                    title="Portafolio de Proyectos - GDN Pro"
+                    title={`${t("footer.links.portfolio")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Portafolio
+                      {t("footer.links.portfolio")}
                     </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#team"
-                    title="Nuestro Equipo de Expertos - GDN Pro"
+                    title={`${t("footer.links.team")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Nuestro Equipo
+                      {t("footer.links.team")}
                     </span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/#testimonials"
-                    title="Testimonios de Clientes - GDN Pro"
+                    title={`${t("footer.links.testimonials")} - GDN Pro`}
                     className="group block cursor-pointer py-1.5 text-sm text-gray-400 transition-all duration-200 hover:translate-x-1 hover:text-white sm:text-base"
                   >
                     <span className="flex items-center gap-2">
                       <span className="bg-primary h-0.5 w-0 rounded-full transition-all duration-200 group-hover:w-1.5"></span>
-                      Testimonios
+                      {t("footer.links.testimonials")}
                     </span>
                   </a>
                 </li>
@@ -298,42 +300,50 @@ export default function Footer() {
           {/* Newsletter Section */}
           <div className="md:col-span-4 lg:col-span-3">
             <h2 className="relative mb-3 inline-block text-lg font-bold text-white sm:text-xl">
-              Newsletter
+              {t("footer.newsletter.title")}
               <span className="bg-primary absolute -bottom-2 left-0 h-0.5 w-8 rounded-full"></span>
             </h2>
             <p className="mb-6 text-sm leading-relaxed text-gray-300 sm:text-base">
-              Suscríbete para recibir las últimas noticias sobre desarrollo web, aplicaciones
-              móviles, marketing digital y ofertas especiales de GDN Pro.
+              {t("footer.newsletter.description")}
             </p>
             <form
               className="space-y-3"
               onSubmit={(e) => e.preventDefault()}
-              aria-label="Formulario de suscripción al newsletter"
+              aria-label={t("footer.newsletter.title")}
             >
               <div className="relative">
                 <label htmlFor="email-footer" className="sr-only">
-                  Dirección de correo electrónico para suscripción
+                  {t("footer.newsletter.emailPlaceholder")}
                 </label>
                 <input
                   id="email-footer"
                   name="email"
                   type="email"
-                  placeholder="Tu email"
+                  placeholder={t("footer.newsletter.emailPlaceholder")}
                   required
                   className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-xl border border-gray-700/50 bg-gray-800/50 px-4 py-3.5 text-sm text-white placeholder-gray-500 backdrop-blur-sm transition-all duration-200 hover:border-gray-600 focus:ring-2 focus:outline-none"
                   autoComplete="email"
-                  aria-label="Email para newsletter de GDN Pro"
+                  aria-label={t("footer.newsletter.emailPlaceholder")}
                   aria-required="true"
                 />
               </div>
               <button
                 type="submit"
                 className="from-primary hover:to-primary hover:shadow-primary/20 min-h-[44px] w-full cursor-pointer touch-manipulation rounded-xl bg-gradient-to-r to-cyan-600 py-3.5 font-semibold whitespace-nowrap text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:from-cyan-600 active:scale-[0.98] active:from-cyan-700 active:to-cyan-800"
-                aria-label="Suscribirse al newsletter de GDN Pro"
+                aria-label={t("footer.newsletter.subscribe")}
               >
-                Suscribirse
+                {t("footer.newsletter.subscribe")}
               </button>
             </form>
+          </div>
+
+          {/* Language Selector - Mobile Only */}
+          <div className="flex items-center justify-center md:hidden">
+            <div className="flex items-center gap-2 rounded-xl border border-gray-700/50 bg-gray-800/50 px-4 py-1">
+              <i className="ri-global-line text-gray-400"></i>
+              <span className="text-sm text-gray-400">{t("common.language")}:</span>
+              <LanguageSelector variant="dark" />
+            </div>
           </div>
         </div>
 
@@ -341,22 +351,18 @@ export default function Footer() {
         <div className="mt-12 border-t border-gray-800/50 pt-8 sm:pt-10">
           <div className="flex flex-col items-center gap-6 text-center sm:gap-8">
             <div className="text-sm text-gray-400 sm:text-base">
-              © {currentYear}{" "}
-              <span className="font-medium text-white" itemProp="name">
-                GDN Pro
-              </span>
-              . Todos los derechos reservados.
+              {t("footer.copyright").replace("{year}", currentYear.toString())}
             </div>
             <nav
-              aria-label="Enlaces legales"
+              aria-label={t("footer.legal.privacy")}
               className="flex flex-col flex-wrap items-center justify-center gap-4 sm:flex-row sm:gap-6"
             >
               <a
                 href="/privacy"
-                title="Política de Privacidad - GDN Pro"
+                title={`${t("footer.legal.privacy")} - GDN Pro`}
                 className="cursor-pointer px-2 py-1.5 text-sm text-gray-400 underline-offset-4 transition-colors duration-200 hover:text-white hover:underline active:text-white sm:text-base"
               >
-                Política de Privacidad
+                {t("footer.legal.privacy")}
               </a>
               <span
                 className="hidden cursor-default text-sm text-gray-600 sm:block"
@@ -366,10 +372,10 @@ export default function Footer() {
               </span>
               <a
                 href="/terms"
-                title="Términos de Servicio - GDN Pro"
+                title={`${t("footer.legal.terms")} - GDN Pro`}
                 className="cursor-pointer px-2 py-1.5 text-sm text-gray-400 underline-offset-4 transition-colors duration-200 hover:text-white hover:underline active:text-white sm:text-base"
               >
-                Términos de Servicio
+                {t("footer.legal.terms")}
               </a>
               <span
                 className="hidden cursor-default text-sm text-gray-600 sm:block"
@@ -379,10 +385,10 @@ export default function Footer() {
               </span>
               <a
                 href="/data-deletion"
-                title="Solicitud de Eliminación de Datos - GDN Pro"
+                title={`${t("footer.legal.dataDeletion")} - GDN Pro`}
                 className="cursor-pointer px-2 py-1.5 text-sm text-gray-400 underline-offset-4 transition-colors duration-200 hover:text-white hover:underline active:text-white sm:text-base"
               >
-                Eliminación de Datos
+                {t("footer.legal.dataDeletion")}
               </a>
             </nav>
           </div>

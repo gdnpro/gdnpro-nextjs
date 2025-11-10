@@ -15,7 +15,7 @@ export const projects = [
     category: "web",
     description:
       "Landing page completa del Foto Estudio El Chévere, un estudio fotográfico de República Dominicana.",
-    image: "https://rikirilis.com/images/page-presentation.avif",
+    image: "https://capelix.dev/images/page-presentation.webp",
     technologies: ["Astro", "React", "Supabase", "Tailwind CSS"],
     link: "https://fotoestudioelchevere.com",
   },

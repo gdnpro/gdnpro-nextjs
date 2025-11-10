@@ -7,7 +7,7 @@ import Portfolio from "@/components/home/Portfolio"
 import Team from "@/components/home/Team"
 import Testimonials from "@/components/home/Testimonials"
 import CTA from "@/components/home/CTA"
-import Contact from "@/components/Contact"
+import Contact from "@/components/home/Contact"
 import { useEffect } from "react"
 
 export default function Home() {

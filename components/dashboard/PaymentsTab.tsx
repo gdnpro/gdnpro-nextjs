@@ -7,6 +7,7 @@ import type { Conversation } from "@/interfaces/Conversation"
 import type { ChatMessage } from "@/interfaces/ChatMessage"
 import type { Profile } from "@/interfaces/Profile"
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { ConversationModal } from "@/components/ConversationModal"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -17,6 +18,7 @@ interface PaymentsTabProps {
 }
 
 export default function PaymentsTab({ userType }: PaymentsTabProps) {
+  const { t, i18n } = useTranslation()
   const { profile: user } = useAuth()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [projects, setProjects] = useState<Project[]>([])
@@ -46,7 +48,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
         data: { session },
       } = await supabase.auth.getSession()
       if (!session) {
-        throw new Error("No hay sesión activa")
+        throw new Error(t("dashboard.payments.errors.noSession"))
       }
 
       // Obtener perfil del usuario
@@ -57,7 +59,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
         .single()
 
       if (!profile) {
-        throw new Error("Perfil no encontrado")
+        throw new Error(t("dashboard.payments.errors.profileNotFound"))
       }
 
       // Cargar transacciones
@@ -78,7 +80,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Error al cargar transacciones")
+        throw new Error(data.error || t("dashboard.payments.errors.loadTransactions"))
       }
 
       setTransactions(data.transactions || [])
@@ -145,7 +147,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
   const handleContactUser = async (contactId: string, contactName: string, projectId?: string) => {
     if (!user) {
       window.toast({
-        title: "Necesitas iniciar sesión para chatear",
+        title: t("dashboard.payments.errors.loginRequired"),
         type: "warning",
         location: "bottom-center",
         dismissible: true,
@@ -158,7 +160,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) {
         window.toast({
-          title: "Necesitas iniciar sesión para chatear",
+          title: t("dashboard.payments.errors.loginRequired"),
           type: "warning",
           location: "bottom-center",
           dismissible: true,
@@ -242,11 +244,11 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
         await openChat(newConversation)
       } else {
-        throw new Error(createData.error || "Error al crear conversación")
+        throw new Error(createData.error || t("dashboard.payments.errors.createChat"))
       }
     } catch (error: unknown) {
       window.toast({
-        title: "Error al iniciar el chat",
+        title: t("dashboard.payments.errors.startChat"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -274,7 +276,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
     try {
       const session = await supabase.auth.getSession()
       if (!session.data.session?.access_token) {
-        throw new Error("No hay sesión activa")
+        throw new Error(t("dashboard.payments.errors.noSession"))
       }
 
       const response = await fetch(
@@ -344,11 +346,11 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
         setNewMessage("")
         await loadMessages(selectedConversation.id)
       } else {
-        throw new Error(data.error || "Error desconocido al enviar mensaje")
+        throw new Error(data.error || t("dashboard.payments.errors.sendMessage"))
       }
     } catch (error: unknown) {
       window.toast({
-        title: "Error enviando mensaje",
+        title: t("dashboard.payments.errors.sendMessageError"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -402,15 +404,15 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
     const normalizedStatus = status || "pending"
     switch (normalizedStatus) {
       case "paid":
-        return "Completado"
+        return t("dashboard.payments.projects.status.completed")
       case "pending":
-        return "Pendiente"
+        return t("dashboard.payments.projects.status.pending")
       case "failed":
-        return "Fallido"
+        return t("dashboard.payments.projects.status.failed")
       case "refunded":
-        return "Reembolsado"
+        return t("dashboard.payments.projects.status.refunded")
       default:
-        return "Pendiente" // Default to pending
+        return t("dashboard.payments.projects.status.pending") // Default to pending
     }
   }
 
@@ -431,13 +433,16 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
+    return new Date(dateString).toLocaleDateString(
+      i18n.language === "en" ? "en-US" : "es-ES",
+      {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      },
+    )
   }
 
   const calculateTotals = () => {
@@ -465,7 +470,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="border-primary mx-auto h-8 w-8 animate-spin rounded-full border-b-2"></div>
-          <p className="mt-2 text-gray-600">Cargando información de pagos...</p>
+          <p className="mt-2 text-gray-600">{t("dashboard.payments.loading")}</p>
         </div>
       </div>
     )
@@ -477,13 +482,13 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
           <i className="ri-error-warning-line text-2xl text-red-600"></i>
         </div>
-        <h3 className="mb-2 text-lg font-medium text-gray-900">Error al cargar</h3>
+        <h3 className="mb-2 text-lg font-medium text-gray-900">{t("dashboard.payments.error")}</h3>
         <p className="mb-4 text-gray-600">{error}</p>
         <button
           onClick={loadData}
           className="bg-primary cursor-pointer rounded-lg px-4 py-2 whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
         >
-          Intentar de Nuevo
+          {t("dashboard.payments.retry")}
         </button>
       </div>
     )
@@ -502,7 +507,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">
-                {userType === "client" ? "Total Pagado" : "Total Recibido"}
+                {userType === "client"
+                  ? t("dashboard.payments.stats.totalPaid")
+                  : t("dashboard.payments.stats.totalReceived")}
               </p>
               <p className="text-2xl font-bold text-gray-900">${totalAmount.toFixed(2)}</p>
             </div>
@@ -515,7 +522,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
               <i className="ri-calendar-line text-primary text-xl"></i>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600">Este Mes</p>
+              <p className="text-sm font-medium text-gray-600">{t("dashboard.payments.stats.thisMonth")}</p>
               <p className="text-2xl font-bold text-gray-900">${monthlyAmount.toFixed(2)}</p>
             </div>
           </div>
@@ -527,7 +534,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
               <i className="ri-briefcase-line text-xl text-purple-600"></i>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600">Proyectos</p>
+              <p className="text-sm font-medium text-gray-600">{t("dashboard.payments.stats.projects")}</p>
               <p className="text-2xl font-bold text-gray-900">{projects.length}</p>
             </div>
           </div>
@@ -545,7 +552,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            Todos ({projects.length + transactions.length})
+            {t("dashboard.payments.filters.all")} ({projects.length + transactions.length})
           </button>
           <button
             onClick={() => setFilter("paid")}
@@ -555,7 +562,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            Pagados (
+            {t("dashboard.payments.filters.paid")} (
             {projects.filter((p) => p.payment_status === "paid" || p.payment_status === "success")
               .length + transactions.filter((t) => t.status === "paid").length}
             )
@@ -568,7 +575,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            Pendientes (
+            {t("dashboard.payments.filters.pending")} (
             {projects.filter((p) => p.payment_status === "pending" || !p.payment_status).length +
               transactions.filter((t) => !t.status || t.status === "pending").length}
             )
@@ -581,7 +588,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
         <div className="border-b border-gray-200 px-6 py-4">
           <h3 className="flex items-center text-lg font-semibold text-gray-900">
             <i className="ri-briefcase-line text-primary mr-2"></i>
-            Proyectos Contratados
+            {t("dashboard.payments.projects.title")}
           </h3>
         </div>
 
@@ -590,11 +597,16 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
               <i className="ri-receipt-line text-2xl text-gray-400"></i>
             </div>
-            <h3 className="mb-2 text-lg font-medium text-gray-900">No hay proyectos</h3>
+            <h3 className="mb-2 text-lg font-medium text-gray-900">
+              {t("dashboard.payments.projects.noProjects")}
+            </h3>
             <p className="text-gray-600">
               {filter === "all"
-                ? "Aún no tienes proyectos contratados."
-                : `No tienes proyectos con estado "${getStatusText(filter).toLowerCase()}".`}
+                ? t("dashboard.payments.projects.noProjectsDesc")
+                : t("dashboard.payments.projects.noProjectsFiltered").replace(
+                    "{status}",
+                    getStatusText(filter).toLowerCase(),
+                  )}
             </p>
           </div>
         ) : (
@@ -640,8 +652,8 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                           )}
                         </span>
                         {project.payment_status === "paid" || project.payment_status === "success"
-                          ? "Pagado"
-                          : "Pendiente"}
+                          ? t("dashboard.payments.projects.status.paid")
+                          : t("dashboard.payments.projects.status.pending")}
                       </span>
                     </div>
 
@@ -658,7 +670,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                     >
                       <i className="ri-eye-line mr-1"></i>
-                      Ver Detalles
+                      {t("dashboard.payments.projects.viewDetails")}
                     </button>
                   </div>
                 </div>
@@ -685,8 +697,10 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                         <i className="ri-user-line mr-1"></i>
                         <span>
                           {userType === "client"
-                            ? (transaction as any).freelancer?.full_name || "Freelancer"
-                            : (transaction as any).client?.full_name || "Cliente"}
+                            ? (transaction as any).freelancer?.full_name ||
+                              t("dashboard.freelancer.title").split(" ")[0]
+                            : (transaction as any).client?.full_name ||
+                              t("dashboard.client.title").split(" ")[0]}
                         </span>
                         {(userType === "client" && (transaction as any).freelancer?.rating) ||
                         (userType === "freelancer" && (transaction as any).client?.rating) ? (
@@ -726,7 +740,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       className="bg-primary cursor-pointer rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-white transition-colors hover:bg-cyan-700"
                     >
                       <i className="ri-eye-line mr-1"></i>
-                      Ver Detalles
+                      {t("dashboard.payments.projects.viewDetails")}
                     </button>
                   </div>
                 </div>
@@ -773,10 +787,10 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                             }`}
                           ></i>
                           {selectedProject.status === "in_progress"
-                            ? "En Progreso"
+                            ? t("dashboard.payments.projects.status.inProgress")
                             : selectedProject.status === "completed"
-                              ? "Completado"
-                              : "Abierto"}
+                              ? t("dashboard.payments.projects.status.completed")
+                              : t("dashboard.payments.projects.status.open")}
                         </span>
                         <span
                           className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
@@ -796,8 +810,8 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                           ></i>
                           {selectedProject.payment_status === "paid" ||
                           selectedProject.payment_status === "success"
-                            ? "Pagado"
-                            : "Pago Pendiente"}
+                            ? t("dashboard.payments.projects.status.paid")
+                            : t("dashboard.payments.projects.status.pending")}
                         </span>
                         <span className="text-lg font-bold text-white">
                           $
@@ -814,7 +828,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                     setSelectedProject(null)
                   }}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
-                  aria-label="Cerrar"
+                  aria-label={t("dashboard.payments.modals.projectDetails.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -829,7 +843,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-lg shadow-cyan-500/30">
                         <i className="ri-money-dollar-circle-fill text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-cyan-700">Presupuesto</div>
+                      <div className="text-sm font-medium text-cyan-700">
+                        {t("dashboard.payments.modals.projectDetails.budget")}
+                      </div>
                     </div>
                     <p className="text-2xl font-bold text-gray-900">
                       $
@@ -843,14 +859,16 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/30">
                         <i className="ri-file-list-3-line text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-blue-700">Estado</div>
+                      <div className="text-sm font-medium text-blue-700">
+                        {t("dashboard.payments.modals.projectDetails.status")}
+                      </div>
                     </div>
                     <p className="text-xl font-bold text-gray-900">
                       {selectedProject.status === "in_progress"
-                        ? "En Progreso"
+                        ? t("dashboard.payments.projects.status.inProgress")
                         : selectedProject.status === "completed"
-                          ? "Completado"
-                          : "Abierto"}
+                          ? t("dashboard.payments.projects.status.completed")
+                          : t("dashboard.payments.projects.status.open")}
                     </p>
                   </div>
 
@@ -859,18 +877,26 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30">
                         <i className="ri-calendar-check-fill text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-purple-700">Fecha de Inicio</div>
+                      <div className="text-sm font-medium text-purple-700">
+                        {t("dashboard.payments.modals.projectDetails.startDate")}
+                      </div>
                     </div>
                     <p className="text-xl font-bold text-gray-900">
-                      {new Date(selectedProject.created_at).toLocaleDateString("es-ES", {
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      {new Date(selectedProject.created_at).toLocaleDateString(
+                        i18n.language === "en" ? "en-US" : "es-ES",
+                        {
+                          month: "short",
+                          day: "numeric",
+                        },
+                      )}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {new Date(selectedProject.created_at).toLocaleDateString("es-ES", {
-                        year: "numeric",
-                      })}
+                      {new Date(selectedProject.created_at).toLocaleDateString(
+                        i18n.language === "en" ? "en-US" : "es-ES",
+                        {
+                          year: "numeric",
+                        },
+                      )}
                     </p>
                   </div>
                 </div>
@@ -882,7 +908,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <i className="ri-user-3-line text-lg"></i>
                     </div>
                     <h3 className="text-xl font-bold text-gray-900">
-                      Información del {userType === "client" ? "Freelancer" : "Cliente"}
+                      {userType === "client"
+                        ? t("dashboard.payments.modals.projectDetails.freelancerInfo")
+                        : t("dashboard.payments.modals.projectDetails.clientInfo")}
                     </h3>
                   </div>
                   <div className="flex items-center space-x-4">
@@ -933,7 +961,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                             )?.toFixed(1)}
                           </span>
                           <span className="text-gray-500">
-                            · {userType === "client" ? "Freelancer" : "Cliente"} verificado
+                            · {t("dashboard.payments.modals.projectDetails.verified")}
                           </span>
                         </div>
                       )}
@@ -947,11 +975,13 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg">
                       <i className="ri-file-text-line text-lg"></i>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">Descripción del Proyecto</h3>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {t("dashboard.payments.modals.projectDetails.description")}
+                    </h3>
                   </div>
                   <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                     <p className="leading-relaxed whitespace-pre-wrap text-gray-700">
-                      {selectedProject.description || "Sin descripción disponible"}
+                      {selectedProject.description || t("dashboard.payments.modals.projectDetails.noDescription")}
                     </p>
                   </div>
                 </div>
@@ -963,18 +993,24 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-lg">
                         <i className="ri-information-line text-lg"></i>
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900">Información Adicional</h3>
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {t("dashboard.payments.modals.projectDetails.additionalInfo")}
+                      </h3>
                     </div>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       {selectedProject.duration && (
                         <div>
-                          <h4 className="mb-2 text-sm font-semibold text-gray-900">Duración</h4>
+                          <h4 className="mb-2 text-sm font-semibold text-gray-900">
+                            {t("dashboard.payments.modals.projectDetails.duration")}
+                          </h4>
                           <p className="text-gray-700">{selectedProject.duration}</p>
                         </div>
                       )}
                       {selectedProject.requirements && (
                         <div>
-                          <h4 className="mb-2 text-sm font-semibold text-gray-900">Requisitos</h4>
+                          <h4 className="mb-2 text-sm font-semibold text-gray-900">
+                            {t("dashboard.payments.modals.projectDetails.requirements")}
+                          </h4>
                           <p className="text-gray-700">{selectedProject.requirements}</p>
                         </div>
                       )}
@@ -991,7 +1027,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg">
                           <i className="ri-code-s-slash-line text-lg"></i>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900">Habilidades</h3>
+                        <h3 className="text-xl font-bold text-gray-900">
+                          {t("dashboard.payments.modals.projectDetails.skills")}
+                        </h3>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {selectedProject.freelancer.skills.map((skill, index) => (
@@ -1028,7 +1066,11 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                   className="group flex flex-1 cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-4 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
                 >
                   <i className="ri-chat-3-line text-xl transition-transform group-hover:scale-110"></i>
-                  <span>Contactar {userType === "freelancer" ? "Cliente" : "Freelancer"}</span>
+                  <span>
+                    {userType === "freelancer"
+                      ? t("dashboard.payments.modals.projectDetails.contactClient")
+                      : t("dashboard.payments.modals.projectDetails.contactFreelancer")}
+                  </span>
                 </button>
               )}
               <button
@@ -1038,7 +1080,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                 }}
                 className="cursor-pointer rounded-xl border border-gray-300 bg-white px-6 py-4 font-semibold text-gray-700 transition-all hover:bg-gray-50"
               >
-                Cerrar
+                {t("dashboard.payments.modals.projectDetails.close")}
               </button>
             </div>
           </div>
@@ -1087,10 +1129,10 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                     </div>
                     <div>
                       <h2 className="text-2xl leading-tight font-bold sm:text-3xl">
-                        Detalles de la Transacción
+                        {t("dashboard.payments.transactions.title")}
                       </h2>
                       <h3 className="mt-2 text-sm text-cyan-100 sm:text-base">
-                        {selectedTransaction.project_title || "Proyecto Contratado"}
+                        {selectedTransaction.project_title || t("dashboard.payments.projects.title")}
                       </h3>
                     </div>
                   </div>
@@ -1101,7 +1143,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                     setSelectedTransaction(null)
                   }}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
-                  aria-label="Cerrar"
+                  aria-label={t("dashboard.payments.modals.projectDetails.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -1116,7 +1158,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
                         <i className="ri-money-dollar-circle-fill text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-cyan-700">Monto</div>
+                      <div className="text-sm font-medium text-cyan-700">
+                        {t("dashboard.payments.transactions.amount")}
+                      </div>
                     </div>
                     <p className="text-2xl font-bold text-gray-900">
                       ${selectedTransaction.amount} {selectedTransaction.currency.toUpperCase()}
@@ -1128,7 +1172,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/30">
                         <i className="ri-checkbox-circle-fill text-xl"></i>
                       </div>
-                      <div className="text-sm font-medium text-emerald-700">Estado</div>
+                      <div className="text-sm font-medium text-emerald-700">
+                        {t("dashboard.payments.transactions.status")}
+                      </div>
                     </div>
                     <p
                       className={`text-2xl font-bold ${
@@ -1137,7 +1183,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                           : "text-yellow-700"
                       }`}
                     >
-                      {selectedTransaction.status === "paid" ? "Pagado" : "Pendiente"}
+                      {selectedTransaction.status === "paid"
+                        ? t("dashboard.payments.transactions.paid")
+                        : t("dashboard.payments.transactions.pending")}
                     </p>
                   </div>
                 </div>
@@ -1147,7 +1195,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                   (userType === "freelancer" && (selectedTransaction as any).client)) && (
                   <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                     <h3 className="mb-4 text-xl font-bold text-gray-900">
-                      Información de {userType === "client" ? "Freelancer" : "Cliente"}
+                      {userType === "client"
+                        ? t("dashboard.payments.modals.projectDetails.freelancerInfo")
+                        : t("dashboard.payments.modals.projectDetails.clientInfo")}
                     </h3>
                     <div className="flex items-center gap-4">
                       <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-100 to-teal-100 ring-2 ring-cyan-200">
@@ -1199,13 +1249,15 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                 {/* Transaction Details */}
                 <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                   <h3 className="mb-4 text-xl font-bold text-gray-900">
-                    Información de la Transacción
+                    {t("dashboard.payments.transactions.info")}
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-start justify-between border-b border-gray-200 pb-3">
                       <div className="flex items-center gap-3">
                         <i className="ri-file-text-line text-cyan-600"></i>
-                        <span className="font-medium text-gray-700">Título del Proyecto</span>
+                        <span className="font-medium text-gray-700">
+                          {t("dashboard.payments.transactions.projectTitle")}
+                        </span>
                       </div>
                       <span className="text-right font-semibold text-gray-900">
                         {selectedTransaction.project_title || "N/A"}
@@ -1216,7 +1268,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex items-start justify-between border-b border-gray-200 pb-3">
                         <div className="flex items-center gap-3">
                           <i className="ri-file-list-3-line text-cyan-600"></i>
-                          <span className="font-medium text-gray-700">Descripción</span>
+                          <span className="font-medium text-gray-700">
+                            {t("dashboard.payments.transactions.description")}
+                          </span>
                         </div>
                         <span className="max-w-md text-right text-sm text-gray-600">
                           {selectedTransaction.project_description}
@@ -1227,15 +1281,20 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                     <div className="flex items-start justify-between border-b border-gray-200 pb-3">
                       <div className="flex items-center gap-3">
                         <i className="ri-calendar-line text-cyan-600"></i>
-                        <span className="font-medium text-gray-700">Fecha de Creación</span>
+                        <span className="font-medium text-gray-700">
+                          {t("dashboard.payments.transactions.createdAt")}
+                        </span>
                       </div>
                       <span className="text-right text-sm text-gray-600">
                         {selectedTransaction.created_at
-                          ? new Date(selectedTransaction.created_at).toLocaleDateString("es-ES", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })
+                          ? new Date(selectedTransaction.created_at).toLocaleDateString(
+                              i18n.language === "en" ? "en-US" : "es-ES",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              },
+                            )
                           : "N/A"}
                       </span>
                     </div>
@@ -1244,14 +1303,19 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex items-start justify-between border-b border-gray-200 pb-3">
                         <div className="flex items-center gap-3">
                           <i className="ri-checkbox-circle-line text-cyan-600"></i>
-                          <span className="font-medium text-gray-700">Fecha de Pago</span>
+                          <span className="font-medium text-gray-700">
+                            {t("dashboard.payments.transactions.paidAt")}
+                          </span>
                         </div>
                         <span className="text-right text-sm text-gray-600">
-                          {new Date(selectedTransaction.paid_at).toLocaleDateString("es-ES", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
+                          {new Date(selectedTransaction.paid_at).toLocaleDateString(
+                            i18n.language === "en" ? "en-US" : "es-ES",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            },
+                          )}
                         </span>
                       </div>
                     )}
@@ -1260,7 +1324,9 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       <div className="flex items-start justify-between pb-3">
                         <div className="flex items-center gap-3">
                           <i className="ri-bank-card-line text-cyan-600"></i>
-                          <span className="font-medium text-gray-700">ID de Sesión Stripe</span>
+                          <span className="font-medium text-gray-700">
+                            {t("dashboard.payments.transactions.stripeSessionId")}
+                          </span>
                         </div>
                         <span className="max-w-md text-right font-mono text-xs break-all text-gray-600">
                           {selectedTransaction.stripe_session_id}

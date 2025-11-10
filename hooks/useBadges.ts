@@ -3,6 +3,7 @@
 import { supabaseBrowser } from "@/utils/supabase/client"
 import { useNotifications } from "./useNotifications"
 import { useState, useCallback } from "react"
+import i18n from "@/libs/i18n"
 
 const supabase = supabaseBrowser()
 
@@ -32,11 +33,12 @@ export const useBadges = () => {
 
   // Get badge definitions
   const getBadgeDefinitions = useCallback((userType: "freelancer" | "client"): Badge[] => {
+    const t = (key: string) => i18n.t(key)
     const commonBadges: Badge[] = [
       {
         id: "welcome",
-        name: "🎉 Bienvenido",
-        description: "Te uniste a la plataforma",
+        name: t("dashboard.badges.common.welcome.name"),
+        description: t("dashboard.badges.common.welcome.description"),
         icon: "ri-hand-heart-line",
         color: "bg-primary/10 text-primary",
         requirement: 0,
@@ -45,8 +47,8 @@ export const useBadges = () => {
       },
       {
         id: "first_week",
-        name: "📅 Primera Semana",
-        description: "Una semana activo en la plataforma",
+        name: t("dashboard.badges.common.firstWeek.name"),
+        description: t("dashboard.badges.common.firstWeek.description"),
         icon: "ri-calendar-check-line",
         color: "bg-green-100 text-green-600",
         requirement: 7,
@@ -55,8 +57,8 @@ export const useBadges = () => {
       },
       {
         id: "month_veteran",
-        name: "🗓️ Veterano Mensual",
-        description: "Un mes activo en la plataforma",
+        name: t("dashboard.badges.common.monthVeteran.name"),
+        description: t("dashboard.badges.common.monthVeteran.description"),
         icon: "ri-trophy-line",
         color: "bg-purple-100 text-purple-600",
         requirement: 30,
@@ -69,8 +71,8 @@ export const useBadges = () => {
       const freelancerBadges: Badge[] = [
         {
           id: "first_project",
-          name: "🚀 Primer Proyecto",
-          description: "Completaste tu primer proyecto",
+          name: t("dashboard.badges.freelancer.firstProject.name"),
+          description: t("dashboard.badges.freelancer.firstProject.description"),
           icon: "ri-rocket-line",
           color: "bg-emerald-100 text-primary",
           requirement: 1,
@@ -79,8 +81,8 @@ export const useBadges = () => {
         },
         {
           id: "project_master",
-          name: "⭐ Maestro de Proyectos",
-          description: "Completaste 5 proyectos",
+          name: t("dashboard.badges.freelancer.projectMaster.name"),
+          description: t("dashboard.badges.freelancer.projectMaster.description"),
           icon: "ri-star-line",
           color: "bg-yellow-100 text-yellow-600",
           requirement: 5,
@@ -89,8 +91,8 @@ export const useBadges = () => {
         },
         {
           id: "project_legend",
-          name: "🏆 Leyenda de Proyectos",
-          description: "Completaste 20 proyectos",
+          name: t("dashboard.badges.freelancer.projectLegend.name"),
+          description: t("dashboard.badges.freelancer.projectLegend.description"),
           icon: "ri-trophy-line",
           color: "bg-orange-100 text-orange-600",
           requirement: 20,
@@ -99,8 +101,8 @@ export const useBadges = () => {
         },
         {
           id: "five_stars",
-          name: "⭐ 5 Estrellas",
-          description: "Rating promedio de 4.5 o más",
+          name: t("dashboard.badges.freelancer.fiveStars.name"),
+          description: t("dashboard.badges.freelancer.fiveStars.description"),
           icon: "ri-star-fill",
           color: "bg-yellow-100 text-yellow-600",
           requirement: 4.5,
@@ -109,8 +111,8 @@ export const useBadges = () => {
         },
         {
           id: "top_earner",
-          name: "💰 Top Earner",
-          description: "Ganaste más de $5,000",
+          name: t("dashboard.badges.freelancer.topEarner.name"),
+          description: t("dashboard.badges.freelancer.topEarner.description"),
           icon: "ri-money-dollar-circle-line",
           color: "bg-green-100 text-green-600",
           requirement: 5000,
@@ -119,8 +121,8 @@ export const useBadges = () => {
         },
         {
           id: "high_roller",
-          name: "💎 High Roller",
-          description: "Ganaste más de $20,000",
+          name: t("dashboard.badges.freelancer.highRoller.name"),
+          description: t("dashboard.badges.freelancer.highRoller.description"),
           icon: "ri-gem-line",
           color: "bg-indigo-100 text-indigo-600",
           requirement: 20000,
@@ -133,8 +135,8 @@ export const useBadges = () => {
       const clientBadges: Badge[] = [
         {
           id: "first_hire",
-          name: "🤝 Primera Contratación",
-          description: "Contrataste tu primer freelancer",
+          name: t("dashboard.badges.client.firstHire.name"),
+          description: t("dashboard.badges.client.firstHire.description"),
           icon: "ri-handshake-line",
           color: "bg-blue-100 text-primary",
           requirement: 1,
@@ -143,8 +145,8 @@ export const useBadges = () => {
         },
         {
           id: "project_sponsor",
-          name: "💼 Patrocinador de Proyectos",
-          description: "Creaste 5 proyectos",
+          name: t("dashboard.badges.client.projectSponsor.name"),
+          description: t("dashboard.badges.client.projectSponsor.description"),
           icon: "ri-briefcase-line",
           color: "bg-purple-100 text-purple-600",
           requirement: 5,
@@ -153,8 +155,8 @@ export const useBadges = () => {
         },
         {
           id: "enterprise_client",
-          name: "🏢 Cliente Empresarial",
-          description: "Creaste más de 20 proyectos",
+          name: t("dashboard.badges.client.enterpriseClient.name"),
+          description: t("dashboard.badges.client.enterpriseClient.description"),
           icon: "ri-building-line",
           color: "bg-gray-100 text-gray-600",
           requirement: 20,
@@ -428,9 +430,13 @@ export const useBadges = () => {
               })
 
               // Send notification
+              const t = (key: string, options?: any) => i18n.t(key, options)
               await createNotification({
-                title: `🏆 ¡Badge Desbloqueado!`,
-                message: `Has desbloqueado el badge "${badge.name}" - ${badge.description}`,
+                title: t("dashboard.badges.notification.title"),
+                message: t("dashboard.badges.notification.message", {
+                  name: badge.name,
+                  description: badge.description,
+                }),
                 type: "badge",
                 priority: "high",
                 action_url: "/dashboard?tab=achievements",

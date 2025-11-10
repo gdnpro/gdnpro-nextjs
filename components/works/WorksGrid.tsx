@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { AvailableProjectArticle } from "@/components/AvailableProjectArticle"
 import type { Project } from "@/interfaces/Project"
 import type { Proposal } from "@/interfaces/Proposal"
@@ -33,6 +34,7 @@ export default function WorksGrid({
   onViewProjectDetails,
   searchFilters,
 }: WorksGridProps) {
+  const { t } = useTranslation()
   const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects)
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export default function WorksGrid({
                   <i className="ri-loader-4-line text-primary animate-spin text-3xl text-white"></i>
                 </div>
               </div>
-              <p className="text-lg font-medium text-gray-600">Cargando proyectos...</p>
+              <p className="text-lg font-medium text-gray-600">{t("works.grid.loading")}</p>
             </div>
           </div>
         </div>
@@ -114,8 +116,8 @@ export default function WorksGrid({
                 <i className="ri-briefcase-line text-4xl text-gray-400"></i>
               </div>
             </div>
-            <h3 className="mb-2 text-2xl font-semibold text-gray-900">No se encontraron proyectos</h3>
-            <p className="text-gray-500">Intenta ajustar tus filtros de búsqueda</p>
+            <h3 className="mb-2 text-2xl font-semibold text-gray-900">{t("works.grid.noProjectsFound")}</h3>
+            <p className="text-gray-500">{t("works.grid.adjustFilters")}</p>
           </div>
         </div>
       </section>
@@ -132,11 +134,10 @@ export default function WorksGrid({
             </div>
             <div>
           <h2 className="mb-2 text-3xl font-bold text-gray-900 sm:text-4xl">
-            Proyectos Disponibles
+            {t("works.grid.availableProjects")}
           </h2>
           <p className="text-gray-600">
-            {filteredProjects.length} proyecto{filteredProjects.length !== 1 ? "s" : ""} encontrado
-            {filteredProjects.length !== 1 ? "s" : ""}
+            {filteredProjects.length} {filteredProjects.length !== 1 ? t("works.grid.projectsFoundPlural") : t("works.grid.projectsFound")}
           </p>
             </div>
           </div>
@@ -160,14 +161,14 @@ export default function WorksGrid({
           {loadingMore && (
             <div className="flex items-center justify-center">
               <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
-              <span className="ml-3 text-gray-600">Cargando más proyectos...</span>
+              <span className="ml-3 text-gray-600">{t("works.grid.loadingMore")}</span>
             </div>
           )}
           {!hasMore && !loadingMore && filteredProjects.length > 0 && (
             <div className="py-8">
               <p className="text-gray-500">
                 <i className="ri-check-line mr-2 text-green-500"></i>
-                Has visto todos los proyectos disponibles
+                {t("works.grid.allProjectsSeen")}
               </p>
             </div>
           )}

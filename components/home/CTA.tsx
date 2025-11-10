@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { supabaseBrowser } from "@/utils/supabase/client"
+import { useTranslation } from "react-i18next"
 
 const supabase = supabaseBrowser()
 
@@ -38,6 +39,7 @@ const generateCalendar = ({ month, year, occupiedDates }: Props) => {
 }
 
 export default function CTA() {
+  const { t } = useTranslation()
   const scrollToContact = () => {
     const contactSection = document.getElementById("contact")
     if (contactSection) contactSection.scrollIntoView({ behavior: "smooth" })
@@ -78,23 +80,23 @@ export default function CTA() {
 
   // Enviar los datos al correo (via Supabase Function)
   const handleSchedule = async () => {
-    if (
-      !topic.trim() ||
-      !selectedDate ||
-      !selectedTime.trim() ||
-      !selectedPlatform ||
-      !clientName.trim() ||
-      !clientContact.trim()
-    ) {
-      window.toast({
-        title: "Por favor, completa todos los campos antes de agendar",
-        type: "warning",
-        location: "bottom-center",
-        dismissible: true,
-        icon: true,
-      })
-      return
-    }
+      if (
+        !topic.trim() ||
+        !selectedDate ||
+        !selectedTime.trim() ||
+        !selectedPlatform ||
+        !clientName.trim() ||
+        !clientContact.trim()
+      ) {
+        window.toast({
+          title: t("cta.modal.errors.fillAllFields"),
+          type: "warning",
+          location: "bottom-center",
+          dismissible: true,
+          icon: true,
+        })
+        return
+      }
 
     const appointmentData = {
       topic,
@@ -112,7 +114,7 @@ export default function CTA() {
 
       if (error) {
         window.toast({
-          title: "Error al enviar la cita",
+          title: t("cta.modal.errors.errorSending"),
           type: "success",
           location: "bottom-center",
           dismissible: true,
@@ -124,11 +126,11 @@ export default function CTA() {
 
       const contactText =
         selectedPlatform === "WhatsApp"
-          ? `al número de WhatsApp ${clientContact}`
-          : `al correo ${clientContact}`
+          ? t("cta.modal.success", { contactText: `al número de WhatsApp ${clientContact}` })
+          : t("cta.modal.success", { contactText: `al correo ${clientContact}` })
 
       window.toast({
-        title: `Tu cita fue enviada correctamente. Te contactaremos pronto ${contactText}.`,
+        title: contactText,
         type: "success",
         location: "bottom-center",
         dismissible: true,
@@ -138,7 +140,7 @@ export default function CTA() {
       closeModal()
     } catch (error) {
       window.toast({
-        title: "Hubo un problema al comunicarse con el servidor",
+        title: t("cta.modal.errors.serverError"),
         type: "success",
         location: "bottom-center",
         dismissible: true,
@@ -166,11 +168,10 @@ export default function CTA() {
       <div className="mx-auto max-w-7xl px-6 text-center text-white">
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-6 text-4xl font-bold md:text-6xl">
-            ¿Listo para transformar tu negocio?
+            {t("cta.title")}
           </h2>
           <p className="mb-12 text-xl leading-relaxed md:text-2xl">
-            No esperes más. Comencemos a construir el futuro digital de tu empresa hoy mismo.
-            Nuestro equipo está listo para hacer realidad tus ideas más ambiciosas.
+            {t("cta.description")}
           </p>
 
           <div className="flex flex-col justify-center gap-6 sm:flex-row">
@@ -178,26 +179,26 @@ export default function CTA() {
               onClick={scrollToContact}
               className="bg-primary cursor-pointer rounded-full px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all hover:bg-cyan-700 hover:shadow-xl"
             >
-              Empezar Ahora
+              {t("cta.startNow")}
             </button>
             <button
               onClick={openModal}
               className="cursor-pointer rounded-full border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white hover:text-gray-900"
             >
-              Agenda una cita
+              {t("cta.scheduleAppointment")}
             </button>
           </div>
 
           <div className="mt-16 grid grid-cols-1 gap-8 text-center md:grid-cols-2">
             <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
               <i className="ri-mail-line mb-4 text-3xl"></i>
-              <h4 className="mb-2 font-semibold">Escríbenos</h4>
-              <p className="text-emerald-100">contact@gdnpro.com</p>
+              <h4 className="mb-2 font-semibold">{t("cta.contact.email")}</h4>
+              <p className="text-emerald-100">{t("cta.contact.emailAddress")}</p>
             </div>
             <div className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
               <i className="ri-calendar-line mb-4 text-3xl"></i>
-              <h4 className="mb-2 font-semibold">Reunión Virtual</h4>
-              <p className="text-emerald-100">Agenda una cita</p>
+              <h4 className="mb-2 font-semibold">{t("cta.contact.virtualMeeting")}</h4>
+              <p className="text-emerald-100">{t("cta.contact.schedule")}</p>
             </div>
           </div>
         </div>
@@ -227,10 +228,10 @@ export default function CTA() {
                     </div>
                     <div>
                       <h3 className="text-3xl leading-tight font-bold sm:text-4xl">
-                        Agenda tu cita gratuita
+                        {t("cta.modal.title")}
                       </h3>
                       <p className="mt-2 text-sm text-cyan-100">
-                        Completa los datos para confirmar tu reunión
+                        {t("cta.modal.subtitle")}
                       </p>
                     </div>
                   </div>
@@ -238,7 +239,7 @@ export default function CTA() {
                 <button
                   onClick={closeModal}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20"
-                  aria-label="Cerrar"
+                  aria-label={t("cta.modal.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -256,7 +257,7 @@ export default function CTA() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                         <i className="ri-calendar-line text-lg"></i>
                       </div>
-                      <h4 className="text-xl font-bold text-gray-900">Selecciona una fecha</h4>
+                      <h4 className="text-xl font-bold text-gray-900">{t("cta.modal.selectDate")}</h4>
                     </div>
                     <div className="mb-6 grid grid-cols-7 gap-2 rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 shadow-sm">
                       {calendarDays?.map(({ day, date, isOccupied, isWeekend }) => (
@@ -285,10 +286,10 @@ export default function CTA() {
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                           <i className="ri-time-line text-lg"></i>
                         </div>
-                        <h4 className="text-xl font-bold text-gray-900">Selecciona la hora</h4>
+                        <h4 className="text-xl font-bold text-gray-900">{t("cta.modal.selectTime")}</h4>
                       </div>
                       <label htmlFor="cta-time-select" className="sr-only">
-                        Selecciona la hora
+                        {t("cta.modal.selectTime")}
                       </label>
                       <select
                         id="cta-time-select"
@@ -297,7 +298,7 @@ export default function CTA() {
                         onChange={handleTimeSelect}
                         className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                       >
-                        <option value="">Elige una hora</option>
+                        <option value="">{t("cta.modal.selectTimePlaceholder")}</option>
                         {workingHours.map((hour) => (
                           <option key={hour} value={hour}>
                             {hour}
@@ -316,17 +317,17 @@ export default function CTA() {
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                           <i className="ri-message-3-line text-lg"></i>
                         </div>
-                        <h4 className="text-xl font-bold text-gray-900">Tema de la reunión</h4>
+                        <h4 className="text-xl font-bold text-gray-900">{t("cta.modal.meetingTopic")}</h4>
                       </div>
                       <label htmlFor="cta-meeting-topic" className="sr-only">
-                        Tema de la reunión
+                        {t("cta.modal.meetingTopic")}
                       </label>
                       <textarea
                         id="cta-meeting-topic"
                         name="meetingTopic"
                         className="w-full resize-none rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                         rows={4}
-                        placeholder="Cuéntanos brevemente de qué te gustaría hablar..."
+                        placeholder={t("cta.modal.meetingTopicPlaceholder")}
                         value={topic}
                         onChange={(e) => setTopic(e.target.value)}
                       />
@@ -338,10 +339,10 @@ export default function CTA() {
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                           <i className="ri-user-line text-lg"></i>
                         </div>
-                        <h4 className="text-xl font-bold text-gray-900">Tu nombre</h4>
+                        <h4 className="text-xl font-bold text-gray-900">{t("cta.modal.yourName")}</h4>
                       </div>
                       <label htmlFor="cta-client-name" className="sr-only">
-                        Tu nombre
+                        {t("cta.modal.yourName")}
                       </label>
                       <input
                         type="text"
@@ -349,7 +350,7 @@ export default function CTA() {
                         name="clientName"
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
-                        placeholder="Tu nombre completo"
+                        placeholder={t("cta.modal.yourNamePlaceholder")}
                         className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                       />
                     </div>
@@ -361,7 +362,7 @@ export default function CTA() {
                           <i className="ri-video-line text-lg"></i>
                         </div>
                         <h4 className="text-xl font-bold text-gray-900">
-                          ¿Cómo prefieres reunirte?
+                          {t("cta.modal.preferredPlatform")}
                         </h4>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
@@ -396,7 +397,7 @@ export default function CTA() {
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
                           <i className="ri-mail-line text-lg"></i>
                         </div>
-                        <h4 className="text-xl font-bold text-gray-900">Información de contacto</h4>
+                        <h4 className="text-xl font-bold text-gray-900">{t("cta.modal.contactInfo")}</h4>
                       </div>
                       <input
                         type="text"
@@ -404,8 +405,8 @@ export default function CTA() {
                         onChange={(e) => setClientContact(e.target.value)}
                         placeholder={
                           selectedPlatform === "WhatsApp"
-                            ? "Número de WhatsApp"
-                            : "Correo electrónico"
+                            ? t("cta.modal.whatsappPlaceholder")
+                            : t("cta.modal.emailPlaceholder")
                         }
                         className="w-full rounded-xl border border-gray-300 bg-gradient-to-br from-gray-50 to-white p-3 text-gray-900 shadow-sm transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none"
                       />
@@ -418,7 +419,7 @@ export default function CTA() {
                     className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 py-4 text-lg font-bold text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
                   >
                     <i className="ri-calendar-check-line text-xl transition-transform group-hover:scale-110"></i>
-                    <span>Agendar cita</span>
+                    <span>{t("cta.modal.scheduleButton")}</span>
                   </button>
                 </div>
               </div>

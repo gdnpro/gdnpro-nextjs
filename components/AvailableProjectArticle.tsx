@@ -1,5 +1,6 @@
 import type { Project } from "@/interfaces/Project"
 import type { Proposal } from "@/interfaces/Proposal"
+import { useTranslation } from "react-i18next"
 
 interface Props {
   project: Project
@@ -16,6 +17,7 @@ export const AvailableProjectArticle = ({
   sendProposal,
   startChat,
 }: Props) => {
+  const { t } = useTranslation()
   return (
     <div
       key={project.id}
@@ -24,16 +26,16 @@ export const AvailableProjectArticle = ({
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-y-0">
         <div className="flex-1">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h4 className="text-xl font-bold text-gray-900 sm:text-2xl">
-              {project.title}
-            </h4>
-            <div className="flex items-center gap-3">
+            <h4 className="text-xl font-bold text-gray-900 sm:text-2xl">{project.title}</h4>
+            <div className="flex shrink-0 items-center gap-3">
               <span className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-500 to-green-500 px-3 py-1 text-xs font-semibold text-white shadow-md">
                 <i className="ri-check-line mr-1"></i>
-                {project.status === "open" ? "Abierto" : project.status}
+                {project.status === "open"
+                  ? t("dashboard.projectsCard.status.open")
+                  : t(`dashboard.projectsCard.status.${project.status}`)}
               </span>
               <div className="rounded-xl bg-gradient-to-br from-cyan-50 to-teal-50 px-4 py-2 ring-1 ring-cyan-200">
-                <span className="text-primary text-lg font-bold sm:text-xl">
+                <span className="text-primary text-md font-bold sm:text-lg">
                   ${project.budget_min || project.budget || 0} - $
                   {project.budget_max || project.budget || 0}
                 </span>
@@ -61,7 +63,7 @@ export const AvailableProjectArticle = ({
             ))}
             {project.required_skills && project.required_skills.length > 3 && (
               <span className="rounded-full bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700">
-                +{project.required_skills.length - 3} más
+                +{project.required_skills.length - 3}
               </span>
             )}
           </div>
@@ -84,14 +86,20 @@ export const AvailableProjectArticle = ({
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100">
                   <i className="ri-calendar-line text-blue-600"></i>
                 </div>
-                <span>{new Date(project.created_at).toLocaleDateString("es-ES")}</span>
+                <span>
+                  {t("dashboard.projectsCard.from")}{" "}
+                  {new Date(project.created_at).toLocaleDateString("es-ES")}
+                </span>
               </div>
               {project.deadline && (
                 <div className="flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-100 to-pink-100">
                     <i className="ri-time-line text-purple-600"></i>
                   </div>
-                  <span>Hasta {new Date(project.deadline).toLocaleDateString("es-ES")}</span>
+                  <span>
+                    {t("dashboard.projectsCard.to")}{" "}
+                    {new Date(project.deadline).toLocaleDateString("es-ES")}
+                  </span>
                 </div>
               )}
             </div>
@@ -101,27 +109,27 @@ export const AvailableProjectArticle = ({
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-2 lg:ml-6 lg:flex-col lg:gap-3">
           <button
             onClick={() => viewProjectDetails(project)}
-            className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold whitespace-nowrap text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
+            className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-sm font-semibold whitespace-nowrap text-gray-700 transition-all hover:-translate-y-0.5 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
           >
             <i className="ri-eye-line text-base transition-transform group-hover:scale-110"></i>
-            Ver Detalles
+            {t("dashboard.projectsCard.viewDetails")}
           </button>
           {!proposals.find((p) => p.project?.id === project.id) && (
             <button
               onClick={() => sendProposal(project.id)}
-              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 text-sm font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 text-sm font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
               <i className="ri-send-plane-fill text-base transition-transform group-hover:translate-x-1"></i>
-              Enviar Propuesta
+              {t("dashboard.projectsCard.sendProposal")}
             </button>
           )}
           {project.client?.id && (
             <button
               onClick={() => startChat(project.id, project.client?.id!)}
-              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-6 py-3 text-sm font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
+              className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 px-4 py-3 text-sm font-semibold whitespace-nowrap text-white shadow-lg shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/40"
             >
               <i className="ri-chat-3-line text-base transition-transform group-hover:scale-110"></i>
-              Chat Cliente
+              {t("dashboard.projectsCard.chatWithClient")}
             </button>
           )}
         </div>

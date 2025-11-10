@@ -2,8 +2,10 @@
 
 import { testimonials } from "@/services/Tertimonials"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export default function Testimonials() {
+  const { t } = useTranslation()
   const [activeTestimonial, setActiveTestimonial] = useState(0)
 
   return (
@@ -11,11 +13,10 @@ export default function Testimonials() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Lo Que Dicen Nuestros Clientes
+            {t("testimonials.title")}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            La satisfacción de nuestros clientes es nuestra mejor carta de
-            presentación
+            {t("testimonials.subtitle")}
           </p>
         </div>
 
@@ -57,7 +58,7 @@ export default function Testimonials() {
 
                 <div className="bg-secondary/40 rounded-xl p-4">
                   <p className="text-primary font-semibold">
-                    Proyecto: {testimonials[activeTestimonial].project}
+                    {t("testimonials.project")} {testimonials[activeTestimonial].project}
                   </p>
                 </div>
               </div>
