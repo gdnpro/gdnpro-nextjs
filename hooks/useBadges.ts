@@ -430,7 +430,7 @@ export const useBadges = () => {
               })
 
               // Send notification
-              const t = (key: string, options?: any) => i18n.t(key, options)
+              const t = (key: string, options?: any) => i18n.t(key, options) as string
               await createNotification({
                 title: t("dashboard.badges.notification.title"),
                 message: t("dashboard.badges.notification.message", {
