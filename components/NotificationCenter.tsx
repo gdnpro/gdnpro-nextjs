@@ -504,14 +504,18 @@ export default function NotificationCenter({
                               !notification.read ? "text-gray-900" : "text-gray-700"
                             }`}
                           >
-                            {notification.title}
+                            {notification.title_key
+                              ? t(notification.title_key, notification.translation_params || {})
+                              : notification.title}
                           </h4>
                           {!notification.read && (
                             <div className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 ring-2 ring-cyan-200"></div>
                           )}
                         </div>
                         <p className="mb-3 text-sm leading-relaxed text-gray-600">
-                          {notification.message}
+                          {notification.message_key
+                            ? t(notification.message_key, notification.translation_params || {})
+                            : notification.message}
                         </p>
                         <div className="flex flex-wrap items-center gap-2 text-xs">
                           <span className="rounded-full bg-gradient-to-r from-gray-100 to-gray-200 px-2.5 py-1 font-medium text-gray-700 capitalize">

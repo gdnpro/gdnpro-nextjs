@@ -578,6 +578,53 @@
         "project_update": "Proyectos"
       },
       "now": "Ahora"
+    },
+    "messages": {
+      "project_created": {
+        "title": "🚀 Nuevo Proyecto Disponible",
+        "message": "Se ha publicado un nuevo proyecto \"{{projectTitle}}\".",
+        "message_with_skills": "Se ha publicado un nuevo proyecto \"{{projectTitle}}\" que coincide con tus habilidades."
+      },
+      "project_completed": {
+        "title": "🎉 ¡Proyecto Completado!",
+        "message": "El proyecto \"{{projectTitle}}\" ha sido marcado como completado."
+      },
+      "milestone_completed": {
+        "title": "✅ Hito Completado",
+        "message": "Se ha completado un hito en el proyecto \"{{projectTitle}}\"."
+      },
+      "deadline_reminder": {
+        "title": "⏰ Recordatorio de Fecha Límite",
+        "message": "El proyecto \"{{projectTitle}}\" tiene fecha límite próxima."
+      },
+      "proposal_received": {
+        "title": "📝 Nueva Propuesta Recibida",
+        "message": "{{freelancerName}} envió una propuesta para \"{{projectTitle}}\"."
+      },
+      "proposal_accepted": {
+        "title": "🎉 ¡Propuesta Aceptada!",
+        "message": "Tu propuesta para \"{{projectTitle}}\" ha sido aceptada."
+      },
+      "proposal_rejected": {
+        "title": "❌ Propuesta Rechazada",
+        "message": "Tu propuesta para \"{{projectTitle}}\" no fue seleccionada."
+      },
+      "new_message": {
+        "title": "💬 Nuevo Mensaje",
+        "message": "{{senderName}} te envió un mensaje."
+      },
+      "new_review": {
+        "title": "⭐ Nueva Reseña Recibida",
+        "message": "{{reviewerName}} te dejó una reseña de {{rating}} estrellas."
+      },
+      "payment_received": {
+        "title": "💰 Pago Procesado",
+        "message": "Has recibido un pago de ${{amount}} por tu proyecto."
+      },
+      "payment_confirmed": {
+        "title": "✅ Pago Confirmado",
+        "message": "Tu pago de ${{amount}} ha sido procesado exitosamente."
+      }
     }
   },
   "privacy": {

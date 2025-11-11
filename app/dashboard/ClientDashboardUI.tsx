@@ -81,7 +81,7 @@ export default function ClientDashboardUI() {
   const [updatingProject, setUpdatingProject] = useState(false)
 
   const { setValue, getValue } = useSessionStorage("last_tab")
-  const { notifyProposal, notifyNewMessage, createReminderNotification } = useNotifications()
+  const { notifyProposal, notifyNewMessage, notifyNewProject, createReminderNotification } = useNotifications()
   const { checkAndUnlockBadges } = useBadges()
 
   // Track previous user ID to prevent unnecessary reloads on auth refresh
@@ -656,7 +656,7 @@ export default function ClientDashboardUI() {
     if (!user) return
 
     try {
-      const { error } = await supabase
+      const { data: projectData, error } = await supabase
         .from("projects")
         .insert({
           client_id: user.id,
@@ -673,6 +673,11 @@ export default function ClientDashboardUI() {
         .single()
 
       if (error) throw error
+
+      // Notify freelancers about the new project
+      if (projectData?.id) {
+        await notifyNewProject(projectData.id)
+      }
 
       if (newProject.deadline) {
         const deadlineDate = new Date(newProject.deadline)
@@ -749,7 +754,7 @@ export default function ClientDashboardUI() {
 
   const acceptProposal = async (proposalId: string, freelancer_id: string, project_id: string) => {
     try {
-      const { error } = await supabase
+      const { data: projectData, error } = await supabase
         .from("proposals")
         .update({ status: "accepted" })
         .eq("id", proposalId)
@@ -797,7 +802,7 @@ export default function ClientDashboardUI() {
 
   const rejectProposal = async (proposalId: string) => {
     try {
-      const { error } = await supabase
+      const { data: projectData, error } = await supabase
         .from("proposals")
         .update({ status: "rejected" })
         .eq("id", proposalId)
@@ -881,7 +886,7 @@ export default function ClientDashboardUI() {
     setUpdatingProfile(true)
 
     try {
-      const { error } = await supabase
+      const { data: projectData, error } = await supabase
         .from("profiles")
         .update({
           full_name: editProfileForm.full_name.trim(),
@@ -940,7 +945,7 @@ export default function ClientDashboardUI() {
     setUpdatingProject(true)
 
     try {
-      const { error } = await supabase
+      const { data: projectData, error } = await supabase
         .from("projects")
         .update({
           title: editProjectForm.title.trim(),
@@ -1000,7 +1005,7 @@ export default function ClientDashboardUI() {
       }
 
       // Delete the project
-      const { error } = await supabase.from("projects").delete().eq("id", project.id)
+      const { data: projectData, error } = await supabase.from("projects").delete().eq("id", project.id)
 
       if (error) throw error
 
@@ -2585,3 +2590,6 @@ export default function ClientDashboardUI() {
     </>
   )
 }
+
+
+

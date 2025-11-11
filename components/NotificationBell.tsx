@@ -4,11 +4,13 @@ import { useState, useEffect } from "react"
 import NotificationCenter from "./NotificationCenter"
 import type { Notification } from "@/interfaces/Notification"
 import { useSessionStorage } from "@/hooks/useSessionStorage"
+import { useTranslation } from "react-i18next"
 import { supabaseBrowser } from "@/utils/supabase/client"
 
 const supabase = supabaseBrowser()
 
 export default function NotificationBell() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -277,7 +279,9 @@ export default function NotificationBell() {
               <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center justify-between">
                   <h4 className="truncate text-sm font-medium text-gray-900">
-                    {toastNotification.title}
+                    {toastNotification.title_key
+                      ? t(toastNotification.title_key, toastNotification.translation_params || {})
+                      : toastNotification.title}
                   </h4>
                   <button
                     onClick={(e) => {
@@ -289,7 +293,11 @@ export default function NotificationBell() {
                     <i className="ri-close-line text-sm"></i>
                   </button>
                 </div>
-                <p className="line-clamp-2 text-sm text-gray-600">{toastNotification.message}</p>
+                <p className="line-clamp-2 text-sm text-gray-600">
+                  {toastNotification.message_key
+                    ? t(toastNotification.message_key, toastNotification.translation_params || {})
+                    : toastNotification.message}
+                </p>
                 <p className="text-primary mt-1 text-xs">Clic para ver detalles</p>
               </div>
             </div>

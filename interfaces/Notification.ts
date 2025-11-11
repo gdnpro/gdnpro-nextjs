@@ -11,6 +11,9 @@ export interface Notification {
   id?: string
   title: string
   message: string
+  title_key?: string // Translation key for title
+  message_key?: string // Translation key for message
+  translation_params?: Record<string, string | number> // Parameters for translation interpolation
   type:
     | "message"
     | "proposal"

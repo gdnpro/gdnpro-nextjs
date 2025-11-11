@@ -38,7 +38,7 @@ export const useNotifications = () => {
           },
           body: JSON.stringify({
             action: "create-notification",
-            Notification: data,
+            notificationData: data,
           }),
         }
       )
@@ -65,6 +65,7 @@ export const useNotifications = () => {
       | "project_completed"
       | "milestone_completed"
       | "deadline_reminder"
+      | "project_created"
     proposalEvent?:
       | "proposal_received"
       | "proposal_accepted"
@@ -86,7 +87,7 @@ export const useNotifications = () => {
           },
           body: JSON.stringify({
             action: "create-system-notifications",
-            Notification: data,
+            notificationData: data,
           }),
         }
       )
@@ -119,9 +120,13 @@ export const useNotifications = () => {
 
   const notifyProjectUpdate = (
     projectId: string,
-    event: "project_completed" | "milestone_completed" | "deadline_reminder"
+    event: "project_completed" | "milestone_completed" | "deadline_reminder" | "project_created"
   ) => {
     return createSystemNotifications({ projectId, projectEvent: event })
+  }
+
+  const notifyNewProject = (projectId: string) => {
+    return createSystemNotifications({ projectId, projectEvent: "project_created" })
   }
 
   const notifyReview = (reviewId: string) => {
@@ -162,6 +167,7 @@ export const useNotifications = () => {
     notifyProposal,
     notifyPayment,
     notifyProjectUpdate,
+    notifyNewProject,
     notifyReview,
     createWelcomeNotification,
     createReminderNotification,

@@ -578,6 +578,53 @@
         "project_update": "Projects"
       },
       "now": "Now"
+    },
+    "messages": {
+      "project_created": {
+        "title": "🚀 New Project Available",
+        "message": "A new project \"{{projectTitle}}\" has been published.",
+        "message_with_skills": "A new project \"{{projectTitle}}\" matching your skills has been published."
+      },
+      "project_completed": {
+        "title": "🎉 Project Completed!",
+        "message": "The project \"{{projectTitle}}\" has been marked as completed."
+      },
+      "milestone_completed": {
+        "title": "✅ Milestone Completed",
+        "message": "A milestone has been completed in the project \"{{projectTitle}}\"."
+      },
+      "deadline_reminder": {
+        "title": "⏰ Deadline Reminder",
+        "message": "The project \"{{projectTitle}}\" has an upcoming deadline."
+      },
+      "proposal_received": {
+        "title": "📝 New Proposal Received",
+        "message": "{{freelancerName}} sent a proposal for \"{{projectTitle}}\"."
+      },
+      "proposal_accepted": {
+        "title": "🎉 Proposal Accepted!",
+        "message": "Your proposal for \"{{projectTitle}}\" has been accepted."
+      },
+      "proposal_rejected": {
+        "title": "❌ Proposal Rejected",
+        "message": "Your proposal for \"{{projectTitle}}\" was not selected."
+      },
+      "new_message": {
+        "title": "💬 New Message",
+        "message": "{{senderName}} sent you a message."
+      },
+      "new_review": {
+        "title": "⭐ New Review Received",
+        "message": "{{reviewerName}} left you a {{rating}} star review."
+      },
+      "payment_received": {
+        "title": "💰 Payment Processed",
+        "message": "You have received a payment of ${{amount}} for your project."
+      },
+      "payment_confirmed": {
+        "title": "✅ Payment Confirmed",
+        "message": "Your payment of ${{amount}} has been processed successfully."
+      }
     }
   },
   "privacy": {
