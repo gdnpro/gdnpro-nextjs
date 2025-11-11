@@ -1,58 +1,64 @@
-export const projects = [
+type Project = {
+  id: number
+  titleKey: string
+  descriptionKey: string
+  category: "web" | "mobile" | "marketing"
+  image: string
+  technologies: string[]
+  link: string
+}
+
+export const projects: Project[] = [
   {
     id: 1,
-    title: "GDN Style",
+    titleKey: "portfolio.items.gdnStyle.title",
+    descriptionKey: "portfolio.items.gdnStyle.description",
     category: "web",
-    description:
-      "El sitio web oficial de la prestigiosa plataforma de estilismo 'GDN Pro'. Gestiona a tus clientes, estilistas, barberos, servicios de spa y particulares.",
     image: "https://rikirilis.com/images/gdn-style.webp",
-    technologies: ["React", "NExt JS", "Firebase", "Analytics", "Tawk"],
+    technologies: ["React", "Next.js", "Firebase", "Analytics", "Tawk"],
     link: "https://gdnstyle.com",
   },
   {
     id: 2,
-    title: "Foto Estudio El Chévere",
+    titleKey: "portfolio.items.fotoEstudio.title",
+    descriptionKey: "portfolio.items.fotoEstudio.description",
     category: "web",
-    description:
-      "Landing page completa del Foto Estudio El Chévere, un estudio fotográfico de República Dominicana.",
     image: "https://capelix.dev/images/page-presentation.webp",
     technologies: ["Astro", "React", "Supabase", "Tailwind CSS"],
     link: "https://fotoestudioelchevere.com",
   },
   {
     id: 3,
-    title: "Stop Trivia Online",
+    titleKey: "portfolio.items.stopTrivia.title",
+    descriptionKey: "portfolio.items.stopTrivia.description",
     category: "mobile",
-    description:
-      "El juego mítico de 'STOP!', desarrollado con una experiencia de juego online en tiempo real.",
     image: "https://rikirilis.com/images/stop-trivia.webp",
     technologies: ["React Native", "Firebase", "Expo"],
     link: "https://play.google.com/store/apps/details?id=com.rilisentertainment.stoptriviaonline",
   },
   {
     id: 4,
-    title: "Sistema de Gestión Hospitalaria",
+    titleKey: "portfolio.items.hospitalSystem.title",
+    descriptionKey: "portfolio.items.hospitalSystem.description",
     category: "web",
-    description: "Plataforma web para gestión integral de pacientes, citas y historiales médicos.",
     image: "/portfolios/portafolio 4.jpg",
     technologies: ["Vue.js", "Laravel", "MySQL", "AWS"],
     link: "#",
   },
   {
     id: 5,
-    title: "App Fintech Bancaria",
+    titleKey: "portfolio.items.fintechApp.title",
+    descriptionKey: "portfolio.items.fintechApp.description",
     category: "mobile",
-    description: "Aplicación bancaria móvil con biometría y transferencias instantáneas.",
     image: "/portfolios/portafolio 5.jpg",
     technologies: ["Flutter", "Django", "PostgreSQL", "Blockchain"],
     link: "#",
   },
   {
     id: 6,
-    title: "Growth Hacking para Startup",
+    titleKey: "portfolio.items.growthHacking.title",
+    descriptionKey: "portfolio.items.growthHacking.description",
     category: "marketing",
-    description:
-      "Estrategia de crecimiento que llevó a una startup de 0 a 100k usuarios en 6 meses.",
     image: "/portfolios/portafolio 6.jpg",
     technologies: ["Mixpanel", "Mailchimp", "A/B Testing", "CRO"],
     link: "#",

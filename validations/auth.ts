@@ -1,23 +1,23 @@
 import z from "zod"
 
 export const LoginFormSchema = z.object({
-  email: z.email({ message: "El email no es válido" }),
+  email: z.email({ message: "auth.errors.emailInvalid" }),
   password: z
     .string()
-    .min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
-    .max(100, { message: "La contraseña debe tener menos de 100 caracteres" }),
+    .min(6, { message: "auth.errors.passwordMin" })
+    .max(100, { message: "auth.errors.passwordMax" }),
 })
 
 export const RegisterFormSchema = z.object({
-  email: z.email({ message: "El email no es válido" }),
+  email: z.email({ message: "auth.errors.emailInvalid" }),
   password: z
     .string()
-    .min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
-    .max(100, { message: "La contraseña debe tener menos de 100 caracteres" }),
+    .min(6, { message: "auth.errors.passwordMin" })
+    .max(100, { message: "auth.errors.passwordMax" }),
   confirmPassword: z
     .string()
-    .min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
-    .max(100, { message: "La contraseña debe tener menos de 100 caracteres" }),
+    .min(6, { message: "auth.errors.passwordMin" })
+    .max(100, { message: "auth.errors.passwordMax" }),
 })
 
 export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>
@@ -33,6 +33,7 @@ export type FormState = {
   loading?: boolean
   error?: string
   flag?: string
+  errorValues?: Record<string, string | number>
   fields?: {
     avatar_url?: File | null
     full_name?: string

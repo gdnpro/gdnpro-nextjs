@@ -130,7 +130,33 @@
       "marketing": "Marketing"
     },
     "viewDetails": "Ver Detalles",
-    "viewMore": "Ver Más Proyectos"
+    "viewMore": "Ver Más Proyectos",
+    "items": {
+      "gdnStyle": {
+        "title": "GDN Style",
+        "description": "Sitio web oficial de la plataforma de estilismo \"GDN Pro\". Gestiona clientes, estilistas, barberos, servicios de spa y particulares en un solo lugar."
+      },
+      "fotoEstudio": {
+        "title": "Foto Estudio El Chévere",
+        "description": "Landing page completa del Foto Estudio El Chévere, un estudio fotográfico en la República Dominicana."
+      },
+      "stopTrivia": {
+        "title": "Stop Trivia Online",
+        "description": "El juego clásico \"STOP!\" llevado al entorno online con multijugador en tiempo real."
+      },
+      "hospitalSystem": {
+        "title": "Sistema de Gestión Hospitalaria",
+        "description": "Plataforma web integral para gestionar pacientes, citas e historiales médicos."
+      },
+      "fintechApp": {
+        "title": "App Fintech Bancaria",
+        "description": "Aplicación bancaria móvil con biometría y transferencias instantáneas."
+      },
+      "growthHacking": {
+        "title": "Growth Hacking para Startup",
+        "description": "Estrategia de crecimiento que llevó a una startup de 0 a 100k usuarios en seis meses."
+      }
+    }
   },
   "team": {
     "title": "Nuestro Equipo",
@@ -312,7 +338,7 @@
   },
   "auth": {
     "login": {
-      "title": "Inicia Sesión",
+      "title": "Inicia sesión",
       "subtitle": "¿No tienes cuenta?",
       "registerLink": "Regístrate aquí",
       "email": "Email",
@@ -326,6 +352,149 @@
       "resendEmail": "Reenviar email",
       "writeEmail": "Escribe tu email",
       "recoveryEmailSent": "Se envió un email de recuperación"
+    },
+    "register": {
+      "documentTitle": "Registro | GDN Pro",
+      "title": "Crear Cuenta",
+      "subtitle": "¿Ya tienes cuenta?",
+      "loginLink": "Inicia sesión aquí",
+      "optionsTitle": "¿Cómo quieres usar GDN Pro?",
+      "ImFreelancer": "Soy freelancer",
+      "ImFreelancerDescription": "Quiero ofrecer mis servicios y encontrar proyectos interesantes",
+      "ImClient": "Soy cliente",
+      "ImClientDescription": "Necesito contratar freelancers para mis proyectos",
+      "fullName": "Nombre completo",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "password": "Contraseña",
+      "passwordPlaceholder": "••••••••",
+      "confirmPassword": "Confirmar contraseña",
+      "location": "Ubicación",
+      "locationPlaceholder": "Ciudad, País",
+      "clientDescription": "Descripción de tus servicios/requerimientos",
+      "clientDescriptionPlaceholder": "Cuéntanos sobre tu empresa o proyectos futuros...",
+      "back": "Atrás",
+      "createAccount": "Crear cuenta",
+      "creatingAccount": "Creando cuenta...",
+      "profilePicture": "Foto de perfil",
+      "uploadPicture": "Subir foto",
+      "delete": "Eliminar",
+      "change": "Cambiar",
+      "freelancerDescription": "Descripción profesional",
+      "freelancerDescriptionPlaceholder": "Cuéntanos sobre tu experiencia y especialidades...",
+      "programmingLanguages": "Lenguajes de programación",
+      "Database": "Base de datos",
+      "designAndMedia": "Diseño y Multimedia",
+      "MarketingAndBusiness": "Marketing y Negocios",
+      "IAAndDataScience": "IA y Ciencia de Datos",
+      "CybersecurityAndTesting": "Ciberseguridad y Testeo",
+      "AutomationAndBots": "Automatización y Robots",
+      "management": "Gestión",
+      "other": "Otros",
+      "hourlyRate": "Tarifa por Hora (USD)",
+      "experienceYears": "Años de Experiencia",
+      "select": "Seleccionar",
+      "step1": {
+        "question": "¿Cómo quieres usar GDN Pro?",
+        "freelancer": {
+          "title": "Soy Freelancer",
+          "description": "Quiero ofrecer mis servicios y encontrar proyectos interesantes"
+        },
+        "client": {
+          "title": "Soy Cliente",
+          "description": "Necesito contratar freelancers para mis proyectos"
+        }
+      },
+      "profilePhoto": {
+        "label": "Foto de Perfil",
+        "upload": "Subir Foto",
+        "change": "Cambiar",
+        "remove": "Eliminar",
+        "helper": "JPG, PNG o GIF. Máximo 5MB.",
+        "invalidFile": "Archivo inválido",
+        "maxSize": "Máximo 5MB"
+      },
+      "fields": {
+        "fullName": "Nombre Completo",
+        "email": "Email",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar Contraseña",
+        "location": "Ubicación",
+        "hourlyRate": "Tarifa por Hora (USD)",
+        "experienceYears": "Años de Experiencia"
+      },
+      "placeholders": {
+        "location": "Ciudad, País"
+      },
+      "bio": {
+        "freelancerLabel": "Descripción profesional",
+        "clientLabel": "Descripción de tu empresa",
+        "freelancerPlaceholder": "Cuéntanos sobre tu experiencia y especialidades...",
+        "clientPlaceholder": "Cuéntanos sobre tu empresa y qué tipo de proyectos necesitas..."
+      },
+      "skills": {
+        "label": "Habilidades",
+        "addLabel": "Añadir habilidad",
+        "inputPlaceholder": "Añadir habilidad",
+        "add": "Añadir",
+        "categories": {
+          "programmingLanguages": "Lenguajes de Programación",
+          "frontend": "Frontend",
+          "backend": "Backend",
+          "databases": "Bases de Datos",
+          "devopsCloud": "DevOps y Cloud",
+          "designMultimedia": "Diseño y Multimedia",
+          "marketingBusiness": "Marketing y Negocios",
+          "aiDataScience": "IA y Ciencia de Datos",
+          "cybersecurityTesting": "Ciberseguridad y Testing",
+          "blockchainWeb3": "Blockchain y Web3",
+          "automationBots": "Automatización y Bots",
+          "managementBusiness": "Gestión y Productividad"
+        }
+      },
+      "experienceOptions": {
+        "default": "Seleccionar",
+        "lessThanOne": "Menos de 1 año",
+        "oneToTwo": "1-2 años",
+        "threeToFive": "3-5 años",
+        "sixToTen": "6-10 años",
+        "moreThanTen": "Más de 10 años"
+      },
+      "buttons": {
+        "back": "Atrás",
+        "submit": "Crear Cuenta",
+        "submitting": "Creando cuenta..."
+      }
+    },
+    "errors": {
+      "resendVerification": "Reenviar verificación",
+      "emailInvalid": "El email no es válido",
+      "passwordMin": "La contraseña debe tener al menos 6 caracteres",
+      "passwordMax": "La contraseña debe tener menos de 100 caracteres",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "skillsRequired": "Debes seleccionar al menos una habilidad",
+      "hourlyRateMin": "La tarifa por hora debe ser mayor o igual a 5",
+      "bioRequired": "La biografía es requerida",
+      "bioLength": "La biografía debe tener entre 10 y 1000 caracteres",
+      "invalidData": "Algunos campos no son válidos",
+      "emailVerification": "Error al verificar el email",
+      "emailRegistered": "El email {{email}} ya está registrado. Por favor, utiliza otro email o inicia sesión.",
+      "emailInUse": "El email ya está en uso",
+      "registrationRateLimit": "Demasiadas solicitudes de registro. Intenta más tarde.",
+      "registrationFailed": "Error al registrar el usuario",
+      "imageUpload": "No pudimos subir tu imagen",
+      "profileCreation": "Error al crear el perfil",
+      "retryLogin": "No pudimos completar el inicio de sesión. Inténtalo de nuevo.",
+      "userInfoMissing": "No se pudo obtener información del usuario",
+      "emailNotConfirmed": "Necesitas confirmar tu email",
+      "invalidCredentials": "Email o contraseña incorrectos",
+      "credentialsUpdated": "Las credenciales han sido actualizadas. Inténtalo nuevamente.",
+      "checkInternet": "Verifica tu conexión a internet",
+      "unknownLogin": "Error desconocido al iniciar sesión"
+    },
+    "success": {
+      "register": "Usuario registrado exitosamente",
+      "login": "Inicio de sesión exitoso"
     }
   },
   "seo": {

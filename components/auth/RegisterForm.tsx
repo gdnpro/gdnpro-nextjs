@@ -7,12 +7,14 @@ import { FormState } from "@/validations/auth"
 import { actions } from "@/actions"
 import { FormError } from "./FormError"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "react-i18next"
 
 const INITIAL_STATE: FormState = {
   success: false,
   message: undefined,
   loading: false,
   error: undefined,
+  errorValues: undefined,
   fields: {
     avatar_url: null as File | null,
     email: "",
@@ -57,10 +59,11 @@ export function RegisterForm() {
   const [openCategory, setOpenCategory] = useState<string | null>(null)
 
   const navigate = useRouter()
+  const { t } = useTranslation()
 
   useEffect(() => {
-    document.title = "Registro | GDN Pro"
-  }, [])
+    document.title = t("auth.register.documentTitle")
+  }, [t])
 
   useEffect(() => {
     if (formState.success) {
@@ -83,7 +86,7 @@ export function RegisterForm() {
 
     if (!file.type.startsWith("image/")) {
       window.toast({
-        title: "Archivo inválido",
+        title: t("auth.register.profilePhoto.invalidFile"),
         type: "warning",
         location: "bottom-center",
         dismissible: true,
@@ -95,7 +98,7 @@ export function RegisterForm() {
 
     if (file.size > 5 * 1024 * 1024) {
       window.toast({
-        title: "Máximo 5MB",
+        title: t("auth.register.profilePhoto.maxSize"),
         type: "warning",
         location: "bottom-center",
         dismissible: true,
@@ -146,11 +149,11 @@ export function RegisterForm() {
           <Link href="/">
             <img src="/logo.png" alt="GDN PRO" className="mx-auto mb-6 h-12 w-auto" />
           </Link>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Crear Cuenta</h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{t("auth.register.title")}</h2>
           <p className="mt-2 text-sm text-gray-600">
-            ¿Ya tienes cuenta?{" "}
+            {t("auth.register.subtitle")}{" "}
             <Link href="/auth/login" className="text-primary font-medium hover:text-cyan-500">
-              Inicia sesión aquí
+              {t("auth.register.loginLink")}
             </Link>
           </p>
         </div>
@@ -163,7 +166,7 @@ export function RegisterForm() {
             <div className="space-y-6">
               <div>
                 <h3 className="mb-4 text-lg font-medium text-gray-900">
-                  ¿Cómo quieres usar GDN Pro?
+                  {t("auth.register.step1.question")}
                 </h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <button
@@ -177,10 +180,12 @@ export function RegisterForm() {
                       <div className="bg-primary/10 mr-3 flex h-10 w-10 items-center justify-center rounded-full">
                         <i className="ri-user-line text-primary"></i>
                       </div>
-                      <h4 className="font-semibold text-gray-900">Soy Freelancer</h4>
+                      <h4 className="font-semibold text-gray-900">
+                        {t("auth.register.step1.freelancer.title")}
+                      </h4>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Quiero ofrecer mis servicios y encontrar proyectos interesantes
+                      {t("auth.register.step1.freelancer.description")}
                     </p>
                   </button>
 
@@ -195,10 +200,12 @@ export function RegisterForm() {
                       <div className="bg-primary/10 mr-3 flex h-10 w-10 items-center justify-center rounded-full">
                         <i className="ri-briefcase-line text-primary"></i>
                       </div>
-                      <h4 className="font-semibold text-gray-900">Soy Cliente</h4>
+                      <h4 className="font-semibold text-gray-900">
+                        {t("auth.register.step1.client.title")}
+                      </h4>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Necesito contratar freelancers para mis proyectos
+                      {t("auth.register.step1.client.description")}
                     </p>
                   </button>
                 </div>
@@ -218,7 +225,7 @@ export function RegisterForm() {
               {userType === "freelancer" && (
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Foto de Perfil
+                    {t("auth.register.profilePhoto.label")}
                   </label>
                   <div className="flex items-center space-x-6">
                     <div className="shrink-0">
@@ -238,7 +245,7 @@ export function RegisterForm() {
                       {!imagePreview ? (
                         <label className="flex cursor-pointer items-center gap-2">
                           <span className="bg-primary cursor-pointer rounded-md px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700">
-                            Subir Foto
+                            {t("auth.register.profilePhoto.upload")}
                           </span>
                           <input
                             type="file"
@@ -252,7 +259,7 @@ export function RegisterForm() {
                         <div className="flex items-center gap-2">
                           <label className="cursor-pointer">
                             <span className="cursor-pointer rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700">
-                              Cambiar
+                              {t("auth.register.profilePhoto.change")}
                             </span>
                             <input
                               type="file"
@@ -262,16 +269,17 @@ export function RegisterForm() {
                               name="avatar_url"
                             />
                           </label>
-                          <button
-                            type="button"
+                          <span
                             onClick={removeImage}
                             className="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700"
                           >
-                            Eliminar
-                          </button>
+                            {t("auth.register.profilePhoto.remove")}
+                          </span>
                         </div>
                       )}
-                      <p className="mt-1 text-xs text-gray-500">JPG, PNG o GIF. Máximo 5MB.</p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {t("auth.register.profilePhoto.helper")}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -280,7 +288,7 @@ export function RegisterForm() {
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
                   <label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
-                    Nombre Completo
+                    {t("auth.register.fields.fullName")}
                   </label>
                   <input
                     type="text"
@@ -295,7 +303,7 @@ export function RegisterForm() {
 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email
+                    {t("auth.register.fields.email")}
                   </label>
                   <input
                     type="email"
@@ -310,7 +318,7 @@ export function RegisterForm() {
 
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Contraseña
+                    {t("auth.register.fields.password")}
                   </label>
                   <input
                     type="password"
@@ -328,7 +336,7 @@ export function RegisterForm() {
                     htmlFor="confirmPassword"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Confirmar Contraseña
+                    {t("auth.register.fields.confirmPassword")}
                   </label>
                   <input
                     type="password"
@@ -344,7 +352,7 @@ export function RegisterForm() {
 
               <div>
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                  Ubicación
+                  {t("auth.register.fields.location")}
                 </label>
                 <input
                   type="text"
@@ -354,15 +362,15 @@ export function RegisterForm() {
                   value={formData.location}
                   onChange={handleInputChange}
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
-                  placeholder="Ciudad, País"
+                  placeholder={t("auth.register.placeholders.location")}
                 />
               </div>
 
               <div>
                 <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
                   {userType === "freelancer"
-                    ? "Descripción profesional"
-                    : "Descripción de tu empresa"}
+                    ? t("auth.register.bio.freelancerLabel")
+                    : t("auth.register.bio.clientLabel")}
                 </label>
                 <textarea
                   name="bio"
@@ -373,8 +381,8 @@ export function RegisterForm() {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                   placeholder={
                     userType === "freelancer"
-                      ? "Cuéntanos sobre tu experiencia y especialidades..."
-                      : "Cuéntanos sobre tu empresa y qué tipo de proyectos necesitas..."
+                      ? t("auth.register.bio.freelancerPlaceholder")
+                      : t("auth.register.bio.clientPlaceholder")
                   }
                 />
               </div>
@@ -383,7 +391,7 @@ export function RegisterForm() {
                 <>
                   <div>
                     <label className="mb-2 block text-sm font-medium text-gray-700">
-                      Habilidades
+                      {t("auth.register.skills.label")}
                     </label>
                     <div className="mb-3 flex flex-wrap gap-2">
                       {formData.skills.map((skill, index) => (
@@ -404,7 +412,7 @@ export function RegisterForm() {
                     </div>
                     <div className="mb-3 flex gap-2">
                       <label htmlFor="skill-input" className="sr-only">
-                        Añadir habilidad
+                        {t("auth.register.skills.addLabel")}
                       </label>
                       <input
                         type="text"
@@ -415,7 +423,7 @@ export function RegisterForm() {
                         onKeyPress={(e) =>
                           e.key === "Enter" && (e.preventDefault(), addSkill(skillInput))
                         }
-                        placeholder="Añadir habilidad"
+                        placeholder={t("auth.register.skills.inputPlaceholder")}
                         className="focus:ring-emerald-5 0 flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-cyan-500 focus:outline-none sm:text-sm"
                       />
                       <button
@@ -423,50 +431,57 @@ export function RegisterForm() {
                         onClick={() => addSkill(skillInput)}
                         className="bg-primary rounded-md px-4 py-2 whitespace-nowrap text-white hover:bg-cyan-700"
                       >
-                        Añadir
+                        {t("auth.register.skills.add")}
                       </button>
                     </div>
 
                     <div className="space-y-4">
-                      {categorizedSkills.map((group) => (
-                        <div key={group.category} className="rounded-lg border border-gray-200">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setOpenCategory(
-                                openCategory === group.category ? null : group.category,
-                              )
-                            }
-                            className={`flex w-full items-center justify-between rounded-t-lg px-4 py-2 text-left font-medium ${
-                              formData.skills.some((s) => group.skills.includes(s))
-                                ? "bg-cyan-100 text-cyan-800"
-                                : "bg-gray-100 text-gray-800 hover:bg-gray-200"
-                            }`}
-                          >
-                            {group.category}
-                            <i
-                              className={`ri-arrow-${
-                                openCategory === group.category ? "up" : "down"
-                              }-s-line text-gray-600`}
-                            ></i>
-                          </button>
+                      {categorizedSkills.map((group) => {
+                        const categoryKey = `auth.register.skills.categories.${group.categoryKey}`
+                        const isOpen = openCategory === group.categoryKey
+                        const hasSelectedSkill = formData.skills.some((s) =>
+                          group.skills.includes(s),
+                        )
 
-                          {openCategory === group.category && (
-                            <div className="flex flex-wrap gap-2 rounded-b-lg border-t border-gray-200 bg-gray-50 p-3">
-                              {group.skills.map((skill) => (
-                                <button
-                                  key={skill}
-                                  type="button"
-                                  onClick={() => addSkill(skill)}
-                                  className="cursor-pointer rounded-full border border-gray-300 bg-white px-3 py-1 text-xs text-gray-700 hover:bg-gray-100"
-                                >
-                                  + {skill}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                        return (
+                          <div
+                            key={group.categoryKey}
+                            className="rounded-lg border border-gray-200"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => setOpenCategory(isOpen ? null : group.categoryKey)}
+                              className={`flex w-full items-center justify-between rounded-t-lg px-4 py-2 text-left font-medium ${
+                                hasSelectedSkill
+                                  ? "bg-cyan-100 text-cyan-800"
+                                  : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                              }`}
+                            >
+                              {t(categoryKey)}
+                              <i
+                                className={`ri-arrow-${
+                                  isOpen ? "up" : "down"
+                                }-s-line text-gray-600`}
+                              ></i>
+                            </button>
+
+                            {isOpen && (
+                              <div className="flex flex-wrap gap-2 rounded-b-lg border-t border-gray-200 bg-gray-50 p-3">
+                                {group.skills.map((skill) => (
+                                  <button
+                                    key={skill}
+                                    type="button"
+                                    onClick={() => addSkill(skill)}
+                                    className="cursor-pointer rounded-full border border-gray-300 bg-white px-3 py-1 text-xs text-gray-700 hover:bg-gray-100"
+                                  >
+                                    + {skill}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
 
@@ -476,7 +491,7 @@ export function RegisterForm() {
                         htmlFor="hourly_rate"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Tarifa por Hora (USD)
+                        {t("auth.register.fields.hourlyRate")}
                       </label>
                       <input
                         type="number"
@@ -495,7 +510,7 @@ export function RegisterForm() {
                         htmlFor="experience_years"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Años de Experiencia
+                        {t("auth.register.fields.experienceYears")}
                       </label>
                       <select
                         name="experience_years"
@@ -504,19 +519,25 @@ export function RegisterForm() {
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 pr-8 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
                       >
-                        <option value="">Seleccionar</option>
-                        <option value="0">Menos de 1 año</option>
-                        <option value="1">1-2 años</option>
-                        <option value="3">3-5 años</option>
-                        <option value="6">6-10 años</option>
-                        <option value="11">Más de 10 años</option>
+                        <option value="">{t("auth.register.experienceOptions.default")}</option>
+                        <option value="0">
+                          {t("auth.register.experienceOptions.lessThanOne")}
+                        </option>
+                        <option value="1">{t("auth.register.experienceOptions.oneToTwo")}</option>
+                        <option value="3">
+                          {t("auth.register.experienceOptions.threeToFive")}
+                        </option>
+                        <option value="6">{t("auth.register.experienceOptions.sixToTen")}</option>
+                        <option value="11">
+                          {t("auth.register.experienceOptions.moreThanTen")}
+                        </option>
                       </select>
                     </div>
                   </div>
                 </>
               )}
 
-              <FormError error={formState.error ?? null} />
+              <FormError error={formState.error ?? null} errorValues={formState.errorValues} />
 
               <div className="flex justify-between">
                 <button
@@ -525,7 +546,7 @@ export function RegisterForm() {
                   onClick={() => setStep(1)}
                   className="cursor-pointer rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium whitespace-nowrap text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Atrás
+                  {t("auth.register.buttons.back")}
                 </button>
 
                 <button
@@ -536,10 +557,10 @@ export function RegisterForm() {
                   {pending ? (
                     <div className="flex items-center">
                       <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
-                      Creando cuenta...
+                      {t("auth.register.buttons.submitting")}
                     </div>
                   ) : (
-                    "Crear Cuenta"
+                    t("auth.register.buttons.submit")
                   )}
                 </button>
               </div>

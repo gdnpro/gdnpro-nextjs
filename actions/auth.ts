@@ -9,7 +9,6 @@ export async function registerUserAction(
   formData: FormData,
 ): Promise<FormState> {
   const supabase = await supabaseServer()
-  console.log(formData)
   const skillsAll = formData.getAll("skills")
   const skills: string[] =
     skillsAll.length > 0
@@ -47,7 +46,7 @@ export async function registerUserAction(
   if (fields.password.length < 6) {
     return {
       success: false,
-      error: "La contraseña debe tener al menos 6 caracteres",
+      error: "auth.errors.passwordMin",
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -58,7 +57,7 @@ export async function registerUserAction(
   if (fields.password !== fields.confirmPassword) {
     return {
       success: false,
-      error: "Las contraseñas no coinciden",
+      error: "auth.errors.passwordMismatch",
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -70,7 +69,7 @@ export async function registerUserAction(
     if (fields.skills.length === 0) {
       return {
         success: false,
-        error: "Debes seleccionar al menos una habilidad",
+        error: "auth.errors.skillsRequired",
         loading: false,
         fields: validatedFields.data,
         serverErrors: null,
@@ -81,7 +80,7 @@ export async function registerUserAction(
     if (fields.hourly_rate <= 5) {
       return {
         success: false,
-        error: "La tarifa por hora debe ser mayor o igual a 5",
+        error: "auth.errors.hourlyRateMin",
         loading: false,
         fields: validatedFields.data,
         serverErrors: null,
@@ -93,7 +92,7 @@ export async function registerUserAction(
   if (fields.bio === "" || fields.bio === null || fields.bio === undefined) {
     return {
       success: false,
-      error: "La biografía es requerida",
+      error: "auth.errors.bioRequired",
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -104,7 +103,7 @@ export async function registerUserAction(
   if (fields.bio.length < 10 || fields.bio.length > 1000) {
     return {
       success: false,
-      error: "La biografía debe tener entre 10 y 1000 caracteres",
+      error: "auth.errors.bioLength",
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -117,7 +116,7 @@ export async function registerUserAction(
 
     return {
       success: false,
-      error: "Datos no válidos",
+      error: "auth.errors.invalidData",
       loading: false,
       fields: validatedFields.data,
       serverErrors: flattenedErrors.fieldErrors,
@@ -134,7 +133,7 @@ export async function registerUserAction(
   if (checkError && checkError.code !== "PGRST116") {
     return {
       success: false,
-      error: "Error al verificar el email",
+      error: "auth.errors.emailVerification",
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -145,7 +144,8 @@ export async function registerUserAction(
   if (existingProfile) {
     return {
       success: false,
-      error: `El email ${fields.email} ya está registrado. Por favor, utiliza otro email o inicia sesión.`,
+      error: "auth.errors.emailRegistered",
+      errorValues: { email: fields.email },
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -171,7 +171,7 @@ export async function registerUserAction(
     if (authError.message.includes("Email already in use")) {
       return {
         success: false,
-        error: "El email ya está en uso",
+        error: "auth.errors.emailInUse",
         loading: false,
         fields: validatedFields.data,
         serverErrors: null,
@@ -182,7 +182,7 @@ export async function registerUserAction(
     if (authError.message.includes("email rate limit exceeded")) {
       return {
         success: false,
-        error: "Demasiadas solicitudes de registro. Intenta más tarde.",
+        error: "auth.errors.registrationRateLimit",
         loading: false,
         fields: validatedFields.data,
         serverErrors: null,
@@ -192,7 +192,7 @@ export async function registerUserAction(
 
     return {
       success: false,
-      error: "Error al registrar el usuario",
+      error: "auth.errors.registrationFailed",
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -222,7 +222,7 @@ export async function registerUserAction(
 
       return {
         success: false,
-        error: "Error al subir la imagen",
+        error: "auth.errors.imageUpload",
         loading: false,
         fields,
         serverErrors: null,
@@ -240,7 +240,7 @@ export async function registerUserAction(
 
       return {
         success: false,
-        error: "Error al subir la imagen",
+        error: "auth.errors.imageUpload",
         loading: false,
         fields: validatedFields.data,
         serverErrors: null,
@@ -271,7 +271,7 @@ export async function registerUserAction(
 
       return {
         success: false,
-        error: "Error al crear el perfil",
+        error: "auth.errors.profileCreation",
         loading: false,
         fields: validatedFields.data,
         serverErrors: null,
@@ -283,7 +283,7 @@ export async function registerUserAction(
 
     return {
       success: true,
-      message: "Usuario registrado exitosamente",
+      message: "auth.success.register",
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -307,7 +307,7 @@ export async function registerUserAction(
 
       return {
         success: false,
-        error: "Error al crear el perfil",
+        error: "auth.errors.profileCreation",
         loading: false,
         fields: validatedFields.data,
         serverErrors: null,
@@ -319,7 +319,7 @@ export async function registerUserAction(
 
     return {
       success: true,
-      message: "Usuario registrado exitosamente",
+      message: "auth.success.register",
       loading: false,
       fields: validatedFields.data,
       serverErrors: null,
@@ -347,7 +347,7 @@ export async function loginUserAction(
 
     return {
       success: false,
-      error: "Email o contraseña incorrectos",
+      error: "auth.errors.invalidCredentials",
       loading: false,
       fields: validatedFields.data,
       serverErrors: flattenedErrors.fieldErrors,
@@ -380,7 +380,7 @@ export async function loginUserAction(
         if (retryAuthError) {
           return {
             success: false,
-            error: retryAuthError.message,
+            error: "auth.errors.retryLogin",
             loading: false,
             fields: validatedFields.data,
             databaseErrors: retryAuthError,
@@ -391,7 +391,7 @@ export async function loginUserAction(
         if (!retryAuthData.user) {
           return {
             success: false,
-            error: "No se pudo obtener información del usuario",
+            error: "auth.errors.userInfoMissing",
             loading: false,
             fields: validatedFields.data,
             databaseErrors: null,
@@ -402,7 +402,7 @@ export async function loginUserAction(
 
       return {
         success: false,
-        error: "Necesitas confirmar tu email",
+        error: "auth.errors.emailNotConfirmed",
         loading: false,
         flag: "Email not confirmed",
         fields: validatedFields.data,
@@ -415,7 +415,7 @@ export async function loginUserAction(
     if (error.message.includes("Invalid login credentials")) {
       return {
         success: false,
-        error: "Email o contraseña incorrectos",
+        error: "auth.errors.invalidCredentials",
         loading: false,
         fields: validatedFields.data,
         databaseErrors: null,
@@ -426,7 +426,7 @@ export async function loginUserAction(
     if (error.message.includes("Invalid API key")) {
       return {
         success: false,
-        error: "Las credenciales han sido actualizadas",
+        error: "auth.errors.credentialsUpdated",
         loading: false,
         fields: validatedFields.data,
         databaseErrors: null,
@@ -437,7 +437,7 @@ export async function loginUserAction(
     if (error.message.includes("network")) {
       return {
         success: false,
-        error: "Verifica tu internet",
+        error: "auth.errors.checkInternet",
         loading: false,
         fields: validatedFields.data,
         databaseErrors: null,
@@ -447,7 +447,7 @@ export async function loginUserAction(
 
     return {
       success: false,
-      error: "Error desconocido al iniciar sesión",
+      error: "auth.errors.unknownLogin",
       loading: false,
       fields: validatedFields.data,
       databaseErrors: null,
@@ -457,7 +457,7 @@ export async function loginUserAction(
 
   return {
     success: true,
-    message: "Inicio de sesión exitoso",
+    message: "auth.success.login",
     loading: false,
     fields,
     databaseErrors: null,

@@ -7,7 +7,7 @@ export const gdnStats = {
 
 export const categorizedSkills = [
   {
-    category: "Lenguajes de Programación",
+    categoryKey: "programmingLanguages",
     skills: [
       "JavaScript",
       "TypeScript",
@@ -41,7 +41,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Frontend",
+    categoryKey: "frontend",
     skills: [
       "React",
       "React Native",
@@ -69,7 +69,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Backend",
+    categoryKey: "backend",
     skills: [
       "Node.js",
       "Express.js",
@@ -99,7 +99,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Bases de Datos",
+    categoryKey: "databases",
     skills: [
       "MySQL",
       "PostgreSQL",
@@ -123,7 +123,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "DevOps y Cloud",
+    categoryKey: "devopsCloud",
     skills: [
       "Docker",
       "Kubernetes",
@@ -152,7 +152,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Diseño y Multimedia",
+    categoryKey: "designMultimedia",
     skills: [
       "Figma",
       "Adobe XD",
@@ -176,7 +176,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Marketing y Negocios",
+    categoryKey: "marketingBusiness",
     skills: [
       "Marketing Digital",
       "SEO",
@@ -201,7 +201,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "IA y Ciencia de Datos",
+    categoryKey: "aiDataScience",
     skills: [
       "Machine Learning",
       "Deep Learning",
@@ -227,7 +227,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Ciberseguridad y Testing",
+    categoryKey: "cybersecurityTesting",
     skills: [
       "Ciberseguridad",
       "Pentesting",
@@ -246,7 +246,7 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Blockchain y Web3",
+    categoryKey: "blockchainWeb3",
     skills: [
       "Blockchain",
       "Ethereum",
@@ -263,9 +263,8 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Automatización y Bots",
+    categoryKey: "automationBots",
     skills: [
-      "Automatización de Procesos",
       "RPA (UiPath, Automation Anywhere)",
       "Scripting",
       "Zapier",
@@ -279,9 +278,8 @@ export const categorizedSkills = [
     ],
   },
   {
-    category: "Gestión y Negocios",
+    categoryKey: "managementBusiness",
     skills: [
-      "Gestión de Proyectos",
       "Scrum",
       "Agile",
       "Kanban",
@@ -291,26 +289,6 @@ export const categorizedSkills = [
       "Asana",
       "Slack",
       "Microsoft Teams",
-      "Comunicación Empresarial",
-      "Planificación Estratégica",
-    ],
-  },
-  {
-    category: "Otros",
-    skills: [
-      "IoT (Internet of Things)",
-      "Raspberry Pi",
-      "Arduino",
-      "Automatización Industrial",
-      "Educación Online",
-      "Traducción",
-      "Transcripción",
-      "Redacción Técnica",
-      "Legal",
-      "Contabilidad",
-      "Finanzas",
-      "Excel Avanzado",
-      "Data Entry",
     ],
   },
 ]
