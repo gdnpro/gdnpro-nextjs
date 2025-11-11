@@ -49,7 +49,6 @@ export function ReviewsDisplayPublic({
   const loadPublicReviews = async (id: string) => {
     try {
       setLoading(true)
-      // Obtener reseñas públicas
       const { data: reviewsData, error: reviewsError } = await supabase
         .from("reviews")
         .select("*")
@@ -60,14 +59,12 @@ export function ReviewsDisplayPublic({
 
       if (reviewsError) throw reviewsError
 
-      // Obtener info de los reviewers
       const reviewerIds = reviewsData?.map((r: Review) => r.reviewer_id) || []
       const { data: reviewersData } = await supabase
         .from("profiles")
         .select("id, full_name, avatar_url")
         .in("id", reviewerIds)
 
-      // Mapear nombre y avatar a cada reseña
       const reviewsWithReviewer =
         reviewsData?.map((r: Review) => {
           const reviewer = reviewersData?.find((p: { id: string; full_name: string; avatar_url?: string }) => p.id === r.reviewer_id)
@@ -152,7 +149,6 @@ export function ReviewsDisplayPublic({
 
   return (
     <div className="space-y-6">
-      {/* Estadísticas generales */}
       <div className="bg-blue-50 rounded-xl p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4">
           Resumen de Calificaciones
@@ -189,7 +185,6 @@ export function ReviewsDisplayPublic({
         </div>
       </div>
 
-      {/* Lista de reseñas */}
       {displayedReviews.map((r) => (
         <div
           key={r.id}

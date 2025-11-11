@@ -14,7 +14,6 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
   const [showAllReviews, setShowAllReviews] = useState(false)
 
   useEffect(() => {
-    // Verificar que userId sea válido antes de cargar
     if (userId && userId !== "undefined" && userId.trim() !== "") {
       loadReviews()
       if (showStats) {
@@ -28,7 +27,6 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
 
   const loadReviews = async () => {
     try {
-      // Validación adicional del userId
       if (!userId || userId === "undefined" || userId.trim() === "") {
         console.error("❌ userId no válido:", userId)
         setError("ID de usuario no válido")
@@ -81,7 +79,6 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
 
   const loadStats = async () => {
     try {
-      // Validación adicional del userId
       if (!userId || userId === "undefined" || userId.trim() === "") {
         return
       }
@@ -137,7 +134,6 @@ export function ReviewsDisplay({ userId, showStats = true }: ReviewsDisplayProps
 
   const displayedReviews = showAllReviews ? reviews : reviews.slice(0, 3)
 
-  // Mostrar mensaje si userId no es válido
   if (!userId || userId === "undefined" || userId.trim() === "") {
     return (
       <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-yellow-800">

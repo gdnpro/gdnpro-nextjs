@@ -3,6 +3,7 @@
 import { supabaseBrowser } from "@/utils/supabase/client"
 import type { Notification } from "@/interfaces/Notification"
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 const supabase = supabaseBrowser()
 
@@ -50,6 +51,7 @@ export default function NotificationCenter({
   onClose,
   onNotificationClick,
 }: NotificationCenterProps) {
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(false)
   const [activeFilter, setActiveFilter] = useState<string>("all")
@@ -282,7 +284,6 @@ export default function NotificationCenter({
 
       if (response.ok) {
         setNotifications((prev) => prev.filter((n) => n.id !== notificationId))
-        // Si era no leída, reducir contador
         const notification = notifications.find((n) => n.id === notificationId)
         if (notification && !notification.read) {
           setUnreadCount((prev) => Math.max(0, prev - 1))
@@ -342,33 +343,33 @@ export default function NotificationCenter({
     const now = new Date()
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
 
-    if (diffInMinutes < 1) return "Ahora"
+    if (diffInMinutes < 1) return t("notifications.center.now")
     if (diffInMinutes < 60) return `${diffInMinutes}m`
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h`
     return `${Math.floor(diffInMinutes / 1440)}d`
   }
 
   const filterOptions = [
-    { value: "all", label: "Todas", count: notifications.length },
-    { value: "unread", label: "No leídas", count: unreadCount },
+    { value: "all", label: t("notifications.center.filters.all"), count: notifications.length },
+    { value: "unread", label: t("notifications.center.filters.unread"), count: unreadCount },
     {
       value: "message",
-      label: "Mensajes",
+      label: t("notifications.center.filters.message"),
       count: notifications.filter((n) => n.type === "message").length,
     },
     {
       value: "proposal",
-      label: "Propuestas",
+      label: t("notifications.center.filters.proposal"),
       count: notifications.filter((n) => n.type === "proposal").length,
     },
     {
       value: "payment",
-      label: "Pagos",
+      label: t("notifications.center.filters.payment"),
       count: notifications.filter((n) => n.type === "payment").length,
     },
     {
       value: "project_update",
-      label: "Proyectos",
+      label: t("notifications.center.filters.project_update"),
       count: notifications.filter((n) => n.type === "project_update").length,
     },
   ]

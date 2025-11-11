@@ -27,39 +27,47 @@ export default function Services() {
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {services.map((service, index) => (
-            <article
-              key={index}
-              className="flex flex-col justify-between rounded-2xl bg-white p-8 shadow-lg transition-all hover:-translate-y-2 hover:shadow-xl"
-            >
-              <div>
-                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
-                  <i className={`${service.icon} text-3xl`}></i>
+          {services.map((service, index) => {
+            const serviceKey = `services.${service.translationKey}`
+            const serviceTitle = t(`${serviceKey}.title`)
+            const serviceDescription = t(`${serviceKey}.description`)
+            const serviceFeatures = t(`${serviceKey}.features`, { returnObjects: true }) as string[]
+            const servicePrice = t(`${serviceKey}.price`)
+            
+            return (
+              <article
+                key={index}
+                className="flex flex-col justify-between rounded-2xl bg-white p-8 shadow-lg transition-all hover:-translate-y-2 hover:shadow-xl"
+              >
+                <div>
+                  <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30">
+                    <i className={`${service.icon} text-3xl`}></i>
+                  </div>
+                  <h3 className="mb-4 text-xl font-bold text-gray-900">{serviceTitle}</h3>
+                  <p className="mb-6 leading-relaxed text-gray-600">{serviceDescription}</p>
                 </div>
-                <h3 className="mb-4 text-xl font-bold text-gray-900">{service.title}</h3>
-                <p className="mb-6 leading-relaxed text-gray-600">{service.description}</p>
-              </div>
 
-              <ul className="mb-6 flex-1 space-y-2">
-                {service.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center text-sm text-gray-600">
-                    <i className="ri-checkbox-circle-line mr-2 text-cyan-500"></i>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+                <ul className="mb-6 flex-1 space-y-2">
+                  {serviceFeatures.map((feature, idx) => (
+                    <li key={idx} className="flex items-center text-sm text-gray-600">
+                      <i className="ri-checkbox-circle-line mr-2 text-cyan-500"></i>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
 
-              <footer className="border-t border-gray-200 pt-6">
-                <div className="text-primary mb-4 text-xl font-bold">{service.price}</div>
-                <button
-                  onClick={service.title === "Red de Freelancers" ? Unirteahora : scrollToContact}
-                  className="group w-full cursor-pointer rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 py-3 font-semibold whitespace-nowrap text-white shadow-md shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/40"
-                >
-                  {service.title === "Red de Freelancers" ? t("services.freelancerNetwork.cta") : t("services.requestQuote")}
-                </button>
-              </footer>
-            </article>
-          ))}
+                <footer className="border-t border-gray-200 pt-6">
+                  <div className="text-primary mb-4 text-xl font-bold">{servicePrice}</div>
+                  <button
+                    onClick={service.isFreelancerNetwork ? Unirteahora : scrollToContact}
+                    className="group w-full cursor-pointer rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 py-3 font-semibold whitespace-nowrap text-white shadow-md shadow-cyan-500/30 transition-all hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/40"
+                  >
+                    {service.isFreelancerNetwork ? t("services.freelancerNetwork.cta") : t("services.requestQuote")}
+                  </button>
+                </footer>
+              </article>
+            )
+          })}
         </div>
 
         <div className="mt-16 text-center">

@@ -35,23 +35,19 @@ export default function Contact() {
     setSubmitStatus("idle")
 
     try {
-      // Validar campos requeridos
       if (!formData.name || !formData.email || !formData.service || !formData.message) {
         throw new Error(t("contact.form.errors.fillRequired"))
       }
 
-      // Validar límite de caracteres del mensaje
       if (formData.message.length > 500) {
         throw new Error(t("contact.form.errors.messageTooLong"))
       }
 
-      // Crear FormData para envío
       const submitData = new FormData()
       Object.entries(formData).forEach(([key, value]) => {
         if (value) submitData.append(key, value)
       })
 
-      // Enviar al Edge Function
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/contact-form-handler`,
         {
@@ -100,7 +96,6 @@ export default function Contact() {
         </div>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-          {/* Información de Contacto */}
           <div className="space-y-8">
             <div>
               <h3 className="mb-6 text-2xl font-bold text-gray-900">
@@ -159,7 +154,6 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Formulario de Contacto */}
           <div className="rounded-xl bg-white p-8 shadow-lg">
             <h3 className="mb-6 text-2xl font-bold text-gray-900">{t("contact.form.title")}</h3>
 
@@ -182,7 +176,6 @@ export default function Contact() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Nombres y Email */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
                   <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700">
@@ -219,7 +212,6 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Empresa y Teléfono */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
                   <label htmlFor="company" className="mb-2 block text-sm font-medium text-gray-700">
@@ -254,7 +246,6 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Servicio */}
               <div>
                 <label htmlFor="service" className="mb-2 block text-sm font-medium text-gray-700">
                   {t("contact.form.fields.serviceType")}
@@ -292,7 +283,6 @@ export default function Contact() {
                 </select>
               </div>
 
-              {/* Presupuesto y Timeline */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
                   <label htmlFor="budget" className="mb-2 block text-sm font-medium text-gray-700">
@@ -366,7 +356,6 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Mensaje */}
               <div>
                 <label htmlFor="message" className="mb-2 block text-sm font-medium text-gray-700">
                   {t("contact.form.fields.projectDescription")}
@@ -392,9 +381,8 @@ export default function Contact() {
                     {formData.message.length}/500
                   </span>
                 </div>
-              </div>
+                </div>
 
-              {/* Botón de enviar */}
               <button
                 type="submit"
                 disabled={isSubmitting || formData.message.length > 500}

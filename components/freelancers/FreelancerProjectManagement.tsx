@@ -52,7 +52,6 @@ export function FreelancerProjectManagement({
 
   const loadProjectData = async () => {
     if (project._isFromTransaction) {
-      // Para proyectos de transacción, usar los datos que ya tenemos
       setProjectData(project)
       return
     }
@@ -124,7 +123,6 @@ export function FreelancerProjectManagement({
         return
       }
 
-      // Recargar datos del proyecto
       await loadProjectData()
       if (onUpdate) onUpdate()
 
@@ -234,7 +232,6 @@ export function FreelancerProjectManagement({
 
   return (
     <div className="space-y-6">
-      {/* Información General del Proyecto */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-3">
@@ -349,7 +346,6 @@ export function FreelancerProjectManagement({
         </div>
       </div>
 
-      {/* Descripción del Proyecto */}
       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
         <div className="mb-4 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg">
@@ -368,7 +364,6 @@ export function FreelancerProjectManagement({
         )}
       </div>
 
-      {/* Habilidades Requeridas */}
       {projectData.required_skills && projectData.required_skills.length > 0 && (
         <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-3">
@@ -392,8 +387,7 @@ export function FreelancerProjectManagement({
           </div>
         </div>
       )}
-
-      {/* Información del Cliente */}
+      
       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
         <div className="mb-4 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
@@ -429,7 +423,6 @@ export function FreelancerProjectManagement({
         </div>
       </div>
 
-      {/* Hitos del Proyecto */}
       {projectData.project_milestones && projectData.project_milestones.length > 0 && (
         <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-3">
@@ -488,7 +481,6 @@ export function FreelancerProjectManagement({
         </div>
       )}
 
-      {/* Acciones de Progreso */}
       {!projectData._isFromTransaction && (
         <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-3">
@@ -537,7 +529,6 @@ export function FreelancerProjectManagement({
         </div>
       )}
 
-      {/* Agregar Nota de Progreso */}
       {!projectData._isFromTransaction && (
         <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-3">
@@ -572,7 +563,6 @@ export function FreelancerProjectManagement({
         </div>
       )}
 
-      {/* Historial de Notas */}
       {projectData.progress_notes && (
         <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-3">
@@ -589,7 +579,6 @@ export function FreelancerProjectManagement({
         </div>
       )}
 
-      {/* Información de Pago */}
       <div className="rounded-2xl border border-yellow-200 bg-gradient-to-br from-yellow-50 to-amber-50 p-6 shadow-sm">
         <div className="mb-4 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-yellow-500 to-amber-500 text-white shadow-lg">
@@ -641,7 +630,6 @@ export function FreelancerProjectManagement({
         </div>
       </div>
 
-      {/* Última Actualización */}
       <div className="border-t border-gray-200 pt-4 text-center text-sm text-gray-500">
         <i className="ri-time-line mr-1"></i>
         Última actualización:{" "}
@@ -650,7 +638,6 @@ export function FreelancerProjectManagement({
           : "Nunca actualizado"}
       </div>
 
-      {/* Input Dialog para actualizar porcentaje de progreso */}
       <InputDialog
         isOpen={showProgressDialog}
         onClose={() => setShowProgressDialog(false)}
@@ -676,7 +663,6 @@ export function FreelancerProjectManagement({
         }}
       />
 
-      {/* Confirm Dialog */}
       <ConfirmDialog
         isOpen={isOpen}
         onClose={handleCancel}
@@ -687,7 +673,6 @@ export function FreelancerProjectManagement({
         manageOverflow={false}
       />
 
-      {/* Mensaje para proyectos de transacción */}
       {projectData._isFromTransaction && (
         <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6 shadow-sm">
           <div className="flex items-start gap-4">

@@ -27,7 +27,6 @@ export default function WhatsAppSetup({ onClose }: WhatsAppSetupProps) {
         throw new Error("No autenticado")
       }
 
-      // Primero guardar la configuración
       const configResponse = await fetch(
         "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/whatsapp-config",
         {

@@ -46,7 +46,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
   }
 
   const loadFreelancerAnalytics = async () => {
-    // Cargar proyectos del freelancer sin reviews por ahora
     const { data: projects, error: projectsError } = await supabase
       .from("projects")
       .select("*")
@@ -58,7 +57,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       return
     }
 
-    // Cargar reseñas por separado usando la estructura correcta
     const { data: reviews, error: reviewsError } = await supabase
       .from("reviews")
       .select("overall_rating, project_id")
@@ -68,7 +66,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       console.warn("Error cargando reseñas:", reviewsError)
     }
 
-    // Cargar transacciones del freelancer directamente
     const { data: transactions, error: transactionsError } = await supabase
       .from("transactions")
       .select("*")
@@ -80,7 +77,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       return
     }
 
-    // Calcular métricas
     const totalEarnings =
       transactions?.reduce((sum: number, transaction: Transaction) => {
         return sum + (Number(transaction.amount) || 0)
@@ -102,7 +98,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
     const completedProjects = projects?.length || 0
 
-    // Calcular rating promedio usando overall_rating
     const averageRating =
       reviews && reviews.length > 0
         ? reviews.reduce(
@@ -112,7 +107,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
           ) / reviews.length
         : 0
 
-    // Calcular crecimiento (comparar con mes anterior)
     const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1
     const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear
 
@@ -136,7 +130,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
     setGrowthRate(calculatedGrowthRate)
 
-    // Generar datos para gráficos (últimos 6 meses)
     const chartData = []
     for (let i = 5; i >= 0; i--) {
       const targetDate = new Date()
@@ -166,7 +159,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       })
     }
 
-    // Servicios más rentables (basado en categorías de proyectos)
     const serviceStats =
       projects?.reduce(
         (acc: Record<string, { earnings: number; count: number }>, project: Project) => {
@@ -281,7 +273,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
   }
 
   const loadClientAnalytics = async () => {
-    // Cargar proyectos del cliente
     const { data: projects, error: projectsError } = await supabase
       .from("projects")
       .select("*")
@@ -292,7 +283,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       return
     }
 
-    // Cargar reseñas por separado
     const { data: reviews, error: reviewsError } = await supabase
       .from("reviews")
       .select("overall_rating, project_id")
@@ -302,7 +292,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       console.warn("Error cargando reseñas:", reviewsError)
     }
 
-    // Cargar transacciones del cliente
     const { data: transactions, error: transactionsError } = await supabase
       .from("transactions")
       .select("*")
@@ -314,7 +303,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
       return
     }
 
-    // Calcular métricas para cliente
     const totalSpent =
       transactions?.reduce((sum: number, transaction: Transaction) => {
         return sum + (Number(transaction.amount) || 0)
@@ -324,14 +312,12 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
     const completedProjects = projects?.filter((p: Project) => p.status === "completed").length || 0
     const totalProjects = projects?.length || 0
 
-    // Calcular satisfacción promedio basada en reseñas
     const averageSatisfaction =
       reviews && reviews.length > 0
         ? reviews.reduce((sum: number, review: Review) => sum + (review.overall_rating || 0), 0) /
           reviews.length
         : 0
 
-    // Generar datos para gráficos de cliente
     const chartData = []
     for (let i = 5; i >= 0; i--) {
       const targetDate = new Date()
@@ -452,7 +438,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
 
   return (
     <div className="space-y-6">
-      {/* Header con filtros */}
       <div className="rounded-xl bg-white p-6 shadow-lg">
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div>
@@ -476,9 +461,8 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
             <option value="1year">{t("dashboard.analytics.timeRange.1year")}</option>
           </select>
         </div>
-      </div>
+    </div>
 
-      {/* Métricas principales */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="to-primary from-primary rounded-xl bg-gradient-to-br p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">
@@ -573,7 +557,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         </div>
       </div>
 
-      {/* Gráfico de ingresos mensuales */}
       {userType === "freelancer" && analytics.monthlyData.length > 0 && (
         <div className="rounded-xl bg-white p-6 shadow-lg">
           <h3 className="mb-6 flex items-center text-lg font-semibold text-gray-900">
@@ -613,7 +596,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         </div>
       )}
 
-      {/* Servicios más rentables */}
       {userType === "freelancer" && analytics.topServices.length > 0 && (
         <div className="rounded-xl bg-white p-6 shadow-lg">
           <h3 className="mb-6 flex items-center text-lg font-semibold text-gray-900">
@@ -660,7 +642,6 @@ export default function AnalyticsDashboard({ userId, userType }: AnalyticsDashbo
         </div>
       )}
 
-      {/* Predicciones y recomendaciones */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-blue-50 p-6">
           <h3 className="mb-4 flex items-center text-lg font-semibold text-indigo-900">

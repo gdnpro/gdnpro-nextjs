@@ -52,7 +52,6 @@ export function ShareProfileTab() {
 
     if (shareUrl) {
       window.open(shareUrl, "_blank", "width=600,height=400")
-      // Aquí podrías registrar el share en analytics
       setShareStats((prev) => ({ ...prev, totalShares: prev.totalShares + 1 }))
     }
   }
@@ -98,13 +97,11 @@ export function ShareProfileTab() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="to-primary rounded-xl bg-gradient-to-r from-cyan-500 p-6 text-white">
         <h2 className="mb-2 text-2xl font-bold">{t("dashboard.shareProfile.title")}</h2>
         <p className="text-cyan-100">{t("dashboard.shareProfile.description")}</p>
       </div>
 
-      {/* URL del perfil */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold text-gray-900">
           {t("dashboard.shareProfile.profileUrl.title")}
@@ -140,7 +137,6 @@ export function ShareProfileTab() {
         </div>
       </div>
 
-      {/* Botones de compartir */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold text-gray-900">
           {t("dashboard.shareProfile.social.title")}
@@ -193,7 +189,6 @@ export function ShareProfileTab() {
         </div>
       </div>
 
-      {/* Código QR */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold text-gray-900">
           {t("dashboard.shareProfile.qr.title")}
@@ -257,7 +252,6 @@ export function ShareProfileTab() {
         </div>
       </div>
 
-      {/* Estadísticas */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-semibold text-gray-900">
           {t("dashboard.shareProfile.stats.title")}
@@ -285,7 +279,6 @@ export function ShareProfileTab() {
         </div>
       </div>
 
-      {/* Tips para compartir */}
       <div className="rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-emerald-50 p-6">
         <h3 className="mb-4 text-lg font-semibold text-gray-900">
           <i className="ri-lightbulb-line mr-2 text-yellow-500"></i>

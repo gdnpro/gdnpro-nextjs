@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import PaymentsTab from "@/components/dashboard/PaymentsTab"
 import ProjectManagement from "@/components/dashboard/ProjectManagement"
@@ -84,6 +84,9 @@ export default function ClientDashboardUI() {
   const { notifyProposal, notifyNewMessage, createReminderNotification } = useNotifications()
   const { checkAndUnlockBadges } = useBadges()
 
+  // Track previous user ID to prevent unnecessary reloads on auth refresh
+  const previousUserIdRef = useRef<string | null>(null)
+
   const popularSkills = [
     "JavaScript",
     "React",
@@ -122,12 +125,18 @@ export default function ClientDashboardUI() {
   }, [user, loading, refreshAuth])
 
   useEffect(() => {
-    if (user) {
+    // Only reload data if user ID actually changed (not just on auth refresh)
+    const currentUserId = user?.id || null
+    if (currentUserId && currentUserId !== previousUserIdRef.current) {
+      previousUserIdRef.current = currentUserId
       loadProjects()
       loadConversations()
       loadPendingReviewsCount()
+    } else if (!currentUserId) {
+      // User logged out
+      previousUserIdRef.current = null
     }
-  }, [user])
+  }, [user?.id])
 
   // Handle body overflow when modals open/close
   useEffect(() => {
@@ -160,7 +169,6 @@ export default function ClientDashboardUI() {
     if (!user) return
 
     try {
-      // 1. Cargar proyectos creados tradicionalmente - FILTRAR POR CLIENT_ID
       const { data: projectsData } = await supabase
         .from("projects")
         .select(
@@ -178,7 +186,6 @@ export default function ClientDashboardUI() {
         .eq("client_id", user.id)
         .order("created_at", { ascending: false })
 
-      // 2. Obtener TODOS los proyectos de transacciones (pagados Y pendientes) para mostrar en "Mis Proyectos"
       const session = await supabase.auth.getSession()
       let projectsFromTransactions = []
 
@@ -200,7 +207,6 @@ export default function ClientDashboardUI() {
 
           if (response.ok) {
             const data = await response.json()
-            // CORREGIDO: Incluir transacciones PAGADAS Y PENDIENTES
             const allTransactions = (data.transactions || []).filter(
               (t: Transaction) => t.status === "paid" || t.status === "pending",
             )
@@ -224,7 +230,6 @@ export default function ClientDashboardUI() {
               )
             }
 
-            // Crear "proyectos virtuales" desde TODAS las transacciones para mostrar en "Mis Proyectos"
             projectsFromTransactions = allTransactions.map((transaction: Transaction) => {
               // Get freelancer information from the map
               const freelancerInfo = freelancersMap.get(transaction.freelancer_id) || {
@@ -243,16 +248,15 @@ export default function ClientDashboardUI() {
                   t("dashboard.client.projects.directContractDesc"),
                 budget_min: Number(transaction.amount),
                 budget_max: Number(transaction.amount),
-                budget: Number(transaction.amount), // Para mostrar precio único
+                budget: Number(transaction.amount),
                 status: transaction.status === "paid" ? "in_progress" : "pending_payment",
-                payment_status: transaction.status, // 'paid' o 'pending'
+                payment_status: transaction.status,
                 created_at:
                   transaction.created_at || transaction.paid_at || new Date().toISOString(),
                 project_type: t("dashboard.client.projects.directContractType"),
-                required_skills: [], // Proyectos pagados no tienen habilidades específicas
+                required_skills: [],
                 deadline: null,
-                proposals: [], // Proyectos pagados no tienen propuestas
-                // Información del freelancer cargada correctamente
+                proposals: [],
                 freelancer: {
                   id: freelancerInfo.id,
                   full_name: freelancerInfo.full_name || t("common.freelancer"),
@@ -260,7 +264,6 @@ export default function ClientDashboardUI() {
                   rating: freelancerInfo.rating || 5.0,
                   avatar_url: freelancerInfo.avatar_url || "",
                 },
-                // Marcar como proyecto de transacción para diferenciar
                 _isFromTransaction: true,
                 _transactionId: transaction.id,
                 _stripeSessionId: transaction.stripe_session_id,
@@ -273,10 +276,8 @@ export default function ClientDashboardUI() {
         }
       }
 
-      // 3. Combinar proyectos tradicionales + proyectos de transacciones
       const allProjects = [...(projectsData || []), ...projectsFromTransactions]
 
-      // Eliminar duplicados por ID si existen
       const uniqueProjects = allProjects.filter(
         (project, index, self) => index === self.findIndex((p) => p.id === project.id),
       )
@@ -326,7 +327,6 @@ export default function ClientDashboardUI() {
       }
     } catch (error) {
       console.error("Error loading conversations:", error)
-      // No mostrar el error completo al usuario, solo registrarlo
       setConversations([])
     }
   }
@@ -420,7 +420,6 @@ export default function ClientDashboardUI() {
         await loadMessages(selectedConversation.id)
         await loadConversations() // Refresh conversations list
 
-        // NUEVO: Crear notificación automática de nuevo mensaje
         if (data.message?.id) {
           await notifyNewMessage(data.message.id)
         }
@@ -548,7 +547,6 @@ export default function ClientDashboardUI() {
       const data = await response.json()
 
       if (data.success) {
-        // Recargar conversaciones y abrir el chat
         await loadConversations()
 
         // Use the conversation returned from the API
@@ -676,10 +674,9 @@ export default function ClientDashboardUI() {
 
       if (error) throw error
 
-      // NUEVO: Crear recordatorio automático
       if (newProject.deadline) {
         const deadlineDate = new Date(newProject.deadline)
-        const reminderDate = new Date(deadlineDate.getTime() - 24 * 60 * 60 * 1000) // 1 día antes
+        const reminderDate = new Date(deadlineDate.getTime() - 24 * 60 * 60 * 1000)
 
         if (reminderDate > new Date()) {
           await createReminderNotification(
@@ -807,7 +804,6 @@ export default function ClientDashboardUI() {
 
       if (error) throw error
 
-      // NUEVO: Crear notificación automática
       await notifyProposal(proposalId, "proposal_rejected")
 
       // Refresh proposals
@@ -900,7 +896,7 @@ export default function ClientDashboardUI() {
       await refreshAuth()
 
       window.toast({
-        title: "Perfil actualizado exitosamente",
+        title: t("dashboard.client.success.profileUpdated"),
         type: "success",
         location: "bottom-center",
         dismissible: true,
@@ -909,7 +905,7 @@ export default function ClientDashboardUI() {
     } catch (error) {
       console.error("Error updating profile:", error)
       window.toast({
-        title: "Error al actualizar el perfil",
+        title: t("dashboard.client.errors.updateProfile"),
         type: "error",
         location: "bottom-center",
         dismissible: true,
@@ -1224,7 +1220,6 @@ export default function ClientDashboardUI() {
           </div>
 
           <div className="p-4 sm:p-6">
-            {/* Mis Proyectos */}
             {activeTab === "projects" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
@@ -1232,7 +1227,6 @@ export default function ClientDashboardUI() {
                     {t("dashboard.client.projects.title")}
                   </h2>
                   <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
-                    {/* NUEVO: Botón de Matching Inteligente */}
                     <button
                       onClick={async () => {
                         try {
@@ -1317,7 +1311,6 @@ export default function ClientDashboardUI() {
                   </div>
                 </div>
 
-                {/* NUEVO: Panel de Matches Inteligentes */}
                 <div className="mb-6 rounded-xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-4 sm:p-6">
                   <div className="mb-4 flex items-center">
                     <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-cyan-600 to-teal-600">
@@ -1435,7 +1428,6 @@ export default function ClientDashboardUI() {
               </div>
             )}
 
-            {/* Mensajes */}
             {activeTab === "messages" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -1476,7 +1468,6 @@ export default function ClientDashboardUI() {
               </div>
             )}
 
-            {/* Perfil */}
             {activeTab === "user" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col items-center space-y-4 sm:flex-row sm:items-start sm:space-y-0 sm:space-x-6">
@@ -1514,7 +1505,6 @@ export default function ClientDashboardUI() {
               </div>
             )}
 
-            {/* Reseñas Tab */}
             {activeTab === "reviews" && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -1530,7 +1520,6 @@ export default function ClientDashboardUI() {
                   </button>
                 </div>
 
-                {/* Notificación de proyectos pendientes */}
                 {pendingReviewsCount > 0 && (
                   <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 sm:p-4">
                     <div className="flex items-start gap-2 sm:items-center sm:gap-3">
@@ -1553,12 +1542,10 @@ export default function ClientDashboardUI() {
                   </div>
                 )}
 
-                {/* Proyectos Pendientes de Reseña */}
                 <div>
                   <PendingReviews onReviewsUpdate={() => loadPendingReviewsCount()} />
                 </div>
 
-                {/* Separador */}
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-300" />
@@ -1570,7 +1557,6 @@ export default function ClientDashboardUI() {
                   </div>
                 </div>
 
-                {/* Reseñas Recibidas */}
                 {user && (
                   <div>
                     <ReviewsDisplay userId={user.id} userType="client" showStats={true} />
@@ -1817,7 +1803,6 @@ export default function ClientDashboardUI() {
               </div>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-              {/* NUEVO: Mostrar mensaje inicial del cliente */}
               <div className="mb-4 rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-3 shadow-sm sm:mb-6 sm:p-6">
                 <div className="flex items-start">
                   <div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mr-4 sm:h-12 sm:w-12">
@@ -1951,8 +1936,6 @@ export default function ClientDashboardUI() {
           </div>
         </div>
       )}
-
-      {/* Modal Nuevo Proyecto - RESPONSIVE */}
       {showNewProjectModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4"
@@ -2171,7 +2154,7 @@ export default function ClientDashboardUI() {
                 </div>
               </form>
             </div>
-            {/* Botones de Acción */}
+
             <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
               <button
                 type="button"
@@ -2196,7 +2179,6 @@ export default function ClientDashboardUI() {
         </div>
       )}
 
-      {/* Modal de Gestión de Proyectos */}
       {showProjectManagement && selectedProjectForManagement && (
         <ProjectManagement
           projectId={selectedProjectForManagement.id}
@@ -2204,12 +2186,11 @@ export default function ClientDashboardUI() {
           onClose={() => {
             setShowProjectManagement(false)
             setSelectedProjectForManagement(null)
-            loadProjects() // Recargar proyectos para actualizar el progreso
+            loadProjects()
           }}
         />
       )}
 
-      {/* Modal Editar Perfil */}
       {showEditProfileModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4"
@@ -2219,7 +2200,6 @@ export default function ClientDashboardUI() {
             className="flex h-screen w-full max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-3xl sm:rounded-3xl sm:ring-1 sm:ring-black/5"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modern Header with Gradient */}
             <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-cyan-600 via-cyan-500 to-teal-500 p-4 text-white sm:p-6 md:p-8">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
               <div className="relative z-10 flex items-start justify-between gap-3">
@@ -2230,10 +2210,10 @@ export default function ClientDashboardUI() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <h2 className="truncate text-xl leading-tight font-bold sm:text-2xl md:text-3xl">
-                        Editar Perfil
+                        {t("dashboard.client.modals.editProfile.title")}
                       </h2>
                       <p className="mt-2 text-xs text-cyan-100 sm:text-sm">
-                        Actualiza tu información personal
+                        {t("dashboard.client.modals.editProfile.subtitle")}
                       </p>
                     </div>
                   </div>
@@ -2241,7 +2221,7 @@ export default function ClientDashboardUI() {
                 <button
                   onClick={() => setShowEditProfileModal(false)}
                   className="group flex h-10 w-10 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/20 active:scale-95 active:bg-white/30"
-                  aria-label="Cerrar"
+                  aria-label={t("common.close")}
                 >
                   <i className="ri-close-line text-xl transition-transform group-hover:rotate-90"></i>
                 </button>
@@ -2255,7 +2235,7 @@ export default function ClientDashboardUI() {
               >
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Nombre Completo
+                    {t("dashboard.client.modals.editProfile.fullName")}
                   </label>
                   <input
                     type="text"
@@ -2265,13 +2245,13 @@ export default function ClientDashboardUI() {
                       setEditProfileForm({ ...editProfileForm, full_name: e.target.value })
                     }
                     className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
-                    placeholder="Tu nombre completo"
+                    placeholder={t("dashboard.client.modals.editProfile.fullNamePlaceholder")}
                   />
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Ubicación
+                    {t("dashboard.client.modals.editProfile.location")}
                   </label>
                   <input
                     type="text"
@@ -2280,13 +2260,13 @@ export default function ClientDashboardUI() {
                       setEditProfileForm({ ...editProfileForm, location: e.target.value })
                     }
                     className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
-                    placeholder="Ej: Ciudad, País"
+                    placeholder={t("dashboard.client.modals.editProfile.locationPlaceholder")}
                   />
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium text-gray-700 sm:text-sm">
-                    Biografía
+                    {t("dashboard.client.modals.editProfile.bio")}
                   </label>
                   <textarea
                     rows={4}
@@ -2295,12 +2275,12 @@ export default function ClientDashboardUI() {
                       setEditProfileForm({ ...editProfileForm, bio: e.target.value })
                     }
                     className="focus:ring-primary focus:border-primary min-h-[44px] w-full rounded-md border border-gray-300 px-3 py-3 text-base focus:outline-none sm:py-2 sm:text-sm"
-                    placeholder="Describe tu perfil profesional..."
+                    placeholder={t("dashboard.client.modals.editProfile.bioPlaceholder")}
                   />
                 </div>
               </form>
             </div>
-            {/* Botones de Acción */}
+
             <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
               <button
                 type="button"
@@ -2338,7 +2318,6 @@ export default function ClientDashboardUI() {
         </div>
       )}
 
-      {/* Modal Editar Proyecto */}
       {showEditProjectModal && editingProject && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 p-0 backdrop-blur-md sm:p-4"
@@ -2563,7 +2542,7 @@ export default function ClientDashboardUI() {
                 </div>
               </form>
             </div>
-            {/* Botones de Acción */}
+
             <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 sm:flex-row sm:gap-4 sm:p-6">
               <button
                 type="button"

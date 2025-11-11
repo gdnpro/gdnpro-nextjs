@@ -93,7 +93,6 @@ export const PendingReviews = ({ onReviewsUpdate }: PendingReviewsProps) => {
   }
 
   const handleReviewProject = (project: PendingProject) => {
-    // Determinar el usuario a reseñar si no viene definido
     if (!project.reviewee) {
       const reviewee =
         project.reviewee_type === "freelancer"
@@ -115,11 +114,9 @@ export const PendingReviews = ({ onReviewsUpdate }: PendingReviewsProps) => {
         return
       }
 
-      // Asignar manualmente
       project.reviewee = reviewee
     }
 
-    // 🔹 Agregar explícitamente el ID del reviewee
     // Add reviewee_id to project for review submission
     const projectWithReviewee = { ...project, reviewee_id: project.reviewee.id } as PendingProject & { reviewee_id: string }
 

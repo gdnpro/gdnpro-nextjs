@@ -62,22 +62,18 @@ export default function FreelancerDashboardUI() {
 
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0)
 
-  // RESTAURADO: Estados para modal de detalles de propuesta
   const [showProposalDetails, setShowProposalDetails] = useState(false)
   const [selectedProposalForDetails, setSelectedProposalForDetails] = useState<Proposal | null>(
     null,
   )
   const [proposalProjectDetails, setProposalProjectDetails] = useState<Project | null>(null)
 
-  // RESTAURADO: Estados para modal de detalles de proyecto en "Mis Proyectos"
   const [showProjectDetailsModal, setShowProjectDetailsModal] = useState(false)
   const [selectedProjectForDetails, setSelectedProjectForDetails] = useState<Project | null>(null)
 
-  // NUEVO: Estados para modal de gestión de progreso
   const [showProgressManagement, setShowProgressManagement] = useState(false)
   const [selectedProjectForProgress, setSelectedProjectForProgress] = useState<Project | null>(null)
 
-  // Estados para editar perfil
   const [showEditProfileModal, setShowEditProfileModal] = useState(false)
   const [editProfileForm, setEditProfileForm] = useState({
     full_name: "",

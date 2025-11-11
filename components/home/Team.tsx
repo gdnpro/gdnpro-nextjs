@@ -64,7 +64,7 @@ export default function Team() {
                   {member.position}
                 </p>
                 <p className="text-gray-600 mb-4 leading-relaxed">
-                  {member.bio}
+                  {t(member.bioKey)}
                 </p>
               </div>
             </div>

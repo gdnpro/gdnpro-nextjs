@@ -1,31 +1,22 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import { defineConfig, globalIgnores } from "eslint/config"
+import nextVitals from "eslint-config-next/core-web-vitals"
+import nextTs from "eslint-config-next/typescript"
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    extends: ['eslint:recommended', 'plugin:prettier/recommended'],
-   rules: {
-    'react-hooks/exhaustive-deps': 'off',
-    'semi': ['error', 'never'],
-    'prettier/prettier': 'error',
-    'import/no-named-as-default-member': 'off',
-    // Disable Tailwind CSS class name warnings
-    '@typescript-eslint/no-unused-vars': 'off',
-    // Disable all class name validation warnings
-    'no-warning-comments': 'off',
-  }, 
+    extends: ["eslint:recommended", "plugin:prettier/recommended"],
+    rules: {
+      "react-hooks/exhaustive-deps": "off",
+      semi: ["error", "never"],
+      "prettier/prettier": "error",
+      "import/no-named-as-default-member": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "no-warning-comments": "off",
+    },
   },
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+])
 
-export default eslintConfig;
+export default eslintConfig

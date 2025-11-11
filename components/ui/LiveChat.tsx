@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useTranslation } from "react-i18next"
 
 interface Message {
   id: string
@@ -18,6 +19,7 @@ interface Conversation {
 }
 
 export default function LiveChat() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState("")
@@ -26,9 +28,7 @@ export default function LiveChat() {
   const [conversation, setConversation] = useState<Conversation | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isWaitingForResponse, setIsWaitingForResponse] = useState(false)
-  const [lastCheckedMessageId, setLastCheckedMessageId] = useState<
-    string | null
-  >(null)
+  const [lastCheckedMessageId, setLastCheckedMessageId] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -41,7 +41,6 @@ export default function LiveChat() {
     let interval: NodeJS.Timeout
 
     if (conversation && isWaitingForResponse) {
-      // Verificar respuestas del admin cada 2 segundos (más frecuente)
       interval = setInterval(checkForAdminResponse, 2000)
     }
 
@@ -54,11 +53,6 @@ export default function LiveChat() {
     if (!conversation) return
 
     try {
-      console.log(
-        "🔍 Checking admin response for conversation:",
-        conversation.id
-      )
-
       const response = await fetch(
         "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/whatsapp-integration?action=get-admin-response",
         {
@@ -69,44 +63,25 @@ export default function LiveChat() {
           body: JSON.stringify({
             conversationId: conversation.id,
           }),
-        }
+        },
       )
 
       if (response.ok) {
         const data = await response.json()
-        console.log("📨 Server response:", data)
 
         if (data.success && data.admin_response) {
           const adminMessage = data.admin_response
 
-          console.log("💬 Admin message found:", {
-            id: adminMessage.id,
-            message: adminMessage.message.substring(0, 50) + "...",
-            created_at: adminMessage.created_at,
-          })
-
-          // Verificar si es un mensaje nuevo que no hemos mostrado
           const isNewMessage = !messages.some(
             (msg) =>
               msg.id === adminMessage.id ||
-              (msg.sender_id === "admin" &&
-                msg.created_at === adminMessage.created_at)
+              (msg.sender_id === "admin" && msg.created_at === adminMessage.created_at),
           )
 
-          // También verificar contra el último mensaje verificado
           const isNewerThanLastChecked =
             !lastCheckedMessageId || adminMessage.id !== lastCheckedMessageId
 
-          console.log("🔄 Message verification:", {
-            isNewMessage,
-            isNewerThanLastChecked,
-            lastCheckedMessageId,
-            currentMessageId: adminMessage.id,
-          })
-
           if (isNewMessage && isNewerThanLastChecked) {
-            console.log("✅ Adding new admin message")
-
             const newAdminMessage: Message = {
               id: adminMessage.id,
               sender_id: "admin",
@@ -116,23 +91,17 @@ export default function LiveChat() {
             }
 
             setMessages((prev) => {
-              // Verificar una vez más que no esté duplicado
               const exists = prev.some((msg) => msg.id === adminMessage.id)
               if (exists) {
-                console.log("⚠️ Message already exists, not adding")
                 return prev
               }
-              console.log("📝 Adding message to list")
+
               return [...prev, newAdminMessage]
             })
 
             setIsWaitingForResponse(false)
             setLastCheckedMessageId(adminMessage.id)
-          } else {
-            console.log("ℹ️ Message already processed or not new")
           }
-        } else {
-          console.log("📭 No new admin responses")
         }
       } else {
         console.error("❌ Error in server response:", response.status)
@@ -149,12 +118,8 @@ export default function LiveChat() {
     setIsNameSet(true)
 
     try {
-      // Guardar nombre del cliente
       localStorage.setItem("clientName", clientName)
 
-      console.log("🆕 Starting conversation for:", clientName)
-
-      // Usar el edge function para crear la conversación de soporte
       const response = await fetch(
         "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/whatsapp-integration?action=create-support-conversation",
         {
@@ -165,20 +130,18 @@ export default function LiveChat() {
           body: JSON.stringify({
             clientName: clientName,
           }),
-        }
+        },
       )
 
       const data = await response.json()
 
       if (response.ok && data.success && data.conversation) {
         setConversation(data.conversation)
-        console.log("✅ Conversation created:", data.conversation.id)
 
-        // Mensaje de bienvenida
         const welcomeMessage: Message = {
           id: "welcome",
           sender_id: "system",
-          message: `¡Hola ${clientName}! 👋 Soy Liah, tu asistente virtual. Un especialista real te responderá en breve. ¿En qué puedo ayudarte?`,
+          message: t("virtualAssistant.welcomeMessage").replace("{name}", clientName),
           created_at: new Date().toISOString(),
           sender_type: "admin",
         }
@@ -191,7 +154,6 @@ export default function LiveChat() {
     } catch (error) {
       console.error("Error starting conversation:", error)
 
-      // Fallback: crear conversación local sin base de datos
       const fallbackConversation: Conversation = {
         id: "local-" + Date.now(),
         client_name: clientName,
@@ -204,7 +166,7 @@ export default function LiveChat() {
       const welcomeMessage: Message = {
         id: "welcome",
         sender_id: "system",
-        message: `¡Hola ${clientName}! 👋 Soy Liah, tu asistente virtual. Un especialista real te responderá en breve. ¿En qué puedo ayudarte?`,
+        message: t("virtualAssistant.welcomeMessage").replace("{name}", clientName),
         created_at: new Date().toISOString(),
         sender_type: "admin",
       }
@@ -230,10 +192,7 @@ export default function LiveChat() {
     setIsLoading(true)
     setIsWaitingForResponse(true)
 
-    console.log("📤 Sending message:", newMessage.substring(0, 50) + "...")
-
     try {
-      // Enviar mensaje a WhatsApp del admin
       const response = await fetch(
         "https://kdmdhhhppizzlhvauofe.supabase.co/functions/v1/whatsapp-integration?action=send-to-whatsapp",
         {
@@ -246,15 +205,12 @@ export default function LiveChat() {
             clientMessage: newMessage,
             clientName: clientName,
           }),
-        }
+        },
       )
 
       const data = await response.json()
 
       if (response.ok && data.success) {
-        console.log("✅ Message sent successfully")
-
-        // Mostrar mensaje de confirmación
         const confirmMessage: Message = {
           id: "confirm-" + Date.now(),
           sender_id: "system",
@@ -266,9 +222,7 @@ export default function LiveChat() {
 
         setMessages((prev) => [...prev, confirmMessage])
 
-        // Iniciar verificación inmediata de respuestas
         setTimeout(() => {
-          console.log("🔄 Starting response verification...")
           checkForAdminResponse()
         }, 1000)
       } else {
@@ -307,72 +261,69 @@ export default function LiveChat() {
 
   return (
     <>
-      {/* Botón del Chat */}
-      <div className="fixed bottom-4 right-4 z-40 sm:bottom-6 sm:right-6">
+      <div className="fixed right-4 bottom-4 z-40 sm:right-6 sm:bottom-6">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-primary hover:bg-cyan-700 active:bg-cyan-800 text-white rounded-full size-14 sm:size-16 flex items-center justify-center shadow-lg transition-all cursor-pointer group touch-manipulation"
+          className="bg-primary group flex size-14 cursor-pointer touch-manipulation items-center justify-center rounded-full text-white shadow-lg transition-all hover:bg-cyan-700 active:bg-cyan-800 sm:size-16"
           aria-label={isOpen ? "Cerrar chat" : "Abrir chat"}
         >
           {isOpen ? (
             <i className="ri-close-line text-2xl sm:text-3xl"></i>
           ) : (
             <>
-              <i className="ri-message-3-line text-2xl sm:text-3xl group-hover:scale-110 transition-transform"></i>
+              <i className="ri-message-3-line text-2xl transition-transform group-hover:scale-110 sm:text-3xl"></i>
               {isWaitingForResponse && (
-                <span className="absolute top-1 right-1 bg-green-500 w-4 h-4 rounded-full animate-pulse"></span>
+                <span className="absolute top-1 right-1 h-4 w-4 animate-pulse rounded-full bg-green-500"></span>
               )}
             </>
           )}
         </button>
       </div>
 
-      {/* Ventana del Chat */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white sm:inset-auto sm:bottom-24 sm:right-6 sm:w-96 sm:h-[500px] sm:rounded-lg sm:shadow-2xl sm:border sm:border-gray-200 animate-slide-up">
+        <div className="animate-slide-up fixed inset-0 z-50 flex flex-col bg-white sm:inset-auto sm:right-6 sm:bottom-24 sm:h-[500px] sm:w-96 sm:rounded-lg sm:border sm:border-gray-200 sm:shadow-2xl">
           {/* Header */}
-          <div className="bg-primary text-white p-4 sm:rounded-t-lg flex items-center justify-between shrink-0">
-            <div className="flex items-center min-w-0 flex-1">
-              <div className="w-10 h-10 bg-cyan-700/30 rounded-full flex items-center justify-center mr-3 shrink-0">
+          <div className="bg-primary flex shrink-0 items-center justify-between p-4 text-white sm:rounded-t-lg">
+            <div className="flex min-w-0 flex-1 items-center">
+              <div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cyan-700/30">
                 <i className="ri-customer-service-2-line text-lg"></i>
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="font-semibold text-sm sm:text-base truncate">Liah - Asistente Virtual</h3>
-                <p className="text-blue-100 text-xs sm:text-sm truncate">
-                  {isWaitingForResponse
-                    ? "⚡ Esperando respuesta..."
-                    : "🟢 En línea"}
+                <h3 className="truncate text-sm font-semibold sm:text-base">
+                  {t("virtualAssistant.title")}
+                </h3>
+                <p className="truncate text-xs text-blue-100 sm:text-sm">
+                  {isWaitingForResponse ? "⚡ Esperando respuesta..." : "🟢 En línea"}
                 </p>
               </div>
             </div>
 
             <button
               onClick={() => setIsOpen(false)}
-              className="text-blue-100 hover:text-white active:text-white cursor-pointer ml-2 shrink-0 flex items-center justify-center size-8 sm:size-10 rounded-lg hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation"
+              className="ml-2 flex size-8 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-lg text-blue-100 transition-colors hover:bg-white/10 hover:text-white active:bg-white/20 active:text-white sm:size-10"
               aria-label="Cerrar chat"
             >
               <i className="ri-close-line text-xl sm:text-2xl"></i>
             </button>
           </div>
 
-          {/* Configuración de Nombre */}
           {!isNameSet && (
-            <div className="p-4 sm:p-6 flex-1 flex flex-col justify-center overflow-y-auto">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <i className="ri-user-smile-line text-2xl text-primary"></i>
+            <div className="flex flex-1 flex-col justify-center overflow-y-auto p-4 sm:p-6">
+              <div className="mb-6 text-center">
+                <div className="bg-primary/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                  <i className="ri-user-smile-line text-primary text-2xl"></i>
                 </div>
-                <h4 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-                  ¡Hola! Soy Liah 👋
+                <h4 className="mb-2 text-lg font-semibold text-gray-800 sm:text-xl">
+                  {t("virtualAssistant.helloMessage")}
                 </h4>
-                <p className="text-gray-600 text-sm sm:text-base px-4">
-                  Para brindarte una mejor atención, ¿podrías decirme tu nombre?
+                <p className="px-4 text-sm text-gray-600 sm:text-base">
+                  {t("virtualAssistant.nameQuestion")}
                 </p>
               </div>
 
               <div className="space-y-4 px-2 sm:px-0">
                 <label htmlFor="livechat-name-input" className="sr-only">
-                  Tu nombre
+                  {t("virtualAssistant.nameLabel")}
                 </label>
                 <input
                   type="text"
@@ -381,8 +332,8 @@ export default function LiveChat() {
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Escribe tu nombre..."
-                  className="w-full p-3 sm:p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-colors text-base sm:text-sm"
+                  placeholder={t("virtualAssistant.namePlaceholder")}
+                  className="focus:ring-primary w-full rounded-lg border border-gray-300 p-3 text-base transition-colors focus:ring-2 focus:outline-none sm:p-4 sm:text-sm"
                   disabled={isLoading}
                   autoComplete="name"
                 />
@@ -390,52 +341,48 @@ export default function LiveChat() {
                 <button
                   onClick={startConversation}
                   disabled={!clientName.trim() || isLoading}
-                  className="w-full bg-primary hover:bg-cyan-700 active:bg-cyan-800 disabled:bg-gray-300 text-white py-3 sm:py-4 rounded-lg font-medium transition-colors cursor-pointer disabled:cursor-not-allowed touch-manipulation min-h-[44px]"
+                  className="bg-primary min-h-[44px] w-full cursor-pointer touch-manipulation rounded-lg py-3 font-medium text-white transition-colors hover:bg-cyan-700 active:bg-cyan-800 disabled:cursor-not-allowed disabled:bg-gray-300 sm:py-4"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      <span className="text-sm sm:text-base">Iniciando chat...</span>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                      <span className="text-sm sm:text-base">
+                        {t("virtualAssistant.startingChat")}
+                      </span>
                     </div>
                   ) : (
-                    <span className="text-sm sm:text-base">Iniciar Chat</span>
+                    <span className="text-sm sm:text-base">{t("virtualAssistant.startChat")}</span>
                   )}
                 </button>
               </div>
             </div>
           )}
 
-          {/* Área de Mensajes */}
           {isNameSet && (
             <>
-              <div className="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 min-h-0">
+              <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-3 sm:p-4">
                 {messages.map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.sender_type === "client" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[85%] sm:max-w-[80%] p-3 rounded-lg text-sm sm:text-base ${
+                      className={`max-w-[85%] rounded-lg p-3 text-sm sm:max-w-[80%] sm:text-base ${
                         message.sender_type === "client"
-                          ? "bg-primary text-white rounded-br-none"
-                          : "bg-gray-100 text-gray-800 rounded-bl-none"
+                          ? "bg-primary rounded-br-none text-white"
+                          : "rounded-bl-none bg-gray-100 text-gray-800"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap break-words">{message.message}</p>
+                      <p className="break-words whitespace-pre-wrap">{message.message}</p>
                       <p
-                        className={`text-xs mt-1 ${
-                          message.sender_type === "client"
-                            ? "text-primary/20"
-                            : "text-gray-500"
+                        className={`mt-1 text-xs ${
+                          message.sender_type === "client" ? "text-primary/20" : "text-gray-500"
                         }`}
                       >
-                        {new Date(message.created_at).toLocaleTimeString(
-                          "es-ES",
-                          {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          }
-                        )}
+                        {new Date(message.created_at).toLocaleTimeString("es-ES", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                     </div>
                   </div>
@@ -443,15 +390,15 @@ export default function LiveChat() {
 
                 {isWaitingForResponse && (
                   <div className="flex justify-start">
-                    <div className="bg-gray-100 p-3 rounded-lg rounded-bl-none">
+                    <div className="rounded-lg rounded-bl-none bg-gray-100 p-3">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-gray-400"></div>
                         <div
-                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          className="h-2 w-2 animate-bounce rounded-full bg-gray-400"
                           style={{ animationDelay: "0.1s" }}
                         ></div>
                         <div
-                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          className="h-2 w-2 animate-bounce rounded-full bg-gray-400"
                           style={{ animationDelay: "0.2s" }}
                         ></div>
                       </div>
@@ -462,11 +409,10 @@ export default function LiveChat() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Input de Mensaje */}
-              <div className="p-3 sm:p-4 border-t border-gray-200 shrink-0 bg-white">
+              <div className="shrink-0 border-t border-gray-200 bg-white p-3 sm:p-4">
                 <div className="flex gap-2">
                   <label htmlFor="livechat-message-input" className="sr-only">
-                    Escribe tu mensaje
+                    {t("virtualAssistant.messageLabel")}
                   </label>
                   <input
                     type="text"
@@ -475,27 +421,27 @@ export default function LiveChat() {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Escribe tu mensaje..."
-                    className="flex-1 p-3 sm:p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors focus:ring-primary text-base sm:text-sm min-h-[44px]"
+                    placeholder={t("virtualAssistant.messagePlaceholder")}
+                    className="focus:ring-primary min-h-[44px] flex-1 rounded-lg border border-gray-300 p-3 text-base transition-colors focus:ring-2 focus:outline-none sm:p-4 sm:text-sm"
                     disabled={isLoading}
                     autoComplete="off"
                   />
                   <button
                     onClick={sendMessage}
                     disabled={!newMessage.trim() || isLoading}
-                    className="bg-primary hover:bg-cyan-700 active:bg-cyan-800 disabled:bg-gray-300 text-white px-4 sm:px-5 py-3 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation"
+                    className="bg-primary flex min-h-[44px] min-w-[44px] shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-lg px-4 py-3 text-white transition-colors hover:bg-cyan-700 active:bg-cyan-800 disabled:cursor-not-allowed disabled:bg-gray-300 sm:px-5"
                     aria-label="Enviar mensaje"
                   >
                     {isLoading ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
                     ) : (
                       <i className="ri-send-plane-line text-lg sm:text-xl"></i>
                     )}
                   </button>
                 </div>
 
-                <p className="text-xs text-gray-500 mt-2 text-center hidden sm:block">
-                  💬 Conectado con WhatsApp Business - Respuestas en tiempo real
+                <p className="mt-2 hidden text-center text-xs text-gray-500 sm:block">
+                  {t("virtualAssistant.connectedMessage")}
                 </p>
               </div>
             </>

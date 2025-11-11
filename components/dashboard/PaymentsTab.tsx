@@ -51,7 +51,6 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
         throw new Error(t("dashboard.payments.errors.noSession"))
       }
 
-      // Obtener perfil del usuario
       const { data: profile } = await supabase
         .from("profiles")
         .select("*")
@@ -85,7 +84,6 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
       setTransactions(data.transactions || [])
 
-      // Cargar proyectos pagados según el tipo de usuario
       let projectsQuery
 
       if (userType === "client") {
@@ -100,7 +98,7 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
           `,
           )
           .eq("client_id", profile.id)
-          .not("freelancer_id", "is", null) // Solo proyectos con freelancer asignado
+          .not("freelancer_id", "is", null)
           .in("status", ["in_progress", "completed"])
       } else {
         projectsQuery = supabase
@@ -498,7 +496,6 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
 
   return (
     <div className="space-y-6">
-      {/* Estadísticas de pagos */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="flex items-center">
@@ -901,7 +898,6 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                   </div>
                 </div>
 
-                {/* Información del Cliente/Freelancer */}
                 <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg">
@@ -969,7 +965,6 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                   </div>
                 </div>
 
-                {/* Descripción del Proyecto */}
                 <div>
                   <div className="mb-4 flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg">
@@ -986,7 +981,6 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                   </div>
                 </div>
 
-                {/* Duración y Requisitos */}
                 {(selectedProject.duration || selectedProject.requirements) && (
                   <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
                     <div className="mb-4 flex items-center gap-3">
@@ -1043,9 +1037,8 @@ export default function PaymentsTab({ userType }: PaymentsTabProps) {
                       </div>
                     </div>
                   )}
-              </div>
-            </div>
-            {/* Botones de Acción */}
+          </div>
+        </div>
             <div className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-6 sm:flex-row sm:gap-4">
               {/* Show Contact button when there's a client/freelancer to contact */}
               {((userType === "freelancer" && selectedProject.client?.id) ||

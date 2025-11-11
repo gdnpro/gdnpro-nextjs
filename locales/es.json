@@ -135,6 +135,17 @@
   "team": {
     "title": "Nuestro Equipo",
     "subtitle": "Conoce a los profesionales apasionados que hacen posible cada proyecto exitoso",
+    "members": {
+      "genderson": {
+        "bio": "Apasionado por la innovación tecnológica, con más de 8 años de experiencia desarrollando y liderando soluciones full-stack, pentesting y transformación digital."
+      },
+      "junior": {
+        "bio": "Aporta el conocimiento financiero, contable y en general una mirada analítica al negocio para tomar decisiones que minimicen riesgos y maximicen beneficios."
+      },
+      "rikelvi": {
+        "bio": "Desarrollador full-stack especializado en React Native y Astro con más de 50 apps publicadas."
+      }
+    },
     "cta": {
       "title": "¿Quieres formar parte de nuestro equipo?",
       "description": "Estamos siempre buscando talento excepcional para unirse a nuestra red de freelancers especializados",
@@ -541,6 +552,33 @@
     "writeMessagePlaceholder": "Escribe tu mensaje...",
     "sendMessage": "Enviar mensaje",
     "secureChat": "Chat seguro monitoreado por GDN Pro"
+  },
+  "virtualAssistant": {
+    "welcomeMessage": "¡Hola {name}! 👋 Soy Liah, tu asistente virtual. Un especialista real te responderá en breve. ¿En qué puedo ayudarte?",
+    "helloMessage": "¡Hola! Soy Liah 👋",
+    "nameQuestion": "Para brindarte una mejor atención, ¿podrías decirme tu nombre?",
+    "nameLabel": "Tu nombre",
+    "namePlaceholder": "Escribe tu nombre...",
+    "startingChat": "Iniciando chat...",
+    "startChat": "Iniciar Chat",
+    "messageLabel": "Escribe tu mensaje",
+    "messagePlaceholder": "Escribe tu mensaje...",
+    "connectedMessage": "Conectado con WhatsApp Business - Respuestas en tiempo real",
+    "title": "Liah - Asistente Virtual"
+  },
+  "notifications": {
+    "center": {
+      "title": "Notificaciones",
+      "filters": {
+        "all": "Todas",
+        "unread": "No leídas",
+        "message": "Mensajes",
+        "proposal": "Propuestas",
+        "payment": "Pagos",
+        "project_update": "Proyectos"
+      },
+      "now": "Ahora"
+    }
   },
   "privacy": {
     "pageTitle": "Política de Privacidad | GDN Pro",
@@ -1272,6 +1310,7 @@
         },
         "editProfile": {
           "title": "Editar Perfil",
+          "subtitle": "Actualiza tu información personal",
           "fullName": "Nombre Completo",
           "fullNamePlaceholder": "Tu nombre completo",
           "bio": "Biografía",
@@ -1869,6 +1908,202 @@
           "description": "Responde comentarios y mensajes rápidamente"
         }
       }
+    }
+  },
+  "adminDashboard": {
+    "meta": {
+      "title": "Panel de Administración | GDN Pro"
+    },
+    "toasts": {
+      "noSession": "No hay sesión activa",
+      "missingToken": "No se pudo obtener el token de acceso",
+      "emptyReply": "Por favor, escribe un mensaje de respuesta",
+      "replySuccess": "Respuesta enviada correctamente al cliente",
+      "replyError": "Error enviando respuesta"
+    },
+    "loading": {
+      "verifying": "Verificando acceso de administrador..."
+    },
+    "header": {
+      "defaultAdmin": "Administrador",
+      "title": "Panel de Administración",
+      "subtitle": "Gestión de mensajes de contacto",
+      "badge": "Acceso exclusivo para administradores",
+      "welcome": "Bienvenido, {{name}}"
+    },
+    "whatsappBanner": {
+      "title": "📱 Configuración WhatsApp Business",
+      "functionLabel": "Función:",
+      "functionValue": "Recibe las notificaciones de Sofia directamente en tu WhatsApp",
+      "benefitLabel": "Beneficio:",
+      "benefitValue": "Responde a clientes desde tu celular sin iniciar sesión",
+      "badge": "Notificaciones instantáneas en tu celular",
+      "button": "Configurar WhatsApp"
+    },
+    "stats": {
+      "totalMessages": "Total de mensajes",
+      "new": "Nuevos",
+      "read": "Leídos",
+      "responded": "Respondidos"
+    },
+    "instructions": {
+      "title": "🔐 Panel de administración exclusivo",
+      "accessLabel": "Acceso:",
+      "accessValue": "Solo tú y tu equipo de desarrollo pueden acceder a este panel.",
+      "functionLabel": "Función:",
+      "functionValue": "Aquí puedes ver y gestionar todos los mensajes del formulario de contacto.",
+      "responsesLabel": "Respuestas:",
+      "responsesValue": "Puedes responder directamente desde aquí y el correo se enviará desde tu cuenta.",
+      "tipLabel": "💡 Tip:",
+      "tipValue": "Haz clic en \"Ver detalles\" para leer el mensaje completo y responder al cliente."
+    },
+    "filters": {
+      "all": "Todos los estados",
+      "new": "Nuevos",
+      "read": "Leídos",
+      "responded": "Respondidos",
+      "refresh": "Actualizar",
+      "searchPlaceholder": "Buscar por nombre, correo, empresa..."
+    },
+    "table": {
+      "heading": "Mensajes de contacto ({{count}})",
+      "columns": {
+        "contact": "Contacto",
+        "service": "Servicio",
+        "budget": "Presupuesto",
+        "status": "Estado",
+        "date": "Fecha",
+        "actions": "Acciones"
+      },
+      "viewDetailsTooltip": "Ver detalles completos",
+      "viewDetails": "Ver detalles",
+      "changeStatusTooltip": "Cambiar estado"
+    },
+    "status": {
+      "new": "Nuevo",
+      "read": "Leído",
+      "responded": "Respondido",
+      "unknown": "Desconocido"
+    },
+    "emptyState": {
+      "noMessages": "No hay mensajes aún",
+      "noResults": "No se encontraron mensajes",
+      "noResultsDescription": "No se encontraron mensajes con los filtros aplicados.",
+      "generalDescription": "Los mensajes del formulario de contacto aparecerán aquí.",
+      "tip": "Los nuevos mensajes aparecerán automáticamente cuando los visitantes usen el formulario de contacto."
+    },
+    "whatsappModal": {
+      "title": "📱 Configuración WhatsApp Business",
+      "description": "Conecta tu WhatsApp para recibir notificaciones de Sofia."
+    },
+    "common": {
+      "close": "Cerrar",
+      "teamName": "Tu equipo",
+      "cancel": "Cancelar"
+    },
+    "contactModal": {
+      "title": "Mensaje de contacto",
+      "sections": {
+        "contactInfo": {
+          "title": "Información del contacto",
+          "fullName": "Nombre completo",
+          "email": "Correo de contacto",
+          "company": "Empresa",
+          "phone": "Teléfono"
+        },
+        "projectDetails": {
+          "title": "Detalles del proyecto solicitado",
+          "service": "Servicio requerido",
+          "budget": "Presupuesto estimado",
+          "timeline": "Tiempo estimado"
+        },
+        "fullMessage": {
+          "title": "Mensaje completo del cliente"
+        },
+        "additionalInfo": {
+          "received": "Recibido: {{date}}",
+          "id": "ID: {{id}}"
+        }
+      },
+      "actions": {
+        "markAsResponded": "Marcar como respondido",
+        "replyTemplate": "Hola {{name}},\\n\\nGracias por contactarnos sobre tu proyecto de {{service}}.\\n\\nHemos revisado tu solicitud y nos gustaría programar una llamada para discutir los detalles.\\n\\n¿Cuándo sería un buen momento para ti?\\n\\nSaludos,\\n{{adminName}}",
+        "replyFromDashboard": "Responder desde el dashboard"
+      }
+    },
+    "errors": {
+      "noSession": "No hay sesión activa"
+    },
+    "replyModal": {
+      "title": "Responder a {{name}}",
+      "emailInfo": "El correo se enviará desde tu cuenta: {{email}}",
+      "recipient": "Para: {{email}}",
+      "subject": "Asunto: Re: {{service}} - Respuesta a tu consulta",
+      "messageLabel": "Mensaje de respuesta",
+      "messagePlaceholder": "Escribe tu respuesta aquí...",
+      "tip": "💡 Tip: Personaliza el mensaje según las necesidades específicas del cliente.",
+      "sending": "Enviando...",
+      "sendButton": "Enviar respuesta"
+    }
+  },
+  "reviewModal": {
+    "errors": {
+      "noReviewee": "Error: No se pudo identificar a quién reseñar.",
+      "noSession": "No hay sesión activa",
+      "createFailed": "Error al crear la reseña",
+      "generic": "Ocurrió un error al enviar la reseña"
+    },
+    "toast": {
+      "success": "Reseña enviada correctamente"
+    },
+    "header": {
+      "title": "Calificar experiencia",
+      "projectLabel": "Proyecto: {{title}}"
+    },
+    "revieweeType": {
+      "freelancer": "Freelancer",
+      "client": "Cliente"
+    },
+    "common": {
+      "close": "Cerrar"
+    },
+    "ratings": {
+      "title": "Calificaciones",
+      "overall": {
+        "label": "Calificación general",
+        "description": "Tu experiencia general con este proyecto"
+      },
+      "communication": {
+        "label": "Comunicación",
+        "description": "Qué tan clara y efectiva fue la comunicación"
+      },
+      "quality": {
+        "label": "Calidad del trabajo",
+        "description": "Nivel de calidad del trabajo entregado"
+      },
+      "timeliness": {
+        "label": "Puntualidad",
+        "description": "Cumplimiento de fechas y entregas a tiempo"
+      }
+    },
+    "comment": {
+      "label": "Comentario (opcional)",
+      "placeholder": "Comparte tu experiencia trabajando en este proyecto...",
+      "charactersCount": "{{count}}/{{max}} caracteres"
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "submitting": "Enviando...",
+      "submit": "Enviar reseña"
+    },
+    "info": {
+      "title": "Información sobre las reseñas",
+      "items": [
+        "Las reseñas son públicas y ayudan a otros usuarios",
+        "Solo puedes reseñar proyectos completados",
+        "Puedes editar tu reseña durante las primeras 24 horas",
+        "Sé honesto y constructivo en tus comentarios"
+      ]
     }
   }
 }

@@ -33,13 +33,11 @@ export default function RootLayout({
   }, [])
 
   useEffect(() => {
-    // Update HTML lang attribute when language changes (only after mount to avoid hydration mismatch)
     if (mounted) {
       document.documentElement.lang = i18n.language
     }
   }, [i18n.language, mounted])
 
-  // Use fallback language for initial render to match server
   const initialLang = mounted ? i18n.language : "es"
 
   return (

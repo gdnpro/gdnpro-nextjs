@@ -135,6 +135,17 @@
   "team": {
     "title": "Our Team",
     "subtitle": "Meet the passionate professionals who make every successful project possible",
+    "members": {
+      "genderson": {
+        "bio": "Passionate about technological innovation, with over 8 years of experience developing and leading full-stack solutions, pentesting, and digital transformation."
+      },
+      "junior": {
+        "bio": "Brings financial and accounting knowledge, and an analytical perspective to the business to make decisions that minimize risks and maximize benefits."
+      },
+      "rikelvi": {
+        "bio": "Full-stack developer specialized in React Native and Astro with over 50 published apps."
+      }
+    },
     "cta": {
       "title": "Want to be part of our team?",
       "description": "We are always looking for exceptional talent to join our network of specialized freelancers",
@@ -541,6 +552,33 @@
     "writeMessagePlaceholder": "Write your message...",
     "sendMessage": "Send message",
     "secureChat": "Secure chat monitored by GDN Pro"
+  },
+  "virtualAssistant": {
+    "welcomeMessage": "Hello {name}! 👋 I'm Liah, your virtual assistant. A real specialist will respond to you shortly. How can I help you?",
+    "helloMessage": "Hello! I'm Liah 👋",
+    "nameQuestion": "To provide you with better assistance, could you tell me your name?",
+    "nameLabel": "Your name",
+    "namePlaceholder": "Write your name...",
+    "startingChat": "Starting chat...",
+    "startChat": "Start Chat",
+    "messageLabel": "Write your message",
+    "messagePlaceholder": "Write your message...",
+    "connectedMessage": "Connected with WhatsApp Business - Responses in real time",
+    "title": "Liah - Virtual Assistant"
+  },
+  "notifications": {
+    "center": {
+      "title": "Notifications",
+      "filters": {
+        "all": "All",
+        "unread": "Unread",
+        "message": "Messages",
+        "proposal": "Proposals",
+        "payment": "Payments",
+        "project_update": "Projects"
+      },
+      "now": "Now"
+    }
   },
   "privacy": {
     "pageTitle": "Privacy Policy | GDN Pro",
@@ -1269,6 +1307,7 @@
         },
         "editProfile": {
           "title": "Edit Profile",
+          "subtitle": "Update your personal information",
           "fullName": "Full Name",
           "fullNamePlaceholder": "Your full name",
           "bio": "Biography",
@@ -1868,6 +1907,202 @@
           "description": "Respond to comments and messages quickly"
         }
       }
+    }
+  },
+  "adminDashboard": {
+    "meta": {
+      "title": "Admin Dashboard | GDN Pro"
+    },
+    "toasts": {
+      "noSession": "No active session",
+      "missingToken": "Could not get the access token",
+      "emptyReply": "Please write a reply message",
+      "replySuccess": "Reply sent to the client",
+      "replyError": "There was an error sending the reply"
+    },
+    "loading": {
+      "verifying": "Verifying admin access..."
+    },
+    "header": {
+      "defaultAdmin": "Admin",
+      "title": "Administration Panel",
+      "subtitle": "Contact Message Management",
+      "badge": "Exclusive Access for Administrators",
+      "welcome": "Welcome, {{name}}"
+    },
+    "whatsappBanner": {
+      "title": "📱 WhatsApp Business Setup",
+      "functionLabel": "Function:",
+      "functionValue": "Receive Sofia's notifications directly in WhatsApp",
+      "benefitLabel": "Benefit:",
+      "benefitValue": "Reply to clients from your phone without logging in",
+      "badge": "Instant notifications on your phone",
+      "button": "Configure WhatsApp"
+    },
+    "stats": {
+      "totalMessages": "Total Messages",
+      "new": "New",
+      "read": "Read",
+      "responded": "Responded"
+    },
+    "instructions": {
+      "title": "🔐 Exclusive Administration Panel",
+      "accessLabel": "Access:",
+      "accessValue": "Only you and your development team can access this panel.",
+      "functionLabel": "Purpose:",
+      "functionValue": "See and manage every message from the contact form.",
+      "responsesLabel": "Replies:",
+      "responsesValue": "Send responses directly from here and the email will be delivered from your account.",
+      "tipLabel": "💡 Tip:",
+      "tipValue": "Click \"View details\" to read the full message and respond to the client."
+    },
+    "filters": {
+      "all": "All statuses",
+      "new": "New",
+      "read": "Read",
+      "responded": "Responded",
+      "refresh": "Refresh",
+      "searchPlaceholder": "Search by name, email, company..."
+    },
+    "table": {
+      "heading": "Contact Messages ({{count}})",
+      "columns": {
+        "contact": "Contact",
+        "service": "Service",
+        "budget": "Budget",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "viewDetailsTooltip": "View full details",
+      "viewDetails": "View details",
+      "changeStatusTooltip": "Change status"
+    },
+    "status": {
+      "new": "New",
+      "read": "Read",
+      "responded": "Responded",
+      "unknown": "Unknown"
+    },
+    "emptyState": {
+      "noMessages": "No messages yet",
+      "noResults": "No messages found",
+      "noResultsDescription": "No messages match the filters you applied.",
+      "generalDescription": "Messages from the contact form will appear here.",
+      "tip": "New messages will appear automatically when visitors submit the contact form."
+    },
+    "whatsappModal": {
+      "title": "📱 WhatsApp Business Setup",
+      "description": "Connect your WhatsApp to receive notifications from Sofia."
+    },
+    "common": {
+      "close": "Close",
+      "teamName": "Your Team",
+      "cancel": "Cancel"
+    },
+    "contactModal": {
+      "title": "Contact Message",
+      "sections": {
+        "contactInfo": {
+          "title": "Contact Information",
+          "fullName": "Full name",
+          "email": "Contact email",
+          "company": "Company",
+          "phone": "Phone"
+        },
+        "projectDetails": {
+          "title": "Requested Project Details",
+          "service": "Requested service",
+          "budget": "Estimated budget",
+          "timeline": "Expected timeline"
+        },
+        "fullMessage": {
+          "title": "Client's full message"
+        },
+        "additionalInfo": {
+          "received": "Received: {{date}}",
+          "id": "ID: {{id}}"
+        }
+      },
+      "actions": {
+        "markAsResponded": "Mark as responded",
+        "replyTemplate": "Hello {{name}},\\n\\nThank you for reaching out about your {{service}} project.\\n\\nWe reviewed your request and would love to schedule a call to discuss the details.\\n\\nWhen would be a good time for you?\\n\\nBest regards,\\n{{adminName}}",
+        "replyFromDashboard": "Reply from dashboard"
+      }
+    },
+    "errors": {
+      "noSession": "No active session"
+    },
+    "replyModal": {
+      "title": "Reply to {{name}}",
+      "emailInfo": "The email will be sent from your account: {{email}}",
+      "recipient": "To: {{email}}",
+      "subject": "Subject: Re: {{service}} - Response to your inquiry",
+      "messageLabel": "Reply message",
+      "messagePlaceholder": "Write your reply here...",
+      "tip": "💡 Tip: Personalize the message according to the client's needs.",
+      "sending": "Sending...",
+      "sendButton": "Send reply"
+    }
+  },
+  "reviewModal": {
+    "errors": {
+      "noReviewee": "Error: Unable to identify who should be reviewed.",
+      "noSession": "No active session",
+      "createFailed": "There was an error creating the review",
+      "generic": "There was an error submitting the review"
+    },
+    "toast": {
+      "success": "Review submitted successfully"
+    },
+    "header": {
+      "title": "Rate Experience",
+      "projectLabel": "Project: {{title}}"
+    },
+    "revieweeType": {
+      "freelancer": "Freelancer",
+      "client": "Client"
+    },
+    "common": {
+      "close": "Close"
+    },
+    "ratings": {
+      "title": "Ratings",
+      "overall": {
+        "label": "Overall Rating",
+        "description": "Your overall experience with this project"
+      },
+      "communication": {
+        "label": "Communication",
+        "description": "How clear and effective the communication was"
+      },
+      "quality": {
+        "label": "Quality of Work",
+        "description": "Quality level of the delivered work"
+      },
+      "timeliness": {
+        "label": "Timeliness",
+        "description": "Meeting deadlines and delivering on time"
+      }
+    },
+    "comment": {
+      "label": "Comment (optional)",
+      "placeholder": "Share your experience working on this project...",
+      "charactersCount": "{{count}}/{{max}} characters"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submitting": "Submitting...",
+      "submit": "Submit Review"
+    },
+    "info": {
+      "title": "Review Information",
+      "items": [
+        "Reviews are public and help other users",
+        "You can only review completed projects",
+        "You can edit your review within the first 24 hours",
+        "Be honest and constructive in your comments"
+      ]
     }
   }
 }

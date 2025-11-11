@@ -3,7 +3,7 @@ export const teamMembers = [
     name: "Genderson Lora",
     position: "CEO Founder | Full-Stack Developer & Pentester",
     image: "/photo/gdn.jpeg",
-    bio: "Apasionado por la innovación tecnológica, con más de 8 años de experiencia desarrollando y liderando soluciones full-stack, pentesting y transformación digital.",
+    bioKey: "team.members.genderson.bio",
     skills: ["#"],
     social: {
       linkedin: "https://www.linkedin.com/in/gdn-lr",
@@ -15,7 +15,7 @@ export const teamMembers = [
     name: "Junior Santana",
     position: "CFO | Gestor de Finanzas",
     image: "/photo/junior.png",
-    bio: "Aporta el conocimiento financiero, contable y en general una mirada analítica al negocio para tomar decisiones que minimicen riesgos y maximicen beneficios.",
+    bioKey: "team.members.junior.bio",
     skills: ["#"],
     social: {
       linkedin: "#",
@@ -27,7 +27,7 @@ export const teamMembers = [
     name: "Rikelvi Capellán",
     position: "CTO | Full-Stack Developer",
     image: "https://rikirilis.com/images/about-image.webp",
-    bio: "Desarrollador full-stack especializado en React Native y Astro con más de 50 apps publicadas.",
+    bioKey: "team.members.rikelvi.bio",
     skills: [
       "React Native",
       "Astro",
